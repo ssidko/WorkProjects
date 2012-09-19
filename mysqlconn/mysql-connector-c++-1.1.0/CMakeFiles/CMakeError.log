@@ -1,0 +1,769 @@
+Determining if files stdint.h exist failed with the following output:
+Change Dir: D:/QT_Projects/WorkProjects_VS2008/mysqlconn/mysql-connector-c++-1.1.0/CMakeFiles/CMakeTmp
+
+Run Build Command:C:\PROGRA~1\MICROS~1.0\Common7\IDE\devenv.com CMAKE_TRY_COMPILE.sln /build Debug /project cmTryCompileExec
+
+Microsoft (R) Visual Studio Version 9.0.21022.8.
+Copyright (C) Microsoft Corp. All rights reserved.
+1>------ Build started: Project: cmTryCompileExec, Configuration: Debug Win32 ------
+1>Compiling...
+1>Microsoft (R) 32-bit C/C++ Optimizing Compiler Version 15.00.21022.08 for 80x86
+1>Copyright (C) Microsoft Corporation.  All rights reserved.
+1>cl /Od /D "WIN32" /D "_WINDOWS" /D "_DEBUG" /D "CMAKE_INTDIR=\"Debug\"" /D "_MBCS" /FD /RTC1 /MDd /Fo"cmTryCompileExec.dir\Debug\\" /Fd"D:/QT_Projects/WorkProjects_VS2008/mysqlconn/mysql-connector-c++-1.1.0/CMakeFiles/CMakeTmp/Debug/cmTryCompileExec.pdb" /W3 /c /Zi /TC   /Zm1000
+1>   ".\CheckIncludeFiles.c"
+1>CheckIncludeFiles.c
+1>.\CheckIncludeFiles.c(2) : fatal error C1083: Cannot open include file: 'stdint.h': No such file or directory
+1>Build log was saved at "file://d:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0\CMakeFiles\CMakeTmp\cmTryCompileExec.dir\Debug\BuildLog.htm"
+1>cmTryCompileExec - 1 error(s), 0 warning(s)
+========== Build: 0 succeeded, 1 failed, 0 up-to-date, 0 skipped ==========
+
+Source:
+/* */
+#include <stdint.h>
+
+
+int main(){return 0;}
+
+Determining if files inttypes.h exist failed with the following output:
+Change Dir: D:/QT_Projects/WorkProjects_VS2008/mysqlconn/mysql-connector-c++-1.1.0/CMakeFiles/CMakeTmp
+
+Run Build Command:C:\PROGRA~1\MICROS~1.0\Common7\IDE\devenv.com CMAKE_TRY_COMPILE.sln /build Debug /project cmTryCompileExec
+
+Microsoft (R) Visual Studio Version 9.0.21022.8.
+Copyright (C) Microsoft Corp. All rights reserved.
+1>------ Build started: Project: cmTryCompileExec, Configuration: Debug Win32 ------
+1>Compiling...
+1>Microsoft (R) 32-bit C/C++ Optimizing Compiler Version 15.00.21022.08 for 80x86
+1>Copyright (C) Microsoft Corporation.  All rights reserved.
+1>cl /Od /D "WIN32" /D "_WINDOWS" /D "_DEBUG" /D "CMAKE_INTDIR=\"Debug\"" /D "_MBCS" /FD /RTC1 /MDd /Fo"cmTryCompileExec.dir\Debug\\" /Fd"D:/QT_Projects/WorkProjects_VS2008/mysqlconn/mysql-connector-c++-1.1.0/CMakeFiles/CMakeTmp/Debug/cmTryCompileExec.pdb" /W3 /c /Zi /TC   /Zm1000
+1>   ".\CheckIncludeFiles.c"
+1>CheckIncludeFiles.c
+1>.\CheckIncludeFiles.c(2) : fatal error C1083: Cannot open include file: 'inttypes.h': No such file or directory
+1>Build log was saved at "file://d:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0\CMakeFiles\CMakeTmp\cmTryCompileExec.dir\Debug\BuildLog.htm"
+1>cmTryCompileExec - 1 error(s), 0 warning(s)
+========== Build: 0 succeeded, 1 failed, 0 up-to-date, 0 skipped ==========
+
+Source:
+/* */
+#include <inttypes.h>
+
+
+int main(){return 0;}
+
+Determining size of int8_t failed with the following output:
+Change Dir: D:/QT_Projects/WorkProjects_VS2008/mysqlconn/mysql-connector-c++-1.1.0/CMakeFiles/CMakeTmp
+
+Run Build Command:C:\PROGRA~1\MICROS~1.0\Common7\IDE\devenv.com CMAKE_TRY_COMPILE.sln /build Debug /project cmTryCompileExec
+
+Microsoft (R) Visual Studio Version 9.0.21022.8.
+Copyright (C) Microsoft Corp. All rights reserved.
+1>------ Build started: Project: cmTryCompileExec, Configuration: Debug Win32 ------
+1>Compiling...
+1>Microsoft (R) 32-bit C/C++ Optimizing Compiler Version 15.00.21022.08 for 80x86
+1>Copyright (C) Microsoft Corporation.  All rights reserved.
+1>cl /Od /D "WIN32" /D "_WINDOWS" /D "HAVE_SYS_TYPES_H" /D "HAVE_STDDEF_H" /D "_DEBUG" /D "CMAKE_INTDIR=\"Debug\"" /D "_MBCS" /FD /RTC1 /MDd /Fo"cmTryCompileExec.dir\Debug\\" /Fd"D:/QT_Projects/WorkProjects_VS2008/mysqlconn/mysql-connector-c++-1.1.0/CMakeFiles/CMakeTmp/Debug/cmTryCompileExec.pdb" /W3 /c /Zi /TC   /Zm1000
+1>   ".\CheckTypeSizeC.c"
+1>CheckTypeSizeC.c
+1>.\CheckTypeSizeC.c(25) : error C2065: 'int8_t' : undeclared identifier
+1>.\CheckTypeSizeC.c(26) : error C2065: 'int8_t' : undeclared identifier
+1>.\CheckTypeSizeC.c(27) : error C2065: 'int8_t' : undeclared identifier
+1>.\CheckTypeSizeC.c(28) : error C2065: 'int8_t' : undeclared identifier
+1>.\CheckTypeSizeC.c(29) : error C2065: 'int8_t' : undeclared identifier
+1>Build log was saved at "file://d:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0\CMakeFiles\CMakeTmp\cmTryCompileExec.dir\Debug\BuildLog.htm"
+1>cmTryCompileExec - 5 error(s), 0 warning(s)
+========== Build: 0 succeeded, 1 failed, 0 up-to-date, 0 skipped ==========
+
+CheckTypeSizeC.c:
+#define CHECK_TYPE_SIZE_TYPE int8_t
+#ifdef CHECK_TYPE_SIZE_TYPE
+
+
+#ifdef HAVE_SYS_TYPES_H
+#  include <sys/types.h>
+#endif /* HAVE_SYS_TYPES_H */
+
+#ifdef HAVE_STDINT_H
+#  include <stdint.h>
+#endif /* HAVE_STDINT_H */
+
+#ifdef HAVE_STDDEF_H
+#  include <stddef.h>
+#endif /* HAVE_STDDEF_H */
+
+
+
+#ifdef __CLASSIC_C__
+# define const
+#endif
+
+#define SIZE (sizeof(int8_t))
+const char info_sizeof[] =  {'I', 'N', 'F', 'O', ':', 's','i','z','e','o','f','[',
+  ('0' + ((SIZE / 10000)%10)),
+  ('0' + ((SIZE / 1000)%10)),
+  ('0' + ((SIZE / 100)%10)),
+  ('0' + ((SIZE / 10)%10)),
+  ('0' +  (SIZE    % 10)), 
+  ']','\0'};
+
+#ifdef __CLASSIC_C__
+int main(argc, argv) int argc; char *argv[];
+#else
+int main(int argc, char *argv[])
+#endif
+{
+  int require = 0;
+  require += info_sizeof[argc];
+  (void)argv;
+  return require;
+}
+
+#else  /* CHECK_TYPE_SIZE_TYPE */
+
+#  error "CHECK_TYPE_SIZE_TYPE has to specify the type"
+
+#endif /* CHECK_TYPE_SIZE_TYPE */
+
+
+Determining size of uint8_t failed with the following output:
+Change Dir: D:/QT_Projects/WorkProjects_VS2008/mysqlconn/mysql-connector-c++-1.1.0/CMakeFiles/CMakeTmp
+
+Run Build Command:C:\PROGRA~1\MICROS~1.0\Common7\IDE\devenv.com CMAKE_TRY_COMPILE.sln /build Debug /project cmTryCompileExec
+
+Microsoft (R) Visual Studio Version 9.0.21022.8.
+Copyright (C) Microsoft Corp. All rights reserved.
+1>------ Build started: Project: cmTryCompileExec, Configuration: Debug Win32 ------
+1>Compiling...
+1>Microsoft (R) 32-bit C/C++ Optimizing Compiler Version 15.00.21022.08 for 80x86
+1>Copyright (C) Microsoft Corporation.  All rights reserved.
+1>cl /Od /D "WIN32" /D "_WINDOWS" /D "HAVE_SYS_TYPES_H" /D "HAVE_STDDEF_H" /D "_DEBUG" /D "CMAKE_INTDIR=\"Debug\"" /D "_MBCS" /FD /RTC1 /MDd /Fo"cmTryCompileExec.dir\Debug\\" /Fd"D:/QT_Projects/WorkProjects_VS2008/mysqlconn/mysql-connector-c++-1.1.0/CMakeFiles/CMakeTmp/Debug/cmTryCompileExec.pdb" /W3 /c /Zi /TC   /Zm1000
+1>   ".\CheckTypeSizeC.c"
+1>CheckTypeSizeC.c
+1>.\CheckTypeSizeC.c(25) : error C2065: 'uint8_t' : undeclared identifier
+1>.\CheckTypeSizeC.c(26) : error C2065: 'uint8_t' : undeclared identifier
+1>.\CheckTypeSizeC.c(27) : error C2065: 'uint8_t' : undeclared identifier
+1>.\CheckTypeSizeC.c(28) : error C2065: 'uint8_t' : undeclared identifier
+1>.\CheckTypeSizeC.c(29) : error C2065: 'uint8_t' : undeclared identifier
+1>Build log was saved at "file://d:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0\CMakeFiles\CMakeTmp\cmTryCompileExec.dir\Debug\BuildLog.htm"
+1>cmTryCompileExec - 5 error(s), 0 warning(s)
+========== Build: 0 succeeded, 1 failed, 0 up-to-date, 0 skipped ==========
+
+CheckTypeSizeC.c:
+#define CHECK_TYPE_SIZE_TYPE uint8_t
+#ifdef CHECK_TYPE_SIZE_TYPE
+
+
+#ifdef HAVE_SYS_TYPES_H
+#  include <sys/types.h>
+#endif /* HAVE_SYS_TYPES_H */
+
+#ifdef HAVE_STDINT_H
+#  include <stdint.h>
+#endif /* HAVE_STDINT_H */
+
+#ifdef HAVE_STDDEF_H
+#  include <stddef.h>
+#endif /* HAVE_STDDEF_H */
+
+
+
+#ifdef __CLASSIC_C__
+# define const
+#endif
+
+#define SIZE (sizeof(uint8_t))
+const char info_sizeof[] =  {'I', 'N', 'F', 'O', ':', 's','i','z','e','o','f','[',
+  ('0' + ((SIZE / 10000)%10)),
+  ('0' + ((SIZE / 1000)%10)),
+  ('0' + ((SIZE / 100)%10)),
+  ('0' + ((SIZE / 10)%10)),
+  ('0' +  (SIZE    % 10)), 
+  ']','\0'};
+
+#ifdef __CLASSIC_C__
+int main(argc, argv) int argc; char *argv[];
+#else
+int main(int argc, char *argv[])
+#endif
+{
+  int require = 0;
+  require += info_sizeof[argc];
+  (void)argv;
+  return require;
+}
+
+#else  /* CHECK_TYPE_SIZE_TYPE */
+
+#  error "CHECK_TYPE_SIZE_TYPE has to specify the type"
+
+#endif /* CHECK_TYPE_SIZE_TYPE */
+
+
+Determining size of int16_t failed with the following output:
+Change Dir: D:/QT_Projects/WorkProjects_VS2008/mysqlconn/mysql-connector-c++-1.1.0/CMakeFiles/CMakeTmp
+
+Run Build Command:C:\PROGRA~1\MICROS~1.0\Common7\IDE\devenv.com CMAKE_TRY_COMPILE.sln /build Debug /project cmTryCompileExec
+
+Microsoft (R) Visual Studio Version 9.0.21022.8.
+Copyright (C) Microsoft Corp. All rights reserved.
+1>------ Build started: Project: cmTryCompileExec, Configuration: Debug Win32 ------
+1>Compiling...
+1>Microsoft (R) 32-bit C/C++ Optimizing Compiler Version 15.00.21022.08 for 80x86
+1>Copyright (C) Microsoft Corporation.  All rights reserved.
+1>cl /Od /D "WIN32" /D "_WINDOWS" /D "HAVE_SYS_TYPES_H" /D "HAVE_STDDEF_H" /D "_DEBUG" /D "CMAKE_INTDIR=\"Debug\"" /D "_MBCS" /FD /RTC1 /MDd /Fo"cmTryCompileExec.dir\Debug\\" /Fd"D:/QT_Projects/WorkProjects_VS2008/mysqlconn/mysql-connector-c++-1.1.0/CMakeFiles/CMakeTmp/Debug/cmTryCompileExec.pdb" /W3 /c /Zi /TC   /Zm1000
+1>   ".\CheckTypeSizeC.c"
+1>CheckTypeSizeC.c
+1>.\CheckTypeSizeC.c(25) : error C2065: 'int16_t' : undeclared identifier
+1>.\CheckTypeSizeC.c(26) : error C2065: 'int16_t' : undeclared identifier
+1>.\CheckTypeSizeC.c(27) : error C2065: 'int16_t' : undeclared identifier
+1>.\CheckTypeSizeC.c(28) : error C2065: 'int16_t' : undeclared identifier
+1>.\CheckTypeSizeC.c(29) : error C2065: 'int16_t' : undeclared identifier
+1>Build log was saved at "file://d:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0\CMakeFiles\CMakeTmp\cmTryCompileExec.dir\Debug\BuildLog.htm"
+1>cmTryCompileExec - 5 error(s), 0 warning(s)
+========== Build: 0 succeeded, 1 failed, 0 up-to-date, 0 skipped ==========
+
+CheckTypeSizeC.c:
+#define CHECK_TYPE_SIZE_TYPE int16_t
+#ifdef CHECK_TYPE_SIZE_TYPE
+
+
+#ifdef HAVE_SYS_TYPES_H
+#  include <sys/types.h>
+#endif /* HAVE_SYS_TYPES_H */
+
+#ifdef HAVE_STDINT_H
+#  include <stdint.h>
+#endif /* HAVE_STDINT_H */
+
+#ifdef HAVE_STDDEF_H
+#  include <stddef.h>
+#endif /* HAVE_STDDEF_H */
+
+
+
+#ifdef __CLASSIC_C__
+# define const
+#endif
+
+#define SIZE (sizeof(int16_t))
+const char info_sizeof[] =  {'I', 'N', 'F', 'O', ':', 's','i','z','e','o','f','[',
+  ('0' + ((SIZE / 10000)%10)),
+  ('0' + ((SIZE / 1000)%10)),
+  ('0' + ((SIZE / 100)%10)),
+  ('0' + ((SIZE / 10)%10)),
+  ('0' +  (SIZE    % 10)), 
+  ']','\0'};
+
+#ifdef __CLASSIC_C__
+int main(argc, argv) int argc; char *argv[];
+#else
+int main(int argc, char *argv[])
+#endif
+{
+  int require = 0;
+  require += info_sizeof[argc];
+  (void)argv;
+  return require;
+}
+
+#else  /* CHECK_TYPE_SIZE_TYPE */
+
+#  error "CHECK_TYPE_SIZE_TYPE has to specify the type"
+
+#endif /* CHECK_TYPE_SIZE_TYPE */
+
+
+Determining size of uint16_t failed with the following output:
+Change Dir: D:/QT_Projects/WorkProjects_VS2008/mysqlconn/mysql-connector-c++-1.1.0/CMakeFiles/CMakeTmp
+
+Run Build Command:C:\PROGRA~1\MICROS~1.0\Common7\IDE\devenv.com CMAKE_TRY_COMPILE.sln /build Debug /project cmTryCompileExec
+
+Microsoft (R) Visual Studio Version 9.0.21022.8.
+Copyright (C) Microsoft Corp. All rights reserved.
+1>------ Build started: Project: cmTryCompileExec, Configuration: Debug Win32 ------
+1>Compiling...
+1>Microsoft (R) 32-bit C/C++ Optimizing Compiler Version 15.00.21022.08 for 80x86
+1>Copyright (C) Microsoft Corporation.  All rights reserved.
+1>cl /Od /D "WIN32" /D "_WINDOWS" /D "HAVE_SYS_TYPES_H" /D "HAVE_STDDEF_H" /D "_DEBUG" /D "CMAKE_INTDIR=\"Debug\"" /D "_MBCS" /FD /RTC1 /MDd /Fo"cmTryCompileExec.dir\Debug\\" /Fd"D:/QT_Projects/WorkProjects_VS2008/mysqlconn/mysql-connector-c++-1.1.0/CMakeFiles/CMakeTmp/Debug/cmTryCompileExec.pdb" /W3 /c /Zi /TC   /Zm1000
+1>   ".\CheckTypeSizeC.c"
+1>CheckTypeSizeC.c
+1>.\CheckTypeSizeC.c(25) : error C2065: 'uint16_t' : undeclared identifier
+1>.\CheckTypeSizeC.c(26) : error C2065: 'uint16_t' : undeclared identifier
+1>.\CheckTypeSizeC.c(27) : error C2065: 'uint16_t' : undeclared identifier
+1>.\CheckTypeSizeC.c(28) : error C2065: 'uint16_t' : undeclared identifier
+1>.\CheckTypeSizeC.c(29) : error C2065: 'uint16_t' : undeclared identifier
+1>Build log was saved at "file://d:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0\CMakeFiles\CMakeTmp\cmTryCompileExec.dir\Debug\BuildLog.htm"
+1>cmTryCompileExec - 5 error(s), 0 warning(s)
+========== Build: 0 succeeded, 1 failed, 0 up-to-date, 0 skipped ==========
+
+CheckTypeSizeC.c:
+#define CHECK_TYPE_SIZE_TYPE uint16_t
+#ifdef CHECK_TYPE_SIZE_TYPE
+
+
+#ifdef HAVE_SYS_TYPES_H
+#  include <sys/types.h>
+#endif /* HAVE_SYS_TYPES_H */
+
+#ifdef HAVE_STDINT_H
+#  include <stdint.h>
+#endif /* HAVE_STDINT_H */
+
+#ifdef HAVE_STDDEF_H
+#  include <stddef.h>
+#endif /* HAVE_STDDEF_H */
+
+
+
+#ifdef __CLASSIC_C__
+# define const
+#endif
+
+#define SIZE (sizeof(uint16_t))
+const char info_sizeof[] =  {'I', 'N', 'F', 'O', ':', 's','i','z','e','o','f','[',
+  ('0' + ((SIZE / 10000)%10)),
+  ('0' + ((SIZE / 1000)%10)),
+  ('0' + ((SIZE / 100)%10)),
+  ('0' + ((SIZE / 10)%10)),
+  ('0' +  (SIZE    % 10)), 
+  ']','\0'};
+
+#ifdef __CLASSIC_C__
+int main(argc, argv) int argc; char *argv[];
+#else
+int main(int argc, char *argv[])
+#endif
+{
+  int require = 0;
+  require += info_sizeof[argc];
+  (void)argv;
+  return require;
+}
+
+#else  /* CHECK_TYPE_SIZE_TYPE */
+
+#  error "CHECK_TYPE_SIZE_TYPE has to specify the type"
+
+#endif /* CHECK_TYPE_SIZE_TYPE */
+
+
+Determining size of int32_t failed with the following output:
+Change Dir: D:/QT_Projects/WorkProjects_VS2008/mysqlconn/mysql-connector-c++-1.1.0/CMakeFiles/CMakeTmp
+
+Run Build Command:C:\PROGRA~1\MICROS~1.0\Common7\IDE\devenv.com CMAKE_TRY_COMPILE.sln /build Debug /project cmTryCompileExec
+
+Microsoft (R) Visual Studio Version 9.0.21022.8.
+Copyright (C) Microsoft Corp. All rights reserved.
+1>------ Build started: Project: cmTryCompileExec, Configuration: Debug Win32 ------
+1>Compiling...
+1>Microsoft (R) 32-bit C/C++ Optimizing Compiler Version 15.00.21022.08 for 80x86
+1>Copyright (C) Microsoft Corporation.  All rights reserved.
+1>cl /Od /D "WIN32" /D "_WINDOWS" /D "HAVE_SYS_TYPES_H" /D "HAVE_STDDEF_H" /D "_DEBUG" /D "CMAKE_INTDIR=\"Debug\"" /D "_MBCS" /FD /RTC1 /MDd /Fo"cmTryCompileExec.dir\Debug\\" /Fd"D:/QT_Projects/WorkProjects_VS2008/mysqlconn/mysql-connector-c++-1.1.0/CMakeFiles/CMakeTmp/Debug/cmTryCompileExec.pdb" /W3 /c /Zi /TC   /Zm1000
+1>   ".\CheckTypeSizeC.c"
+1>CheckTypeSizeC.c
+1>.\CheckTypeSizeC.c(25) : error C2065: 'int32_t' : undeclared identifier
+1>.\CheckTypeSizeC.c(26) : error C2065: 'int32_t' : undeclared identifier
+1>.\CheckTypeSizeC.c(27) : error C2065: 'int32_t' : undeclared identifier
+1>.\CheckTypeSizeC.c(28) : error C2065: 'int32_t' : undeclared identifier
+1>.\CheckTypeSizeC.c(29) : error C2065: 'int32_t' : undeclared identifier
+1>Build log was saved at "file://d:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0\CMakeFiles\CMakeTmp\cmTryCompileExec.dir\Debug\BuildLog.htm"
+1>cmTryCompileExec - 5 error(s), 0 warning(s)
+========== Build: 0 succeeded, 1 failed, 0 up-to-date, 0 skipped ==========
+
+CheckTypeSizeC.c:
+#define CHECK_TYPE_SIZE_TYPE int32_t
+#ifdef CHECK_TYPE_SIZE_TYPE
+
+
+#ifdef HAVE_SYS_TYPES_H
+#  include <sys/types.h>
+#endif /* HAVE_SYS_TYPES_H */
+
+#ifdef HAVE_STDINT_H
+#  include <stdint.h>
+#endif /* HAVE_STDINT_H */
+
+#ifdef HAVE_STDDEF_H
+#  include <stddef.h>
+#endif /* HAVE_STDDEF_H */
+
+
+
+#ifdef __CLASSIC_C__
+# define const
+#endif
+
+#define SIZE (sizeof(int32_t))
+const char info_sizeof[] =  {'I', 'N', 'F', 'O', ':', 's','i','z','e','o','f','[',
+  ('0' + ((SIZE / 10000)%10)),
+  ('0' + ((SIZE / 1000)%10)),
+  ('0' + ((SIZE / 100)%10)),
+  ('0' + ((SIZE / 10)%10)),
+  ('0' +  (SIZE    % 10)), 
+  ']','\0'};
+
+#ifdef __CLASSIC_C__
+int main(argc, argv) int argc; char *argv[];
+#else
+int main(int argc, char *argv[])
+#endif
+{
+  int require = 0;
+  require += info_sizeof[argc];
+  (void)argv;
+  return require;
+}
+
+#else  /* CHECK_TYPE_SIZE_TYPE */
+
+#  error "CHECK_TYPE_SIZE_TYPE has to specify the type"
+
+#endif /* CHECK_TYPE_SIZE_TYPE */
+
+
+Determining size of uint32_t failed with the following output:
+Change Dir: D:/QT_Projects/WorkProjects_VS2008/mysqlconn/mysql-connector-c++-1.1.0/CMakeFiles/CMakeTmp
+
+Run Build Command:C:\PROGRA~1\MICROS~1.0\Common7\IDE\devenv.com CMAKE_TRY_COMPILE.sln /build Debug /project cmTryCompileExec
+
+Microsoft (R) Visual Studio Version 9.0.21022.8.
+Copyright (C) Microsoft Corp. All rights reserved.
+1>------ Build started: Project: cmTryCompileExec, Configuration: Debug Win32 ------
+1>Compiling...
+1>Microsoft (R) 32-bit C/C++ Optimizing Compiler Version 15.00.21022.08 for 80x86
+1>Copyright (C) Microsoft Corporation.  All rights reserved.
+1>cl /Od /D "WIN32" /D "_WINDOWS" /D "HAVE_SYS_TYPES_H" /D "HAVE_STDDEF_H" /D "_DEBUG" /D "CMAKE_INTDIR=\"Debug\"" /D "_MBCS" /FD /RTC1 /MDd /Fo"cmTryCompileExec.dir\Debug\\" /Fd"D:/QT_Projects/WorkProjects_VS2008/mysqlconn/mysql-connector-c++-1.1.0/CMakeFiles/CMakeTmp/Debug/cmTryCompileExec.pdb" /W3 /c /Zi /TC   /Zm1000
+1>   ".\CheckTypeSizeC.c"
+1>CheckTypeSizeC.c
+1>.\CheckTypeSizeC.c(25) : error C2065: 'uint32_t' : undeclared identifier
+1>.\CheckTypeSizeC.c(26) : error C2065: 'uint32_t' : undeclared identifier
+1>.\CheckTypeSizeC.c(27) : error C2065: 'uint32_t' : undeclared identifier
+1>.\CheckTypeSizeC.c(28) : error C2065: 'uint32_t' : undeclared identifier
+1>.\CheckTypeSizeC.c(29) : error C2065: 'uint32_t' : undeclared identifier
+1>Build log was saved at "file://d:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0\CMakeFiles\CMakeTmp\cmTryCompileExec.dir\Debug\BuildLog.htm"
+1>cmTryCompileExec - 5 error(s), 0 warning(s)
+========== Build: 0 succeeded, 1 failed, 0 up-to-date, 0 skipped ==========
+
+CheckTypeSizeC.c:
+#define CHECK_TYPE_SIZE_TYPE uint32_t
+#ifdef CHECK_TYPE_SIZE_TYPE
+
+
+#ifdef HAVE_SYS_TYPES_H
+#  include <sys/types.h>
+#endif /* HAVE_SYS_TYPES_H */
+
+#ifdef HAVE_STDINT_H
+#  include <stdint.h>
+#endif /* HAVE_STDINT_H */
+
+#ifdef HAVE_STDDEF_H
+#  include <stddef.h>
+#endif /* HAVE_STDDEF_H */
+
+
+
+#ifdef __CLASSIC_C__
+# define const
+#endif
+
+#define SIZE (sizeof(uint32_t))
+const char info_sizeof[] =  {'I', 'N', 'F', 'O', ':', 's','i','z','e','o','f','[',
+  ('0' + ((SIZE / 10000)%10)),
+  ('0' + ((SIZE / 1000)%10)),
+  ('0' + ((SIZE / 100)%10)),
+  ('0' + ((SIZE / 10)%10)),
+  ('0' +  (SIZE    % 10)), 
+  ']','\0'};
+
+#ifdef __CLASSIC_C__
+int main(argc, argv) int argc; char *argv[];
+#else
+int main(int argc, char *argv[])
+#endif
+{
+  int require = 0;
+  require += info_sizeof[argc];
+  (void)argv;
+  return require;
+}
+
+#else  /* CHECK_TYPE_SIZE_TYPE */
+
+#  error "CHECK_TYPE_SIZE_TYPE has to specify the type"
+
+#endif /* CHECK_TYPE_SIZE_TYPE */
+
+
+Determining size of int64_t failed with the following output:
+Change Dir: D:/QT_Projects/WorkProjects_VS2008/mysqlconn/mysql-connector-c++-1.1.0/CMakeFiles/CMakeTmp
+
+Run Build Command:C:\PROGRA~1\MICROS~1.0\Common7\IDE\devenv.com CMAKE_TRY_COMPILE.sln /build Debug /project cmTryCompileExec
+
+Microsoft (R) Visual Studio Version 9.0.21022.8.
+Copyright (C) Microsoft Corp. All rights reserved.
+1>------ Build started: Project: cmTryCompileExec, Configuration: Debug Win32 ------
+1>Compiling...
+1>Microsoft (R) 32-bit C/C++ Optimizing Compiler Version 15.00.21022.08 for 80x86
+1>Copyright (C) Microsoft Corporation.  All rights reserved.
+1>cl /Od /D "WIN32" /D "_WINDOWS" /D "HAVE_SYS_TYPES_H" /D "HAVE_STDDEF_H" /D "_DEBUG" /D "CMAKE_INTDIR=\"Debug\"" /D "_MBCS" /FD /RTC1 /MDd /Fo"cmTryCompileExec.dir\Debug\\" /Fd"D:/QT_Projects/WorkProjects_VS2008/mysqlconn/mysql-connector-c++-1.1.0/CMakeFiles/CMakeTmp/Debug/cmTryCompileExec.pdb" /W3 /c /Zi /TC   /Zm1000
+1>   ".\CheckTypeSizeC.c"
+1>CheckTypeSizeC.c
+1>.\CheckTypeSizeC.c(25) : error C2065: 'int64_t' : undeclared identifier
+1>.\CheckTypeSizeC.c(26) : error C2065: 'int64_t' : undeclared identifier
+1>.\CheckTypeSizeC.c(27) : error C2065: 'int64_t' : undeclared identifier
+1>.\CheckTypeSizeC.c(28) : error C2065: 'int64_t' : undeclared identifier
+1>.\CheckTypeSizeC.c(29) : error C2065: 'int64_t' : undeclared identifier
+1>Build log was saved at "file://d:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0\CMakeFiles\CMakeTmp\cmTryCompileExec.dir\Debug\BuildLog.htm"
+1>cmTryCompileExec - 5 error(s), 0 warning(s)
+========== Build: 0 succeeded, 1 failed, 0 up-to-date, 0 skipped ==========
+
+CheckTypeSizeC.c:
+#define CHECK_TYPE_SIZE_TYPE int64_t
+#ifdef CHECK_TYPE_SIZE_TYPE
+
+
+#ifdef HAVE_SYS_TYPES_H
+#  include <sys/types.h>
+#endif /* HAVE_SYS_TYPES_H */
+
+#ifdef HAVE_STDINT_H
+#  include <stdint.h>
+#endif /* HAVE_STDINT_H */
+
+#ifdef HAVE_STDDEF_H
+#  include <stddef.h>
+#endif /* HAVE_STDDEF_H */
+
+
+
+#ifdef __CLASSIC_C__
+# define const
+#endif
+
+#define SIZE (sizeof(int64_t))
+const char info_sizeof[] =  {'I', 'N', 'F', 'O', ':', 's','i','z','e','o','f','[',
+  ('0' + ((SIZE / 10000)%10)),
+  ('0' + ((SIZE / 1000)%10)),
+  ('0' + ((SIZE / 100)%10)),
+  ('0' + ((SIZE / 10)%10)),
+  ('0' +  (SIZE    % 10)), 
+  ']','\0'};
+
+#ifdef __CLASSIC_C__
+int main(argc, argv) int argc; char *argv[];
+#else
+int main(int argc, char *argv[])
+#endif
+{
+  int require = 0;
+  require += info_sizeof[argc];
+  (void)argv;
+  return require;
+}
+
+#else  /* CHECK_TYPE_SIZE_TYPE */
+
+#  error "CHECK_TYPE_SIZE_TYPE has to specify the type"
+
+#endif /* CHECK_TYPE_SIZE_TYPE */
+
+
+Determining size of uint64_t failed with the following output:
+Change Dir: D:/QT_Projects/WorkProjects_VS2008/mysqlconn/mysql-connector-c++-1.1.0/CMakeFiles/CMakeTmp
+
+Run Build Command:C:\PROGRA~1\MICROS~1.0\Common7\IDE\devenv.com CMAKE_TRY_COMPILE.sln /build Debug /project cmTryCompileExec
+
+Microsoft (R) Visual Studio Version 9.0.21022.8.
+Copyright (C) Microsoft Corp. All rights reserved.
+1>------ Build started: Project: cmTryCompileExec, Configuration: Debug Win32 ------
+1>Compiling...
+1>Microsoft (R) 32-bit C/C++ Optimizing Compiler Version 15.00.21022.08 for 80x86
+1>Copyright (C) Microsoft Corporation.  All rights reserved.
+1>cl /Od /D "WIN32" /D "_WINDOWS" /D "HAVE_SYS_TYPES_H" /D "HAVE_STDDEF_H" /D "_DEBUG" /D "CMAKE_INTDIR=\"Debug\"" /D "_MBCS" /FD /RTC1 /MDd /Fo"cmTryCompileExec.dir\Debug\\" /Fd"D:/QT_Projects/WorkProjects_VS2008/mysqlconn/mysql-connector-c++-1.1.0/CMakeFiles/CMakeTmp/Debug/cmTryCompileExec.pdb" /W3 /c /Zi /TC   /Zm1000
+1>   ".\CheckTypeSizeC.c"
+1>CheckTypeSizeC.c
+1>.\CheckTypeSizeC.c(25) : error C2065: 'uint64_t' : undeclared identifier
+1>.\CheckTypeSizeC.c(26) : error C2065: 'uint64_t' : undeclared identifier
+1>.\CheckTypeSizeC.c(27) : error C2065: 'uint64_t' : undeclared identifier
+1>.\CheckTypeSizeC.c(28) : error C2065: 'uint64_t' : undeclared identifier
+1>.\CheckTypeSizeC.c(29) : error C2065: 'uint64_t' : undeclared identifier
+1>Build log was saved at "file://d:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0\CMakeFiles\CMakeTmp\cmTryCompileExec.dir\Debug\BuildLog.htm"
+1>cmTryCompileExec - 5 error(s), 0 warning(s)
+========== Build: 0 succeeded, 1 failed, 0 up-to-date, 0 skipped ==========
+
+CheckTypeSizeC.c:
+#define CHECK_TYPE_SIZE_TYPE uint64_t
+#ifdef CHECK_TYPE_SIZE_TYPE
+
+
+#ifdef HAVE_SYS_TYPES_H
+#  include <sys/types.h>
+#endif /* HAVE_SYS_TYPES_H */
+
+#ifdef HAVE_STDINT_H
+#  include <stdint.h>
+#endif /* HAVE_STDINT_H */
+
+#ifdef HAVE_STDDEF_H
+#  include <stddef.h>
+#endif /* HAVE_STDDEF_H */
+
+
+
+#ifdef __CLASSIC_C__
+# define const
+#endif
+
+#define SIZE (sizeof(uint64_t))
+const char info_sizeof[] =  {'I', 'N', 'F', 'O', ':', 's','i','z','e','o','f','[',
+  ('0' + ((SIZE / 10000)%10)),
+  ('0' + ((SIZE / 1000)%10)),
+  ('0' + ((SIZE / 100)%10)),
+  ('0' + ((SIZE / 10)%10)),
+  ('0' +  (SIZE    % 10)), 
+  ']','\0'};
+
+#ifdef __CLASSIC_C__
+int main(argc, argv) int argc; char *argv[];
+#else
+int main(int argc, char *argv[])
+#endif
+{
+  int require = 0;
+  require += info_sizeof[argc];
+  (void)argv;
+  return require;
+}
+
+#else  /* CHECK_TYPE_SIZE_TYPE */
+
+#  error "CHECK_TYPE_SIZE_TYPE has to specify the type"
+
+#endif /* CHECK_TYPE_SIZE_TYPE */
+
+
+Determining if the function strtold exists failed with the following output:
+Change Dir: D:/QT_Projects/WorkProjects_VS2008/mysqlconn/mysql-connector-c++-1.1.0/CMakeFiles/CMakeTmp
+
+Run Build Command:C:\PROGRA~1\MICROS~1.0\Common7\IDE\devenv.com CMAKE_TRY_COMPILE.sln /build Debug /project cmTryCompileExec
+
+Microsoft (R) Visual Studio Version 9.0.21022.8.
+Copyright (C) Microsoft Corp. All rights reserved.
+1>------ Build started: Project: cmTryCompileExec, Configuration: Debug Win32 ------
+1>Compiling...
+1>Microsoft (R) 32-bit C/C++ Optimizing Compiler Version 15.00.21022.08 for 80x86
+1>Copyright (C) Microsoft Corporation.  All rights reserved.
+1>cl /Od /D "WIN32" /D "_WINDOWS" /D "CHECK_FUNCTION_EXISTS=strtold" /D "_DEBUG" /D "CMAKE_INTDIR=\"Debug\"" /D "_MBCS" /FD /RTC1 /MDd /Fo"cmTryCompileExec.dir\Debug\\" /Fd"D:/QT_Projects/WorkProjects_VS2008/mysqlconn/mysql-connector-c++-1.1.0/CMakeFiles/CMakeTmp/Debug/cmTryCompileExec.pdb" /W3 /c /Zi /TC   /Zm1000
+1>   "C:\Program Files\CMake 2.6\share\cmake-2.6\Modules\CheckFunctionExists.c"
+1>CheckFunctionExists.c
+1>Compiling manifest to resources...
+1>Microsoft (R) Windows (R) Resource Compiler Version 6.0.5724.0
+1>Copyright (C) Microsoft Corporation.  All rights reserved.
+1>Linking...
+1>CheckFunctionExists.obj : error LNK2019: unresolved external symbol _strtold referenced in function _main
+1>D:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0\CMakeFiles\CMakeTmp\Debug\cmTryCompileExec.exe : fatal error LNK1120: 1 unresolved externals
+1>Build log was saved at "file://d:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0\CMakeFiles\CMakeTmp\cmTryCompileExec.dir\Debug\BuildLog.htm"
+1>cmTryCompileExec - 2 error(s), 0 warning(s)
+========== Build: 0 succeeded, 1 failed, 0 up-to-date, 0 skipped ==========
+
+
+Determining if the function strtoll exists failed with the following output:
+Change Dir: D:/QT_Projects/WorkProjects_VS2008/mysqlconn/mysql-connector-c++-1.1.0/CMakeFiles/CMakeTmp
+
+Run Build Command:C:\PROGRA~1\MICROS~1.0\Common7\IDE\devenv.com CMAKE_TRY_COMPILE.sln /build Debug /project cmTryCompileExec
+
+Microsoft (R) Visual Studio Version 9.0.21022.8.
+Copyright (C) Microsoft Corp. All rights reserved.
+1>------ Build started: Project: cmTryCompileExec, Configuration: Debug Win32 ------
+1>Compiling...
+1>Microsoft (R) 32-bit C/C++ Optimizing Compiler Version 15.00.21022.08 for 80x86
+1>Copyright (C) Microsoft Corporation.  All rights reserved.
+1>cl /Od /D "WIN32" /D "_WINDOWS" /D "CHECK_FUNCTION_EXISTS=strtoll" /D "_DEBUG" /D "CMAKE_INTDIR=\"Debug\"" /D "_MBCS" /FD /RTC1 /MDd /Fo"cmTryCompileExec.dir\Debug\\" /Fd"D:/QT_Projects/WorkProjects_VS2008/mysqlconn/mysql-connector-c++-1.1.0/CMakeFiles/CMakeTmp/Debug/cmTryCompileExec.pdb" /W3 /c /Zi /TC   /Zm1000
+1>   "C:\Program Files\CMake 2.6\share\cmake-2.6\Modules\CheckFunctionExists.c"
+1>CheckFunctionExists.c
+1>Compiling manifest to resources...
+1>Microsoft (R) Windows (R) Resource Compiler Version 6.0.5724.0
+1>Copyright (C) Microsoft Corporation.  All rights reserved.
+1>Linking...
+1>CheckFunctionExists.obj : error LNK2019: unresolved external symbol _strtoll referenced in function _main
+1>D:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0\CMakeFiles\CMakeTmp\Debug\cmTryCompileExec.exe : fatal error LNK1120: 1 unresolved externals
+1>Build log was saved at "file://d:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0\CMakeFiles\CMakeTmp\cmTryCompileExec.dir\Debug\BuildLog.htm"
+1>cmTryCompileExec - 2 error(s), 0 warning(s)
+========== Build: 0 succeeded, 1 failed, 0 up-to-date, 0 skipped ==========
+
+
+Determining if the function strtoull exists failed with the following output:
+Change Dir: D:/QT_Projects/WorkProjects_VS2008/mysqlconn/mysql-connector-c++-1.1.0/CMakeFiles/CMakeTmp
+
+Run Build Command:C:\PROGRA~1\MICROS~1.0\Common7\IDE\devenv.com CMAKE_TRY_COMPILE.sln /build Debug /project cmTryCompileExec
+
+Microsoft (R) Visual Studio Version 9.0.21022.8.
+Copyright (C) Microsoft Corp. All rights reserved.
+1>------ Build started: Project: cmTryCompileExec, Configuration: Debug Win32 ------
+1>Compiling...
+1>Microsoft (R) 32-bit C/C++ Optimizing Compiler Version 15.00.21022.08 for 80x86
+1>Copyright (C) Microsoft Corporation.  All rights reserved.
+1>cl /Od /D "WIN32" /D "_WINDOWS" /D "CHECK_FUNCTION_EXISTS=strtoull" /D "_DEBUG" /D "CMAKE_INTDIR=\"Debug\"" /D "_MBCS" /FD /RTC1 /MDd /Fo"cmTryCompileExec.dir\Debug\\" /Fd"D:/QT_Projects/WorkProjects_VS2008/mysqlconn/mysql-connector-c++-1.1.0/CMakeFiles/CMakeTmp/Debug/cmTryCompileExec.pdb" /W3 /c /Zi /TC   /Zm1000
+1>   "C:\Program Files\CMake 2.6\share\cmake-2.6\Modules\CheckFunctionExists.c"
+1>CheckFunctionExists.c
+1>Compiling manifest to resources...
+1>Microsoft (R) Windows (R) Resource Compiler Version 6.0.5724.0
+1>Copyright (C) Microsoft Corporation.  All rights reserved.
+1>Linking...
+1>CheckFunctionExists.obj : error LNK2019: unresolved external symbol _strtoull referenced in function _main
+1>D:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0\CMakeFiles\CMakeTmp\Debug\cmTryCompileExec.exe : fatal error LNK1120: 1 unresolved externals
+1>Build log was saved at "file://d:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0\CMakeFiles\CMakeTmp\cmTryCompileExec.dir\Debug\BuildLog.htm"
+1>cmTryCompileExec - 2 error(s), 0 warning(s)
+========== Build: 0 succeeded, 1 failed, 0 up-to-date, 0 skipped ==========
+
+
+Determining if the function strtoimax exists failed with the following output:
+Change Dir: D:/QT_Projects/WorkProjects_VS2008/mysqlconn/mysql-connector-c++-1.1.0/CMakeFiles/CMakeTmp
+
+Run Build Command:C:\PROGRA~1\MICROS~1.0\Common7\IDE\devenv.com CMAKE_TRY_COMPILE.sln /build Debug /project cmTryCompileExec
+
+Microsoft (R) Visual Studio Version 9.0.21022.8.
+Copyright (C) Microsoft Corp. All rights reserved.
+1>------ Build started: Project: cmTryCompileExec, Configuration: Debug Win32 ------
+1>Compiling...
+1>Microsoft (R) 32-bit C/C++ Optimizing Compiler Version 15.00.21022.08 for 80x86
+1>Copyright (C) Microsoft Corporation.  All rights reserved.
+1>cl /Od /D "WIN32" /D "_WINDOWS" /D "CHECK_FUNCTION_EXISTS=strtoimax" /D "_DEBUG" /D "CMAKE_INTDIR=\"Debug\"" /D "_MBCS" /FD /RTC1 /MDd /Fo"cmTryCompileExec.dir\Debug\\" /Fd"D:/QT_Projects/WorkProjects_VS2008/mysqlconn/mysql-connector-c++-1.1.0/CMakeFiles/CMakeTmp/Debug/cmTryCompileExec.pdb" /W3 /c /Zi /TC   /Zm1000
+1>   "C:\Program Files\CMake 2.6\share\cmake-2.6\Modules\CheckFunctionExists.c"
+1>CheckFunctionExists.c
+1>Compiling manifest to resources...
+1>Microsoft (R) Windows (R) Resource Compiler Version 6.0.5724.0
+1>Copyright (C) Microsoft Corporation.  All rights reserved.
+1>Linking...
+1>CheckFunctionExists.obj : error LNK2019: unresolved external symbol _strtoimax referenced in function _main
+1>D:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0\CMakeFiles\CMakeTmp\Debug\cmTryCompileExec.exe : fatal error LNK1120: 1 unresolved externals
+1>Build log was saved at "file://d:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0\CMakeFiles\CMakeTmp\cmTryCompileExec.dir\Debug\BuildLog.htm"
+1>cmTryCompileExec - 2 error(s), 0 warning(s)
+========== Build: 0 succeeded, 1 failed, 0 up-to-date, 0 skipped ==========
+
+
+Determining if the function strtoumax exists failed with the following output:
+Change Dir: D:/QT_Projects/WorkProjects_VS2008/mysqlconn/mysql-connector-c++-1.1.0/CMakeFiles/CMakeTmp
+
+Run Build Command:C:\PROGRA~1\MICROS~1.0\Common7\IDE\devenv.com CMAKE_TRY_COMPILE.sln /build Debug /project cmTryCompileExec
+
+Microsoft (R) Visual Studio Version 9.0.21022.8.
+Copyright (C) Microsoft Corp. All rights reserved.
+1>------ Build started: Project: cmTryCompileExec, Configuration: Debug Win32 ------
+1>Compiling...
+1>Microsoft (R) 32-bit C/C++ Optimizing Compiler Version 15.00.21022.08 for 80x86
+1>Copyright (C) Microsoft Corporation.  All rights reserved.
+1>cl /Od /D "WIN32" /D "_WINDOWS" /D "CHECK_FUNCTION_EXISTS=strtoumax" /D "_DEBUG" /D "CMAKE_INTDIR=\"Debug\"" /D "_MBCS" /FD /RTC1 /MDd /Fo"cmTryCompileExec.dir\Debug\\" /Fd"D:/QT_Projects/WorkProjects_VS2008/mysqlconn/mysql-connector-c++-1.1.0/CMakeFiles/CMakeTmp/Debug/cmTryCompileExec.pdb" /W3 /c /Zi /TC   /Zm1000
+1>   "C:\Program Files\CMake 2.6\share\cmake-2.6\Modules\CheckFunctionExists.c"
+1>CheckFunctionExists.c
+1>Compiling manifest to resources...
+1>Microsoft (R) Windows (R) Resource Compiler Version 6.0.5724.0
+1>Copyright (C) Microsoft Corporation.  All rights reserved.
+1>Linking...
+1>CheckFunctionExists.obj : error LNK2019: unresolved external symbol _strtoumax referenced in function _main
+1>D:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0\CMakeFiles\CMakeTmp\Debug\cmTryCompileExec.exe : fatal error LNK1120: 1 unresolved externals
+1>Build log was saved at "file://d:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0\CMakeFiles\CMakeTmp\cmTryCompileExec.dir\Debug\BuildLog.htm"
+1>cmTryCompileExec - 2 error(s), 0 warning(s)
+========== Build: 0 succeeded, 1 failed, 0 up-to-date, 0 skipped ==========
+
+

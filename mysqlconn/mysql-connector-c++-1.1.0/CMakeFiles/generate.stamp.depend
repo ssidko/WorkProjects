@@ -1,0 +1,33 @@
+# CMake generation dependency list for this directory.
+D:/QT_Projects/WorkProjects_VS2008/mysqlconn/mysql-connector-c++-1.1.0/CMakeLists.txt
+D:/QT_Projects/WorkProjects_VS2008/mysqlconn/mysql-connector-c++-1.1.0/CMakeFiles/CMakeSystem.cmake
+D:/QT_Projects/WorkProjects_VS2008/mysqlconn/mysql-connector-c++-1.1.0/CMakeFiles/CMakeCCompiler.cmake
+D:/QT_Projects/WorkProjects_VS2008/mysqlconn/mysql-connector-c++-1.1.0/CMakeFiles/CMakeCXXCompiler.cmake
+C:/Program Files/CMake 2.6/share/cmake-2.6/Modules/CMakeSystemSpecificInformation.cmake
+C:/Program Files/CMake 2.6/share/cmake-2.6/Modules/CMakeGenericSystem.cmake
+C:/Program Files/CMake 2.6/share/cmake-2.6/Modules/Platform/gcc.cmake
+C:/Program Files/CMake 2.6/share/cmake-2.6/Modules/Platform/Windows.cmake
+C:/Program Files/CMake 2.6/share/cmake-2.6/Modules/Platform/WindowsPaths.cmake
+C:/Program Files/CMake 2.6/share/cmake-2.6/Modules/CMakeCInformation.cmake
+C:/Program Files/CMake 2.6/share/cmake-2.6/Modules/Platform/Windows-cl.cmake
+D:/QT_Projects/WorkProjects_VS2008/mysqlconn/mysql-connector-c++-1.1.0/CMakeFiles/CMakeCPlatform.cmake
+D:/QT_Projects/WorkProjects_VS2008/mysqlconn/mysql-connector-c++-1.1.0/CMakeFiles/CMakeCXXPlatform.cmake
+C:/Program Files/CMake 2.6/share/cmake-2.6/Modules/Platform/cl.cmake
+D:/QT_Projects/WorkProjects_VS2008/mysqlconn/mysql-connector-c++-1.1.0/CMakeFiles/CMakeRCCompiler.cmake
+C:/Program Files/CMake 2.6/share/cmake-2.6/Modules/CMakeRCInformation.cmake
+C:/Program Files/CMake 2.6/share/cmake-2.6/Modules/CMakeCommonLanguageInclude.cmake
+C:/Program Files/CMake 2.6/share/cmake-2.6/Modules/CMakeCXXInformation.cmake
+C:/Program Files/CMake 2.6/share/cmake-2.6/Modules/Platform/Windows-cl.cmake
+D:/QT_Projects/WorkProjects_VS2008/mysqlconn/mysql-connector-c++-1.1.0/CMakeFiles/CMakeCPlatform.cmake
+D:/QT_Projects/WorkProjects_VS2008/mysqlconn/mysql-connector-c++-1.1.0/CMakeFiles/CMakeCXXPlatform.cmake
+C:/Program Files/CMake 2.6/share/cmake-2.6/Modules/Platform/cl.cmake
+C:/Program Files/CMake 2.6/share/cmake-2.6/Modules/CMakeCommonLanguageInclude.cmake
+C:/Program Files/CMake 2.6/share/cmake-2.6/Modules/FindBoost.cmake
+C:/Program Files/CMake 2.6/share/cmake-2.6/Modules/CheckIncludeFiles.cmake
+C:/Program Files/CMake 2.6/share/cmake-2.6/Modules/CheckFunctionExists.cmake
+C:/Program Files/CMake 2.6/share/cmake-2.6/Modules/CheckTypeSize.cmake
+C:/Program Files/CMake 2.6/share/cmake-2.6/Modules/CheckIncludeFile.cmake
+D:/QT_Projects/WorkProjects_VS2008/mysqlconn/mysql-connector-c++-1.1.0/FindMySQL.cm
+C:/Program Files/CMake 2.6/share/cmake-2.6/Modules/CPack.cmake
+C:/Program Files/CMake 2.6/share/cmake-2.6/Templates/CPackConfig.cmake.in
+C:/Program Files/CMake 2.6/share/cmake-2.6/Templates/CPackConfig.cmake.in

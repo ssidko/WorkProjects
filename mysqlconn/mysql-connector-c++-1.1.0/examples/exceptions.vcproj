@@ -1,0 +1,315 @@
+<?xml version="1.0" encoding = "Windows-1252"?>
+<VisualStudioProject
+	ProjectType="Visual C++"
+	Version="9.00"
+	Name="exceptions"
+	ProjectGUID="{47B3A59F-965D-4B9F-B8ED-3B40BCD31DD4}"
+	SccProjectName=""
+	SccLocalPath=""
+	Keyword="Win32Proj">
+	<Platforms>
+		<Platform
+			Name="Win32"/>
+	</Platforms>
+	<Configurations>
+		<Configuration
+			Name="Debug|Win32"
+			OutputDirectory="Debug"
+			IntermediateDirectory="exceptions.dir\Debug"
+			ConfigurationType="1"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="FALSE"
+			CharacterSet="2">
+			<Tool
+				Name="VCCLCompilerTool"
+				AdditionalOptions=" /Zm1000"
+				AdditionalIncludeDirectories="D:\boost_1_47_0;&quot;C:\Program Files\MySQL\MySQL Connector C 6.0.2\include&quot;;D:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0;"
+				BasicRuntimeChecks="3"
+				CompileAs="2"
+				DebugInformationFormat="3"
+				ExceptionHandling="1"
+				InlineFunctionExpansion="0"
+				Optimization="0"
+				RuntimeLibrary="3"
+				RuntimeTypeInfo="TRUE"
+				WarningLevel="3"
+				PreprocessorDefinitions="WIN32,_WINDOWS,_DEBUG,DBUG_OFF,DYNLOAD_MYSQL_LIB=\&quot;MYSQL_LIB\&quot;,_SCL_SECURE_NO_WARNINGS,CMAKE_INTDIR=\&quot;Debug\&quot;"
+				AssemblerListingLocation="Debug"
+				ObjectFile="$(IntDir)\"
+				ProgramDataBaseFileName="D:/QT_Projects/WorkProjects_VS2008/mysqlconn/mysql-connector-c++-1.1.0/examples/Debug/exceptions.pdb"
+/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				AdditionalIncludeDirectories="D:\boost_1_47_0;&quot;C:\Program Files\MySQL\MySQL Connector C 6.0.2\include&quot;;D:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0;"
+				PreprocessorDefinitions="WIN32,_WINDOWS,_DEBUG,DBUG_OFF,DYNLOAD_MYSQL_LIB=\&quot;MYSQL_LIB\&quot;,_SCL_SECURE_NO_WARNINGS,CMAKE_INTDIR=\&quot;Debug\&quot;"/>
+			<Tool
+				Name="VCMIDLTool"
+				PreprocessorDefinitions="WIN32,_WINDOWS,_DEBUG,DBUG_OFF,DYNLOAD_MYSQL_LIB=\&quot;MYSQL_LIB\&quot;,_SCL_SECURE_NO_WARNINGS,CMAKE_INTDIR=\&quot;Debug\&quot;"
+				MkTypLibCompatible="FALSE"
+				TargetEnvironment="1"
+				GenerateStublessProxies="TRUE"
+				TypeLibraryName="$(InputName).tlb"
+				OutputDirectory="$(IntDir)"
+				HeaderFileName="$(InputName).h"
+				DLLDataFileName=""
+				InterfaceIdentifierFileName="$(InputName)_i.c"
+				ProxyFileName="$(InputName)_p.c"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalOptions=" /STACK:10000000 /machine:I386 /debug"
+				AdditionalDependencies="$(NOINHERIT) kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib  ..\driver\Debug\mysqlcppconn.lib libmysql.lib ws2_32.lib "
+				OutputFile="D:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0\examples\Debug\exceptions.exe"
+				Version="0.0"
+				GenerateManifest="TRUE"
+				LinkIncremental="2"
+				AdditionalLibraryDirectories="&quot;C:\Program Files\MySQL\MySQL Connector C 6.0.2\lib\opt\$(OutDir)&quot;,&quot;C:\Program Files\MySQL\MySQL Connector C 6.0.2\lib\opt&quot;,..\cppconn\$(OutDir),..\cppconn"
+				ProgramDataBaseFile="D:/QT_Projects/WorkProjects_VS2008/mysqlconn/mysql-connector-c++-1.1.0/examples/Debug/exceptions.pdb"
+				GenerateDebugInformation="TRUE"
+				SubSystem="1"
+				ImportLibrary="D:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0\examples\Debug\exceptions.lib"/>
+		</Configuration>
+		<Configuration
+			Name="Release|Win32"
+			OutputDirectory="Release"
+			IntermediateDirectory="exceptions.dir\Release"
+			ConfigurationType="1"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="FALSE"
+			CharacterSet="2">
+			<Tool
+				Name="VCCLCompilerTool"
+				AdditionalOptions=" /Zm1000"
+				AdditionalIncludeDirectories="D:\boost_1_47_0;&quot;C:\Program Files\MySQL\MySQL Connector C 6.0.2\include&quot;;D:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0;"
+				CompileAs="2"
+				ExceptionHandling="1"
+				InlineFunctionExpansion="2"
+				Optimization="2"
+				RuntimeLibrary="2"
+				RuntimeTypeInfo="TRUE"
+				WarningLevel="3"
+				PreprocessorDefinitions="WIN32,_WINDOWS,NDEBUG,DBUG_OFF,DYNLOAD_MYSQL_LIB=\&quot;MYSQL_LIB\&quot;,_SCL_SECURE_NO_WARNINGS,CMAKE_INTDIR=\&quot;Release\&quot;"
+				AssemblerListingLocation="Release"
+				ObjectFile="$(IntDir)\"
+				ProgramDataBaseFileName="D:/QT_Projects/WorkProjects_VS2008/mysqlconn/mysql-connector-c++-1.1.0/examples/Release/exceptions.pdb"
+/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				AdditionalIncludeDirectories="D:\boost_1_47_0;&quot;C:\Program Files\MySQL\MySQL Connector C 6.0.2\include&quot;;D:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0;"
+				PreprocessorDefinitions="WIN32,_WINDOWS,NDEBUG,DBUG_OFF,DYNLOAD_MYSQL_LIB=\&quot;MYSQL_LIB\&quot;,_SCL_SECURE_NO_WARNINGS,CMAKE_INTDIR=\&quot;Release\&quot;"/>
+			<Tool
+				Name="VCMIDLTool"
+				PreprocessorDefinitions="WIN32,_WINDOWS,NDEBUG,DBUG_OFF,DYNLOAD_MYSQL_LIB=\&quot;MYSQL_LIB\&quot;,_SCL_SECURE_NO_WARNINGS,CMAKE_INTDIR=\&quot;Release\&quot;"
+				MkTypLibCompatible="FALSE"
+				TargetEnvironment="1"
+				GenerateStublessProxies="TRUE"
+				TypeLibraryName="$(InputName).tlb"
+				OutputDirectory="$(IntDir)"
+				HeaderFileName="$(InputName).h"
+				DLLDataFileName=""
+				InterfaceIdentifierFileName="$(InputName)_i.c"
+				ProxyFileName="$(InputName)_p.c"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalOptions=" /STACK:10000000 /machine:I386"
+				AdditionalDependencies="$(NOINHERIT) kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib  ..\driver\Release\mysqlcppconn.lib libmysql.lib ws2_32.lib "
+				OutputFile="D:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0\examples\Release\exceptions.exe"
+				Version="0.0"
+				GenerateManifest="TRUE"
+				LinkIncremental="1"
+				AdditionalLibraryDirectories="&quot;C:\Program Files\MySQL\MySQL Connector C 6.0.2\lib\opt\$(OutDir)&quot;,&quot;C:\Program Files\MySQL\MySQL Connector C 6.0.2\lib\opt&quot;,..\cppconn\$(OutDir),..\cppconn"
+				ProgramDataBaseFile="D:/QT_Projects/WorkProjects_VS2008/mysqlconn/mysql-connector-c++-1.1.0/examples/Release/exceptions.pdb"
+				SubSystem="1"
+				ImportLibrary="D:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0\examples\Release\exceptions.lib"/>
+		</Configuration>
+		<Configuration
+			Name="MinSizeRel|Win32"
+			OutputDirectory="MinSizeRel"
+			IntermediateDirectory="exceptions.dir\MinSizeRel"
+			ConfigurationType="1"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="FALSE"
+			CharacterSet="2">
+			<Tool
+				Name="VCCLCompilerTool"
+				AdditionalOptions=" /Zm1000"
+				AdditionalIncludeDirectories="D:\boost_1_47_0;&quot;C:\Program Files\MySQL\MySQL Connector C 6.0.2\include&quot;;D:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0;"
+				CompileAs="2"
+				ExceptionHandling="1"
+				InlineFunctionExpansion="1"
+				Optimization="1"
+				RuntimeLibrary="2"
+				RuntimeTypeInfo="TRUE"
+				WarningLevel="3"
+				PreprocessorDefinitions="WIN32,_WINDOWS,NDEBUG,DBUG_OFF,DYNLOAD_MYSQL_LIB=\&quot;MYSQL_LIB\&quot;,_SCL_SECURE_NO_WARNINGS,CMAKE_INTDIR=\&quot;MinSizeRel\&quot;"
+				AssemblerListingLocation="MinSizeRel"
+				ObjectFile="$(IntDir)\"
+				ProgramDataBaseFileName="D:/QT_Projects/WorkProjects_VS2008/mysqlconn/mysql-connector-c++-1.1.0/examples/MinSizeRel/exceptions.pdb"
+/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				AdditionalIncludeDirectories="D:\boost_1_47_0;&quot;C:\Program Files\MySQL\MySQL Connector C 6.0.2\include&quot;;D:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0;"
+				PreprocessorDefinitions="WIN32,_WINDOWS,NDEBUG,DBUG_OFF,DYNLOAD_MYSQL_LIB=\&quot;MYSQL_LIB\&quot;,_SCL_SECURE_NO_WARNINGS,CMAKE_INTDIR=\&quot;MinSizeRel\&quot;"/>
+			<Tool
+				Name="VCMIDLTool"
+				PreprocessorDefinitions="WIN32,_WINDOWS,NDEBUG,DBUG_OFF,DYNLOAD_MYSQL_LIB=\&quot;MYSQL_LIB\&quot;,_SCL_SECURE_NO_WARNINGS,CMAKE_INTDIR=\&quot;MinSizeRel\&quot;"
+				MkTypLibCompatible="FALSE"
+				TargetEnvironment="1"
+				GenerateStublessProxies="TRUE"
+				TypeLibraryName="$(InputName).tlb"
+				OutputDirectory="$(IntDir)"
+				HeaderFileName="$(InputName).h"
+				DLLDataFileName=""
+				InterfaceIdentifierFileName="$(InputName)_i.c"
+				ProxyFileName="$(InputName)_p.c"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalOptions=" /STACK:10000000 /machine:I386"
+				AdditionalDependencies="$(NOINHERIT) kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib  ..\driver\MinSizeRel\mysqlcppconn.lib libmysql.lib ws2_32.lib "
+				OutputFile="D:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0\examples\MinSizeRel\exceptions.exe"
+				Version="0.0"
+				GenerateManifest="TRUE"
+				LinkIncremental="1"
+				AdditionalLibraryDirectories="&quot;C:\Program Files\MySQL\MySQL Connector C 6.0.2\lib\opt\$(OutDir)&quot;,&quot;C:\Program Files\MySQL\MySQL Connector C 6.0.2\lib\opt&quot;,..\cppconn\$(OutDir),..\cppconn"
+				ProgramDataBaseFile="D:/QT_Projects/WorkProjects_VS2008/mysqlconn/mysql-connector-c++-1.1.0/examples/MinSizeRel/exceptions.pdb"
+				SubSystem="1"
+				ImportLibrary="D:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0\examples\MinSizeRel\exceptions.lib"/>
+		</Configuration>
+		<Configuration
+			Name="RelWithDebInfo|Win32"
+			OutputDirectory="RelWithDebInfo"
+			IntermediateDirectory="exceptions.dir\RelWithDebInfo"
+			ConfigurationType="1"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="FALSE"
+			CharacterSet="2">
+			<Tool
+				Name="VCCLCompilerTool"
+				AdditionalOptions=" /Zm1000"
+				AdditionalIncludeDirectories="D:\boost_1_47_0;&quot;C:\Program Files\MySQL\MySQL Connector C 6.0.2\include&quot;;D:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0;"
+				CompileAs="2"
+				DebugInformationFormat="3"
+				ExceptionHandling="1"
+				InlineFunctionExpansion="1"
+				Optimization="2"
+				RuntimeLibrary="2"
+				RuntimeTypeInfo="TRUE"
+				WarningLevel="3"
+				PreprocessorDefinitions="WIN32,_WINDOWS,NDEBUG,DBUG_OFF,DYNLOAD_MYSQL_LIB=\&quot;MYSQL_LIB\&quot;,_SCL_SECURE_NO_WARNINGS,CMAKE_INTDIR=\&quot;RelWithDebInfo\&quot;"
+				AssemblerListingLocation="RelWithDebInfo"
+				ObjectFile="$(IntDir)\"
+				ProgramDataBaseFileName="D:/QT_Projects/WorkProjects_VS2008/mysqlconn/mysql-connector-c++-1.1.0/examples/RelWithDebInfo/exceptions.pdb"
+/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				AdditionalIncludeDirectories="D:\boost_1_47_0;&quot;C:\Program Files\MySQL\MySQL Connector C 6.0.2\include&quot;;D:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0;"
+				PreprocessorDefinitions="WIN32,_WINDOWS,NDEBUG,DBUG_OFF,DYNLOAD_MYSQL_LIB=\&quot;MYSQL_LIB\&quot;,_SCL_SECURE_NO_WARNINGS,CMAKE_INTDIR=\&quot;RelWithDebInfo\&quot;"/>
+			<Tool
+				Name="VCMIDLTool"
+				PreprocessorDefinitions="WIN32,_WINDOWS,NDEBUG,DBUG_OFF,DYNLOAD_MYSQL_LIB=\&quot;MYSQL_LIB\&quot;,_SCL_SECURE_NO_WARNINGS,CMAKE_INTDIR=\&quot;RelWithDebInfo\&quot;"
+				MkTypLibCompatible="FALSE"
+				TargetEnvironment="1"
+				GenerateStublessProxies="TRUE"
+				TypeLibraryName="$(InputName).tlb"
+				OutputDirectory="$(IntDir)"
+				HeaderFileName="$(InputName).h"
+				DLLDataFileName=""
+				InterfaceIdentifierFileName="$(InputName)_i.c"
+				ProxyFileName="$(InputName)_p.c"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalOptions=" /STACK:10000000 /machine:I386 /debug"
+				AdditionalDependencies="$(NOINHERIT) kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib  ..\driver\RelWithDebInfo\mysqlcppconn.lib libmysql.lib ws2_32.lib "
+				OutputFile="D:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0\examples\RelWithDebInfo\exceptions.exe"
+				Version="0.0"
+				GenerateManifest="TRUE"
+				LinkIncremental="2"
+				AdditionalLibraryDirectories="&quot;C:\Program Files\MySQL\MySQL Connector C 6.0.2\lib\opt\$(OutDir)&quot;,&quot;C:\Program Files\MySQL\MySQL Connector C 6.0.2\lib\opt&quot;,..\cppconn\$(OutDir),..\cppconn"
+				ProgramDataBaseFile="D:/QT_Projects/WorkProjects_VS2008/mysqlconn/mysql-connector-c++-1.1.0/examples/RelWithDebInfo/exceptions.pdb"
+				GenerateDebugInformation="TRUE"
+				SubSystem="1"
+				ImportLibrary="D:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0\examples\RelWithDebInfo\exceptions.lib"/>
+		</Configuration>
+	</Configurations>
+	<Files>
+			<File
+				RelativePath="D:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0\examples\CMakeLists.txt">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+					Name="VCCustomBuildTool"
+					Description="Building Custom Rule D:/QT_Projects/WorkProjects_VS2008/mysqlconn/mysql-connector-c++-1.1.0/examples/CMakeLists.txt"
+					CommandLine="&quot;C:\Program Files\CMake 2.6\bin\cmake.exe&quot; -HD:/QT_Projects/WorkProjects_VS2008/mysqlconn/mysql-connector-c++-1.1.0 -BD:/QT_Projects/WorkProjects_VS2008/mysqlconn/mysql-connector-c++-1.1.0 --check-stamp-file CMakeFiles/generate.stamp"
+					AdditionalDependencies="D:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0\examples\CMakeLists.txt;D:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0\examples\CMakeLists.txt;"
+					Outputs="CMakeFiles\generate.stamp"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+					Name="VCCustomBuildTool"
+					Description="Building Custom Rule D:/QT_Projects/WorkProjects_VS2008/mysqlconn/mysql-connector-c++-1.1.0/examples/CMakeLists.txt"
+					CommandLine="&quot;C:\Program Files\CMake 2.6\bin\cmake.exe&quot; -HD:/QT_Projects/WorkProjects_VS2008/mysqlconn/mysql-connector-c++-1.1.0 -BD:/QT_Projects/WorkProjects_VS2008/mysqlconn/mysql-connector-c++-1.1.0 --check-stamp-file CMakeFiles/generate.stamp"
+					AdditionalDependencies="D:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0\examples\CMakeLists.txt;D:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0\examples\CMakeLists.txt;"
+					Outputs="CMakeFiles\generate.stamp"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="MinSizeRel|Win32">
+					<Tool
+					Name="VCCustomBuildTool"
+					Description="Building Custom Rule D:/QT_Projects/WorkProjects_VS2008/mysqlconn/mysql-connector-c++-1.1.0/examples/CMakeLists.txt"
+					CommandLine="&quot;C:\Program Files\CMake 2.6\bin\cmake.exe&quot; -HD:/QT_Projects/WorkProjects_VS2008/mysqlconn/mysql-connector-c++-1.1.0 -BD:/QT_Projects/WorkProjects_VS2008/mysqlconn/mysql-connector-c++-1.1.0 --check-stamp-file CMakeFiles/generate.stamp"
+					AdditionalDependencies="D:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0\examples\CMakeLists.txt;D:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0\examples\CMakeLists.txt;"
+					Outputs="CMakeFiles\generate.stamp"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="RelWithDebInfo|Win32">
+					<Tool
+					Name="VCCustomBuildTool"
+					Description="Building Custom Rule D:/QT_Projects/WorkProjects_VS2008/mysqlconn/mysql-connector-c++-1.1.0/examples/CMakeLists.txt"
+					CommandLine="&quot;C:\Program Files\CMake 2.6\bin\cmake.exe&quot; -HD:/QT_Projects/WorkProjects_VS2008/mysqlconn/mysql-connector-c++-1.1.0 -BD:/QT_Projects/WorkProjects_VS2008/mysqlconn/mysql-connector-c++-1.1.0 --check-stamp-file CMakeFiles/generate.stamp"
+					AdditionalDependencies="D:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0\examples\CMakeLists.txt;D:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0\examples\CMakeLists.txt;"
+					Outputs="CMakeFiles\generate.stamp"/>
+				</FileConfiguration>
+			</File>
+		<Filter
+			Name="Source Files"
+			Filter="">
+			<File
+				RelativePath="D:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0\examples\exceptions.cpp">
+			</File>
+		</Filter>
+	</Files>
+	<Globals>
+	</Globals>
+</VisualStudioProject>

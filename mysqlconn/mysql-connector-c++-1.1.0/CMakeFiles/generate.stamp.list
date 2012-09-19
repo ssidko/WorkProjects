@@ -1,0 +1,13 @@
+CMakeFiles/generate.stamp
+cppconn/CMakeFiles/generate.stamp
+driver/CMakeFiles/generate.stamp
+examples/CMakeFiles/generate.stamp
+test/CMakeFiles/generate.stamp
+test/framework/CMakeFiles/generate.stamp
+test/CJUnitTestsPort/CMakeFiles/generate.stamp
+test/unit/CMakeFiles/generate.stamp
+test/unit/example/CMakeFiles/generate.stamp
+test/unit/classes/CMakeFiles/generate.stamp
+test/unit/performance/CMakeFiles/generate.stamp
+test/unit/bugs/CMakeFiles/generate.stamp
+test/unit/template_bug_group/CMakeFiles/generate.stamp

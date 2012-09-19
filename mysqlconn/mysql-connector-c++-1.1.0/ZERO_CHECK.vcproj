@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding = "Windows-1252"?>
+<VisualStudioProject
+	ProjectType="Visual C++"
+	Version="9.00"
+	Name="ZERO_CHECK"
+	ProjectGUID="{FC89F6A3-99C1-4985-AD00-1CF4B4AB4849}"
+	SccProjectName=""
+	SccLocalPath=""
+	Keyword="Win32Proj">
+	<Platforms>
+		<Platform
+			Name="Win32"/>
+	</Platforms>
+	<Configurations>
+		<Configuration
+			Name="Debug|Win32"
+			OutputDirectory="Debug"
+			IntermediateDirectory="ZERO_CHECK.dir\Debug"
+			ConfigurationType="10"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="FALSE"
+			CharacterSet="2">
+			<Tool
+				Name="VCCLCompilerTool"
+				AdditionalIncludeDirectories="D:\boost_1_47_0;&quot;C:\Program Files\MySQL\MySQL Connector C 6.0.2\include&quot;;"
+				ExceptionHandling="0"
+				PreprocessorDefinitions="DBUG_OFF,DYNLOAD_MYSQL_LIB=\&quot;MYSQL_LIB\&quot;,CMAKE_INTDIR=\&quot;Debug\&quot;"
+				AssemblerListingLocation="Debug"
+				ObjectFile="$(IntDir)\"
+/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				AdditionalIncludeDirectories="D:\boost_1_47_0;&quot;C:\Program Files\MySQL\MySQL Connector C 6.0.2\include&quot;;"
+				PreprocessorDefinitions="DBUG_OFF,DYNLOAD_MYSQL_LIB=\&quot;MYSQL_LIB\&quot;,CMAKE_INTDIR=\&quot;Debug\&quot;"/>
+			<Tool
+				Name="VCMIDLTool"
+				PreprocessorDefinitions="DBUG_OFF,DYNLOAD_MYSQL_LIB=\&quot;MYSQL_LIB\&quot;,CMAKE_INTDIR=\&quot;Debug\&quot;"
+				MkTypLibCompatible="FALSE"
+				TargetEnvironment="1"
+				GenerateStublessProxies="TRUE"
+				TypeLibraryName="$(InputName).tlb"
+				OutputDirectory="$(IntDir)"
+				HeaderFileName="$(InputName).h"
+				DLLDataFileName=""
+				InterfaceIdentifierFileName="$(InputName)_i.c"
+				ProxyFileName="$(InputName)_p.c"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+		</Configuration>
+		<Configuration
+			Name="Release|Win32"
+			OutputDirectory="Release"
+			IntermediateDirectory="ZERO_CHECK.dir\Release"
+			ConfigurationType="10"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="FALSE"
+			CharacterSet="2">
+			<Tool
+				Name="VCCLCompilerTool"
+				AdditionalIncludeDirectories="D:\boost_1_47_0;&quot;C:\Program Files\MySQL\MySQL Connector C 6.0.2\include&quot;;"
+				ExceptionHandling="0"
+				PreprocessorDefinitions="DBUG_OFF,DYNLOAD_MYSQL_LIB=\&quot;MYSQL_LIB\&quot;,CMAKE_INTDIR=\&quot;Release\&quot;"
+				AssemblerListingLocation="Release"
+				ObjectFile="$(IntDir)\"
+/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				AdditionalIncludeDirectories="D:\boost_1_47_0;&quot;C:\Program Files\MySQL\MySQL Connector C 6.0.2\include&quot;;"
+				PreprocessorDefinitions="DBUG_OFF,DYNLOAD_MYSQL_LIB=\&quot;MYSQL_LIB\&quot;,CMAKE_INTDIR=\&quot;Release\&quot;"/>
+			<Tool
+				Name="VCMIDLTool"
+				PreprocessorDefinitions="DBUG_OFF,DYNLOAD_MYSQL_LIB=\&quot;MYSQL_LIB\&quot;,CMAKE_INTDIR=\&quot;Release\&quot;"
+				MkTypLibCompatible="FALSE"
+				TargetEnvironment="1"
+				GenerateStublessProxies="TRUE"
+				TypeLibraryName="$(InputName).tlb"
+				OutputDirectory="$(IntDir)"
+				HeaderFileName="$(InputName).h"
+				DLLDataFileName=""
+				InterfaceIdentifierFileName="$(InputName)_i.c"
+				ProxyFileName="$(InputName)_p.c"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+		</Configuration>
+		<Configuration
+			Name="MinSizeRel|Win32"
+			OutputDirectory="MinSizeRel"
+			IntermediateDirectory="ZERO_CHECK.dir\MinSizeRel"
+			ConfigurationType="10"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="FALSE"
+			CharacterSet="2">
+			<Tool
+				Name="VCCLCompilerTool"
+				AdditionalIncludeDirectories="D:\boost_1_47_0;&quot;C:\Program Files\MySQL\MySQL Connector C 6.0.2\include&quot;;"
+				ExceptionHandling="0"
+				PreprocessorDefinitions="DBUG_OFF,DYNLOAD_MYSQL_LIB=\&quot;MYSQL_LIB\&quot;,CMAKE_INTDIR=\&quot;MinSizeRel\&quot;"
+				AssemblerListingLocation="MinSizeRel"
+				ObjectFile="$(IntDir)\"
+/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				AdditionalIncludeDirectories="D:\boost_1_47_0;&quot;C:\Program Files\MySQL\MySQL Connector C 6.0.2\include&quot;;"
+				PreprocessorDefinitions="DBUG_OFF,DYNLOAD_MYSQL_LIB=\&quot;MYSQL_LIB\&quot;,CMAKE_INTDIR=\&quot;MinSizeRel\&quot;"/>
+			<Tool
+				Name="VCMIDLTool"
+				PreprocessorDefinitions="DBUG_OFF,DYNLOAD_MYSQL_LIB=\&quot;MYSQL_LIB\&quot;,CMAKE_INTDIR=\&quot;MinSizeRel\&quot;"
+				MkTypLibCompatible="FALSE"
+				TargetEnvironment="1"
+				GenerateStublessProxies="TRUE"
+				TypeLibraryName="$(InputName).tlb"
+				OutputDirectory="$(IntDir)"
+				HeaderFileName="$(InputName).h"
+				DLLDataFileName=""
+				InterfaceIdentifierFileName="$(InputName)_i.c"
+				ProxyFileName="$(InputName)_p.c"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+		</Configuration>
+		<Configuration
+			Name="RelWithDebInfo|Win32"
+			OutputDirectory="RelWithDebInfo"
+			IntermediateDirectory="ZERO_CHECK.dir\RelWithDebInfo"
+			ConfigurationType="10"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="FALSE"
+			CharacterSet="2">
+			<Tool
+				Name="VCCLCompilerTool"
+				AdditionalIncludeDirectories="D:\boost_1_47_0;&quot;C:\Program Files\MySQL\MySQL Connector C 6.0.2\include&quot;;"
+				ExceptionHandling="0"
+				PreprocessorDefinitions="DBUG_OFF,DYNLOAD_MYSQL_LIB=\&quot;MYSQL_LIB\&quot;,CMAKE_INTDIR=\&quot;RelWithDebInfo\&quot;"
+				AssemblerListingLocation="RelWithDebInfo"
+				ObjectFile="$(IntDir)\"
+/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				AdditionalIncludeDirectories="D:\boost_1_47_0;&quot;C:\Program Files\MySQL\MySQL Connector C 6.0.2\include&quot;;"
+				PreprocessorDefinitions="DBUG_OFF,DYNLOAD_MYSQL_LIB=\&quot;MYSQL_LIB\&quot;,CMAKE_INTDIR=\&quot;RelWithDebInfo\&quot;"/>
+			<Tool
+				Name="VCMIDLTool"
+				PreprocessorDefinitions="DBUG_OFF,DYNLOAD_MYSQL_LIB=\&quot;MYSQL_LIB\&quot;,CMAKE_INTDIR=\&quot;RelWithDebInfo\&quot;"
+				MkTypLibCompatible="FALSE"
+				TargetEnvironment="1"
+				GenerateStublessProxies="TRUE"
+				TypeLibraryName="$(InputName).tlb"
+				OutputDirectory="$(IntDir)"
+				HeaderFileName="$(InputName).h"
+				DLLDataFileName=""
+				InterfaceIdentifierFileName="$(InputName)_i.c"
+				ProxyFileName="$(InputName)_p.c"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+		</Configuration>
+	</Configurations>
+	<Files>
+			<File
+				RelativePath="D:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0\CMakeFiles\ZERO_CHECK">
+			</File>
+		<Filter
+			Name="CMake Rules"
+			Filter="">
+			<File
+				RelativePath="D:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0\CMakeFiles\generate.stamp.rule">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+					Name="VCCustomBuildTool"
+					Description="Checking Build System"
+					CommandLine="&quot;C:\Program Files\CMake 2.6\bin\cmake.exe&quot; -HD:/QT_Projects/WorkProjects_VS2008/mysqlconn/mysql-connector-c++-1.1.0 -BD:/QT_Projects/WorkProjects_VS2008/mysqlconn/mysql-connector-c++-1.1.0 --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file &quot;$(SolutionPath)&quot;"
+					AdditionalDependencies="&quot;C:\Program Files\CMake 2.6\share\cmake-2.6\Modules\CMakeCInformation.cmake&quot;;&quot;C:\Program Files\CMake 2.6\share\cmake-2.6\Modules\CMakeCXXInformation.cmake&quot;;&quot;C:\Program Files\CMake 2.6\share\cmake-2.6\Modules\CMakeCommonLanguageInclude.cmake&quot;;&quot;C:\Program Files\CMake 2.6\share\cmake-2.6\Modules\CMakeConfigurableFile.in&quot;;&quot;C:\Program Files\CMake 2.6\share\cmake-2.6\Modules\CMakeGenericSystem.cmake&quot;;&quot;C:\Program Files\CMake 2.6\share\cmake-2.6\Modules\CMakeRCInformation.cmake&quot;;&quot;C:\Program Files\CMake 2.6\share\cmake-2.6\Modules\CMakeSystemSpecificInformation.cmake&quot;;&quot;C:\Program Files\CMake 2.6\share\cmake-2.6\Modules\CPack.cmake&quot;;&quot;C:\Program Files\CMake 2.6\share\cmake-2.6\Modules\CheckFunctionExists.c&quot;;&quot;C:\Program Files\CMake 2.6\share\cmake-2.6\Modules\CheckFunctionExists.cmake&quot;;&quot;C:\Program Files\CMake 2.6\share\cmake-2.6\Modules\CheckIncludeFile.c.in&quot;;&quot;C:\Program Files\CMake 2.6\share\cmake-2.6\Modules\CheckIncludeFile.cmake&quot;;&quot;C:\Program Files\CMake 2.6\share\cmake-2.6\Modules\CheckIncludeFiles.cmake&quot;;&quot;C:\Program Files\CMake 2.6\share\cmake-2.6\Modules\CheckTypeSize.cmake&quot;;&quot;C:\Program Files\CMake 2.6\share\cmake-2.6\Modules\CheckTypeSizeC.c.in&quot;;&quot;C:\Program Files\CMake 2.6\share\cmake-2.6\Modules\FindBoost.cmake&quot;;&quot;C:\Program Files\CMake 2.6\share\cmake-2.6\Modules\Platform\Windows-cl.cmake&quot;;&quot;C:\Program Files\CMake 2.6\share\cmake-2.6\Modules\Platform\Windows.cmake&quot;;&quot;C:\Program Files\CMake 2.6\share\cmake-2.6\Modules\Platform\WindowsPaths.cmake&quot;;&quot;C:\Program Files\CMake 2.6\share\cmake-2.6\Modules\Platform\cl.cmake&quot;;&quot;C:\Program Files\CMake 2.6\share\cmake-2.6\Modules\Platform\gcc.cmake&quot;;&quot;C:\Program Files\CMake 2.6\share\cmake-2.6\Templates\CPackConfig.cmake.in&quot;;D:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0\CMakeFiles\CMakeCCompiler.cmake;D:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0\CMakeFiles\CMakeCPlatform.cmake;D:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0\CMakeFiles\CMakeCXXCompiler.cmake;D:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0\CMakeFiles\CMakeCXXPlatform.cmake;D:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0\CMakeFiles\CMakeRCCompiler.cmake;D:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0\CMakeFiles\CMakeSystem.cmake;D:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0\CMakeLists.txt;D:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0\FindMySQL.cm;D:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0\cppconn\CMakeLists.txt;D:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0\cppconn\config.h.cm;D:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0\driver\CMakeLists.txt;D:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0\driver\nativeapi\binding_config.h.cm;D:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0\examples\CMakeLists.txt;D:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0\test\CJUnitTestsPort\CMakeLists.txt;D:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0\test\CMakeLists.txt;D:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0\test\framework\CMakeLists.txt;D:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0\test\unit\CMakeLists.txt;D:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0\test\unit\bugs\CMakeLists.txt;D:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0\test\unit\classes\CMakeLists.txt;D:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0\test\unit\example\CMakeLists.txt;D:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0\test\unit\performance\CMakeLists.txt;D:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0\test\unit\template_bug_group\CMakeLists.txt;"
+					Outputs="CMakeFiles\generate.stamp;cppconn\CMakeFiles\generate.stamp;driver\CMakeFiles\generate.stamp;examples\CMakeFiles\generate.stamp;test\CMakeFiles\generate.stamp;test\framework\CMakeFiles\generate.stamp;test\CJUnitTestsPort\CMakeFiles\generate.stamp;test\unit\CMakeFiles\generate.stamp;test\unit\example\CMakeFiles\generate.stamp;test\unit\classes\CMakeFiles\generate.stamp;test\unit\performance\CMakeFiles\generate.stamp;test\unit\bugs\CMakeFiles\generate.stamp;test\unit\template_bug_group\CMakeFiles\generate.stamp"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+					Name="VCCustomBuildTool"
+					Description="Checking Build System"
+					CommandLine="&quot;C:\Program Files\CMake 2.6\bin\cmake.exe&quot; -HD:/QT_Projects/WorkProjects_VS2008/mysqlconn/mysql-connector-c++-1.1.0 -BD:/QT_Projects/WorkProjects_VS2008/mysqlconn/mysql-connector-c++-1.1.0 --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file &quot;$(SolutionPath)&quot;"
+					AdditionalDependencies="&quot;C:\Program Files\CMake 2.6\share\cmake-2.6\Modules\CMakeCInformation.cmake&quot;;&quot;C:\Program Files\CMake 2.6\share\cmake-2.6\Modules\CMakeCXXInformation.cmake&quot;;&quot;C:\Program Files\CMake 2.6\share\cmake-2.6\Modules\CMakeCommonLanguageInclude.cmake&quot;;&quot;C:\Program Files\CMake 2.6\share\cmake-2.6\Modules\CMakeConfigurableFile.in&quot;;&quot;C:\Program Files\CMake 2.6\share\cmake-2.6\Modules\CMakeGenericSystem.cmake&quot;;&quot;C:\Program Files\CMake 2.6\share\cmake-2.6\Modules\CMakeRCInformation.cmake&quot;;&quot;C:\Program Files\CMake 2.6\share\cmake-2.6\Modules\CMakeSystemSpecificInformation.cmake&quot;;&quot;C:\Program Files\CMake 2.6\share\cmake-2.6\Modules\CPack.cmake&quot;;&quot;C:\Program Files\CMake 2.6\share\cmake-2.6\Modules\CheckFunctionExists.c&quot;;&quot;C:\Program Files\CMake 2.6\share\cmake-2.6\Modules\CheckFunctionExists.cmake&quot;;&quot;C:\Program Files\CMake 2.6\share\cmake-2.6\Modules\CheckIncludeFile.c.in&quot;;&quot;C:\Program Files\CMake 2.6\share\cmake-2.6\Modules\CheckIncludeFile.cmake&quot;;&quot;C:\Program Files\CMake 2.6\share\cmake-2.6\Modules\CheckIncludeFiles.cmake&quot;;&quot;C:\Program Files\CMake 2.6\share\cmake-2.6\Modules\CheckTypeSize.cmake&quot;;&quot;C:\Program Files\CMake 2.6\share\cmake-2.6\Modules\CheckTypeSizeC.c.in&quot;;&quot;C:\Program Files\CMake 2.6\share\cmake-2.6\Modules\FindBoost.cmake&quot;;&quot;C:\Program Files\CMake 2.6\share\cmake-2.6\Modules\Platform\Windows-cl.cmake&quot;;&quot;C:\Program Files\CMake 2.6\share\cmake-2.6\Modules\Platform\Windows.cmake&quot;;&quot;C:\Program Files\CMake 2.6\share\cmake-2.6\Modules\Platform\WindowsPaths.cmake&quot;;&quot;C:\Program Files\CMake 2.6\share\cmake-2.6\Modules\Platform\cl.cmake&quot;;&quot;C:\Program Files\CMake 2.6\share\cmake-2.6\Modules\Platform\gcc.cmake&quot;;&quot;C:\Program Files\CMake 2.6\share\cmake-2.6\Templates\CPackConfig.cmake.in&quot;;D:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0\CMakeFiles\CMakeCCompiler.cmake;D:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0\CMakeFiles\CMakeCPlatform.cmake;D:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0\CMakeFiles\CMakeCXXCompiler.cmake;D:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0\CMakeFiles\CMakeCXXPlatform.cmake;D:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0\CMakeFiles\CMakeRCCompiler.cmake;D:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0\CMakeFiles\CMakeSystem.cmake;D:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0\CMakeLists.txt;D:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0\FindMySQL.cm;D:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0\cppconn\CMakeLists.txt;D:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0\cppconn\config.h.cm;D:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0\driver\CMakeLists.txt;D:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0\driver\nativeapi\binding_config.h.cm;D:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0\examples\CMakeLists.txt;D:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0\test\CJUnitTestsPort\CMakeLists.txt;D:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0\test\CMakeLists.txt;D:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0\test\framework\CMakeLists.txt;D:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0\test\unit\CMakeLists.txt;D:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0\test\unit\bugs\CMakeLists.txt;D:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0\test\unit\classes\CMakeLists.txt;D:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0\test\unit\example\CMakeLists.txt;D:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0\test\unit\performance\CMakeLists.txt;D:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0\test\unit\template_bug_group\CMakeLists.txt;"
+					Outputs="CMakeFiles\generate.stamp;cppconn\CMakeFiles\generate.stamp;driver\CMakeFiles\generate.stamp;examples\CMakeFiles\generate.stamp;test\CMakeFiles\generate.stamp;test\framework\CMakeFiles\generate.stamp;test\CJUnitTestsPort\CMakeFiles\generate.stamp;test\unit\CMakeFiles\generate.stamp;test\unit\example\CMakeFiles\generate.stamp;test\unit\classes\CMakeFiles\generate.stamp;test\unit\performance\CMakeFiles\generate.stamp;test\unit\bugs\CMakeFiles\generate.stamp;test\unit\template_bug_group\CMakeFiles\generate.stamp"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="MinSizeRel|Win32">
+					<Tool
+					Name="VCCustomBuildTool"
+					Description="Checking Build System"
+					CommandLine="&quot;C:\Program Files\CMake 2.6\bin\cmake.exe&quot; -HD:/QT_Projects/WorkProjects_VS2008/mysqlconn/mysql-connector-c++-1.1.0 -BD:/QT_Projects/WorkProjects_VS2008/mysqlconn/mysql-connector-c++-1.1.0 --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file &quot;$(SolutionPath)&quot;"
+					AdditionalDependencies="&quot;C:\Program Files\CMake 2.6\share\cmake-2.6\Modules\CMakeCInformation.cmake&quot;;&quot;C:\Program Files\CMake 2.6\share\cmake-2.6\Modules\CMakeCXXInformation.cmake&quot;;&quot;C:\Program Files\CMake 2.6\share\cmake-2.6\Modules\CMakeCommonLanguageInclude.cmake&quot;;&quot;C:\Program Files\CMake 2.6\share\cmake-2.6\Modules\CMakeConfigurableFile.in&quot;;&quot;C:\Program Files\CMake 2.6\share\cmake-2.6\Modules\CMakeGenericSystem.cmake&quot;;&quot;C:\Program Files\CMake 2.6\share\cmake-2.6\Modules\CMakeRCInformation.cmake&quot;;&quot;C:\Program Files\CMake 2.6\share\cmake-2.6\Modules\CMakeSystemSpecificInformation.cmake&quot;;&quot;C:\Program Files\CMake 2.6\share\cmake-2.6\Modules\CPack.cmake&quot;;&quot;C:\Program Files\CMake 2.6\share\cmake-2.6\Modules\CheckFunctionExists.c&quot;;&quot;C:\Program Files\CMake 2.6\share\cmake-2.6\Modules\CheckFunctionExists.cmake&quot;;&quot;C:\Program Files\CMake 2.6\share\cmake-2.6\Modules\CheckIncludeFile.c.in&quot;;&quot;C:\Program Files\CMake 2.6\share\cmake-2.6\Modules\CheckIncludeFile.cmake&quot;;&quot;C:\Program Files\CMake 2.6\share\cmake-2.6\Modules\CheckIncludeFiles.cmake&quot;;&quot;C:\Program Files\CMake 2.6\share\cmake-2.6\Modules\CheckTypeSize.cmake&quot;;&quot;C:\Program Files\CMake 2.6\share\cmake-2.6\Modules\CheckTypeSizeC.c.in&quot;;&quot;C:\Program Files\CMake 2.6\share\cmake-2.6\Modules\FindBoost.cmake&quot;;&quot;C:\Program Files\CMake 2.6\share\cmake-2.6\Modules\Platform\Windows-cl.cmake&quot;;&quot;C:\Program Files\CMake 2.6\share\cmake-2.6\Modules\Platform\Windows.cmake&quot;;&quot;C:\Program Files\CMake 2.6\share\cmake-2.6\Modules\Platform\WindowsPaths.cmake&quot;;&quot;C:\Program Files\CMake 2.6\share\cmake-2.6\Modules\Platform\cl.cmake&quot;;&quot;C:\Program Files\CMake 2.6\share\cmake-2.6\Modules\Platform\gcc.cmake&quot;;&quot;C:\Program Files\CMake 2.6\share\cmake-2.6\Templates\CPackConfig.cmake.in&quot;;D:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0\CMakeFiles\CMakeCCompiler.cmake;D:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0\CMakeFiles\CMakeCPlatform.cmake;D:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0\CMakeFiles\CMakeCXXCompiler.cmake;D:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0\CMakeFiles\CMakeCXXPlatform.cmake;D:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0\CMakeFiles\CMakeRCCompiler.cmake;D:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0\CMakeFiles\CMakeSystem.cmake;D:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0\CMakeLists.txt;D:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0\FindMySQL.cm;D:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0\cppconn\CMakeLists.txt;D:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0\cppconn\config.h.cm;D:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0\driver\CMakeLists.txt;D:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0\driver\nativeapi\binding_config.h.cm;D:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0\examples\CMakeLists.txt;D:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0\test\CJUnitTestsPort\CMakeLists.txt;D:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0\test\CMakeLists.txt;D:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0\test\framework\CMakeLists.txt;D:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0\test\unit\CMakeLists.txt;D:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0\test\unit\bugs\CMakeLists.txt;D:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0\test\unit\classes\CMakeLists.txt;D:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0\test\unit\example\CMakeLists.txt;D:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0\test\unit\performance\CMakeLists.txt;D:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0\test\unit\template_bug_group\CMakeLists.txt;"
+					Outputs="CMakeFiles\generate.stamp;cppconn\CMakeFiles\generate.stamp;driver\CMakeFiles\generate.stamp;examples\CMakeFiles\generate.stamp;test\CMakeFiles\generate.stamp;test\framework\CMakeFiles\generate.stamp;test\CJUnitTestsPort\CMakeFiles\generate.stamp;test\unit\CMakeFiles\generate.stamp;test\unit\example\CMakeFiles\generate.stamp;test\unit\classes\CMakeFiles\generate.stamp;test\unit\performance\CMakeFiles\generate.stamp;test\unit\bugs\CMakeFiles\generate.stamp;test\unit\template_bug_group\CMakeFiles\generate.stamp"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="RelWithDebInfo|Win32">
+					<Tool
+					Name="VCCustomBuildTool"
+					Description="Checking Build System"
+					CommandLine="&quot;C:\Program Files\CMake 2.6\bin\cmake.exe&quot; -HD:/QT_Projects/WorkProjects_VS2008/mysqlconn/mysql-connector-c++-1.1.0 -BD:/QT_Projects/WorkProjects_VS2008/mysqlconn/mysql-connector-c++-1.1.0 --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file &quot;$(SolutionPath)&quot;"
+					AdditionalDependencies="&quot;C:\Program Files\CMake 2.6\share\cmake-2.6\Modules\CMakeCInformation.cmake&quot;;&quot;C:\Program Files\CMake 2.6\share\cmake-2.6\Modules\CMakeCXXInformation.cmake&quot;;&quot;C:\Program Files\CMake 2.6\share\cmake-2.6\Modules\CMakeCommonLanguageInclude.cmake&quot;;&quot;C:\Program Files\CMake 2.6\share\cmake-2.6\Modules\CMakeConfigurableFile.in&quot;;&quot;C:\Program Files\CMake 2.6\share\cmake-2.6\Modules\CMakeGenericSystem.cmake&quot;;&quot;C:\Program Files\CMake 2.6\share\cmake-2.6\Modules\CMakeRCInformation.cmake&quot;;&quot;C:\Program Files\CMake 2.6\share\cmake-2.6\Modules\CMakeSystemSpecificInformation.cmake&quot;;&quot;C:\Program Files\CMake 2.6\share\cmake-2.6\Modules\CPack.cmake&quot;;&quot;C:\Program Files\CMake 2.6\share\cmake-2.6\Modules\CheckFunctionExists.c&quot;;&quot;C:\Program Files\CMake 2.6\share\cmake-2.6\Modules\CheckFunctionExists.cmake&quot;;&quot;C:\Program Files\CMake 2.6\share\cmake-2.6\Modules\CheckIncludeFile.c.in&quot;;&quot;C:\Program Files\CMake 2.6\share\cmake-2.6\Modules\CheckIncludeFile.cmake&quot;;&quot;C:\Program Files\CMake 2.6\share\cmake-2.6\Modules\CheckIncludeFiles.cmake&quot;;&quot;C:\Program Files\CMake 2.6\share\cmake-2.6\Modules\CheckTypeSize.cmake&quot;;&quot;C:\Program Files\CMake 2.6\share\cmake-2.6\Modules\CheckTypeSizeC.c.in&quot;;&quot;C:\Program Files\CMake 2.6\share\cmake-2.6\Modules\FindBoost.cmake&quot;;&quot;C:\Program Files\CMake 2.6\share\cmake-2.6\Modules\Platform\Windows-cl.cmake&quot;;&quot;C:\Program Files\CMake 2.6\share\cmake-2.6\Modules\Platform\Windows.cmake&quot;;&quot;C:\Program Files\CMake 2.6\share\cmake-2.6\Modules\Platform\WindowsPaths.cmake&quot;;&quot;C:\Program Files\CMake 2.6\share\cmake-2.6\Modules\Platform\cl.cmake&quot;;&quot;C:\Program Files\CMake 2.6\share\cmake-2.6\Modules\Platform\gcc.cmake&quot;;&quot;C:\Program Files\CMake 2.6\share\cmake-2.6\Templates\CPackConfig.cmake.in&quot;;D:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0\CMakeFiles\CMakeCCompiler.cmake;D:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0\CMakeFiles\CMakeCPlatform.cmake;D:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0\CMakeFiles\CMakeCXXCompiler.cmake;D:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0\CMakeFiles\CMakeCXXPlatform.cmake;D:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0\CMakeFiles\CMakeRCCompiler.cmake;D:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0\CMakeFiles\CMakeSystem.cmake;D:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0\CMakeLists.txt;D:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0\FindMySQL.cm;D:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0\cppconn\CMakeLists.txt;D:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0\cppconn\config.h.cm;D:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0\driver\CMakeLists.txt;D:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0\driver\nativeapi\binding_config.h.cm;D:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0\examples\CMakeLists.txt;D:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0\test\CJUnitTestsPort\CMakeLists.txt;D:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0\test\CMakeLists.txt;D:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0\test\framework\CMakeLists.txt;D:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0\test\unit\CMakeLists.txt;D:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0\test\unit\bugs\CMakeLists.txt;D:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0\test\unit\classes\CMakeLists.txt;D:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0\test\unit\example\CMakeLists.txt;D:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0\test\unit\performance\CMakeLists.txt;D:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0\test\unit\template_bug_group\CMakeLists.txt;"
+					Outputs="CMakeFiles\generate.stamp;cppconn\CMakeFiles\generate.stamp;driver\CMakeFiles\generate.stamp;examples\CMakeFiles\generate.stamp;test\CMakeFiles\generate.stamp;test\framework\CMakeFiles\generate.stamp;test\CJUnitTestsPort\CMakeFiles\generate.stamp;test\unit\CMakeFiles\generate.stamp;test\unit\example\CMakeFiles\generate.stamp;test\unit\classes\CMakeFiles\generate.stamp;test\unit\performance\CMakeFiles\generate.stamp;test\unit\bugs\CMakeFiles\generate.stamp;test\unit\template_bug_group\CMakeFiles\generate.stamp"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="D:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0\CMakeFiles\ZERO_CHECK.rule">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+					Name="VCCustomBuildTool"
+					Description=""
+					CommandLine=""
+					AdditionalDependencies="D:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0\CMakeFiles\ZERO_CHECK.rule"
+					Outputs="D:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0\CMakeFiles\ZERO_CHECK"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+					Name="VCCustomBuildTool"
+					Description=""
+					CommandLine=""
+					AdditionalDependencies="D:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0\CMakeFiles\ZERO_CHECK.rule"
+					Outputs="D:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0\CMakeFiles\ZERO_CHECK"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="MinSizeRel|Win32">
+					<Tool
+					Name="VCCustomBuildTool"
+					Description=""
+					CommandLine=""
+					AdditionalDependencies="D:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0\CMakeFiles\ZERO_CHECK.rule"
+					Outputs="D:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0\CMakeFiles\ZERO_CHECK"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="RelWithDebInfo|Win32">
+					<Tool
+					Name="VCCustomBuildTool"
+					Description=""
+					CommandLine=""
+					AdditionalDependencies="D:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0\CMakeFiles\ZERO_CHECK.rule"
+					Outputs="D:\QT_Projects\WorkProjects_VS2008\mysqlconn\mysql-connector-c++-1.1.0\CMakeFiles\ZERO_CHECK"/>
+				</FileConfiguration>
+			</File>
+		</Filter>
+	</Files>
+	<Globals>
+	</Globals>
+</VisualStudioProject>
