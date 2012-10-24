@@ -308,6 +308,18 @@
 				>
 			</File>
 		</Filter>
+		<Filter
+			Name="VHD"
+			>
+			<File
+				RelativePath=".\VHDFile.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\VHDFile.h"
+				>
+			</File>
+		</Filter>
 		<File
 			RelativePath=".\MAIN.cpp"
 			>

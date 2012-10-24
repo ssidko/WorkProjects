@@ -355,7 +355,7 @@ public:
 	}
 };
 
-DWORD RaidCounter::number[] = {0,1,3,4,0,2,3,5,1,2,4,5};
+DWORD RaidCounter::number[] = {0, 1, 3, 4, 0, 2, 3, 5, 1, 2, 4, 5};
 
 class OutStream
 {
@@ -422,6 +422,7 @@ public:
 	  }
 };
 
+#define RAID_OFFSET						(DWORD)512*1024
 #define RAID_BLOCK_SIZE					(DWORD)128*512
 #define RAID_PD							(DWORD)0xFEFEFEFE
 #define RAID_RS							(DWORD)0xF0F0F0F0
@@ -442,7 +443,6 @@ public :
 		order[5] = RAID_RS;
 		order[6] = 2;
 		order[7] = 3;
-
 	}
 
 	DWORD Next()
@@ -478,51 +478,6 @@ int _tmain(int argc, _TCHAR* argv[])
 	//if (argc >= 3)
 	//	return mp4_main(argv[1], argv[2]);
 
-	PhysicalDrive drive[4] = {PhysicalDrive(2), PhysicalDrive(4), PhysicalDrive(3), PhysicalDrive(5)};
-	PhysicalDrive result_drive(1);
-
-	for (DWORD i = 1; i < 4; i++)
-		if (!drive[i].Open()) return -1;
-
-	if (!result_drive.Open()) return -1;
-
-	ULONGLONG offset = 0;
-	BYTE *data = new BYTE[RAID_BLOCK_SIZE];
-	BYTE *next_data = new BYTE[RAID_BLOCK_SIZE];
-	BYTE *parity = new BYTE[RAID_BLOCK_SIZE];
-	RaidOrder order;
-	DWORD n = 0;
-
-	while(TRUE) {
-		drive[0].SetPointer(offset);
-		drive[1].SetPointer(offset);
-		drive[2].SetPointer(offset);
-		drive[3].SetPointer(offset);
-
-		for (DWORD i = 0; i < 4; i++) {
-			n = order.Next();
-			if (( n != RAID_PD) && (n != RAID_RS)) {
-				if (n != RAID_MISSING) {
-					if (!drive[n].Read(data, RAID_BLOCK_SIZE)) return -1;
-				}
-				else {
-					if (!drive[1].Read(next_data, RAID_BLOCK_SIZE)) return -1;
-					if (!drive[2].Read(parity, RAID_BLOCK_SIZE)) return -1;
-
-					XorBlock((DWORD *)next_data, (DWORD *)parity, (DWORD *)data, RAID_BLOCK_SIZE/sizeof(DWORD));
-				}
-				result_drive.Write(data, RAID_BLOCK_SIZE);
-			}
-		}
-		offset += RAID_BLOCK_SIZE;
-		_tprintf(_T("."));
-	}
-
-	
-
-
-
-
 	//if (argc >= 3) {
 	//	mover_main(argv[1], argv[2]);
 	//}
@@ -532,7 +487,40 @@ int _tmain(int argc, _TCHAR* argv[])
 	//	_tprintf(_T("       <src_file> - can be simlpe file or Physical drive(\\\\.\\PhysicalDriveXX)\n"));
 	//	_tprintf(_T("       <out_dir>  - output directory\n"));
 	//}
-	
+
+	//if (argc >= 3) {
+	//	LONGLONG offset = (LONGLONG)167935*512;
+	//	BYTE buff[512] = {0};
+
+	//	PhysicalDrive drive(argv[1]);
+	//	FileEx list(argv[2]);
+	//	if (drive.Open() && list.Create()) {
+	//		drive.SetPointer(offset);
+	//		while (drive.Read(buff, 512)) {
+	//			list.Write(buff, 16);			
+	//			offset += (LONGLONG)4096*512;
+	//			drive.SetPointer(offset);
+	//		}
+
+	//	}
+	//}
+	//else {
+	//	_tprintf(_T("Usage: <src_drive> <out_file>\n"));
+	//	_tprintf(_T("       <src_drive> - Physical drive(\\\\.\\PhysicalDriveXX)\n"));
+	//	_tprintf(_T("       <out_file>  - output file\n"));
+	//}
+
+	PhysicalDrive drive(8);
+	BYTE buff[256*512] = {0};
+	if (drive.Open()) {
+		while (true) {
+			drive.SetPointer(0);
+			while(drive.Read(buff, 256*512))
+				printf(".");
+
+		}
+	}
+
 	_tprintf(_T("\nPress any key for exit ..."));
 	_getch();
 

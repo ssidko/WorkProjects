@@ -31,6 +31,13 @@ namespace DM
 		kPortsCount
 	};
 
+	enum DM_DetectError {
+		kDetectErrorUsb1 = 1,
+		kDetectErrorUsb2,
+		kDetectErrorSata1,
+		kDetectErrorSata1Lock
+	};
+
 #pragma pack(push)
 #pragma pack(1)
 

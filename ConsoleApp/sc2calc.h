@@ -27,6 +27,7 @@ namespace sc2calc {
 	enum EntityType {
 		kUnit,
 		kBuilding,
+		kResource,
 		kNature
 	};
 

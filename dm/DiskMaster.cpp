@@ -486,56 +486,58 @@ BOOL DM::DiskMaster::WaitForTaskEnd()
 	while (TRUE) {
 		if (sizeof(DM_CMD_MSG_HEADER) == io->Read(&hdr, sizeof(DM_CMD_MSG_HEADER))) {
 			tick = ::GetTickCount();
-			switch(hdr.code) {
-						case kMsgTaskInfo:
-							if (sizeof(DM_TASK_INFO) == io->Read(&dm_task_info, sizeof(DM_TASK_INFO))) {
-								memcpy(&curr_lba, &dm_task_info.Lba, sizeof(DM_LBA));
-								switch (dm_task_info.End_code) {
-						case kEndCodeTaskNotEnd:
-							this->Notify(kTaskInProgress, &dm_task_info);
-							DMT_TRACE("  LBA: %lld %dd:%dh:%dm:%ds\n", curr_lba, dm_task_info.TimeCnt_1d, dm_task_info.TimeCnt_1h, dm_task_info.TimeCnt_1m, dm_task_info.TimeCnt_1s);
-							break;
+			switch(hdr.code){
+				case kMsgTaskInfo:
+					if (sizeof(DM_TASK_INFO) == io->Read(&dm_task_info, sizeof(DM_TASK_INFO))) {
+						memcpy(&curr_lba, &dm_task_info.Lba, sizeof(DM_LBA));
+						switch (dm_task_info.End_code) {
+							case kEndCodeTaskNotEnd:
+								this->Notify(kTaskInProgress, &dm_task_info);
+								DMT_TRACE("  LBA: %lld %dd:%dh:%dm:%ds\n", curr_lba, dm_task_info.TimeCnt_1d, dm_task_info.TimeCnt_1h, dm_task_info.TimeCnt_1m, dm_task_info.TimeCnt_1s);
+								break;
 
-						case kEndCodeTaskEnd:
-							this->Notify(kTaskComplete, &dm_task_info);
-							dm_current_task = kTaskNone;
-							task_in_progress = FALSE;
-							DMT_TRACE("  TASK END -- LBA: %lld %dd:%dh:%dm:%ds\n", curr_lba, dm_task_info.TimeCnt_1d, dm_task_info.TimeCnt_1h, dm_task_info.TimeCnt_1m, dm_task_info.TimeCnt_1s);
-							return TRUE;
+							case kEndCodeTaskEnd:
+								// После получения этого сообщения можна продолжить посылать
+								// блочные команды в соответствии с кодом задачи
+								this->Notify(kTaskComplete, &dm_task_info);
+								task_in_progress = FALSE;
+								DMT_TRACE("  TASK END -- LBA: %lld %dd:%dh:%dm:%ds\n", curr_lba, dm_task_info.TimeCnt_1d, dm_task_info.TimeCnt_1h, dm_task_info.TimeCnt_1m, dm_task_info.TimeCnt_1s);
+								return TRUE;
 
-						case kEndCodeTaskBreak:
-							this->Notify(kTaskBreak, &dm_task_info);
-							dm_current_task = kTaskNone;
-							task_in_progress = FALSE;
-							DMT_TRACE("  Task BREAK LBA: %lld %dd:%dh:%dm:%ds\n", curr_lba, dm_task_info.TimeCnt_1d, dm_task_info.TimeCnt_1h, dm_task_info.TimeCnt_1m, dm_task_info.TimeCnt_1s);
-							return FALSE;
+							case kEndCodeTaskBreak:
+								// После получения этого сообщения можна продолжить посылать
+								// блочные команды в соответствии с кодом задачи
+								this->Notify(kTaskBreak, &dm_task_info);
+								task_in_progress = FALSE;
+								DMT_TRACE("  Task BREAK LBA: %lld %dd:%dh:%dm:%ds\n", curr_lba, dm_task_info.TimeCnt_1d, dm_task_info.TimeCnt_1h, dm_task_info.TimeCnt_1m, dm_task_info.TimeCnt_1s);
+								return FALSE;
 
-						case kEndCodeTaskCrash:
-						case kEndCodeTaskShkPwrEnd:
-						case kEndCodeTaskCrcErrorEnd:
-							//
-							// В данном месте нада уведомить всех подписчиков о завершении таска,
-							// и ОБЯЗАТЕЛЬНО ДО УСТАНОВКИ current_task = kTaskNone,  
-							// т.к. подписчики обязательно захотят узнать какой именно таск закончился.
-							//
-							this->Notify(kTaskError, &dm_task_info);
-							dm_current_task = kTaskNone;
-							task_in_progress = FALSE;
-							DMT_TRACE(" Task ERROR: %d\n", dm_task_info.End_code);
-							return FALSE;
-						default:
-							return FALSE;
-								}
-							}
-							break;
-						case kMsgBadLba:
-							io->Read(&bad, sizeof(DM_LBA));
-							memcpy(&last_bad, &bad, sizeof(DM_LBA));
-							this->Notify(kBadBlock, &last_bad);
-							DMT_TRACE("  BAD: %lld\n", last_bad);
-							break;
-						default:
-							DMException();
+							case kEndCodeTaskCrash:
+							case kEndCodeTaskShkPwrEnd:
+							case kEndCodeTaskCrcErrorEnd:
+								//
+								// В данном месте нада уведомить всех подписчиков о завершении таска,
+								// и ОБЯЗАТЕЛЬНО ДО УСТАНОВКИ current_task = kTaskNone,  
+								// т.к. подписчики обязательно захотят узнать какой именно таск закончился.
+								//
+								this->Notify(kTaskError, &dm_task_info);
+								dm_current_task = kTaskNone;
+								task_in_progress = FALSE;
+								DMT_TRACE(" Task ERROR: %d\n", dm_task_info.End_code);
+								return FALSE;
+							default:
+								return FALSE;
+						}
+					}
+					break;
+				case kMsgBadLba:
+					io->Read(&bad, sizeof(DM_LBA));
+					memcpy(&last_bad, &bad, sizeof(DM_LBA));
+					this->Notify(kBadBlock, &last_bad);
+					DMT_TRACE("  BAD: %lld\n", last_bad);
+					break;
+				default:
+					DMException();
 			}
 		}
 		if ((::GetTickCount() - tick) > (DWORD)DM_RESPONSE_TIMEOUT)
@@ -788,28 +790,31 @@ BOOL DM::DiskMaster::CopyEx( DWORD src_port, DWORD dst_port, ULONGLONG &src_offs
 	else if (dst_port == kSata1)
 		task_code = kTaskUsb1Sata1Copy;
 
-	if (CmdSendTask(task_code)) {
-		if (count) {
-			if (((src_offset + count) <= disks[src_port]->Size()) && ((dst_offset + count) <= disks[dst_port]->Size())) {
-				DM_COPY_OFFSET dm_offs;
-				if (src_offset > dst_offset) {
-					dm_offs.direction = kBackOffset;
-					dm_offs.offset = src_offset - dst_offset;
-				}
-				else {
-					dm_offs.direction = kForwardOffset;
-					dm_offs.offset = dst_offset - src_offset;
-				}
+	if (dm_current_task != task_code)
+		if (!CmdSendTask(task_code))
+			return FALSE;
 
-				if (CmdSetCopyOffset(dm_offs)) {
-					DM_LBA_RANGE dm_range;
-					dm_range.start = src_offset;
-					dm_range.end = src_offset + count - 1;
-					return CmdCopyBlock(dm_range);
-				}
+	if (count) {
+		if (((src_offset + count) <= disks[src_port]->Size()) && ((dst_offset + count) <= disks[dst_port]->Size())) {
+			DM_COPY_OFFSET dm_offs;
+			if (src_offset > dst_offset) {
+				dm_offs.direction = kBackOffset;
+				dm_offs.offset = src_offset - dst_offset;
+			}
+			else {
+				dm_offs.direction = kForwardOffset;
+				dm_offs.offset = dst_offset - src_offset;
+			}
+
+			if (CmdSetCopyOffset(dm_offs)) {
+				DM_LBA_RANGE dm_range;
+				dm_range.start = src_offset;
+				dm_range.end = src_offset + count - 1;
+				return CmdCopyBlock(dm_range);
 			}
 		}
 	}
+
 	return FALSE;
 }
 
