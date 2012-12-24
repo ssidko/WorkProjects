@@ -8,18 +8,18 @@ namespace W32Lib
 {
 	class IFile
 	{
-		public:
-			virtual BOOL Open(void) = 0;
-			virtual BOOL Open(const TCHAR *file_name) = 0;
-			virtual BOOL Create(void) = 0;
-			virtual BOOL Create(const TCHAR *file_name) = 0;
-			virtual BOOL IsOpen() = 0;
-			virtual void Close(void) = 0;
-			virtual DWORD Read(void *buffer, DWORD count) = 0;
-			virtual DWORD Write(void *buffer, DWORD count) = 0;
-			virtual BOOL SetPointer(LONGLONG pointer, DWORD dwMoveMethod) = 0;
-			virtual BOOL GetPointer(LONGLONG *pointer) = 0;
-			virtual ~IFile() {}
+	public:
+		virtual BOOL Open(void) = 0;
+		virtual BOOL Open(const TCHAR *file_name) = 0;
+		virtual BOOL Create(void) = 0;
+		virtual BOOL Create(const TCHAR *file_name) = 0;
+		virtual BOOL IsOpen() = 0;
+		virtual void Close(void) = 0;
+		virtual DWORD Read(void *buffer, DWORD count) = 0;
+		virtual DWORD Write(void *buffer, DWORD count) = 0;
+		virtual BOOL SetPointer(LONGLONG pointer, DWORD dwMoveMethod) = 0;
+		virtual BOOL GetPointer(LONGLONG *pointer) = 0;
+		virtual ~IFile() {}
 	};
 
 	class File : public IFile

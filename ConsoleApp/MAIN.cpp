@@ -513,10 +513,16 @@ int _tmain(int argc, _TCHAR* argv[])
 	//}
 
 //#define VMFS_VOLUME_OFFSET				(LONGLONG)512*10229760
-#define VMFS_VOLUME_OFFSET				(LONGLONG)512*128
+#define VMFS_VOLUME_OFFSET					(LONGLONG)512*128
 
-	File file(_T("\\\\.\\PhysicalDrive3"));
-	VMFS vmfs_vol(&file, VMFS_VOLUME_OFFSET);
+	const LONGLONG volume_offset = VMFS_VOLUME_OFFSET;
+	VMFSVolume vmfs_volume(_T("\\\\.\\PhysicalDrive3"), &volume_offset);
+	VMFS vmfs(&vmfs_volume);
+	if (vmfs_volume.Open()) {
+		if (vmfs.Open()) {
+			int x = 0;
+		}
+	}
 
 
 	_tprintf(_T("\nPress any key for exit ..."));

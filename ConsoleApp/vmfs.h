@@ -59,9 +59,9 @@ typedef struct _VMFS_FS_INFO {
 	DWORD dev_blocksize;
 	ULONGLONG blocksize;
 	DWORD ctime; /* ctime? in seconds */
-	DWORD _unknown3;
+	DWORD unknown_3;
 	uuid_t lvm_uuid;
-	BYTE _unknown4[16];
+	BYTE unknown_4[16];
 	DWORD fdc_header_size;
 	DWORD fdc_bitmap_count;
 	DWORD subblock_size;
@@ -70,16 +70,49 @@ typedef struct _VMFS_FS_INFO {
 #pragma pack(pop)
 
 
+class VMFSVolume : public IFile
+{
+private:
+	File io;
+	LONGLONG volume_offset;
+	BOOL opened;
+	VMFS_VOLUME_INFO volume_info;
+	VMFS_LVM_INFO lvm_info;
+
+	BOOL ReadVolumeInfo(VMFS_VOLUME_INFO *vi);
+	BOOL ReadLVMInfo(VMFS_LVM_INFO *li);
+
+public:
+	VMFSVolume(const TCHAR *file_name, const LONGLONG *offset);
+	~VMFSVolume();
+
+	virtual BOOL Open(void);
+	virtual BOOL Open(const TCHAR *file_name);
+	virtual BOOL Create(void);
+	virtual BOOL Create(const TCHAR *file_name);
+	virtual BOOL IsOpen();
+	virtual void Close(void);
+	virtual DWORD Read(void *buffer, DWORD count);
+	virtual DWORD Write(void *buffer, DWORD count);
+	virtual BOOL SetPointer(LONGLONG pointer, DWORD dwMoveMethod = FILE_BEGIN);
+	virtual BOOL GetPointer(LONGLONG *pointer);
+
+};
+
 class VMFS
 {
 private:
-	File *io;
-	LONGLONG volume_offset;
-	VMFS_VOLUME_INFO volume_info;
-	VMFS_LVM_INFO lvm_info;
+	VMFSVolume *volume;
 	VMFS_FS_INFO fs_info;
+
+	BOOL ReadFSInfo(void);
 public:
-	VMFS(File *file, LONGLONG offset);
+	VMFS(VMFSVolume *vmfs_volume);
 	~VMFS(void);
+
+	BOOL Open(void);
+	void Close(void) {}
+
+
 };
 
