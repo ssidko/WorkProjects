@@ -1,0 +1,73 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Core">
+      <UniqueIdentifier>{37fe4833-859e-4594-9052-315049633247}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="File">
+      <UniqueIdentifier>{322f0d04-2189-4e78-aae1-19b1c7a21d5d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Utilities">
+      <UniqueIdentifier>{f0503904-b106-4a64-b931-3dbc9f8af548}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Global">
+      <UniqueIdentifier>{f7b9be52-c64a-4ee2-a721-596fa0fe646b}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\Core\Core.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Core\W32App.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Core\WFont.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Core\Wnd.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="include\File\File.h">
+      <Filter>File</Filter>
+    </ClInclude>
+    <ClInclude Include="include\File\PhysicalDrive.h">
+      <Filter>File</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Utilities\List.h">
+      <Filter>Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Utilities\Utilities.h">
+      <Filter>Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Global\Function.h">
+      <Filter>Global</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Global\Global.h">
+      <Filter>Global</Filter>
+    </ClInclude>
+    <ClInclude Include="MSSQL.h" />
+    <ClInclude Include="include\W32Lib.h" />
+    <ClInclude Include="Zip.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="include\Core\W32App.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="include\Core\WFont.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="include\Core\Wnd.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="include\File\File.cpp">
+      <Filter>File</Filter>
+    </ClCompile>
+    <ClCompile Include="include\File\PhysicalDrive.cpp">
+      <Filter>File</Filter>
+    </ClCompile>
+    <ClCompile Include="include\Global\Function.cpp">
+      <Filter>Global</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp" />
+  </ItemGroup>
+</Project>

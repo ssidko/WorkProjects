@@ -57,17 +57,17 @@ typedef struct _VHD_DYNAMIC_DISK_HEADER {
 
 #pragma pack(pop)
 
-DWORD Be2Le(DWORD be_dw)
-{
-	DWORD le_dw;
-	BYTE *le = (BYTE *)&le_dw;
-	BYTE *be = (BYTE *)&be_dw;
-	le[0] = be[3];
-	le[1] = be[2];
-	le[2] = be[1];
-	le[3] = be[0];
-	return le_dw;
-}
+//DWORD Be2Le(DWORD be_dw)
+//{
+//	DWORD le_dw;
+//	BYTE *le = (BYTE *)&le_dw;
+//	BYTE *be = (BYTE *)&be_dw;
+//	le[0] = be[3];
+//	le[1] = be[2];
+//	le[2] = be[1];
+//	le[3] = be[0];
+//	return le_dw;
+//}
 
 class VHDFile
 {

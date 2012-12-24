@@ -1,0 +1,140 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Calc">
+      <UniqueIdentifier>{d716f45a-d68e-467e-9626-5d5252520ca1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PlaCheker">
+      <UniqueIdentifier>{0c4b4ad8-5ad1-4619-935f-3aacf9655ffd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SMART">
+      <UniqueIdentifier>{b3e6b596-edd5-474e-84d4-b52d99f0cca8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="RAIDTools">
+      <UniqueIdentifier>{b72549c5-0233-49e7-be9e-6e8dfb9dfaec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="CutTxt">
+      <UniqueIdentifier>{f1285e73-3670-45af-8ebd-27dbf982d262}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Zip">
+      <UniqueIdentifier>{5d73dee3-9abb-4d4c-b17d-f98349a02cb3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="tibun">
+      <UniqueIdentifier>{06f5361d-6d74-4657-9fe2-f5edd33f3fb5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="mp4">
+      <UniqueIdentifier>{628210cd-a3df-4f5b-9329-3a64ea75761c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="mover">
+      <UniqueIdentifier>{df711d39-084a-48dd-ba9d-315f5e7ede1d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="VHD">
+      <UniqueIdentifier>{5828022a-4803-481f-933b-9c9dc2956d89}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="VMFSold">
+      <UniqueIdentifier>{2d27d0a5-52d5-4592-8565-dcf429d54f0e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="VMFS">
+      <UniqueIdentifier>{4f40401a-f99d-4b2a-9e39-34eb6fc66c58}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Calc.cpp">
+      <Filter>Calc</Filter>
+    </ClCompile>
+    <ClCompile Include="PlaChecker.cpp">
+      <Filter>PlaCheker</Filter>
+    </ClCompile>
+    <ClCompile Include="smart.cpp">
+      <Filter>SMART</Filter>
+    </ClCompile>
+    <ClCompile Include="RAIDTools.cpp">
+      <Filter>RAIDTools</Filter>
+    </ClCompile>
+    <ClCompile Include="VMFSMain.cpp">
+      <Filter>VMFSold</Filter>
+    </ClCompile>
+    <ClCompile Include="cut_txt_main.cpp">
+      <Filter>CutTxt</Filter>
+    </ClCompile>
+    <ClCompile Include="ZipRec.cpp">
+      <Filter>Zip</Filter>
+    </ClCompile>
+    <ClCompile Include="tibun.cpp">
+      <Filter>tibun</Filter>
+    </ClCompile>
+    <ClCompile Include="mp4_main.cpp">
+      <Filter>mp4</Filter>
+    </ClCompile>
+    <ClCompile Include="Mp4File.cpp">
+      <Filter>mp4</Filter>
+    </ClCompile>
+    <ClCompile Include="mover.cpp">
+      <Filter>mover</Filter>
+    </ClCompile>
+    <ClCompile Include="VHDFile.cpp">
+      <Filter>VHD</Filter>
+    </ClCompile>
+    <ClCompile Include="MAIN.cpp" />
+    <ClCompile Include="PassHack.cpp" />
+    <ClCompile Include="stdafx.cpp" />
+    <ClCompile Include="vmfs.cpp">
+      <Filter>VMFS</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Calc.h">
+      <Filter>Calc</Filter>
+    </ClInclude>
+    <ClInclude Include="PlaChecker.h">
+      <Filter>PlaCheker</Filter>
+    </ClInclude>
+    <ClInclude Include="smart.h">
+      <Filter>SMART</Filter>
+    </ClInclude>
+    <ClInclude Include="RAIDTools.h">
+      <Filter>RAIDTools</Filter>
+    </ClInclude>
+    <ClInclude Include="VMFSMain.h">
+      <Filter>VMFSold</Filter>
+    </ClInclude>
+    <ClInclude Include="cut_txt_main.h">
+      <Filter>CutTxt</Filter>
+    </ClInclude>
+    <ClInclude Include="ZipRec.h">
+      <Filter>Zip</Filter>
+    </ClInclude>
+    <ClInclude Include="tibun.h">
+      <Filter>tibun</Filter>
+    </ClInclude>
+    <ClInclude Include="zconf.h">
+      <Filter>tibun</Filter>
+    </ClInclude>
+    <ClInclude Include="zlib.h">
+      <Filter>tibun</Filter>
+    </ClInclude>
+    <ClInclude Include="mp4_main.h">
+      <Filter>mp4</Filter>
+    </ClInclude>
+    <ClInclude Include="Mp4File.h">
+      <Filter>mp4</Filter>
+    </ClInclude>
+    <ClInclude Include="mover.h">
+      <Filter>mover</Filter>
+    </ClInclude>
+    <ClInclude Include="VHDFile.h">
+      <Filter>VHD</Filter>
+    </ClInclude>
+    <ClInclude Include="PassHack.h" />
+    <ClInclude Include="sc2calc.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="targetver.h" />
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="vmfs.h">
+      <Filter>VMFS</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="ConsoleApp.rc" />
+  </ItemGroup>
+</Project>

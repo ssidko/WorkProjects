@@ -1,0 +1,212 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="GUI">
+      <UniqueIdentifier>{14ea4db3-7e38-4eb5-a139-c944c4691de3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Debug">
+      <UniqueIdentifier>{5dbc02b6-50cd-4ca1-a162-6a7b880a6698}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core">
+      <UniqueIdentifier>{771764fd-5e7d-4f75-b81a-092384e9f776}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="App">
+      <UniqueIdentifier>{e59ab095-5730-428b-9563-a5b8ef081ccf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Database">
+      <UniqueIdentifier>{7006c776-0203-482d-bb6e-b1d8e9443dd5}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="AboutDlg.cpp">
+      <Filter>GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="BaseEditDlg.cpp">
+      <Filter>GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="BaseRecordsDlg.cpp">
+      <Filter>GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="ChangePageStateDlg.cpp">
+      <Filter>GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="FlashInfoDlg.cpp">
+      <Filter>GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="FlashMap.cpp">
+      <Filter>GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="FlashMapView.cpp">
+      <Filter>GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="FlashParametersDlg.cpp">
+      <Filter>GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="FlashReaderView.cpp">
+      <Filter>GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="MainFrm.cpp">
+      <Filter>GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="NewTaskDlg.cpp">
+      <Filter>GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="PageFinish.cpp">
+      <Filter>GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="PageSelect.cpp">
+      <Filter>GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="PageStart.cpp">
+      <Filter>GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="RecordEditDlg.cpp">
+      <Filter>GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="ReplaceRecordDlg.cpp">
+      <Filter>GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="SelectReaderDlg.cpp">
+      <Filter>GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="SettingsDlg.cpp">
+      <Filter>GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Splitter.cpp">
+      <Filter>GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="VendorNewDlg.cpp">
+      <Filter>GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="VendorRecordsDlg.cpp">
+      <Filter>GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="DbgConsole.cpp">
+      <Filter>Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="Reader.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="FlashReader.cpp">
+      <Filter>App</Filter>
+    </ClCompile>
+    <ClCompile Include="FlashReaderDoc.cpp">
+      <Filter>App</Filter>
+    </ClCompile>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>App</Filter>
+    </ClCompile>
+    <ClCompile Include="FlashDatabase.cpp">
+      <Filter>Database</Filter>
+    </ClCompile>
+    <ClCompile Include="FlashRecord.cpp">
+      <Filter>Database</Filter>
+    </ClCompile>
+    <ClCompile Include="ThreadFile.cpp" />
+    <ClCompile Include="ThreadRead.cpp" />
+    <ClCompile Include="VendorRecord.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="AboutDlg.h">
+      <Filter>GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="BaseEditDlg.h">
+      <Filter>GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="BaseRecordsDlg.h">
+      <Filter>GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="ChangePageStateDlg.h">
+      <Filter>GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="FlashInfoDlg.h">
+      <Filter>GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="FlashMap.h">
+      <Filter>GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="FlashMapView.h">
+      <Filter>GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="FlashParametersDlg.h">
+      <Filter>GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="FlashReaderView.h">
+      <Filter>GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="MainFrm.h">
+      <Filter>GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="NewTaskDlg.h">
+      <Filter>GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="PageFinish.h">
+      <Filter>GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="PageSelect.h">
+      <Filter>GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="PageStart.h">
+      <Filter>GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="RecordEditDlg.h">
+      <Filter>GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="ReplaceRecordDlg.h">
+      <Filter>GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="SelectReaderDlg.h">
+      <Filter>GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="SettingsDlg.h">
+      <Filter>GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Splitter.h">
+      <Filter>GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="VendorNewDlg.h">
+      <Filter>GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="VendorRecordsDlg.h">
+      <Filter>GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="DbgConsole.h">
+      <Filter>Debug</Filter>
+    </ClInclude>
+    <ClInclude Include="Reader.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="SpecONFI.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="FlashReader.h">
+      <Filter>App</Filter>
+    </ClInclude>
+    <ClInclude Include="FlashReaderDoc.h">
+      <Filter>App</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>App</Filter>
+    </ClInclude>
+    <ClInclude Include="stdafx.h">
+      <Filter>App</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>App</Filter>
+    </ClInclude>
+    <ClInclude Include="FlashDatabase.h">
+      <Filter>Database</Filter>
+    </ClInclude>
+    <ClInclude Include="FlashRecord.h">
+      <Filter>Database</Filter>
+    </ClInclude>
+    <ClInclude Include="ThreadFile.h" />
+    <ClInclude Include="ThreadRead.h" />
+    <ClInclude Include="VendorRecord.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="FlashReader.rc">
+      <Filter>App</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+</Project>

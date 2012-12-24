@@ -1,0 +1,92 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="GUI">
+      <UniqueIdentifier>{e82d6740-9380-4688-8a77-660fd0c129f0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav</Extensions>
+    </Filter>
+    <Filter Include="Engine">
+      <UniqueIdentifier>{036004e4-1159-4615-828f-dfc7d64716e1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="App">
+      <UniqueIdentifier>{1774915f-c4a6-4800-adc4-94844a29ef5f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="RawFilesMgr">
+      <UniqueIdentifier>{a554c0a1-049b-46e8-ab05-88014275b6d3}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Box.cpp">
+      <Filter>GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="MainWnd.cpp">
+      <Filter>GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Global.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="RawerApp.cpp">
+      <Filter>App</Filter>
+    </ClCompile>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>App</Filter>
+    </ClCompile>
+    <ClCompile Include="RawFilesMgr.cpp">
+      <Filter>RawFilesMgr</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Box.h">
+      <Filter>GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="GdiPlus.h">
+      <Filter>GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="MainWnd.h">
+      <Filter>GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Global.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="RawerApp.h">
+      <Filter>App</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>App</Filter>
+    </ClInclude>
+    <ClInclude Include="stdafx.h">
+      <Filter>App</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>App</Filter>
+    </ClInclude>
+    <ClInclude Include="Plugin.h">
+      <Filter>RawFilesMgr</Filter>
+    </ClInclude>
+    <ClInclude Include="RawFilesMgr.h">
+      <Filter>RawFilesMgr</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="res\Rawer.ico">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\Rawer.rc2">
+      <Filter>Resource Files</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Rawer.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+</Project>

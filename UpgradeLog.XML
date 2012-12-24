@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet type='text/xsl' href='_UpgradeReport_Files/UpgradeReport.xslt'?><UpgradeLog>
+<Properties><Property Name="Solution" Value="WorkProjects">
+</Property><Property Name="Solution File" Value="J:\GitHub\WorkProjects\WorkProjects.sln">
+</Property><Property Name="Date" Value="19 листопада 2012 р.">
+</Property><Property Name="Time" Value="15:08">
+</Property></Properties><Event ErrorLevel="0" Project="TBBRecover" Source="TBBRecover\TBBRecover.vcproj" Description="Converting project file 'J:\GitHub\WorkProjects\TBBRecover\TBBRecover.vcproj'.">
+</Event><Event ErrorLevel="1" Project="TBBRecover" Source="TBBRecover\TBBRecover.vcproj" Description="VCWebServiceProxyGeneratorTool is no longer supported. The tool has been removed from your project settings.">
+</Event><Event ErrorLevel="0" Project="TBBRecover" Source="TBBRecover\TBBRecover.vcproj" Description="Done converting to new project file 'J:\GitHub\WorkProjects\TBBRecover\TBBRecover.vcxproj'.">
+</Event><Event ErrorLevel="3" Project="TBBRecover" Source="TBBRecover\TBBRecover.vcproj" Description="Converted">
+</Event><Event ErrorLevel="0" Project="W32Lib" Source="W32Lib\W32Lib.vcproj" Description="Converting project file 'J:\GitHub\WorkProjects\W32Lib\W32Lib.vcproj'.">
+</Event><Event ErrorLevel="1" Project="W32Lib" Source="W32Lib\W32Lib.vcproj" Description="VCWebServiceProxyGeneratorTool is no longer supported. The tool has been removed from your project settings.">
+</Event><Event ErrorLevel="0" Project="W32Lib" Source="W32Lib\W32Lib.vcproj" Description="Done converting to new project file 'J:\GitHub\WorkProjects\W32Lib\W32Lib.vcxproj'.">
+</Event><Event ErrorLevel="3" Project="W32Lib" Source="W32Lib\W32Lib.vcproj" Description="Converted">
+</Event><Event ErrorLevel="0" Project="WinApp" Source="WinApp\WinApp.vcproj" Description="Converting project file 'J:\GitHub\WorkProjects\WinApp\WinApp.vcproj'.">
+</Event><Event ErrorLevel="1" Project="WinApp" Source="WinApp\WinApp.vcproj" Description="VCWebServiceProxyGeneratorTool is no longer supported. The tool has been removed from your project settings.">
+</Event><Event ErrorLevel="0" Project="WinApp" Source="WinApp\WinApp.vcproj" Description="Done converting to new project file 'J:\GitHub\WorkProjects\WinApp\WinApp.vcxproj'.">
+</Event><Event ErrorLevel="3" Project="WinApp" Source="WinApp\WinApp.vcproj" Description="Converted">
+</Event><Event ErrorLevel="0" Project="Rawer" Source="Rawer\Rawer.vcproj" Description="Converting project file 'J:\GitHub\WorkProjects\Rawer\Rawer.vcproj'.">
+</Event><Event ErrorLevel="1" Project="Rawer" Source="Rawer\Rawer.vcproj" Description="VCWebServiceProxyGeneratorTool is no longer supported. The tool has been removed from your project settings.">
+</Event><Event ErrorLevel="0" Project="Rawer" Source="Rawer\Rawer.vcproj" Description="Done converting to new project file 'J:\GitHub\WorkProjects\Rawer\Rawer.vcxproj'.">
+</Event><Event ErrorLevel="3" Project="Rawer" Source="Rawer\Rawer.vcproj" Description="Converted">
+</Event><Event ErrorLevel="0" Project="MPEG2raw" Source="MPEG2raw\MPEG2raw.vcproj" Description="Converting project file 'J:\GitHub\WorkProjects\MPEG2raw\MPEG2raw.vcproj'.">
+</Event><Event ErrorLevel="1" Project="MPEG2raw" Source="MPEG2raw\MPEG2raw.vcproj" Description="VCWebServiceProxyGeneratorTool is no longer supported. The tool has been removed from your project settings.">
+</Event><Event ErrorLevel="0" Project="MPEG2raw" Source="MPEG2raw\MPEG2raw.vcproj" Description="Done converting to new project file 'J:\GitHub\WorkProjects\MPEG2raw\MPEG2raw.vcxproj'.">
+</Event><Event ErrorLevel="3" Project="MPEG2raw" Source="MPEG2raw\MPEG2raw.vcproj" Description="Converted">
+</Event><Event ErrorLevel="0" Project="ole" Source="ole\ole.vcproj" Description="Converting project file 'J:\GitHub\WorkProjects\ole\ole.vcproj'.">
+</Event><Event ErrorLevel="1" Project="ole" Source="ole\ole.vcproj" Description="VCWebServiceProxyGeneratorTool is no longer supported. The tool has been removed from your project settings.">
+</Event><Event ErrorLevel="0" Project="ole" Source="ole\ole.vcproj" Description="Done converting to new project file 'J:\GitHub\WorkProjects\ole\ole.vcxproj'.">
+</Event><Event ErrorLevel="3" Project="ole" Source="ole\ole.vcproj" Description="Converted">
+</Event><Event ErrorLevel="0" Project="HideMsg" Source="HideMsg\HideMsg.vcproj" Description="Converting project file 'J:\GitHub\WorkProjects\HideMsg\HideMsg.vcproj'.">
+</Event><Event ErrorLevel="1" Project="HideMsg" Source="HideMsg\HideMsg.vcproj" Description="VCWebServiceProxyGeneratorTool is no longer supported. The tool has been removed from your project settings.">
+</Event><Event ErrorLevel="0" Project="HideMsg" Source="HideMsg\HideMsg.vcproj" Description="Done converting to new project file 'J:\GitHub\WorkProjects\HideMsg\HideMsg.vcxproj'.">
+</Event><Event ErrorLevel="3" Project="HideMsg" Source="HideMsg\HideMsg.vcproj" Description="Converted">
+</Event><Event ErrorLevel="0" Project="keyHook" Source="keyHook\keyHook.vcproj" Description="Converting project file 'J:\GitHub\WorkProjects\keyHook\keyHook.vcproj'.">
+</Event><Event ErrorLevel="1" Project="keyHook" Source="keyHook\keyHook.vcproj" Description="VCWebServiceProxyGeneratorTool is no longer supported. The tool has been removed from your project settings.">
+</Event><Event ErrorLevel="0" Project="keyHook" Source="keyHook\keyHook.vcproj" Description="Done converting to new project file 'J:\GitHub\WorkProjects\keyHook\keyHook.vcxproj'.">
+</Event><Event ErrorLevel="3" Project="keyHook" Source="keyHook\keyHook.vcproj" Description="Converted">
+</Event><Event ErrorLevel="0" Project="ConsoleApp" Source="ConsoleApp\ConsoleApp.vcproj" Description="Converting project file 'J:\GitHub\WorkProjects\ConsoleApp\ConsoleApp.vcproj'.">
+</Event><Event ErrorLevel="1" Project="ConsoleApp" Source="ConsoleApp\ConsoleApp.vcproj" Description="VCWebServiceProxyGeneratorTool is no longer supported. The tool has been removed from your project settings.">
+</Event><Event ErrorLevel="0" Project="ConsoleApp" Source="ConsoleApp\ConsoleApp.vcproj" Description="Done converting to new project file 'J:\GitHub\WorkProjects\ConsoleApp\ConsoleApp.vcxproj'.">
+</Event><Event ErrorLevel="3" Project="ConsoleApp" Source="ConsoleApp\ConsoleApp.vcproj" Description="Converted">
+</Event><Event ErrorLevel="0" Project="DocRenamer" Source="DocRenamer\DocRenamer.vcproj" Description="Converting project file 'J:\GitHub\WorkProjects\DocRenamer\DocRenamer.vcproj'.">
+</Event><Event ErrorLevel="1" Project="DocRenamer" Source="DocRenamer\DocRenamer.vcproj" Description="VCWebServiceProxyGeneratorTool is no longer supported. The tool has been removed from your project settings.">
+</Event><Event ErrorLevel="0" Project="DocRenamer" Source="DocRenamer\DocRenamer.vcproj" Description="Done converting to new project file 'J:\GitHub\WorkProjects\DocRenamer\DocRenamer.vcxproj'.">
+</Event><Event ErrorLevel="3" Project="DocRenamer" Source="DocRenamer\DocRenamer.vcproj" Description="Converted">
+</Event><Event ErrorLevel="0" Project="Synchro" Source="Synchro\Synchro.vcproj" Description="Converting project file 'J:\GitHub\WorkProjects\Synchro\Synchro.vcproj'.">
+</Event><Event ErrorLevel="1" Project="Synchro" Source="Synchro\Synchro.vcproj" Description="VCWebServiceProxyGeneratorTool is no longer supported. The tool has been removed from your project settings.">
+</Event><Event ErrorLevel="0" Project="Synchro" Source="Synchro\Synchro.vcproj" Description="Done converting to new project file 'J:\GitHub\WorkProjects\Synchro\Synchro.vcxproj'.">
+</Event><Event ErrorLevel="3" Project="Synchro" Source="Synchro\Synchro.vcproj" Description="Converted">
+</Event><Event ErrorLevel="0" Project="Number" Source="Number\Number.vcproj" Description="Converting project file 'J:\GitHub\WorkProjects\Number\Number.vcproj'.">
+</Event><Event ErrorLevel="1" Project="Number" Source="Number\Number.vcproj" Description="VCWebServiceProxyGeneratorTool is no longer supported. The tool has been removed from your project settings.">
+</Event><Event ErrorLevel="0" Project="Number" Source="Number\Number.vcproj" Description="Done converting to new project file 'J:\GitHub\WorkProjects\Number\Number.vcxproj'.">
+</Event><Event ErrorLevel="3" Project="Number" Source="Number\Number.vcproj" Description="Converted">
+</Event><Event ErrorLevel="0" Project="ExtRenamer" Source="ExtRenamer\ExtRenamer.vcproj" Description="Converting project file 'J:\GitHub\WorkProjects\ExtRenamer\ExtRenamer.vcproj'.">
+</Event><Event ErrorLevel="1" Project="ExtRenamer" Source="ExtRenamer\ExtRenamer.vcproj" Description="VCWebServiceProxyGeneratorTool is no longer supported. The tool has been removed from your project settings.">
+</Event><Event ErrorLevel="0" Project="ExtRenamer" Source="ExtRenamer\ExtRenamer.vcproj" Description="Done converting to new project file 'J:\GitHub\WorkProjects\ExtRenamer\ExtRenamer.vcxproj'.">
+</Event><Event ErrorLevel="3" Project="ExtRenamer" Source="ExtRenamer\ExtRenamer.vcproj" Description="Converted">
+</Event><Event ErrorLevel="0" Project="FlashDriveCopy" Source="FlashDriveCopy\FlashDriveCopy.vcproj" Description="Converting project file 'J:\GitHub\WorkProjects\FlashDriveCopy\FlashDriveCopy.vcproj'.">
+</Event><Event ErrorLevel="1" Project="FlashDriveCopy" Source="FlashDriveCopy\FlashDriveCopy.vcproj" Description="VCWebServiceProxyGeneratorTool is no longer supported. The tool has been removed from your project settings.">
+</Event><Event ErrorLevel="0" Project="FlashDriveCopy" Source="FlashDriveCopy\FlashDriveCopy.vcproj" Description="Done converting to new project file 'J:\GitHub\WorkProjects\FlashDriveCopy\FlashDriveCopy.vcxproj'.">
+</Event><Event ErrorLevel="3" Project="FlashDriveCopy" Source="FlashDriveCopy\FlashDriveCopy.vcproj" Description="Converted">
+</Event><Event ErrorLevel="0" Project="test_server" Source="test_server\test_server.vcproj" Description="Converting project file 'J:\GitHub\WorkProjects\test_server\test_server.vcproj'.">
+</Event><Event ErrorLevel="1" Project="test_server" Source="test_server\test_server.vcproj" Description="VCWebServiceProxyGeneratorTool is no longer supported. The tool has been removed from your project settings.">
+</Event><Event ErrorLevel="0" Project="test_server" Source="test_server\test_server.vcproj" Description="Done converting to new project file 'J:\GitHub\WorkProjects\test_server\test_server.vcxproj'.">
+</Event><Event ErrorLevel="3" Project="test_server" Source="test_server\test_server.vcproj" Description="Converted">
+</Event><Event ErrorLevel="0" Project="test_client" Source="test_client\test_client.vcproj" Description="Converting project file 'J:\GitHub\WorkProjects\test_client\test_client.vcproj'.">
+</Event><Event ErrorLevel="1" Project="test_client" Source="test_client\test_client.vcproj" Description="VCWebServiceProxyGeneratorTool is no longer supported. The tool has been removed from your project settings.">
+</Event><Event ErrorLevel="0" Project="test_client" Source="test_client\test_client.vcproj" Description="Done converting to new project file 'J:\GitHub\WorkProjects\test_client\test_client.vcxproj'.">
+</Event><Event ErrorLevel="3" Project="test_client" Source="test_client\test_client.vcproj" Description="Converted">
+</Event><Event ErrorLevel="0" Project="EPSRecover" Source="EPSRecover\EPSRecover.vcproj" Description="Converting project file 'J:\GitHub\WorkProjects\EPSRecover\EPSRecover.vcproj'.">
+</Event><Event ErrorLevel="1" Project="EPSRecover" Source="EPSRecover\EPSRecover.vcproj" Description="VCWebServiceProxyGeneratorTool is no longer supported. The tool has been removed from your project settings.">
+</Event><Event ErrorLevel="0" Project="EPSRecover" Source="EPSRecover\EPSRecover.vcproj" Description="Done converting to new project file 'J:\GitHub\WorkProjects\EPSRecover\EPSRecover.vcxproj'.">
+</Event><Event ErrorLevel="3" Project="EPSRecover" Source="EPSRecover\EPSRecover.vcproj" Description="Converted">
+</Event><Event ErrorLevel="0" Project="RAIDTools" Source="RAIDTools\RAIDTools.vcproj" Description="Converting project file 'J:\GitHub\WorkProjects\RAIDTools\RAIDTools.vcproj'.">
+</Event><Event ErrorLevel="1" Project="RAIDTools" Source="RAIDTools\RAIDTools.vcproj" Description="VCWebServiceProxyGeneratorTool is no longer supported. The tool has been removed from your project settings.">
+</Event><Event ErrorLevel="0" Project="RAIDTools" Source="RAIDTools\RAIDTools.vcproj" Description="Done converting to new project file 'J:\GitHub\WorkProjects\RAIDTools\RAIDTools.vcxproj'.">
+</Event><Event ErrorLevel="3" Project="RAIDTools" Source="RAIDTools\RAIDTools.vcproj" Description="Converted">
+</Event><Event ErrorLevel="0" Project="MysqlTest" Source="MysqlTest\MysqlTest.vcproj" Description="Converting project file 'J:\GitHub\WorkProjects\MysqlTest\MysqlTest.vcproj'.">
+</Event><Event ErrorLevel="1" Project="MysqlTest" Source="MysqlTest\MysqlTest.vcproj" Description="VCWebServiceProxyGeneratorTool is no longer supported. The tool has been removed from your project settings.">
+</Event><Event ErrorLevel="0" Project="MysqlTest" Source="MysqlTest\MysqlTest.vcproj" Description="Done converting to new project file 'J:\GitHub\WorkProjects\MysqlTest\MysqlTest.vcxproj'.">
+</Event><Event ErrorLevel="3" Project="MysqlTest" Source="MysqlTest\MysqlTest.vcproj" Description="Converted">
+</Event><Event ErrorLevel="0" Project="FlashReader" Source="FlashReader\FlashReader.vcproj" Description="Converting project file 'J:\GitHub\WorkProjects\FlashReader\FlashReader.vcproj'.">
+</Event><Event ErrorLevel="1" Project="FlashReader" Source="FlashReader\FlashReader.vcproj" Description="VCWebServiceProxyGeneratorTool is no longer supported. The tool has been removed from your project settings.">
+</Event><Event ErrorLevel="0" Project="FlashReader" Source="FlashReader\FlashReader.vcproj" Description="Done converting to new project file 'J:\GitHub\WorkProjects\FlashReader\FlashReader.vcxproj'.">
+</Event><Event ErrorLevel="3" Project="FlashReader" Source="FlashReader\FlashReader.vcproj" Description="Converted">
+</Event><Event ErrorLevel="0" Project="dm" Source="dm\dm.vcproj" Description="Converting project file 'J:\GitHub\WorkProjects\dm\dm.vcproj'.">
+</Event><Event ErrorLevel="1" Project="dm" Source="dm\dm.vcproj" Description="VCWebServiceProxyGeneratorTool is no longer supported. The tool has been removed from your project settings.">
+</Event><Event ErrorLevel="0" Project="dm" Source="dm\dm.vcproj" Description="Done converting to new project file 'J:\GitHub\WorkProjects\dm\dm.vcxproj'.">
+</Event><Event ErrorLevel="3" Project="dm" Source="dm\dm.vcproj" Description="Converted">
+</Event><Event ErrorLevel="0" Project="" Source="WorkProjects.sln" Description="Solution converted successfully">
+</Event><Event ErrorLevel="3" Project="" Source="WorkProjects.sln" Description="Converted">
+</Event></UpgradeLog>

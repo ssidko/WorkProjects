@@ -45,7 +45,7 @@ int Unpack(FileEx *src_file, FileEx *out_file)
 		DWORD size = 0;
 		src_file->SetPointer(MARK_SIZE, FILE_CURRENT);
 		rw = src_file->Read(buffeee, 8192);
-		ret = uncompress(unpack_buff, &unpack_data_size, buffeee, 8192);
+		//ret = uncompress(unpack_buff, &unpack_data_size, buffeee, 8192);
 		if(ret == Z_OK)
 		{
 			out_file->Write(unpack_buff, unpack_data_size);

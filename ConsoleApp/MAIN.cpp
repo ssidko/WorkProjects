@@ -15,6 +15,8 @@
 #include "mp4_main.h"
 #include "mover.h"
 
+#include "vmfs.h"
+
 
 BOOL IsValidString(BYTE *str, DWORD len)
 {
@@ -510,16 +512,12 @@ int _tmain(int argc, _TCHAR* argv[])
 	//	_tprintf(_T("       <out_file>  - output file\n"));
 	//}
 
-	PhysicalDrive drive(8);
-	BYTE buff[256*512] = {0};
-	if (drive.Open()) {
-		while (true) {
-			drive.SetPointer(0);
-			while(drive.Read(buff, 256*512))
-				printf(".");
+//#define VMFS_VOLUME_OFFSET				(LONGLONG)512*10229760
+#define VMFS_VOLUME_OFFSET				(LONGLONG)512*128
 
-		}
-	}
+	File file(_T("\\\\.\\PhysicalDrive3"));
+	VMFS vmfs_vol(&file, VMFS_VOLUME_OFFSET);
+
 
 	_tprintf(_T("\nPress any key for exit ..."));
 	_getch();

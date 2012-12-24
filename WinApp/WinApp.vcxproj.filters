@@ -1,0 +1,90 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="GUI">
+      <UniqueIdentifier>{290f144b-768e-4589-941a-e88ac7762412}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="FlashRec">
+      <UniqueIdentifier>{3e01de43-09b3-4d22-95f9-65562782ec1d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ex2fs">
+      <UniqueIdentifier>{684cb044-0716-468c-8029-ae9617e08155}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Button.cpp">
+      <Filter>GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="ListBox.cpp">
+      <Filter>GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="MainWnd.cpp">
+      <Filter>GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Static.cpp">
+      <Filter>GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Block.cpp">
+      <Filter>FlashRec</Filter>
+    </ClCompile>
+    <ClCompile Include="Dump.cpp">
+      <Filter>FlashRec</Filter>
+    </ClCompile>
+    <ClCompile Include="Flash.cpp">
+      <Filter>FlashRec</Filter>
+    </ClCompile>
+    <ClCompile Include="Page.cpp">
+      <Filter>FlashRec</Filter>
+    </ClCompile>
+    <ClCompile Include="Unit.cpp">
+      <Filter>FlashRec</Filter>
+    </ClCompile>
+    <ClCompile Include="ext2fs.cpp">
+      <Filter>ex2fs</Filter>
+    </ClCompile>
+    <ClCompile Include="engine.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="Thread.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Button.h">
+      <Filter>GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="ListBox.h">
+      <Filter>GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="MainWnd.h">
+      <Filter>GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Static.h">
+      <Filter>GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Block.h">
+      <Filter>FlashRec</Filter>
+    </ClInclude>
+    <ClInclude Include="common.h">
+      <Filter>FlashRec</Filter>
+    </ClInclude>
+    <ClInclude Include="Dump.h">
+      <Filter>FlashRec</Filter>
+    </ClInclude>
+    <ClInclude Include="Flash.h">
+      <Filter>FlashRec</Filter>
+    </ClInclude>
+    <ClInclude Include="FlashRecovery.h">
+      <Filter>FlashRec</Filter>
+    </ClInclude>
+    <ClInclude Include="Page.h">
+      <Filter>FlashRec</Filter>
+    </ClInclude>
+    <ClInclude Include="Unit.h">
+      <Filter>FlashRec</Filter>
+    </ClInclude>
+    <ClInclude Include="ext2fs.h">
+      <Filter>ex2fs</Filter>
+    </ClInclude>
+    <ClInclude Include="engine.h" />
+    <ClInclude Include="main.h" />
+    <ClInclude Include="Thread.h" />
+  </ItemGroup>
+</Project>

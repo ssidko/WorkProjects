@@ -1,0 +1,43 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Koi8rToUnicode">
+      <UniqueIdentifier>{76f37886-ce9c-468a-a5c8-f6363f875946}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="StructuredStorage">
+      <UniqueIdentifier>{6d089441-e8bd-44f5-ae74-f7f3381d9f3f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SonyMTSRecovery">
+      <UniqueIdentifier>{bd53648b-0828-4d9e-b096-4b12ee76b2ea}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Koi8rToUnicode.cpp">
+      <Filter>Koi8rToUnicode</Filter>
+    </ClCompile>
+    <ClCompile Include="SStorage.cpp">
+      <Filter>StructuredStorage</Filter>
+    </ClCompile>
+    <ClCompile Include="SonyMTSRecovery.cpp">
+      <Filter>SonyMTSRecovery</Filter>
+    </ClCompile>
+    <ClCompile Include="Decryptor.cpp" />
+    <ClCompile Include="kernel.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="stdafx.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Koi8rToUnicode.h">
+      <Filter>Koi8rToUnicode</Filter>
+    </ClInclude>
+    <ClInclude Include="SStorage.h">
+      <Filter>StructuredStorage</Filter>
+    </ClInclude>
+    <ClInclude Include="SonyMTSRecovery.h">
+      <Filter>SonyMTSRecovery</Filter>
+    </ClInclude>
+    <ClInclude Include="Decryptor.h" />
+    <ClInclude Include="kernel.h" />
+    <ClInclude Include="stdafx.h" />
+  </ItemGroup>
+</Project>
