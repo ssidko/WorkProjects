@@ -516,12 +516,11 @@ int _tmain(int argc, _TCHAR* argv[])
 #define VMFS_VOLUME_OFFSET					(LONGLONG)512*128
 
 	const LONGLONG volume_offset = VMFS_VOLUME_OFFSET;
-	VMFSVolume vmfs_volume(_T("\\\\.\\PhysicalDrive3"), &volume_offset);
+	VMFSVolume vmfs_volume(_T("\\\\.\\PhysicalDrive2"), &volume_offset);
 	VMFS vmfs(&vmfs_volume);
-	if (vmfs_volume.Open()) {
-		if (vmfs.Open()) {
-			int x = 0;
-		}
+	if (vmfs.Open()) {
+		int x = 0;
+		int y = 0;
 	}
 
 

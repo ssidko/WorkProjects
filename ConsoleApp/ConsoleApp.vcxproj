@@ -97,6 +97,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Calc.cpp" />
+    <ClCompile Include="ext_journal.cpp" />
     <ClCompile Include="PlaChecker.cpp" />
     <ClCompile Include="smart.cpp" />
     <ClCompile Include="RAIDTools.cpp" />
@@ -115,6 +116,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Calc.h" />
+    <ClInclude Include="ext_journal.h" />
     <ClInclude Include="PlaChecker.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="smart.h" />

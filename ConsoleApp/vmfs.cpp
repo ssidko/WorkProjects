@@ -22,14 +22,12 @@ VMFSVolume::~VMFSVolume()
 BOOL VMFSVolume::ReadVolumeInfo(VMFS_VOLUME_INFO *vi)
 {
 	assert(vi);
-	if (this->IsOpen()) {
-		BYTE buff[VMFS_SECTOR_SIZE] = {0};
-		io.SetPointer(volume_offset + VMFS_VOLUME_INFO_BASE);
-		if (VMFS_SECTOR_SIZE == io.Read(buff, VMFS_SECTOR_SIZE)) {
-			if (((VMFS_VOLUME_INFO *)buff)->magic == VMFS_VOLUME_INFO_MAGIC) {
-				memcpy(vi, buff, sizeof(VMFS_VOLUME_INFO));
-				return TRUE;
-			}
+	BYTE buff[VMFS_SECTOR_SIZE] = {0};
+	io.SetPointer(volume_offset + VMFS_VOLUME_INFO_BASE);
+	if (VMFS_SECTOR_SIZE == io.Read(buff, VMFS_SECTOR_SIZE)) {
+		if (((VMFS_VOLUME_INFO *)buff)->magic == VMFS_VOLUME_INFO_MAGIC) {
+			memcpy(vi, buff, sizeof(VMFS_VOLUME_INFO));
+			return TRUE;
 		}
 	}
 	return FALSE;
@@ -38,13 +36,11 @@ BOOL VMFSVolume::ReadVolumeInfo(VMFS_VOLUME_INFO *vi)
 BOOL VMFSVolume::ReadLVMInfo(VMFS_LVM_INFO *li)
 {
 	assert(li);
-	if (this->IsOpen()) {
-		BYTE buff[VMFS_SECTOR_SIZE] = {0};
-		io.SetPointer(volume_offset + VMFS_VOLUME_INFO_BASE + VMFS_LVM_INFO_OFFSET);
-		if (VMFS_SECTOR_SIZE == io.Read(buff, VMFS_SECTOR_SIZE)) {
-			memcpy(li, buff, sizeof(VMFS_LVM_INFO));
-			return TRUE;
-		}
+	BYTE buff[VMFS_SECTOR_SIZE] = {0};
+	io.SetPointer(volume_offset + VMFS_VOLUME_INFO_BASE + VMFS_LVM_INFO_OFFSET);
+	if (VMFS_SECTOR_SIZE == io.Read(buff, VMFS_SECTOR_SIZE)) {
+		memcpy(li, buff, sizeof(VMFS_LVM_INFO));
+		return TRUE;
 	}
 	return FALSE;
 }
@@ -56,6 +52,7 @@ BOOL VMFSVolume::Open()
 			return FALSE;
 		if (!ReadLVMInfo(&lvm_info))
 			return false;
+		opened = TRUE;
 		return io.SetPointer(volume_offset);
 	}
 	return FALSE;
@@ -69,6 +66,7 @@ BOOL VMFSVolume::Open(const TCHAR *file_name)
 			return FALSE;
 		if (!ReadLVMInfo(&lvm_info))
 			return false;
+		opened = TRUE;
 		return io.SetPointer(volume_offset);
 	}
 	return FALSE;
@@ -93,6 +91,8 @@ void VMFSVolume::Close()
 {
 	io.Close();
 	opened = FALSE;
+	memset(&volume_info, 0x00, sizeof(volume_info));
+	memset(&lvm_info, 0x00, sizeof(lvm_info));
 }
 
 DWORD VMFSVolume::Read(void *buffer, DWORD count)
