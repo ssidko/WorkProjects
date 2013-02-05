@@ -40,6 +40,9 @@
     <Filter Include="ext_journal">
       <UniqueIdentifier>{fa9f4d7c-2afe-498a-9772-dafbc24abda4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="SQLite">
+      <UniqueIdentifier>{ce32bd3d-b31e-46c9-bd4d-1d64256827b6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Calc.cpp">
@@ -86,6 +89,9 @@
     </ClCompile>
     <ClCompile Include="ext_journal.cpp">
       <Filter>ext_journal</Filter>
+    </ClCompile>
+    <ClCompile Include="sqliter.cpp">
+      <Filter>SQLite</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -141,6 +147,9 @@
     </ClInclude>
     <ClInclude Include="ext_journal.h">
       <Filter>ext_journal</Filter>
+    </ClInclude>
+    <ClInclude Include="sqliter.h">
+      <Filter>SQLite</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

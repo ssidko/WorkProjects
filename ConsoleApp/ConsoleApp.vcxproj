@@ -101,6 +101,7 @@
     <ClCompile Include="PlaChecker.cpp" />
     <ClCompile Include="smart.cpp" />
     <ClCompile Include="RAIDTools.cpp" />
+    <ClCompile Include="sqliter.cpp" />
     <ClCompile Include="vmfs.cpp" />
     <ClCompile Include="VMFSMain.cpp" />
     <ClCompile Include="cut_txt_main.cpp" />
@@ -121,6 +122,7 @@
     <ClInclude Include="resource.h" />
     <ClInclude Include="smart.h" />
     <ClInclude Include="RAIDTools.h" />
+    <ClInclude Include="sqliter.h" />
     <ClInclude Include="vmfs.h" />
     <ClInclude Include="VMFSMain.h" />
     <ClInclude Include="cut_txt_main.h" />

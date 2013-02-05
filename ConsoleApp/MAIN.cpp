@@ -14,6 +14,7 @@
 #include "tibun.h"
 #include "mp4_main.h"
 #include "mover.h"
+#include "sqliter.h"
 
 #include "vmfs.h"
 
@@ -464,7 +465,6 @@ void XorBlock (DWORD *block_1, DWORD *block_2, DWORD *result_block, DWORD dw_cou
 	}
 }
 
-
 int _tmain(int argc, _TCHAR* argv[])
 {
 	//sql_main();
@@ -512,17 +512,18 @@ int _tmain(int argc, _TCHAR* argv[])
 	//	_tprintf(_T("       <out_file>  - output file\n"));
 	//}
 
-//#define VMFS_VOLUME_OFFSET				(LONGLONG)512*10229760
-#define VMFS_VOLUME_OFFSET					(LONGLONG)512*128
+//#define VMFS_VOLUME_OFFSET					(LONGLONG)512*10229760
+//#define VMFS_VOLUME_OFFSET					(LONGLONG)512*128
 
-	const LONGLONG volume_offset = VMFS_VOLUME_OFFSET;
-	VMFSVolume vmfs_volume(_T("\\\\.\\PhysicalDrive2"), &volume_offset);
-	VMFS vmfs(&vmfs_volume);
-	if (vmfs.Open()) {
-		int x = 0;
-		int y = 0;
-	}
+	//const LONGLONG volume_offset = VMFS_VOLUME_OFFSET;
+	//VMFSVolume vmfs_volume(_T("\\\\.\\PhysicalDrive2"), &volume_offset);
+	//VMFS vmfs(&vmfs_volume);
+	//if (vmfs.Open()) {
+	//	int x = 0;
+	//	int y = 0;
+	//}
 
+	
 
 	_tprintf(_T("\nPress any key for exit ..."));
 	_getch();
