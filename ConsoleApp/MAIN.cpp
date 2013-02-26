@@ -465,6 +465,68 @@ void XorBlock (DWORD *block_1, DWORD *block_2, DWORD *result_block, DWORD dw_cou
 	}
 }
 
+#include <ctime>
+
+#pragma pack (push)
+#pragma pack (1)
+
+typedef struct _VHDR {
+	DWORD sign : 24;
+	DWORD type : 4;
+	DWORD flag : 4;
+} VHDR;
+
+#pragma pack(pop)
+
+void testing(void)
+{
+	FileEx file(_T("J:\\Work\\33275\\tst.h264"));
+	if (file.Open()) {
+		VHDR hdr;
+		DWORD size = 0;
+		DWORD unk = 0;
+		DWORD time = 0;
+		LONGLONG chunk_offset = 0;
+		while (sizeof(VHDR) == file.Read(&hdr, sizeof(VHDR))) {
+			if ((hdr.sign == 0x010000) && (hdr.flag == 0x0F)) {
+				if (!file.GetPointer(&chunk_offset)) {
+					break;
+				}
+				chunk_offset -= sizeof(VHDR); 
+				if (hdr.type == 0x0D) {
+					if (sizeof(DWORD) != file.Read(&size, sizeof(DWORD))) {
+						break;
+					}
+					if (!file.SetPointer((LONGLONG)size, FILE_CURRENT)) {
+						break;
+					}
+					continue;
+				} else if (hdr.type == 0x0C) {					
+					if (sizeof(DWORD) != file.Read(&unk, sizeof(DWORD))) {
+						break;
+					}
+					if (sizeof(DWORD) != file.Read(&time, sizeof(DWORD))) {
+						break;
+					}					
+					if (sizeof(DWORD) != file.Read(&size, sizeof(DWORD))) {
+						break;
+					}
+					if (!file.SetPointer((LONGLONG)size, FILE_CURRENT)) {
+						break;
+					}
+					continue;
+				} else {
+					// unknown type !!!
+					int g = 0;
+				}
+			}
+			int zz = 0;
+		}
+		int y = 0;
+	}
+
+}
+
 int _tmain(int argc, _TCHAR* argv[])
 {
 	//sql_main();
@@ -523,7 +585,45 @@ int _tmain(int argc, _TCHAR* argv[])
 	//	int y = 0;
 	//}
 
+	//SQLiter db(_T("J:\\Work\\33116\\main.db"));
+	//if (db.Open()) {
+	//	db.TestFunction(NULL);
+	//}
+
+	//testing();
 	
+
+#define BUFF_SIZE			(DWORD)2*1024*1024
+#define MAX_FILE_SIZE		(LONGLONG)500*1024*1024
+
+	DWORD rw = 0;
+	FileEx file(_T("E:\\33275.bin"));
+	FileEx *out_file = NULL;
+	DWORD file_counter = 0;
+	TCHAR *out_dir = _T("J:\\Work\\33275\\h264\\");
+	TCHAR file_name[MAX_PATH] = {0};
+	if (file.Open()) {
+		BYTE *buff = new BYTE[BUFF_SIZE];
+		while (rw = file.Read(buff, BUFF_SIZE)) {
+			if (out_file) {
+				if (out_file->GetSize() >= MAX_FILE_SIZE) {
+					delete out_file;
+					out_file = NULL;
+					file_counter++;
+				}
+			}
+			if (!out_file) {
+				memset(file_name, 0x00, MAX_PATH*sizeof(TCHAR));
+				_stprintf(file_name, _T("%s%06d.h264"), out_dir, file_counter);
+				out_file = new FileEx(file_name);
+				if (!out_file->Create()) {
+					break;
+				}
+			}
+			out_file->Write(buff, rw);
+		}
+	}
+
 
 	_tprintf(_T("\nPress any key for exit ..."));
 	_getch();

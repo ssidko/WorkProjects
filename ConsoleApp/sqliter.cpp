@@ -5,61 +5,136 @@ int Sqliter_main()
 	return 0;
 }
 
-#pragma pack(push)
-#pragma pack(1)
+BOOL SQLiter::ReadDbHeader(DB_HEADER *header)
+{
+	assert(io.IsOpen());
 
-typedef struct _SQLITE_DB_HEADER {
-	BYTE magic_string[16];
-	WORD page_size;
-	BYTE write_ver;
-	BYTE read_ver;
-	BYTE reserved_space_size;
-	BYTE max_payload_fraction;
-	BYTE min_payload_fraction;
-	BYTE leaf_payload_fraction;
-	DWORD change_counter;
-	DWORD db_size;
-	DWORD freelist_page;
-	DWORD free_pages_counter;
-	DWORD schema_cookie;
-	DWORD schema_format;
-	DWORD default_cache_size;
-	DWORD largest_root_page;
-	DWORD text_encoding;
-	DWORD user_ver;
-	DWORD incremental_vacuum_mode;
-	BYTE reserved[24];
-	DWORD version_valid_for_number;
-	DWORD sqlite_ver;
+	io.SetPointer(0);
+	if (sizeof(DB_HEADER) == io.Read(header, sizeof(DB_HEADER))) {
+		if (0x00 == strcmp((const char *)header->magic_string, DB_HEADER_MAGIC_STRING)) {
+			header->page_size = Be2Le(&header->page_size);
+			header->change_counter = Be2Le(&header->change_counter);
+			header->db_size = Be2Le(&header->db_size);
+			header->freelist_page = Be2Le(&header->freelist_page);
+			header->free_pages_counter = Be2Le(&header->free_pages_counter);
+			header->schema_cookie = Be2Le(&header->schema_cookie);
+			header->schema_format = Be2Le(&header->schema_format);
+			header->default_cache_size = Be2Le(&header->default_cache_size);
+			header->largest_root_page = Be2Le(&header->largest_root_page);
+			header->text_encoding = Be2Le(&header->text_encoding);
+			header->user_ver = Be2Le(&header->user_ver);
+			header->incremental_vacuum_mode = Be2Le(&header->incremental_vacuum_mode);
+			header->version_valid_for_number = Be2Le(&header->version_valid_for_number);
+			header->sqlite_ver = Be2Le(&header->sqlite_ver);
+			return TRUE;
+		}
+	}
+	return FALSE;
+}
 
-} SQLITE_DB_HEADER;
+void SQLiter::InitializeFreePagesList()
+{
+	if (free_pages) {
+		delete [] free_pages;
+		free_pages = NULL;
+		free_pages_counter = 0;
+	}
 
-typedef struct _SQLITE_PAGE_HEADER {
-	BYTE type;
-	WORD freeblock_offs;
-	WORD cells_num;
-	WORD cells_offs;
-	BYTE number_fragmented_free_bytes;
-	DWORD right_most_pointer;
-} SQLITE_PAGE_HEADER;
+	DWORD res = 0;
+	BYTE *page = new BYTE[hdr.page_size];
+	DWORD next_page = hdr.freelist_page;
+	DWORD pointers_per_page = 0;
+	memset(page, 0x00, hdr.page_size);
 
-#pragma pack(pop)
+	DWORD pages_counter = 0;
+	free_pages = new DWORD[hdr.free_pages_counter];
+	memset(free_pages, 0x00, hdr.free_pages_counter * sizeof(DWORD));
+
+	do {
+		res = (DWORD)io.SetPointer((LONGLONG)(next_page - 1) * hdr.page_size);
+		assert(res);
+		res = io.Read(page, hdr.page_size);
+		assert(res);
+		next_page = Be2Le((DWORD *)page);
+		pointers_per_page = Be2Le((DWORD *)&page[sizeof(DWORD)]);
+
+		assert(next_page <= hdr.db_size);
+		assert(pointers_per_page <= (hdr.page_size / sizeof(DWORD)));
+		assert(hdr.free_pages_counter >= (pages_counter + pointers_per_page));
+
+		for (DWORD i = 0; i < pointers_per_page; i++) {
+			free_pages[pages_counter + i] = Be2Le((DWORD *)&page[(2 + i) * sizeof(DWORD)]);
+		}
+		pages_counter += pointers_per_page;
+		int x = 0;
+	} while (next_page);
+
+	free_pages_counter = pages_counter;
+	delete[] page;
+}
 
 BOOL SQLiter::Open()
 {
+	Close();
 	if (io.Open()) {
-
-
+		memset(&hdr, 0x00, sizeof(DB_HEADER));
+		if (ReadDbHeader(&hdr)) {
+			InitializeFreePagesList();
+			opened = TRUE;
+			return TRUE;
+		}
 	}
 	return FALSE;
 }
 
 void SQLiter::Close()
 {
-	io.Close();
+	if (free_pages) {
+		delete [] free_pages;
+		free_pages = NULL;
+		free_pages_counter = 0;
+	}
+
+	if (io.IsOpen()) {
+		io.Close();
+	}
+
+	opened = FALSE;
 }
 
+DWORD SQLiter::ReadFreePage(DWORD page_num, BYTE *buff)
+{
+	assert(opened);
+	assert(buff);
+	assert(page_num < free_pages_counter);
 
+	if (io.SetPointer((LONGLONG)(free_pages[page_num] - 1) * hdr.page_size)) {
+		if (hdr.page_size == io.Read(buff, hdr.page_size)) {
+			return free_pages[page_num];
+		}
+	}
+	return 0x00;
+}
+
+DWORD SQLiter::TestFunction(void *param)
+{
+	DWORD page_count = GetFreePagesCount();
+	BYTE page[4096];
+	PAGE_HEADER *page_hdr = (PAGE_HEADER *)page;
+	DWORD cell_offset = 0;
+
+	for (DWORD i = 0; i < page_count; i++) {
+		ReadFreePage(i, page);
+		if (page_hdr->type == 0x0D) {
+			int z = 0;
+
+		}
+
+		int y = 0;
+	}
+	int x = 0;
+	return 0;
+}
 
 
 #define SLOT_2_0     0x001fc07f

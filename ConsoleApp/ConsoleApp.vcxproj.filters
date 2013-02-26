@@ -43,6 +43,9 @@
     <Filter Include="SQLite">
       <UniqueIdentifier>{ce32bd3d-b31e-46c9-bd4d-1d64256827b6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="dvr-h264">
+      <UniqueIdentifier>{3c03be41-7e89-418a-b192-e4c33723d913}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Calc.cpp">
@@ -93,6 +96,7 @@
     <ClCompile Include="sqliter.cpp">
       <Filter>SQLite</Filter>
     </ClCompile>
+    <ClCompile Include="h264.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Calc.h">
@@ -151,6 +155,7 @@
     <ClInclude Include="sqliter.h">
       <Filter>SQLite</Filter>
     </ClInclude>
+    <ClInclude Include="h264.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="ConsoleApp.rc" />
