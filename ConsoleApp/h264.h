@@ -7,6 +7,6 @@
 namespace h264dvr
 {
 
-int main(TCHAR *file_name, TCHAR *out_dir);
+int main(TCHAR *file_name, LONGLONG offset, TCHAR *out_dir);
 
 }

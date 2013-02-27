@@ -18,6 +18,8 @@
 
 #include "vmfs.h"
 
+#include "h264.h"
+
 
 BOOL IsValidString(BYTE *str, DWORD len)
 {
@@ -591,38 +593,9 @@ int _tmain(int argc, _TCHAR* argv[])
 	//}
 
 	//testing();
-	
+	 
 
-#define BUFF_SIZE			(DWORD)2*1024*1024
-#define MAX_FILE_SIZE		(LONGLONG)500*1024*1024
-
-	DWORD rw = 0;
-	FileEx file(_T("E:\\33275.bin"));
-	FileEx *out_file = NULL;
-	DWORD file_counter = 0;
-	TCHAR *out_dir = _T("J:\\Work\\33275\\h264\\");
-	TCHAR file_name[MAX_PATH] = {0};
-	if (file.Open()) {
-		BYTE *buff = new BYTE[BUFF_SIZE];
-		while (rw = file.Read(buff, BUFF_SIZE)) {
-			if (out_file) {
-				if (out_file->GetSize() >= MAX_FILE_SIZE) {
-					delete out_file;
-					out_file = NULL;
-					file_counter++;
-				}
-			}
-			if (!out_file) {
-				memset(file_name, 0x00, MAX_PATH*sizeof(TCHAR));
-				_stprintf(file_name, _T("%s%06d.h264"), out_dir, file_counter);
-				out_file = new FileEx(file_name);
-				if (!out_file->Create()) {
-					break;
-				}
-			}
-			out_file->Write(buff, rw);
-		}
-	}
+	h264dvr::main(_T("E:\\33275.bin"), 0, _T("J:\\Work\\33275\\v2"));
 
 
 	_tprintf(_T("\nPress any key for exit ..."));

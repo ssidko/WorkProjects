@@ -103,20 +103,63 @@ public:
 	}
 	DWORD BeginTime(void) {return begin_time;}
 	DWORD LastTime(void) {return last_time;}
+	LONGLONG Size(void) {return io.GetSize();}
 };
 
 class VideoStorage
 {
+#define DELTA_TIME				(DWORD)2
+#define MAX_VIDEO_FILE_SIZE		(LONGLONG)500*1024*1024
 private:
 	DWORD file_counter;
-	BYTE out_dir[MAX_PATH];
+	TCHAR out_dir[MAX_PATH];
+	std::list<VideoFile *> files;
 public:
 	VideoStorage(TCHAR *path) : file_counter(0)
 	{
-
+		assert(path);
+		memset(out_dir, 0x00, MAX_PATH*sizeof(TCHAR));
+		if (_tcslen(path) >= MAX_PATH) {
+			throw 0;
+		}
+		_tcscpy_s(out_dir, MAX_PATH, path);
 	}
-
-	void SaveFrame (FRAME *frame)
+	~VideoStorage()
+	{
+		
+	}
+	VideoFile *CreateNewFile(void)
+	{
+		TCHAR file_name[1024];
+		memset(file_name, 0x00, sizeof(file_name));
+		_stprintf_s(file_name, sizeof(file_name), _T("%s%06d.h264"), out_dir, file_counter);
+		file_counter++;
+		return new VideoFile(file_name);
+	}
+	void AddFile(VideoFile *file)
+	{
+		assert(file);
+		files.push_back(file);
+	}
+	void SaveFrame(FRAME *frame)
+	{
+		assert(frame);
+		if (files.size()) {
+			for (std::list<VideoFile *>::iterator it = files.begin(); it != files.end(); ++it) {
+				VideoFile *file = *it;
+				if ((frame->time >= file->LastTime()) && ((frame->time - file->LastTime()) <= DELTA_TIME)) {
+					if (file->Size() >= MAX_VIDEO_FILE_SIZE) {
+						delete file;
+						file = *it = CreateNewFile();
+					}
+					file->SaveFrame(frame);
+					return;
+				}
+			}
+		}
+		AddFile(CreateNewFile());
+		(*files.begin())->SaveFrame(frame);
+	}
 };
 
 
@@ -133,7 +176,7 @@ BOOL PrepareDirPath(TCHAR *path, TCHAR *prep_path)
 	return FALSE;
 }
 
-int Run(OutStream &io)
+int Run(OutStream &io, VideoStorage &storage)
 {
 	return 0;
 }
@@ -145,10 +188,11 @@ int main(TCHAR *file_name, LONGLONG offset, TCHAR *out_dir)
 	File file(file_name);
 	if (file.Open()) {
 		OutStream io(&file, offset);
+		VideoStorage *storage;
 		TCHAR dir_path[MAX_PATH] = {0};
 		PrepareDirPath(out_dir, dir_path);
-
-		return Run(io);
+		storage = new VideoStorage(dir_path);
+		return Run(io, *storage);
 	}
 	return -1;
 }
