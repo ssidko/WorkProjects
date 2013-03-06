@@ -97,6 +97,20 @@ namespace mover
 		return le;
 	}
 
+	LONGLONG Be2Le(LONGLONG &be)
+	{
+		LONGLONG le;
+		((BYTE *)&le)[0] = ((BYTE *)&be)[7];
+		((BYTE *)&le)[1] = ((BYTE *)&be)[6];
+		((BYTE *)&le)[2] = ((BYTE *)&be)[5];
+		((BYTE *)&le)[3] = ((BYTE *)&be)[4];
+		((BYTE *)&le)[4] = ((BYTE *)&be)[3];
+		((BYTE *)&le)[5] = ((BYTE *)&be)[2];
+		((BYTE *)&le)[6] = ((BYTE *)&be)[1];
+		((BYTE *)&le)[7] = ((BYTE *)&be)[0];
+		return le;
+	}
+
 	BOOL PrepareDirPath(TCHAR *path, TCHAR *prep_path)
 	{
 		if (_tcslen(path) <= (MAX_PATH - 2)) {
@@ -187,7 +201,7 @@ namespace mover
 	{
 		DWORD rw = 0;
 		DWORD loop = 0;
-		DWORD atom_data_size = 0;
+		LONGLONG atom_data_size = 0;
 		DWORD read_at_once = 0;
 		MOV_ATOM *atom = NULL;
 		MOV_HEADER *hdr = NULL;
@@ -204,16 +218,20 @@ namespace mover
 
 		OutStream stream(&src_file, saved_offset);
 
-		//rw = stream.Read(buff, MOV_HEADER_SIZE);
-		//out_file.Write(buff, MOV_HEADER_SIZE);
-
 		while (sizeof(MOV_HEADER) == stream.Read(buff, sizeof(MOV_HEADER))) {
 			atom = (MOV_ATOM *)buff;
 			if (IsValidAtom(atom)) {
 				out_file.Write(atom, sizeof(MOV_HEADER));
-				atom_data_size = Be2Le(atom->hdr.size) - sizeof(MOV_HEADER);
+				if (Be2Le(atom->hdr.size) == 0x01) {
+					LONGLONG be_atom_size = 0;
+					stream.Read((BYTE *)&be_atom_size, sizeof(LONGLONG));
+					out_file.Write((BYTE *)&be_atom_size, sizeof(LONGLONG));
+					atom_data_size = Be2Le(be_atom_size) - sizeof(MOV_HEADER) - sizeof(LONGLONG);
+				} else {
+					atom_data_size = Be2Le(atom->hdr.size) - sizeof(MOV_HEADER);
+				}
 				while (atom_data_size) {
-					read_at_once = min(BUFFER_SIZE, atom_data_size);
+					read_at_once = (DWORD)min((LONGLONG)BUFFER_SIZE, atom_data_size);
 					rw = stream.Read(buff, read_at_once);
 					out_file.Write(buff, rw);
 					atom_data_size -= rw;
