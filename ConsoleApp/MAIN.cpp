@@ -544,15 +544,15 @@ int _tmain(int argc, _TCHAR* argv[])
 	//if (argc >= 3)
 	//	return mp4_main(argv[1], argv[2]);
 
-	if (argc >= 3) {
-		mover_main(argv[1], argv[2]);
-	}
-	else {
-		_tprintf(_T("Mover v 0.0.1\n"));
-		_tprintf(_T("Usage: <src_file> <out_dir>\n"));
-		_tprintf(_T("       <src_file> - can be simlpe file or Physical drive(\\\\.\\PhysicalDriveXX)\n"));
-		_tprintf(_T("       <out_dir>  - output directory\n"));
-	}
+	//if (argc >= 3) {
+	//	mover_main(argv[1], argv[2]);
+	//}
+	//else {
+	//	_tprintf(_T("Mover v 0.0.1\n"));
+	//	_tprintf(_T("Usage: <src_file> <out_dir>\n"));
+	//	_tprintf(_T("       <src_file> - can be simlpe file or Physical drive(\\\\.\\PhysicalDriveXX)\n"));
+	//	_tprintf(_T("       <out_dir>  - output directory\n"));
+	//}
 
 	//if (argc >= 3) {
 	//	LONGLONG offset = (LONGLONG)167935*512;
@@ -587,10 +587,10 @@ int _tmain(int argc, _TCHAR* argv[])
 	//	int y = 0;
 	//}
 
-	//SQLiter db(_T("J:\\Work\\33116\\main.db"));
-	//if (db.Open()) {
-	//	db.TestFunction(NULL);
-	//}
+	SQLiter db(_T("J:\\Work\\33116\\main.db"));
+	if (db.Open()) {
+		db.TestFunction(NULL);
+	}
 
 	//testing();
 	 

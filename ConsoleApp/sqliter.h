@@ -71,6 +71,10 @@ public:
 	DWORD GetDbSize() {assert(opened); return hdr.db_size;}
 	DWORD GetFreePagesCount() {assert(opened); return free_pages_counter;}
 
+	// Return size in pages
+	DWORD Size(void);
+
+	BOOL ReadPage(DWORD page_num, BYTE *buff);
 	// В случае успеха возвращает номер страници (нумерация с 1), иначе 0x00.
 	DWORD ReadFreePage(DWORD page_num, BYTE *buff);
 

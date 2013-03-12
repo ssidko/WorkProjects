@@ -102,15 +102,37 @@ void SQLiter::Close()
 	opened = FALSE;
 }
 
+DWORD SQLiter::Size(void)
+{
+	if (opened && hdr.page_size) {
+		LONGLONG file_size = io.GetSize();
+		return (DWORD)(file_size/hdr.page_size);
+	}
+	return 0;
+}
+
+BOOL SQLiter::ReadPage(DWORD page_num, BYTE *buff)
+{
+	assert(opened);
+	assert(buff);
+
+	if (page_num && (page_num <= Size()))
+	if (io.SetPointer((LONGLONG)(page_num - 1)*hdr.page_size)) {
+		return ((DWORD)hdr.page_size == io.Read(buff, (DWORD)hdr.page_size));
+	}
+	return FALSE;
+}
+
 DWORD SQLiter::ReadFreePage(DWORD page_num, BYTE *buff)
 {
 	assert(opened);
 	assert(buff);
-	assert(page_num < free_pages_counter);
 
-	if (io.SetPointer((LONGLONG)(free_pages[page_num] - 1) * hdr.page_size)) {
-		if (hdr.page_size == io.Read(buff, hdr.page_size)) {
-			return free_pages[page_num];
+	if (page_num < free_pages_counter) {
+		if (io.SetPointer((LONGLONG)(free_pages[page_num] - 1) * hdr.page_size)) {
+			if (hdr.page_size == io.Read(buff, hdr.page_size)) {
+				return free_pages[page_num];
+			}
 		}
 	}
 	return 0x00;
