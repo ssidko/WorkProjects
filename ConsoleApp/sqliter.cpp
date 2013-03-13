@@ -142,14 +142,33 @@ DWORD SQLiter::TestFunction(void *param)
 {
 	DWORD page_count = GetFreePagesCount();
 	BYTE page[4096];
+	BYTE *cell_raw = NULL;
+	WORD *offs_array = NULL;
 	PAGE_HEADER *page_hdr = (PAGE_HEADER *)page;
 	DWORD cell_offset = 0;
+	DWORD page_num = 0;
+	DWORD rw = 0;
+
 
 	for (DWORD i = 0; i < page_count; i++) {
-		ReadFreePage(i, page);
+		page_num = ReadFreePage(i, page);
 		if (page_hdr->type == 0x0D) {
-			int z = 0;
+			page_hdr->freeblock_offs = Be2Le(&page_hdr->freeblock_offs);
+			page_hdr->cells_num = Be2Le(&page_hdr->cells_num);
+			page_hdr->cells_offs = Be2Le(&page_hdr->cells_offs);
+			offs_array = (WORD *)&page[8];
 
+			for (DWORD i = 0; i < page_hdr->cells_num; ++i) {
+				TABLE_LEAF_CELL cell;
+				cell_raw = &page[Be2Le(&offs_array[i])];
+
+
+
+
+				int y = 0;
+			}
+
+			int x = 0;
 		}
 
 		int y = 0;

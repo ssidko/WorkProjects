@@ -48,6 +48,13 @@ class SQLiter
 		DWORD right_most_pointer;
 	} PAGE_HEADER;
 
+	typedef struct _TABLE_LEAF_CELL {
+		LONGLONG payload_size;
+		LONGLONG row_id;
+		BYTE *paylod;
+		DWORD overflow_page;
+	} TABLE_LEAF_CELL;
+
 #pragma pack(pop)
 
 private:
