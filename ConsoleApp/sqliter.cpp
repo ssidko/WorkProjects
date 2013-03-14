@@ -1,8 +1,49 @@
 #include "sqliter.h"
 
+namespace sqliter
+{
+
 int Sqliter_main() 
 {
 	return 0;
+}
+
+Page::Page(BYTE *page_buff, DWORD buff_size) : buff(NULL), size(buff_size)
+{
+	assert(page_buff && buff_size);
+
+	buff = new BYTE[size];
+	assert(buff);	
+	memcpy(buff, page_buff, size);
+	
+	memset(&hdr, 0x00, sizeof(PAGE_HEADER));
+}
+
+BOOL Page::InitializeAsLeafTablePage(void)
+{
+	PAGE_HEADER *hdr_be = (PAGE_HEADER *)buff;
+
+	assert(hdr_be->flag == kLeafTablePage);
+
+	hdr.flag = hdr_be->flag;
+	hdr.first_freeblock = ;
+	hdr.cells_count = ;
+	hdr.cells_offs = ;
+	hdr.fragmented_bytes = ;
+}
+
+BOOL Page::Initialize(void)
+{
+	switch (buff[0]) {
+	case kIntIndexPage :
+	case kIntTablePage :
+	case kLeafIndexPage :
+		return FALSE;
+	case kLeafTablePage :
+		return InitializeAsLeafTablePage();
+	default :
+		return FALSE;
+	}
 }
 
 BOOL SQLiter::ReadDbHeader(DB_HEADER *header)
@@ -102,7 +143,7 @@ void SQLiter::Close()
 	opened = FALSE;
 }
 
-DWORD SQLiter::Size(void)
+DWORD SQLiter::PagesCount(void)
 {
 	if (opened && hdr.page_size) {
 		LONGLONG file_size = io.GetSize();
@@ -116,7 +157,7 @@ BOOL SQLiter::ReadPage(DWORD page_num, BYTE *buff)
 	assert(opened);
 	assert(buff);
 
-	if (page_num && (page_num <= Size()))
+	if (page_num && (page_num <= PagesCount()))
 	if (io.SetPointer((LONGLONG)(page_num - 1)*hdr.page_size)) {
 		return ((DWORD)hdr.page_size == io.Read(buff, (DWORD)hdr.page_size));
 	}
@@ -140,7 +181,7 @@ DWORD SQLiter::ReadFreePage(DWORD page_num, BYTE *buff)
 
 DWORD SQLiter::TestFunction(void *param)
 {
-	DWORD page_count = GetFreePagesCount();
+	DWORD page_count = FreePagesCount();
 	BYTE page[4096];
 	BYTE *cell_raw = NULL;
 	WORD *offs_array = NULL;
@@ -152,15 +193,17 @@ DWORD SQLiter::TestFunction(void *param)
 
 	for (DWORD i = 0; i < page_count; i++) {
 		page_num = ReadFreePage(i, page);
-		if (page_hdr->type == 0x0D) {
-			page_hdr->freeblock_offs = Be2Le(&page_hdr->freeblock_offs);
-			page_hdr->cells_num = Be2Le(&page_hdr->cells_num);
+		if (page_hdr->flag == 0x0D) {
+			page_hdr->first_freeblock = Be2Le(&page_hdr->first_freeblock);
+			page_hdr->cells_count = Be2Le(&page_hdr->cells_count);
 			page_hdr->cells_offs = Be2Le(&page_hdr->cells_offs);
 			offs_array = (WORD *)&page[8];
 
-			for (DWORD i = 0; i < page_hdr->cells_num; ++i) {
+			for (DWORD i = 0; i < page_hdr->cells_count; ++i) {
 				TABLE_LEAF_CELL cell;
 				cell_raw = &page[Be2Le(&offs_array[i])];
+				cell_raw += GetVarint(cell_raw, &cell.payload_size);
+				cell_raw += GetVarint(cell_raw, &cell.row_id);
 
 
 
@@ -343,5 +386,7 @@ BYTE GetVarint(BYTE *p, ULONGLONG *v)
 	*v = ((ULONGLONG)s)<<32 | a;
 
 	return 9;
+}
+
 }
 

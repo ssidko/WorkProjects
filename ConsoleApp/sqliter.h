@@ -3,12 +3,12 @@
 #include <assert.h>
 #include "W32Lib.h"
 
-BYTE GetVarint(BYTE *p, ULONGLONG *v);
-int Sqliter_main();
-
-
-class SQLiter
+namespace sqliter
 {
+
+	BYTE GetVarint(BYTE *p, ULONGLONG *v);
+	int Sqliter_main();
+
 #define DB_HEADER_MAGIC_STRING				"SQLite format 3"
 
 #pragma pack(push)
@@ -40,53 +40,86 @@ class SQLiter
 	} DB_HEADER;
 
 	typedef struct _PAGE_HEADER {
-		BYTE type;
-		WORD freeblock_offs;
-		WORD cells_num;
+		BYTE flag;
+		WORD first_freeblock;
+		WORD cells_count;
 		WORD cells_offs;
-		BYTE number_fragmented_free_bytes;
-		DWORD right_most_pointer;
+		BYTE fragmented_bytes;
+		DWORD right_ptr;
 	} PAGE_HEADER;
 
+#pragma pack(pop)
+
 	typedef struct _TABLE_LEAF_CELL {
-		LONGLONG payload_size;
-		LONGLONG row_id;
+		ULONGLONG payload_size;
+		ULONGLONG row_id;
 		BYTE *paylod;
 		DWORD overflow_page;
 	} TABLE_LEAF_CELL;
 
-#pragma pack(pop)
+	//
+	//  RECORD:
+	//	- header
+	//	--- header size
+	//	--- columns
+	//	--- . . . 
+	//	- body		
+	//
 
-private:
-	BOOL opened;
-	FileEx io;
-	DB_HEADER hdr;
-	DWORD *free_pages;
-	DWORD free_pages_counter;
+	enum {
+		kIntIndexPage = 2,
+		kIntTablePage = 5,
+		kLeafIndexPage = 10,
+		kLeafTablePage = 13
+	};
 
-	BOOL ReadDbHeader(DB_HEADER *header);
-	void InitializeFreePagesList();
+	class Page 
+	{
+	private:
+		BYTE *buff;
+		DWORD size;
+		PAGE_HEADER hdr;
+		BOOL InitializeAsLeafTablePage(void);
+	public:
+		Page(BYTE *page_buff, DWORD buff_size);
+		~Page() {delete[] buff;}
 
-public:
-	SQLiter(TCHAR *file_name) : opened(FALSE), io(file_name), free_pages(NULL), free_pages_counter(0) {}
-	~SQLiter() {Close();}
+		BOOL Initialize(void);
+		DWORD CellsCount(void);
+	};
 
-	BOOL Open();
-	void Close();
 
-	DWORD GetPageSize() {assert(opened); return (DWORD)hdr.page_size;}
-	DWORD GetDbSize() {assert(opened); return hdr.db_size;}
-	DWORD GetFreePagesCount() {assert(opened); return free_pages_counter;}
+	class SQLiter
+	{
+	private:
+		BOOL opened;
+		FileEx io;
+		DB_HEADER hdr;
+		DWORD *free_pages;
+		DWORD free_pages_counter;
 
-	// Return size in pages
-	DWORD Size(void);
+		BOOL ReadDbHeader(DB_HEADER *header);
+		void InitializeFreePagesList();
 
-	BOOL ReadPage(DWORD page_num, BYTE *buff);
-	// В случае успеха возвращает номер страници (нумерация с 1), иначе 0x00.
-	DWORD ReadFreePage(DWORD page_num, BYTE *buff);
+	public:
+		SQLiter(TCHAR *file_name) : opened(FALSE), io(file_name), free_pages(NULL), free_pages_counter(0) {}
+		~SQLiter(void) {Close();}
 
-	DWORD TestFunction(void *param);
-};
+		BOOL Open(void);
+		void Close(void);
+
+		DWORD PageSize(void) {assert(opened); return (DWORD)hdr.page_size;}
+		DWORD PagesCount(void);
+		DWORD FreePagesCount(void) {assert(opened); return free_pages_counter;}
+		
+		BOOL ReadPage(DWORD page_num, BYTE *buff);
+		// В случае успеха возвращает номер страници (нумерация с 1), иначе 0x00.
+		DWORD ReadFreePage(DWORD page_num, BYTE *buff);
+
+		DWORD TestFunction(void *param);
+	};
+
+}
 
 
 
