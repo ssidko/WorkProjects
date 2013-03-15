@@ -529,6 +529,8 @@ void testing(void)
 
 }
 
+#include "sqliter.h"
+
 int _tmain(int argc, _TCHAR* argv[])
 {
 	//sql_main();
@@ -587,12 +589,11 @@ int _tmain(int argc, _TCHAR* argv[])
 	//	int y = 0;
 	//}
 
-	SQLiter db(_T("J:\\Work\\33116\\main.db"));
+	sqliter::SQLiter db(_T("J:\\Work\\33116\\main.db"));
 	if (db.Open()) {
 		db.TestFunction(NULL);
 	}
 
-	//testing();
 	 
 
 	//h264dvr::main(_T("E:\\33275.bin"), 0, _T("J:\\Work\\33275\\v2"));

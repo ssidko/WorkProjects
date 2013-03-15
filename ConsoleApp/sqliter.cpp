@@ -11,36 +11,40 @@ int Sqliter_main()
 Page::Page(BYTE *page_buff, DWORD buff_size) : buff(NULL), size(buff_size)
 {
 	assert(page_buff && buff_size);
-
 	buff = new BYTE[size];
 	assert(buff);	
 	memcpy(buff, page_buff, size);
-	
-	memset(&hdr, 0x00, sizeof(PAGE_HEADER));
 }
 
-BOOL Page::InitializeAsLeafTablePage(void)
+void Page::InitializeHeader(void)
 {
 	PAGE_HEADER *hdr_be = (PAGE_HEADER *)buff;
+	assert((hdr_be->type == kIntIndexPage)  || (hdr_be->type == kIntTablePage) || 
+		   (hdr_be->type == kLeafIndexPage) || (hdr_be->type == kLeafTablePage));
 
-	assert(hdr_be->flag == kLeafTablePage);
+	memset(&hdr, 0x00, sizeof(PAGE_HEADER));
 
-	hdr.flag = hdr_be->flag;
-	hdr.first_freeblock = ;
-	hdr.cells_count = ;
-	hdr.cells_offs = ;
-	hdr.fragmented_bytes = ;
+	hdr.type = hdr_be->type;
+	hdr.first_freeblock = Be2Le(&hdr_be->first_freeblock);
+	hdr.cells_count = Be2Le(&hdr_be->cells_count);
+	hdr.cells_offs = Be2Le(&hdr_be->cells_offs);
+	hdr.fragmented_bytes = hdr_be->fragmented_bytes;
+
+	if ((hdr.type == kIntIndexPage) || (hdr.type == kIntTablePage)) {
+		hdr.right_ptr = Be2Le(&hdr_be->right_ptr);
+	}
 }
 
 BOOL Page::Initialize(void)
 {
-	switch (buff[0]) {
+	InitializeHeader();
+
+	switch (hdr.type) {
 	case kIntIndexPage :
 	case kIntTablePage :
 	case kLeafIndexPage :
-		return FALSE;
 	case kLeafTablePage :
-		return InitializeAsLeafTablePage();
+		return TRUE;
 	default :
 		return FALSE;
 	}
@@ -73,7 +77,7 @@ BOOL SQLiter::ReadDbHeader(DB_HEADER *header)
 	return FALSE;
 }
 
-void SQLiter::InitializeFreePagesList()
+void SQLiter::InitializeFreePagesList(void)
 {
 	if (free_pages) {
 		delete [] free_pages;
@@ -193,7 +197,7 @@ DWORD SQLiter::TestFunction(void *param)
 
 	for (DWORD i = 0; i < page_count; i++) {
 		page_num = ReadFreePage(i, page);
-		if (page_hdr->flag == 0x0D) {
+		if (page_hdr->type == 0x0D) {
 			page_hdr->first_freeblock = Be2Le(&page_hdr->first_freeblock);
 			page_hdr->cells_count = Be2Le(&page_hdr->cells_count);
 			page_hdr->cells_offs = Be2Le(&page_hdr->cells_offs);

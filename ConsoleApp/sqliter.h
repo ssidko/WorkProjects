@@ -40,7 +40,7 @@ namespace sqliter
 	} DB_HEADER;
 
 	typedef struct _PAGE_HEADER {
-		BYTE flag;
+		BYTE type;
 		WORD first_freeblock;
 		WORD cells_count;
 		WORD cells_offs;
@@ -79,13 +79,14 @@ namespace sqliter
 		BYTE *buff;
 		DWORD size;
 		PAGE_HEADER hdr;
-		BOOL InitializeAsLeafTablePage(void);
+		void InitializeHeader(void);
 	public:
 		Page(BYTE *page_buff, DWORD buff_size);
 		~Page() {delete[] buff;}
 
 		BOOL Initialize(void);
-		DWORD CellsCount(void);
+		DWORD Type(void) {return hdr.type;}
+		DWORD CellsCount(void) {return hdr.cells_count;}
 	};
 
 
@@ -97,25 +98,19 @@ namespace sqliter
 		DB_HEADER hdr;
 		DWORD *free_pages;
 		DWORD free_pages_counter;
-
 		BOOL ReadDbHeader(DB_HEADER *header);
-		void InitializeFreePagesList();
-
+		void InitializeFreePagesList(void);
 	public:
 		SQLiter(TCHAR *file_name) : opened(FALSE), io(file_name), free_pages(NULL), free_pages_counter(0) {}
 		~SQLiter(void) {Close();}
-
 		BOOL Open(void);
 		void Close(void);
-
 		DWORD PageSize(void) {assert(opened); return (DWORD)hdr.page_size;}
 		DWORD PagesCount(void);
-		DWORD FreePagesCount(void) {assert(opened); return free_pages_counter;}
-		
+		DWORD FreePagesCount(void) {assert(opened); return free_pages_counter;}		
 		BOOL ReadPage(DWORD page_num, BYTE *buff);
 		// В случае успеха возвращает номер страници (нумерация с 1), иначе 0x00.
 		DWORD ReadFreePage(DWORD page_num, BYTE *buff);
-
 		DWORD TestFunction(void *param);
 	};
 
