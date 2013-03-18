@@ -1,6 +1,7 @@
 #pragma once
 #include <Windows.h>
 #include <assert.h>
+#include <memory>
 #include "W32Lib.h"
 
 namespace sqliter
@@ -43,9 +44,15 @@ namespace sqliter
 		BYTE type;
 		WORD first_freeblock;
 		WORD cells_count;
-		WORD cells_offs;
+		WORD cells_area;
 		BYTE fragmented_bytes;
-		DWORD right_ptr;
+		union {
+			WORD offsets[1];
+			struct {
+				DWORD right_ptr;
+				WORD offsets[1];
+			} IntPage;
+		};
 	} PAGE_HEADER;
 
 #pragma pack(pop)
@@ -78,15 +85,16 @@ namespace sqliter
 	private:
 		BYTE *buff;
 		DWORD size;
-		PAGE_HEADER hdr;
+		PAGE_HEADER *hdr;
 		void InitializeHeader(void);
 	public:
-		Page(BYTE *page_buff, DWORD buff_size);
-		~Page() {delete[] buff;}
-
-		BOOL Initialize(void);
-		DWORD Type(void) {return hdr.type;}
-		DWORD CellsCount(void) {return hdr.cells_count;}
+		Page(BYTE *page_buff, DWORD page_size);
+		~Page() {Cleanup();}
+		void Initialize(void);
+		void Initialize(BYTE *page_buff, DWORD page_size);
+		void Cleanup(void);
+		DWORD Type(void) {return hdr->type;}
+		DWORD CellsCount(void) {return hdr->cells_count;}
 	};
 
 
@@ -109,6 +117,7 @@ namespace sqliter
 		DWORD PagesCount(void);
 		DWORD FreePagesCount(void) {assert(opened); return free_pages_counter;}		
 		BOOL ReadPage(DWORD page_num, BYTE *buff);
+		Page *GetPage(DWORD page_num);
 		// В случае успеха возвращает номер страници (нумерация с 1), иначе 0x00.
 		DWORD ReadFreePage(DWORD page_num, BYTE *buff);
 		DWORD TestFunction(void *param);

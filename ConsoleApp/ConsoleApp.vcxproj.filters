@@ -93,10 +93,10 @@
     <ClCompile Include="ext_journal.cpp">
       <Filter>ext_journal</Filter>
     </ClCompile>
+    <ClCompile Include="h264.cpp" />
     <ClCompile Include="sqliter.cpp">
       <Filter>SQLite</Filter>
     </ClCompile>
-    <ClCompile Include="h264.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Calc.h">
@@ -152,10 +152,10 @@
     <ClInclude Include="ext_journal.h">
       <Filter>ext_journal</Filter>
     </ClInclude>
+    <ClInclude Include="h264.h" />
     <ClInclude Include="sqliter.h">
       <Filter>SQLite</Filter>
     </ClInclude>
-    <ClInclude Include="h264.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="ConsoleApp.rc" />

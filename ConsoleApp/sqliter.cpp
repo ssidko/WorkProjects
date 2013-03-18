@@ -8,47 +8,65 @@ int Sqliter_main()
 	return 0;
 }
 
-Page::Page(BYTE *page_buff, DWORD buff_size) : buff(NULL), size(buff_size)
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+//												class Page
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+
+Page::Page(BYTE *page_buff, DWORD page_size) : buff(page_buff), size(page_size), hdr(NULL)
 {
-	assert(page_buff && buff_size);
-	buff = new BYTE[size];
-	assert(buff);	
-	memcpy(buff, page_buff, size);
+	Initialize();
 }
 
 void Page::InitializeHeader(void)
 {
-	PAGE_HEADER *hdr_be = (PAGE_HEADER *)buff;
-	assert((hdr_be->type == kIntIndexPage)  || (hdr_be->type == kIntTablePage) || 
-		   (hdr_be->type == kLeafIndexPage) || (hdr_be->type == kLeafTablePage));
+	if (0x00 == strcmp((const char *)buff, DB_HEADER_MAGIC_STRING)) {
+		hdr = (PAGE_HEADER *)&buff[100];
+	}
+	else {
+		hdr = (PAGE_HEADER *)buff;
+	}
 
-	memset(&hdr, 0x00, sizeof(PAGE_HEADER));
+	assert((hdr->type == kIntIndexPage)  || (hdr->type == kIntTablePage) || 
+		   (hdr->type == kLeafIndexPage) || (hdr->type == kLeafTablePage));
 
-	hdr.type = hdr_be->type;
-	hdr.first_freeblock = Be2Le(&hdr_be->first_freeblock);
-	hdr.cells_count = Be2Le(&hdr_be->cells_count);
-	hdr.cells_offs = Be2Le(&hdr_be->cells_offs);
-	hdr.fragmented_bytes = hdr_be->fragmented_bytes;
+	hdr->type = hdr->type;
+	hdr->first_freeblock = Be2Le(&hdr->first_freeblock);
+	hdr->cells_count = Be2Le(&hdr->cells_count);
+	hdr->cells_area = Be2Le(&hdr->cells_area);
+	hdr->fragmented_bytes = hdr->fragmented_bytes;
 
-	if ((hdr.type == kIntIndexPage) || (hdr.type == kIntTablePage)) {
-		hdr.right_ptr = Be2Le(&hdr_be->right_ptr);
+	if ((hdr->type == kIntIndexPage) || (hdr->type == kIntTablePage)) {
+		hdr->IntPage.right_ptr = Be2Le(&hdr->IntPage.right_ptr);
 	}
 }
 
-BOOL Page::Initialize(void)
+void Page::Initialize(void)
 {
 	InitializeHeader();
-
-	switch (hdr.type) {
-	case kIntIndexPage :
-	case kIntTablePage :
-	case kLeafIndexPage :
-	case kLeafTablePage :
-		return TRUE;
-	default :
-		return FALSE;
-	}
 }
+
+void Page::Initialize(BYTE *page_buff, DWORD page_size)
+{
+	assert (page_buff && page_size);
+
+	Cleanup();
+	buff = page_buff;
+	size = page_size;
+	InitializeHeader();
+}
+
+void Page::Cleanup(void)
+{
+	if (buff) {
+		delete[] buff;
+		buff = NULL;
+	}
+	size = 0;
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+//												class SQLiter
+//////////////////////////////////////////////////////////////////////////////////////////////////////
 
 BOOL SQLiter::ReadDbHeader(DB_HEADER *header)
 {
@@ -111,7 +129,6 @@ void SQLiter::InitializeFreePagesList(void)
 			free_pages[pages_counter + i] = Be2Le((DWORD *)&page[(2 + i) * sizeof(DWORD)]);
 		}
 		pages_counter += pointers_per_page;
-		int x = 0;
 	} while (next_page);
 
 	free_pages_counter = pages_counter;
@@ -158,14 +175,30 @@ DWORD SQLiter::PagesCount(void)
 
 BOOL SQLiter::ReadPage(DWORD page_num, BYTE *buff)
 {
-	assert(opened);
 	assert(buff);
 
-	if (page_num && (page_num <= PagesCount()))
-	if (io.SetPointer((LONGLONG)(page_num - 1)*hdr.page_size)) {
-		return ((DWORD)hdr.page_size == io.Read(buff, (DWORD)hdr.page_size));
+	if (opened) {
+		if (page_num && (page_num <= PagesCount())) {
+			if (io.SetPointer((LONGLONG)(page_num - 1)*hdr.page_size)) {
+				return ((DWORD)hdr.page_size == io.Read(buff, (DWORD)hdr.page_size));
+			}
+		}
 	}
 	return FALSE;
+}
+
+Page *SQLiter::GetPage(DWORD page_num)
+{
+	if (opened) {
+		BYTE *buff = new BYTE[hdr.page_size];
+		if (ReadPage(page_num, buff)) {
+			return new Page(buff, hdr.page_size);
+		}
+		else {
+			delete[] buff;
+		}
+	}
+	return NULL;
 }
 
 DWORD SQLiter::ReadFreePage(DWORD page_num, BYTE *buff)
@@ -185,42 +218,6 @@ DWORD SQLiter::ReadFreePage(DWORD page_num, BYTE *buff)
 
 DWORD SQLiter::TestFunction(void *param)
 {
-	DWORD page_count = FreePagesCount();
-	BYTE page[4096];
-	BYTE *cell_raw = NULL;
-	WORD *offs_array = NULL;
-	PAGE_HEADER *page_hdr = (PAGE_HEADER *)page;
-	DWORD cell_offset = 0;
-	DWORD page_num = 0;
-	DWORD rw = 0;
-
-
-	for (DWORD i = 0; i < page_count; i++) {
-		page_num = ReadFreePage(i, page);
-		if (page_hdr->type == 0x0D) {
-			page_hdr->first_freeblock = Be2Le(&page_hdr->first_freeblock);
-			page_hdr->cells_count = Be2Le(&page_hdr->cells_count);
-			page_hdr->cells_offs = Be2Le(&page_hdr->cells_offs);
-			offs_array = (WORD *)&page[8];
-
-			for (DWORD i = 0; i < page_hdr->cells_count; ++i) {
-				TABLE_LEAF_CELL cell;
-				cell_raw = &page[Be2Le(&offs_array[i])];
-				cell_raw += GetVarint(cell_raw, &cell.payload_size);
-				cell_raw += GetVarint(cell_raw, &cell.row_id);
-
-
-
-
-				int y = 0;
-			}
-
-			int x = 0;
-		}
-
-		int y = 0;
-	}
-	int x = 0;
 	return 0;
 }
 
