@@ -17,6 +17,12 @@ Page::Page(BYTE *page_buff, DWORD page_size) : buff(page_buff), size(page_size),
 	Initialize();
 }
 
+void Page::Initialize(void)
+{
+	InitializeHeader();
+	InitializeCellPointerArray();
+}
+
 void Page::InitializeHeader(void)
 {
 	hdr = (PAGE_HEADER *)buff;
@@ -33,9 +39,26 @@ void Page::InitializeHeader(void)
 	}
 }
 
-void Page::Initialize(void)
+void Page::InitializeCellPointerArray()
 {
-	InitializeHeader();
+	if ((hdr->type == kIntIndexPage)  || (hdr->type == kIntTablePage) || (hdr->type == kLeafIndexPage) || (hdr->type == kLeafTablePage)) {
+		WORD *idx = hdr->offsets;
+		if ((hdr->type == kIntIndexPage) || (hdr->type == kIntTablePage)) {
+			idx = hdr->IntPage.offsets;
+		}
+		for (DWORD i = 0; i < hdr->cells_count; i++) {
+			idx[i] = Be2Le(&idx[i]);
+		}
+	}
+}
+
+void Page::Cleanup(void)
+{
+	if (buff) {
+		delete[] buff;
+		buff = NULL;
+	}
+	size = 0;
 }
 
 void Page::Initialize(BYTE *page_buff, DWORD page_size)
@@ -48,14 +71,26 @@ void Page::Initialize(BYTE *page_buff, DWORD page_size)
 	Initialize();
 }
 
-void Page::Cleanup(void)
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+//												class LeafTablePage
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+
+LeafTablePage::LeafTablePage(BYTE *page_buff, DWORD page_size): Page(page_buff, page_size)
 {
-	if (buff) {
-		delete[] buff;
-		buff = NULL;
-	}
-	size = 0;
+
 }
+
+LeafTablePage::~LeafTablePage()
+{
+
+}
+
+void LeafTablePage::GetCell(DWORD cell_num)
+{
+
+}
+
+
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 //												class SQLiter

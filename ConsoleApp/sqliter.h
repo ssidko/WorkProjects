@@ -57,12 +57,11 @@ namespace sqliter
 
 #pragma pack(pop)
 
-	typedef struct _TABLE_LEAF_CELL {
+	typedef struct _LEAF_TABLE_CELL {
 		ULONGLONG payload_size;
 		ULONGLONG row_id;
-		BYTE *paylod;
-		DWORD overflow_page;
-	} TABLE_LEAF_CELL;
+		BYTE paylod[1];
+	} LEAF_TABLE_CELL;
 
 	//
 	//  RECORD:
@@ -88,13 +87,24 @@ namespace sqliter
 		PAGE_HEADER *hdr;
 		void Initialize(void);
 		void InitializeHeader(void);
+		void InitializeCellPointerArray(void);
+		void Cleanup(void);
 	public:
 		Page(BYTE *page_buff, DWORD page_size);
 		~Page()	{Cleanup();}
 		void Initialize(BYTE *page_buff, DWORD page_size);
-		void Cleanup(void);
 		DWORD Type(void) {return hdr->type;}
 		DWORD CellsCount(void) {return hdr->cells_count;}
+	};
+
+	class LeafTablePage : public Page
+	{
+	private:
+	public:
+		LeafTablePage(BYTE *page_buff, DWORD page_size);
+		~LeafTablePage();
+
+		void GetCell(DWORD cell_num);
 	};
 
 
