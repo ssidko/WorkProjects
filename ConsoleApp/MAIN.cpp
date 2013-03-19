@@ -591,10 +591,14 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	sqliter::SQLiter db(_T("J:\\Work\\33116\\main.db"));
 	if (db.Open()) {
-		for (DWORD i = 1; i < db.PagesCount(); i++) {
-			std::unique_ptr<sqliter::Page> page(db.GetPage(i));
-			if (page.get()) {
-				int x = 0;
+		for (DWORD i = 1; i <= db.FreePagesCount(); i++) {
+			sqliter::Page *page = db.GetFreePage(i);
+			if (page && (page->Type() == sqliter::kLeafTablePage)) {
+
+
+
+				delete page;
+				page = NULL;
 			}
 		}
 	}

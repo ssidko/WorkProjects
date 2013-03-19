@@ -86,11 +86,11 @@ namespace sqliter
 		BYTE *buff;
 		DWORD size;
 		PAGE_HEADER *hdr;
+		void Initialize(void);
 		void InitializeHeader(void);
 	public:
 		Page(BYTE *page_buff, DWORD page_size);
-		~Page() {Cleanup();}
-		void Initialize(void);
+		~Page()	{Cleanup();}
 		void Initialize(BYTE *page_buff, DWORD page_size);
 		void Cleanup(void);
 		DWORD Type(void) {return hdr->type;}
@@ -120,6 +120,7 @@ namespace sqliter
 		Page *GetPage(DWORD page_num);
 		// В случае успеха возвращает номер страници (нумерация с 1), иначе 0x00.
 		DWORD ReadFreePage(DWORD page_num, BYTE *buff);
+		Page *GetFreePage(DWORD page_num);
 		DWORD TestFunction(void *param);
 	};
 

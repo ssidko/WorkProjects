@@ -19,24 +19,17 @@ Page::Page(BYTE *page_buff, DWORD page_size) : buff(page_buff), size(page_size),
 
 void Page::InitializeHeader(void)
 {
+	hdr = (PAGE_HEADER *)buff;
 	if (0x00 == strcmp((const char *)buff, DB_HEADER_MAGIC_STRING)) {
 		hdr = (PAGE_HEADER *)&buff[100];
 	}
-	else {
-		hdr = (PAGE_HEADER *)buff;
-	}
-
-	assert((hdr->type == kIntIndexPage)  || (hdr->type == kIntTablePage) || 
-		   (hdr->type == kLeafIndexPage) || (hdr->type == kLeafTablePage));
-
-	hdr->type = hdr->type;
-	hdr->first_freeblock = Be2Le(&hdr->first_freeblock);
-	hdr->cells_count = Be2Le(&hdr->cells_count);
-	hdr->cells_area = Be2Le(&hdr->cells_area);
-	hdr->fragmented_bytes = hdr->fragmented_bytes;
-
-	if ((hdr->type == kIntIndexPage) || (hdr->type == kIntTablePage)) {
-		hdr->IntPage.right_ptr = Be2Le(&hdr->IntPage.right_ptr);
+	if ((hdr->type == kIntIndexPage)  || (hdr->type == kIntTablePage) || (hdr->type == kLeafIndexPage) || (hdr->type == kLeafTablePage)) {
+		hdr->first_freeblock = Be2Le(&hdr->first_freeblock);
+		hdr->cells_count = Be2Le(&hdr->cells_count);
+		hdr->cells_area = Be2Le(&hdr->cells_area);
+		if ((hdr->type == kIntIndexPage) || (hdr->type == kIntTablePage)) {
+			hdr->IntPage.right_ptr = Be2Le(&hdr->IntPage.right_ptr);
+		}
 	}
 }
 
@@ -52,7 +45,7 @@ void Page::Initialize(BYTE *page_buff, DWORD page_size)
 	Cleanup();
 	buff = page_buff;
 	size = page_size;
-	InitializeHeader();
+	Initialize();
 }
 
 void Page::Cleanup(void)
@@ -206,7 +199,7 @@ DWORD SQLiter::ReadFreePage(DWORD page_num, BYTE *buff)
 	assert(opened);
 	assert(buff);
 
-	if (page_num < free_pages_counter) {
+	if (page_num <= free_pages_counter) {
 		if (io.SetPointer((LONGLONG)(free_pages[page_num] - 1) * hdr.page_size)) {
 			if (hdr.page_size == io.Read(buff, hdr.page_size)) {
 				return free_pages[page_num];
@@ -214,6 +207,17 @@ DWORD SQLiter::ReadFreePage(DWORD page_num, BYTE *buff)
 		}
 	}
 	return 0x00;
+}
+
+Page *SQLiter::GetFreePage(DWORD page_num)
+{
+	if (opened) {
+		BYTE *buff = new BYTE[hdr.page_size];
+		if (ReadFreePage(page_num, buff)) {
+			return new Page(buff, hdr.page_size);
+		}
+	}
+	return NULL;
 }
 
 DWORD SQLiter::TestFunction(void *param)
