@@ -531,6 +531,8 @@ void testing(void)
 
 #include "sqliter.h"
 
+using namespace sqliter;
+
 int _tmain(int argc, _TCHAR* argv[])
 {
 	//sql_main();
@@ -589,14 +591,30 @@ int _tmain(int argc, _TCHAR* argv[])
 	//	int y = 0;
 	//}
 
-	sqliter::SQLiter db(_T("J:\\Work\\33116\\main.db"));
+	SQLiter db(_T("J:\\Work\\33116\\main.db"));
 	if (db.Open()) {
 		for (DWORD i = 1; i <= db.FreePagesCount(); i++) {
-			sqliter::Page *page = db.GetFreePage(i);
-			if (page && (page->Type() == sqliter::kLeafTablePage)) {
+			Page *page = db.GetFreePage(i);
+			if (page && (page->Type() == kLeafTablePage)) {
+				for (DWORD c = 0; c < page->CellsCount(); c++) {
+					DWORD max_cell_size = 0;
+					BYTE *raw_cell =  page->GetCell(c, &max_cell_size);
+					if (raw_cell) {
+						BYTE *next = raw_cell;
+						LEAF_TABLE_CELL cell;
+						next += GetVarint(next, &cell.payload_size);
+						next += GetVarint(next, &cell.row_id);
+						cell.payload = next;
 
+						// Record parsing
+						ULONGLONG header_size = 0;
 
+						next += GetVarint(next, &header_size);
 
+						int y = 0;
+					}
+					int x = 0;
+				}
 				delete page;
 				page = NULL;
 			}

@@ -12,7 +12,12 @@ int Sqliter_main()
 //												class Page
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 
-Page::Page(BYTE *page_buff, DWORD page_size) : buff(page_buff), size(page_size), hdr(NULL)
+Page::Page(BYTE *page_buff, DWORD page_size) : buff(page_buff), size(page_size), number(NULL), hdr(NULL)
+{
+	Initialize();
+}
+
+Page::Page(BYTE *page_buff, DWORD page_size, DWORD page_number) : buff(page_buff), size(page_size), number(page_number), hdr(NULL)
 {
 	Initialize();
 }
@@ -58,17 +63,51 @@ void Page::Cleanup(void)
 		delete[] buff;
 		buff = NULL;
 	}
-	size = 0;
+	number = size = 0;
 }
 
-void Page::Initialize(BYTE *page_buff, DWORD page_size)
+void Page::Initialize(BYTE *page_buff, DWORD page_size, DWORD page_number)
 {
 	assert (page_buff && page_size);
 
 	Cleanup();
 	buff = page_buff;
 	size = page_size;
+	number = page_number;
 	Initialize();
+}
+
+BYTE *Page::GetCell(DWORD cell_num, DWORD *max_size)
+{
+	if (hdr->cells_count && (cell_num < hdr->cells_count)) {
+		WORD *idx = hdr->offsets;
+		if ((hdr->type == kIntIndexPage) || (hdr->type == kIntTablePage)) {
+			idx = hdr->IntPage.offsets;
+		}
+		if (idx[cell_num] < this->size) {
+			if (max_size) {
+				*max_size = GetAvaliableBytesForCell(cell_num);
+			}
+			return &buff[idx[cell_num]];
+		}
+	}
+	return NULL;
+}
+
+DWORD Page::GetAvaliableBytesForCell(DWORD cell_num)
+{
+	if (hdr->cells_count && (cell_num < hdr->cells_count)) {
+		WORD *idx = hdr->offsets;
+		WORD cell_offs = idx[cell_num];
+		DWORD threshold = size;
+		for (DWORD i = 0; i < hdr->cells_count; i++) {
+			if (idx[i] > cell_offs && (idx[i] < threshold)) {
+				threshold = idx[i];
+			}
+		}
+		return (DWORD)(threshold - cell_offs);
+	}
+	return 0;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -84,12 +123,6 @@ LeafTablePage::~LeafTablePage()
 {
 
 }
-
-void LeafTablePage::GetCell(DWORD cell_num)
-{
-
-}
-
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -220,7 +253,7 @@ Page *SQLiter::GetPage(DWORD page_num)
 	if (opened) {
 		BYTE *buff = new BYTE[hdr.page_size];
 		if (ReadPage(page_num, buff)) {
-			return new Page(buff, hdr.page_size);
+			return new Page(buff, hdr.page_size, page_num);
 		}
 		else {
 			delete[] buff;
@@ -248,8 +281,9 @@ Page *SQLiter::GetFreePage(DWORD page_num)
 {
 	if (opened) {
 		BYTE *buff = new BYTE[hdr.page_size];
-		if (ReadFreePage(page_num, buff)) {
-			return new Page(buff, hdr.page_size);
+		DWORD real_page_num = 0;
+		if (real_page_num = ReadFreePage(page_num, buff)) {
+			return new Page(buff, hdr.page_size, real_page_num);
 		}
 	}
 	return NULL;

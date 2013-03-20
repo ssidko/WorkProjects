@@ -60,7 +60,7 @@ namespace sqliter
 	typedef struct _LEAF_TABLE_CELL {
 		ULONGLONG payload_size;
 		ULONGLONG row_id;
-		BYTE paylod[1];
+		BYTE *payload;
 	} LEAF_TABLE_CELL;
 
 	//
@@ -84,6 +84,7 @@ namespace sqliter
 	private:
 		BYTE *buff;
 		DWORD size;
+		DWORD number;
 		PAGE_HEADER *hdr;
 		void Initialize(void);
 		void InitializeHeader(void);
@@ -91,10 +92,16 @@ namespace sqliter
 		void Cleanup(void);
 	public:
 		Page(BYTE *page_buff, DWORD page_size);
+		Page(BYTE *page_buff, DWORD page_size, DWORD page_number);
 		~Page()	{Cleanup();}
-		void Initialize(BYTE *page_buff, DWORD page_size);
+		void Initialize(BYTE *page_buff, DWORD page_size, DWORD page_number);
+		DWORD Number(void) {return number;}
 		DWORD Type(void) {return hdr->type;}
 		DWORD CellsCount(void) {return hdr->cells_count;}
+		// нумерация с нуля.
+		BYTE *GetCell(DWORD cell_num, DWORD *max_size);
+		// нумерация с нуля.
+		DWORD GetAvaliableBytesForCell(DWORD cell_num);
 	};
 
 	class LeafTablePage : public Page
@@ -103,8 +110,6 @@ namespace sqliter
 	public:
 		LeafTablePage(BYTE *page_buff, DWORD page_size);
 		~LeafTablePage();
-
-		void GetCell(DWORD cell_num);
 	};
 
 
@@ -126,10 +131,13 @@ namespace sqliter
 		DWORD PageSize(void) {assert(opened); return (DWORD)hdr.page_size;}
 		DWORD PagesCount(void);
 		DWORD FreePagesCount(void) {assert(opened); return free_pages_counter;}		
+		// нумерация с 1
 		BOOL ReadPage(DWORD page_num, BYTE *buff);
+		// нумерация с 1
 		Page *GetPage(DWORD page_num);
 		// В случае успеха возвращает номер страници (нумерация с 1), иначе 0x00.
 		DWORD ReadFreePage(DWORD page_num, BYTE *buff);
+		// нумерация с нуля.
 		Page *GetFreePage(DWORD page_num);
 		DWORD TestFunction(void *param);
 	};
