@@ -591,7 +591,8 @@ int _tmain(int argc, _TCHAR* argv[])
 	//	int y = 0;
 	//}
 
-	SQLiter db(_T("J:\\Work\\33116\\main.db"));
+	//SQLiter db(_T("J:\\Work\\33116\\main.db"));
+	SQLiter db(_T("d:\\GitHub\\main.db"));
 	if (db.Open()) {
 		for (DWORD i = 1; i <= db.FreePagesCount(); i++) {
 			Page *page = db.GetFreePage(i);
@@ -620,8 +621,6 @@ int _tmain(int argc, _TCHAR* argv[])
 			}
 		}
 	}
-
-	 
 
 	//h264dvr::main(_T("E:\\33275.bin"), 0, _T("J:\\Work\\33275\\v2"));
 

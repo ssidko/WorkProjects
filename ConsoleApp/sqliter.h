@@ -6,9 +6,9 @@
 
 namespace sqliter
 {
-
-	BYTE GetVarint(BYTE *p, ULONGLONG *v);
 	int Sqliter_main();
+	BYTE GetVarint(BYTE *p, ULONGLONG *v);
+	string UTF8ToCP1251( const char *str );
 
 #define DB_HEADER_MAGIC_STRING				"SQLite format 3"
 
@@ -91,27 +91,20 @@ namespace sqliter
 		void InitializeCellPointerArray(void);
 		void Cleanup(void);
 	public:
-		Page(BYTE *page_buff, DWORD page_size);
 		Page(BYTE *page_buff, DWORD page_size, DWORD page_number);
 		~Page()	{Cleanup();}
 		void Initialize(BYTE *page_buff, DWORD page_size, DWORD page_number);
 		DWORD Number(void) {return number;}
 		DWORD Type(void) {return hdr->type;}
 		DWORD CellsCount(void) {return hdr->cells_count;}
+		DWORD RecordsCount(void);
 		// нумерация с нуля.
 		BYTE *GetCell(DWORD cell_num, DWORD *max_size);
 		// нумерация с нуля.
 		DWORD GetAvaliableBytesForCell(DWORD cell_num);
+		// нумерация с нуля.
+		void GetRecord(DWORD record_num);
 	};
-
-	class LeafTablePage : public Page
-	{
-	private:
-	public:
-		LeafTablePage(BYTE *page_buff, DWORD page_size);
-		~LeafTablePage();
-	};
-
 
 	class SQLiter
 	{

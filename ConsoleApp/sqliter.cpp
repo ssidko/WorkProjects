@@ -12,11 +12,6 @@ int Sqliter_main()
 //												class Page
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 
-Page::Page(BYTE *page_buff, DWORD page_size) : buff(page_buff), size(page_size), number(NULL), hdr(NULL)
-{
-	Initialize();
-}
-
 Page::Page(BYTE *page_buff, DWORD page_size, DWORD page_number) : buff(page_buff), size(page_size), number(page_number), hdr(NULL)
 {
 	Initialize();
@@ -79,51 +74,53 @@ void Page::Initialize(BYTE *page_buff, DWORD page_size, DWORD page_number)
 
 BYTE *Page::GetCell(DWORD cell_num, DWORD *max_size)
 {
-	if (hdr->cells_count && (cell_num < hdr->cells_count)) {
-		WORD *idx = hdr->offsets;
-		if ((hdr->type == kIntIndexPage) || (hdr->type == kIntTablePage)) {
-			idx = hdr->IntPage.offsets;
+	assert(hdr->cells_count && (cell_num < hdr->cells_count));
+
+	WORD *idx = hdr->offsets;
+	if ((hdr->type == kIntIndexPage) || (hdr->type == kIntTablePage)) {
+		idx = hdr->IntPage.offsets;
+	}
+	if (idx[cell_num] < this->size) {
+		if (max_size) {
+			*max_size = GetAvaliableBytesForCell(cell_num);
 		}
-		if (idx[cell_num] < this->size) {
-			if (max_size) {
-				*max_size = GetAvaliableBytesForCell(cell_num);
-			}
-			return &buff[idx[cell_num]];
-		}
+		return &buff[idx[cell_num]];
 	}
 	return NULL;
 }
 
 DWORD Page::GetAvaliableBytesForCell(DWORD cell_num)
 {
-	if (hdr->cells_count && (cell_num < hdr->cells_count)) {
-		WORD *idx = hdr->offsets;
-		WORD cell_offs = idx[cell_num];
-		DWORD threshold = size;
-		for (DWORD i = 0; i < hdr->cells_count; i++) {
-			if (idx[i] > cell_offs && (idx[i] < threshold)) {
-				threshold = idx[i];
-			}
+	assert(hdr->cells_count && (cell_num < hdr->cells_count));
+
+	WORD *idx = hdr->offsets;
+	WORD cell_offs = idx[cell_num];
+	DWORD threshold = size;
+	for (DWORD i = 0; i < hdr->cells_count; i++) {
+		if ((idx[i] > cell_offs) && (idx[i] < threshold)) {
+			threshold = idx[i];
 		}
-		return (DWORD)(threshold - cell_offs);
+	}
+	return (DWORD)(threshold - cell_offs);
+}
+
+DWORD Page::RecordsCount(void)
+{
+	if ((hdr->type == kIntIndexPage) || (hdr->type == kLeafIndexPage) || (hdr->type == kLeafTablePage)) {
+		return hdr->cells_count;
 	}
 	return 0;
 }
 
-//////////////////////////////////////////////////////////////////////////////////////////////////////
-//												class LeafTablePage
-//////////////////////////////////////////////////////////////////////////////////////////////////////
-
-LeafTablePage::LeafTablePage(BYTE *page_buff, DWORD page_size): Page(page_buff, page_size)
+void Page::GetRecord(DWORD record_num)
 {
+	assert(hdr->cells_count && (record_num < hdr->cells_count));
+	if ((hdr->type == kIntIndexPage) || (hdr->type == kLeafIndexPage) || (hdr->type == kLeafTablePage)) {
+
+
+	}
 
 }
-
-LeafTablePage::~LeafTablePage()
-{
-
-}
-
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 //												class SQLiter
@@ -460,6 +457,40 @@ BYTE GetVarint(BYTE *p, ULONGLONG *v)
 	*v = ((ULONGLONG)s)<<32 | a;
 
 	return 9;
+}
+
+string UTF8ToCP1251( const char *str )
+{
+	string res;    
+	int result_u, result_c;
+	result_u = MultiByteToWideChar(CP_UTF8, 0, str, -1, 0, 0);
+
+	if (!result_u)
+	{
+		return 0;
+	}
+	wchar_t *ures = new wchar_t[result_u];
+	if(!MultiByteToWideChar(CP_UTF8, 0, str, -1, ures, result_u))
+	{
+		delete[] ures;
+		return 0;
+	}
+	result_c = WideCharToMultiByte(1251, 0, ures, -1, 0, 0, 0, 0);
+	if(!result_c)
+	{
+		delete [] ures;
+		return 0;
+	}
+	char *cres = new char[result_c];
+	if(!WideCharToMultiByte(1251, 0, ures, -1, cres, result_c, 0, 0))
+	{
+		delete[] cres;
+		return 0;
+	}
+	delete[] ures;
+	res.append(cres);
+	delete[] cres;
+	return res;
 }
 
 }
