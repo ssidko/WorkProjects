@@ -7,7 +7,7 @@
 namespace sqliter
 {
 	int Sqliter_main();
-	BYTE GetVarint(BYTE *p, ULONGLONG *v);
+	BYTE GetVarint(BYTE *p, LONGLONG *v);
 	string UTF8ToCP1251( const char *str );
 
 #define DB_HEADER_MAGIC_STRING				"SQLite format 3"
@@ -63,14 +63,19 @@ namespace sqliter
 		BYTE *payload;
 	} LEAF_TABLE_CELL;
 
-	//
-	//  RECORD:
-	//	- header
-	//	--- header size
-	//	--- columns
-	//	--- . . . 
-	//	- body		
-	//
+	enum {
+		kInteger,
+		kFloat,
+		kString,
+		kBlob,
+	};
+
+	class Record
+	{
+	private:
+	public:
+		Record(BYTE *raw_record, DWORD record_size);
+	};
 
 	enum {
 		kIntIndexPage = 2,
@@ -136,6 +141,3 @@ namespace sqliter
 	};
 
 }
-
-
-

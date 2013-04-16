@@ -9,6 +9,17 @@ int Sqliter_main()
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////
+//												class Record
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+
+Record::Record(BYTE *raw_record, DWORD record_size)
+{
+	
+}
+
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////
 //												class Page
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -101,6 +112,9 @@ DWORD Page::GetAvaliableBytesForCell(DWORD cell_num)
 			threshold = idx[i];
 		}
 	}
+
+	assert (threshold >= cell_offs);
+
 	return (DWORD)(threshold - cell_offs);
 }
 
@@ -116,10 +130,29 @@ void Page::GetRecord(DWORD record_num)
 {
 	assert(hdr->cells_count && (record_num < hdr->cells_count));
 	if ((hdr->type == kIntIndexPage) || (hdr->type == kLeafIndexPage) || (hdr->type == kLeafTablePage)) {
+		DWORD rw = 0;
+		LONGLONG payload_size = 0;
+		LONGLONG row_id = 0;
+		DWORD max_cell_size = 0;
+		BYTE raw_record = NULL;
+		BYTE *raw_cell = GetCell(record_num, &max_cell_size);
+		if (raw_cell) {
+			switch (hdr->type) {
+				case kLeafTablePage:
+					rw += GetVarint(&raw_cell[0], &payload_size);
+					rw += GetVarint(&raw_cell[rw], &row_id);
+					raw_record = raw_cell[rw];
+					if ((payload_size + rw) <= (LONGLONG)max_cell_size) {
+						int x = 0;
 
-
+					}
+					break;
+				default :
+					break;
+			}
+		}
 	}
-
+	int x = 0;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -299,7 +332,7 @@ DWORD SQLiter::TestFunction(void *param)
 ** Read a 64-bit variable-length integer from memory starting at p[0].
 ** Return the number of bytes read.  The value is stored in *v.
 */
-BYTE GetVarint(BYTE *p, ULONGLONG *v)
+BYTE GetVarint(BYTE *p, LONGLONG *v)
 {
 	DWORD a,b,s;
 
@@ -379,7 +412,7 @@ BYTE GetVarint(BYTE *p, ULONGLONG *v)
 		b = b<<7;
 		a |= b;
 		s = s>>18;
-		*v = ((ULONGLONG)s)<<32 | a;
+		*v = ((LONGLONG)s)<<32 | a;
 		return 5;
 	}
 
@@ -400,7 +433,7 @@ BYTE GetVarint(BYTE *p, ULONGLONG *v)
 		a = a<<7;
 		a |= b;
 		s = s>>18;
-		*v = ((ULONGLONG)s)<<32 | a;
+		*v = ((LONGLONG)s)<<32 | a;
 		return 6;
 	}
 
@@ -415,7 +448,7 @@ BYTE GetVarint(BYTE *p, ULONGLONG *v)
 		b = b<<7;
 		a |= b;
 		s = s>>11;
-		*v = ((ULONGLONG)s)<<32 | a;
+		*v = ((LONGLONG)s)<<32 | a;
 		return 7;
 	}
 
@@ -433,7 +466,7 @@ BYTE GetVarint(BYTE *p, ULONGLONG *v)
 		a = a<<7;
 		a |= b;
 		s = s>>4;
-		*v = ((ULONGLONG)s)<<32 | a;
+		*v = ((LONGLONG)s)<<32 | a;
 		return 8;
 	}
 
@@ -454,7 +487,7 @@ BYTE GetVarint(BYTE *p, ULONGLONG *v)
 	b = b>>3;
 	s |= b;
 
-	*v = ((ULONGLONG)s)<<32 | a;
+	*v = ((LONGLONG)s)<<32 | a;
 
 	return 9;
 }
