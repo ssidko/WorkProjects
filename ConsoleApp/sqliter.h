@@ -63,11 +63,26 @@ namespace sqliter
 		BYTE *payload;
 	} LEAF_TABLE_CELL;
 
-	enum {
+	enum RecordType{
 		kInteger,
 		kFloat,
 		kString,
 		kBlob,
+	};
+
+	enum SerialType {
+		kNull = 0,
+		k8BitInteger,
+		k16BitInteger,
+		k24BitInteger,
+		k32BitInteger,
+		k48BitInteger,
+		k64BitInteger,
+		k64BitFloat,
+		k0Constant,
+		k1Constant,
+		kBlobMin = 12,
+		kStringMin = 13
 	};
 
 	class Record
@@ -77,7 +92,7 @@ namespace sqliter
 		Record(BYTE *raw_record, DWORD record_size);
 	};
 
-	enum {
+	enum PageType{
 		kIntIndexPage = 2,
 		kIntTablePage = 5,
 		kLeafIndexPage = 10,

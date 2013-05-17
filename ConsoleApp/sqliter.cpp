@@ -143,8 +143,7 @@ void Page::GetRecord(DWORD record_num)
 					rw += GetVarint(&raw_cell[rw], &row_id);
 					raw_record = raw_cell[rw];
 					if ((payload_size + rw) <= (LONGLONG)max_cell_size) {
-						int x = 0;
-
+						int x = SerialType::kNull;
 					}
 					break;
 				default :
