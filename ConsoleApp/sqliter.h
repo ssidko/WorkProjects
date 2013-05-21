@@ -32,7 +32,7 @@ namespace sqliter
 		DWORD schema_format;
 		DWORD default_cache_size;
 		DWORD largest_root_page;
-		DWORD text_encoding;
+		DWORD text_encoding; // 1=UTF-8 2=UTF16le 3=UTF16be
 		DWORD user_ver;
 		DWORD incremental_vacuum_mode;
 		BYTE reserved[24];
@@ -92,7 +92,14 @@ namespace sqliter
 		Record(BYTE *raw_record, DWORD record_size);
 	};
 
-	enum PageType{
+	enum PageTypeFlag {
+		kIntKey	= 0x01,
+		kZeroData = 0x02,
+		kLeafData = 0x04,
+		kLeaf = 0x08
+	};
+
+	enum PageType {
 		kIntIndexPage = 2,
 		kIntTablePage = 5,
 		kLeafIndexPage = 10,
