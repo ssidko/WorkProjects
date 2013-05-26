@@ -13,6 +13,7 @@ Thumbs.db
 *.ncb
 *.suo
 *.sdf
+*.opensdf
 *.tlb
 *.tlh
 *.bak
