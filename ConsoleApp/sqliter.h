@@ -63,14 +63,14 @@ namespace sqliter
 		BYTE *payload;
 	} LEAF_TABLE_CELL;
 
-	enum RecordType{
+	enum FieldType {
 		kInteger,
 		kFloat,
 		kString,
 		kBlob,
 	};
 
-	enum SerialType {
+	enum FieldSerialType {
 		kNull = 0,
 		k8BitInteger,
 		k16BitInteger,
@@ -83,6 +83,20 @@ namespace sqliter
 		k1Constant,
 		kBlobMin = 12,
 		kStringMin = 13
+	};
+
+	class Field 
+	{
+	private:
+		DWORD serial_type; // enum FieldSerialType {}
+		DWORD type; // enum FieldType {}
+	public:
+		Field(DWORD field_serial_type, DWORD field_type) : serial_type(field_serial_type), type(field_type) {}
+		virtual ~Field() {};
+
+		DWORD SerialType() {return serial_type;}
+		DWORD Type() {return type;}
+
 	};
 
 	class Record
