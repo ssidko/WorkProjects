@@ -66,8 +66,8 @@ namespace sqliter
 	enum FieldType {
 		kInteger,
 		kFloat,
-		kString,
 		kBlob,
+		kString,
 	};
 
 	enum FieldSerialType {
@@ -85,19 +85,30 @@ namespace sqliter
 		kStringMin = 13
 	};
 
-	class Field 
-	{
-	private:
-		DWORD serial_type; // enum FieldSerialType {}
-		DWORD type; // enum FieldType {}
-	public:
-		Field(DWORD field_serial_type, DWORD field_type) : serial_type(field_serial_type), type(field_type) {}
-		virtual ~Field() {};
+	typedef struct _FIELD {
+		DWORD type;
+		_FIELD (DWORD field_type) : type(field_type) {}
+	} FIELD;
 
-		DWORD SerialType() {return serial_type;}
-		DWORD Type() {return type;}
+	typedef struct _INTEGER_FIELD : public _FIELD {
+		LONGLONG val;
+		_INTEGER_FIELD (LONGLONG value) : _FIELD(kInteger) {val = value;}
+	} INTEGER_FIELD;
 
-	};
+	typedef struct _FLOAT_FIELD : public _FIELD {
+		double val;
+		_FLOAT_FIELD (double value) : _FIELD(kFloat) {val = value;}
+	} FLOAT_FIELD;
+
+	typedef struct _BLOB_FIELD : public _FIELD {
+		//string val;
+		//_BLOB_FIELD ()
+	} BLOB_FIELD;
+
+	typedef struct _STRING_FIELD : public _FIELD {
+		string val;
+		_STRING_FIELD (const char *str, size_t len) {val.assign()}
+	} STRING_FIELD;
 
 	class Record
 	{

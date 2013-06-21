@@ -37,7 +37,7 @@ void Page::Initialize(void)
 void Page::InitializeHeader(void)
 {
 	hdr = (PAGE_HEADER *)buff;
-	if (0x00 == strcmp((const char *)buff, DB_HEADER_MAGIC_STRING)) {
+	if (number == 0x01) {
 		hdr = (PAGE_HEADER *)&buff[100];
 	}
 	if ((hdr->type == kIntIndexPage)  || (hdr->type == kIntTablePage) || (hdr->type == kLeafIndexPage) || (hdr->type == kLeafTablePage)) {
@@ -134,16 +134,16 @@ void Page::GetRecord(DWORD record_num)
 		LONGLONG payload_size = 0;
 		LONGLONG row_id = 0;
 		DWORD max_cell_size = 0;
-		BYTE raw_record = NULL;
+		BYTE *payload = NULL;
 		BYTE *raw_cell = GetCell(record_num, &max_cell_size);
 		if (raw_cell) {
 			switch (hdr->type) {
 				case kLeafTablePage:
 					rw += GetVarint(&raw_cell[0], &payload_size);
 					rw += GetVarint(&raw_cell[rw], &row_id);
-					raw_record = raw_cell[rw];
+					payload = &raw_cell[rw];
 					if ((payload_size + rw) <= (LONGLONG)max_cell_size) {
-						int x;
+						int x = 0;
 					}
 					break;
 				default :

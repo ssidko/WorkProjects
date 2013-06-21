@@ -13,105 +13,51 @@ BOOL TestPdf(WIN32_FIND_DATA &fData, LPTSTR path);
 HWND FindWnd(HWND hParent, LPCTSTR lpWindowName, DWORD milliseconds);
 
 int APIENTRY _tWinMain(HINSTANCE hInstance,
-                     HINSTANCE hPrevInstance,
-                     LPTSTR    lpCmdLine,
-                     int       nCmdShow)
-//{
-//	DWORD err;
-//
-//	HMODULE hModule = ::LoadLibrary(_T("KeyHook.dll"));
-//	if (hModule == NULL)
-//	{
-//		err = GetLastError();
-//		return 0;
-//	}
-//
-//	HOOKPROC hookProc = (HOOKPROC)::GetProcAddress(hModule, "KbdHook");
-//	if (hookProc == NULL)
-//		return 0;
-//
-//	HHOOK hHook = ::SetWindowsHookEx(WH_KEYBOARD, hookProc, hModule, NULL);
-//	if (!hHook)
-//	{
-//		err = GetLastError();
-//		return 0;
-//	}
-//
-//	while (!bQuit) {;}  
-//
-//	return 
-//}
-
-
-
-
+                       HINSTANCE hPrevInstance,
+                       LPTSTR    lpCmdLine,
+                       int       nCmdShow)
 {
-	HWND hFindWnd;
-	HANDLE hEvent;
+	HANDLE hFind;
+	WIN32_FIND_DATA findData;
+	DWORD err;
 
-	if (NULL == (hEvent = ::CreateEvent(NULL, TRUE, FALSE, NULL)))
-		return 0;
-	
+	char findPath[1024] = {0};
+	sprintf_s(findPath, 1024, _T("%s\\*.pdf"), lpCmdLine);
 
-	for (;;)
+	hFind = ::FindFirstFile(findPath, &findData);
+	if (hFind != INVALID_HANDLE_VALUE)
 	{
-		if (NULL != (hFindWnd = ::FindWindow(NULL, _T("File already exists"))))
+		++files_counter;
+		if(TestPdf(findData, lpCmdLine))
+			++ok_files_counter;
+		else
+			++bad_files_counter;
+
+		memset(&findData, 0x00, sizeof(findData));
+		while(FindNextFile(hFind, &findData))
 		{
-			//if (NULL != (hFindWnd = ::FindWindowEx(hFindWnd, NULL, NULL, _T("&Overwrite"))))
-			//{
-				LRESULT  res;
-				res = ::PostMessage(hFindWnd, WM_QUIT, 0x00, 0x00);
-				int x = 0;
-			//}
+			++files_counter;
+			if(TestPdf(findData, lpCmdLine))
+				++ok_files_counter;
+			else
+				++bad_files_counter;
+
+			memset(&findData, 0x00, sizeof(findData));
 		}
-		::WaitForSingleObject(hEvent, 200);
 	}
+	else
+		err = ::GetLastError();
+
+	char msg[2048] = {0};
+	sprintf_s(msg, 2048, "Проверка файлов звершена.\n" \
+						 " - проверено файлов: %d\n"\
+						 " - целых файлов: %d\n"\
+						 " - повреждённых файлов: %d\n", files_counter, ok_files_counter, bad_files_counter);
+
+	::MessageBox(NULL, msg, "Pdf check", MB_OK | MB_TOPMOST | MB_ICONINFORMATION);
+
 	return 0;
 }
-
-
-//{
-//	HANDLE hFind;
-//	WIN32_FIND_DATA findData;
-//	DWORD err;
-//
-//	char findPath[1024] = {0};
-//	sprintf_s(findPath, 1024, _T("%s\\*.pdf"), lpCmdLine);
-//
-//	hFind = ::FindFirstFile(findPath, &findData);
-//	if (hFind != INVALID_HANDLE_VALUE)
-//	{
-//		++files_counter;
-//		if(TestPdf(findData, lpCmdLine))
-//			++ok_files_counter;
-//		else
-//			++bad_files_counter;
-//
-//		memset(&findData, 0x00, sizeof(findData));
-//		while(FindNextFile(hFind, &findData))
-//		{
-//			++files_counter;
-//			if(TestPdf(findData, lpCmdLine))
-//				++ok_files_counter;
-//			else
-//				++bad_files_counter;
-//
-//			memset(&findData, 0x00, sizeof(findData));
-//		}
-//	}
-//	else
-//		err = ::GetLastError();
-//
-//	char msg[2048] = {0};
-//	sprintf_s(msg, 2048, "Проверка файлов звершена.\n" \
-//						 " - проверено файлов: %d\n"\
-//						 " - целых файлов: %d\n"\
-//						 " - повреждённых файлов: %d\n", files_counter, ok_files_counter, bad_files_counter);
-//
-//	::MessageBox(NULL, msg, "Pdf check", MB_OK | MB_TOPMOST | MB_ICONINFORMATION);
-//
-//	return 0;
-//}
 
 void MarkAsBad(LPTSTR fileName)
 {
