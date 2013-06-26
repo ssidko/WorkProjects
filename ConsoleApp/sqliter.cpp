@@ -40,27 +40,33 @@ void Page::InitializeHeader(void)
 	if (number == 0x01) {
 		hdr = (PAGE_HEADER *)&buff[100];
 	}
-	if ((hdr->type == kIntIndexPage)  || (hdr->type == kIntTablePage) || (hdr->type == kLeafIndexPage) || (hdr->type == kLeafTablePage)) {
+	if (IsValidPageType(hdr->type)) {
 		hdr->first_freeblock = Be2Le(&hdr->first_freeblock);
 		hdr->cells_count = Be2Le(&hdr->cells_count);
 		hdr->cells_area = Be2Le(&hdr->cells_area);
 		if ((hdr->type == kIntIndexPage) || (hdr->type == kIntTablePage)) {
-			hdr->IntPage.right_ptr = Be2Le(&hdr->IntPage.right_ptr);
+			hdr->right_ptr = Be2Le(&hdr->right_ptr);
+			hdr->offsets = (WORD *)&hdr->offsets;
+		}
+		else {
+			hdr->offsets = (WORD *)&hdr->right_ptr;
 		}
 	}
 }
 
 void Page::InitializeCellPointerArray()
 {
-	if ((hdr->type == kIntIndexPage)  || (hdr->type == kIntTablePage) || (hdr->type == kLeafIndexPage) || (hdr->type == kLeafTablePage)) {
+	if (IsValidPageType(hdr->type)) {
 		WORD *idx = hdr->offsets;
-		if ((hdr->type == kIntIndexPage) || (hdr->type == kIntTablePage)) {
-			idx = hdr->IntPage.offsets;
-		}
 		for (DWORD i = 0; i < hdr->cells_count; i++) {
 			idx[i] = Be2Le(&idx[i]);
 		}
 	}
+}
+
+BOOL Page::IsValidPageType(const BYTE &page_type)
+{
+	return ((page_type == kLeafTablePage) || (page_type == kLeafIndexPage) || (page_type == kIntTablePage) || (page_type == kIntIndexPage));
 }
 
 void Page::Cleanup(void)
@@ -88,9 +94,6 @@ BYTE *Page::GetCell(DWORD cell_num, DWORD *max_size)
 	assert(hdr->cells_count && (cell_num < hdr->cells_count));
 
 	WORD *idx = hdr->offsets;
-	if ((hdr->type == kIntIndexPage) || (hdr->type == kIntTablePage)) {
-		idx = hdr->IntPage.offsets;
-	}
 	if (idx[cell_num] < this->size) {
 		if (max_size) {
 			*max_size = GetAvaliableBytesForCell(cell_num);

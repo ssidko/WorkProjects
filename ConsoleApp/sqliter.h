@@ -46,22 +46,20 @@ namespace sqliter
 		WORD cells_count;
 		WORD cells_area;
 		BYTE fragmented_bytes;
-		union {
-			WORD offsets[1];
-			struct {
-				DWORD right_ptr;
-				WORD offsets[1];
-			} IntPage;
-		};
+		DWORD right_ptr;
+		WORD *offsets;
 	} PAGE_HEADER;
 
 #pragma pack(pop)
 
-	typedef struct _LEAF_TABLE_CELL {
-		ULONGLONG payload_size;
-		ULONGLONG row_id;
+	typedef struct _CELL {
+		BOOL is_overflow;
+		DWORD left_child;
+		LONGLONG payload_size;
+		LONGLONG row_id;
 		BYTE *payload;
-	} LEAF_TABLE_CELL;
+		DWORD first_overflow;
+	} CELL;
 
 	enum FieldType {
 		kInteger,
@@ -85,30 +83,75 @@ namespace sqliter
 		kStringMin = 13
 	};
 
+	class Blob
+	{
+	private:
+		BYTE *buff;
+		DWORD size;
+
+	public:
+		Blob() : buff(NULL), size(0) {}
+		Blob(const BYTE *src_buff, DWORD buff_size) : buff(NULL), size(0)
+		{
+			Initialize(src_buff, buff_size);
+		}
+		void Initialize(const BYTE *src_buff, DWORD buff_size)
+		{
+			Clean();
+			assert(src_buff);
+			assert(buff_size);
+			buff = new BYTE[buff_size];
+			assert(buff);
+			memcpy(buff, src_buff, buff_size);
+			size = buff_size;
+		}
+		void Clean(void)
+		{
+			if (buff) {
+				delete [] buff;
+				buff = NULL;
+				size = 0;
+			}
+		}
+		~Blob() {Clean();}
+		const BYTE *GetBuff(void) {return buff;}
+	};
+
 	typedef struct _FIELD {
 		DWORD type;
 		_FIELD (DWORD field_type) : type(field_type) {}
 	} FIELD;
 
-	typedef struct _INTEGER_FIELD : public _FIELD {
-		LONGLONG val;
-		_INTEGER_FIELD (LONGLONG value) : _FIELD(kInteger) {val = value;}
-	} INTEGER_FIELD;
+	template<int field_type, typename T>
+	struct TEMPLATED_FIELD : public FIELD {
+		T val;
+		TEMPLATED_FIELD () : FIELD(field_type) {}
+	};
 
-	typedef struct _FLOAT_FIELD : public _FIELD {
-		double val;
-		_FLOAT_FIELD (double value) : _FIELD(kFloat) {val = value;}
-	} FLOAT_FIELD;
+	typedef TEMPLATED_FIELD<kInteger, LONGLONG> INTEGER_FIELD;
+	typedef TEMPLATED_FIELD<kFloat, double> FLOAT_FIELD;
+	typedef TEMPLATED_FIELD<kBlob, Blob> BLOB_FIELD;
+	typedef TEMPLATED_FIELD<kString, string> STRING_FIELD;
 
-	typedef struct _BLOB_FIELD : public _FIELD {
-		//string val;
-		//_BLOB_FIELD ()
-	} BLOB_FIELD;
+	//typedef struct _INTEGER_FIELD : public _FIELD {
+	//	LONGLONG val;
+	//	_INTEGER_FIELD (LONGLONG value) : _FIELD(kInteger) {val = value;}
+	//} INTEGER_FIELD;
 
-	typedef struct _STRING_FIELD : public _FIELD {
-		string val;
-		_STRING_FIELD (const char *str, size_t len) {val.assign()}
-	} STRING_FIELD;
+	//typedef struct _FLOAT_FIELD : public _FIELD {
+	//	double val;
+	//	_FLOAT_FIELD (double value) : _FIELD(kFloat) {val = value;}
+	//} FLOAT_FIELD;
+
+	//typedef struct _BLOB_FIELD : public _FIELD {
+	//	Blob val;
+	//	//_BLOB_FIELD ()
+	//} BLOB_FIELD;
+
+	//typedef struct _STRING_FIELD : public _FIELD {
+	//	string val;
+	//	_STRING_FIELD (const char *str, size_t len) : _FIELD(kString) {val.assign(str, len);}
+	//} STRING_FIELD;
 
 	class Record
 	{
@@ -141,6 +184,7 @@ namespace sqliter
 		void Initialize(void);
 		void InitializeHeader(void);
 		void InitializeCellPointerArray(void);
+		BOOL IsValidPageType(const BYTE &page_type);
 		void Cleanup(void);
 	public:
 		Page(BYTE *page_buff, DWORD page_size, DWORD page_number);
