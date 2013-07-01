@@ -2,13 +2,16 @@
 #include <Windows.h>
 #include <assert.h>
 #include <memory>
+#include <vector>
 #include "W32Lib.h"
 
 namespace sqliter
 {
 	int Sqliter_main();
+	BYTE ReadInteger(BYTE *buff, DWORD serial_type, LONGLONG &value);
 	BYTE GetVarint(BYTE *p, LONGLONG *v);
-	string UTF8ToCP1251( const char *str );
+	string UTF8ToCP1251(const char *str);
+	BOOL UTF8ToCP1251(const char *str, DWORD len, string *res_str);
 
 #define DB_HEADER_MAGIC_STRING				"SQLite format 3"
 
@@ -120,12 +123,14 @@ namespace sqliter
 	typedef struct _FIELD {
 		DWORD type;
 		_FIELD (DWORD field_type) : type(field_type) {}
+		virtual ~_FIELD() {}
 	} FIELD;
 
 	template<int field_type, typename T>
 	struct TEMPLATED_FIELD : public FIELD {
 		T val;
 		TEMPLATED_FIELD () : FIELD(field_type) {}
+		TEMPLATED_FIELD (T init_val) : FIELD(field_type), val(init_val) {}
 	};
 
 	typedef TEMPLATED_FIELD<kInteger, LONGLONG> INTEGER_FIELD;
@@ -133,31 +138,17 @@ namespace sqliter
 	typedef TEMPLATED_FIELD<kBlob, Blob> BLOB_FIELD;
 	typedef TEMPLATED_FIELD<kString, string> STRING_FIELD;
 
-	//typedef struct _INTEGER_FIELD : public _FIELD {
-	//	LONGLONG val;
-	//	_INTEGER_FIELD (LONGLONG value) : _FIELD(kInteger) {val = value;}
-	//} INTEGER_FIELD;
-
-	//typedef struct _FLOAT_FIELD : public _FIELD {
-	//	double val;
-	//	_FLOAT_FIELD (double value) : _FIELD(kFloat) {val = value;}
-	//} FLOAT_FIELD;
-
-	//typedef struct _BLOB_FIELD : public _FIELD {
-	//	Blob val;
-	//	//_BLOB_FIELD ()
-	//} BLOB_FIELD;
-
-	//typedef struct _STRING_FIELD : public _FIELD {
-	//	string val;
-	//	_STRING_FIELD (const char *str, size_t len) : _FIELD(kString) {val.assign(str, len);}
-	//} STRING_FIELD;
-
 	class Record
 	{
 	private:
+		vector<FIELD *> fields;
+		void Clean(void);
 	public:
-		Record(BYTE *raw_record, DWORD record_size);
+		Record() {}
+		~Record();
+		BOOL Initialize(BYTE *raw_record, DWORD record_size);
+		DWORD FieldsCount(void) {return fields.size();}
+		const FIELD *operator[](DWORD idx);
 	};
 
 	enum PageTypeFlag {
@@ -180,7 +171,7 @@ namespace sqliter
 		BYTE *buff;
 		DWORD size;
 		DWORD number;
-		PAGE_HEADER *hdr;
+		PAGE_HEADER hdr;
 		void Initialize(void);
 		void InitializeHeader(void);
 		void InitializeCellPointerArray(void);
@@ -191,15 +182,15 @@ namespace sqliter
 		~Page()	{Cleanup();}
 		void Initialize(BYTE *page_buff, DWORD page_size, DWORD page_number);
 		DWORD Number(void) {return number;}
-		DWORD Type(void) {return hdr->type;}
-		DWORD CellsCount(void) {return hdr->cells_count;}
+		DWORD Type(void) {return hdr.type;}
+		DWORD CellsCount(void) {return hdr.cells_count;}
 		DWORD RecordsCount(void);
 		// нумерация с нуля.
 		BYTE *GetCell(DWORD cell_num, DWORD *max_size);
 		// нумерация с нуля.
 		DWORD GetAvaliableBytesForCell(DWORD cell_num);
 		// нумерация с нуля.
-		void GetRecord(DWORD record_num);
+		BOOL GetRecord(DWORD record_num, Record *record);
 	};
 
 	class SQLiter

@@ -591,17 +591,45 @@ int _tmain(int argc, _TCHAR* argv[])
 	//	int y = 0;
 	//}
 
-	char b = -1;
-	LONGLONG ll = b;
+	//if (!::SetConsoleCP(1251)) {
+	//	DWORD err = 0;
+	//	err = ::GetLastError();
+	//	int x = 0;
+	//}
 
 	SQLiter db(_T("J:\\Work\\33116\\main.db"));
 	//SQLiter db(_T("d:\\GitHub\\main.db"));
 	if (db.Open()) {
+		Record rec;
 		for (DWORD i = 1; i <= db.FreePagesCount(); i++) {
 			Page *page = db.GetFreePage(i);
 			if (page && (page->Type() == kLeafTablePage)) {
 				for (DWORD r = 0; r < page->RecordsCount(); r++) {
-					page->GetRecord(r);
+					if (page->GetRecord(r, &rec)) {
+						const FIELD *field = NULL;
+						const STRING_FIELD *str_field = NULL;
+						DWORD fields_count = rec.FieldsCount();
+						printf("========================================\n");
+						for (DWORD f = 0; f < fields_count; f++) {
+							field = rec[f];
+							switch (field->type) {
+							case kInteger:
+								_tprintf(_T("#%02d - Integer: %lld\n"), f, ((INTEGER_FIELD *)field)->val);
+								break;
+							case kFloat:
+								_tprintf(_T("#%02d - Fload: %f\n"), f, ((FLOAT_FIELD *)field)->val);
+								break;
+							case kBlob:
+								_tprintf(_T("#%02d - Blob: --\n"), f);
+								break;
+							case kString:
+								str_field = (STRING_FIELD *)field;
+								printf("#%02d - String: %s\n", f, ((STRING_FIELD *)field)->val.c_str());
+								break;
+							}
+						}
+
+					}
 					int x = 0;
 				}
 				delete page;

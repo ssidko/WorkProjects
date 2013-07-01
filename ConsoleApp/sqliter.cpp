@@ -8,22 +8,160 @@ int Sqliter_main()
 	return 0;
 }
 
+BYTE ReadInteger(BYTE *buff, DWORD serial_type, LONGLONG &int_value)
+{
+	assert((serial_type >= k8BitInteger) && (serial_type <= k64BitInteger));
+
+	switch (serial_type) {
+	case k8BitInteger:
+		int_value = *((char *)buff);
+		return 1;
+	case k16BitInteger:
+		int_value = (LONGLONG)*((short *)buff);
+		return 2;
+	case k24BitInteger:
+		if (*buff && (1 << 7)) {
+			int_value = -1;
+			((BYTE *)&int_value)[0] &= buff[2];
+			((BYTE *)&int_value)[1] &= buff[1];
+			((BYTE *)&int_value)[2] &= buff[0];
+		}
+		else {
+			int_value = 0;
+			((BYTE *)&int_value)[0] = buff[2];
+			((BYTE *)&int_value)[1] = buff[1];
+			((BYTE *)&int_value)[2] = buff[0];
+		}
+		return 3;
+	case k32BitInteger:
+		int_value = (LONGLONG)(int)Be2Le((DWORD *)buff);
+		return 4;
+	case k48BitInteger:
+		if (*buff && (1 << 7)) {
+			int_value = -1;
+			((BYTE *)&int_value)[0] &= buff[5];
+			((BYTE *)&int_value)[1] &= buff[4];
+			((BYTE *)&int_value)[2] &= buff[3];
+			((BYTE *)&int_value)[3] &= buff[2];
+			((BYTE *)&int_value)[4] &= buff[1];
+			((BYTE *)&int_value)[5] &= buff[0];
+		}
+		else {
+			int_value = 0;
+			((BYTE *)&int_value)[0] = buff[5];
+			((BYTE *)&int_value)[1] = buff[4];
+			((BYTE *)&int_value)[2] = buff[3];
+			((BYTE *)&int_value)[3] = buff[2];
+			((BYTE *)&int_value)[4] = buff[1];
+			((BYTE *)&int_value)[5] = buff[0];
+		}
+		return 6;
+	case k64BitInteger:
+		((BYTE *)&int_value)[0] = buff[7];
+		((BYTE *)&int_value)[1] = buff[6];
+		((BYTE *)&int_value)[2] = buff[5];
+		((BYTE *)&int_value)[3] = buff[4];
+		((BYTE *)&int_value)[4] = buff[3];
+		((BYTE *)&int_value)[5] = buff[2];
+		((BYTE *)&int_value)[6] = buff[1];
+		((BYTE *)&int_value)[7] = buff[0];
+		return 8;
+	default :
+		return 0;
+	}
+}
+
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 //												class Record
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 
-Record::Record(BYTE *raw_record, DWORD record_size)
+BOOL Record::Initialize(BYTE *raw_record, DWORD record_size)
 {
-	
+	assert(raw_record && record_size);
+
+	Clean();
+
+	DWORD len = 0;
+
+	BYTE *next_field = raw_record;
+	BYTE *next_value = 0;
+	LONGLONG header_size = 0;
+	next_field += GetVarint(raw_record, &header_size);
+	next_value = &raw_record[header_size];
+
+	FIELD *field = NULL;
+	LONGLONG serial_type = 0;
+
+	while ((next_field - raw_record) < header_size) {
+		next_field += GetVarint(next_field, &serial_type);	
+
+		if (serial_type == kNull) {
+			field = new INTEGER_FIELD((LONGLONG)0);
+			fields.push_back(field);
+		} else if ((serial_type >= k8BitInteger) && (serial_type <= k64BitInteger)) {
+			field = new INTEGER_FIELD();
+			next_value += ReadInteger(next_value, (DWORD)serial_type, ((INTEGER_FIELD *)field)->val);
+			fields.push_back(field);
+		}else if (serial_type == k64BitFloat) {
+			field = new FLOAT_FIELD();
+			next_value += ReadInteger(next_value, k64BitInteger, ((INTEGER_FIELD *)field)->val);
+			fields.push_back(field);
+		} else if (serial_type == k0Constant) {
+			field = new INTEGER_FIELD((LONGLONG)0);
+			fields.push_back(field);
+		} else if (serial_type == k1Constant) {
+			field = new INTEGER_FIELD((LONGLONG)1);
+			fields.push_back(field);
+		} else if ((serial_type >= kBlobMin) && ((serial_type % 2) == 0x00)) {
+			len = (DWORD)((serial_type - kBlobMin) / 2);
+			field = new BLOB_FIELD();
+			if (len) {
+				((BLOB_FIELD *)field)->val.Initialize(next_value, len);
+			}
+			fields.push_back(field);
+			next_value += len;
+		} else if ( (serial_type >= kStringMin) && ((serial_type % 2) == 0x01)) {
+			len = (DWORD)((serial_type - kStringMin) / 2);
+			field = new STRING_FIELD();
+			if (len) {
+				UTF8ToCP1251((const char *)next_value, len, &((STRING_FIELD *)field)->val);
+			}
+			fields.push_back(field);
+			next_value += len;
+		} else {
+			return FALSE;
+		}
+	}
+	return TRUE;
 }
 
+Record::~Record(void)
+{
+	Clean();
+}
+
+void Record::Clean(void)
+{
+	for (DWORD i = 0; i < fields.size(); i++) {
+		delete fields[i];
+	}
+	fields.clear();
+}
+
+const FIELD *Record::operator[](DWORD idx)
+{
+	if (idx < fields.size()) {
+		return fields[idx];
+	}
+	return FALSE;
+}
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 //												class Page
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 
-Page::Page(BYTE *page_buff, DWORD page_size, DWORD page_number) : buff(page_buff), size(page_size), number(page_number), hdr(NULL)
+Page::Page(BYTE *page_buff, DWORD page_size, DWORD page_number) : buff(page_buff), size(page_size), number(page_number)
 {
 	Initialize();
 }
@@ -36,29 +174,30 @@ void Page::Initialize(void)
 
 void Page::InitializeHeader(void)
 {
-	hdr = (PAGE_HEADER *)buff;
+	PAGE_HEADER *header = (PAGE_HEADER *)buff;
 	if (number == 0x01) {
-		hdr = (PAGE_HEADER *)&buff[100];
+		header = (PAGE_HEADER *)&buff[100];
 	}
-	if (IsValidPageType(hdr->type)) {
-		hdr->first_freeblock = Be2Le(&hdr->first_freeblock);
-		hdr->cells_count = Be2Le(&hdr->cells_count);
-		hdr->cells_area = Be2Le(&hdr->cells_area);
-		if ((hdr->type == kIntIndexPage) || (hdr->type == kIntTablePage)) {
-			hdr->right_ptr = Be2Le(&hdr->right_ptr);
-			hdr->offsets = (WORD *)&hdr->offsets;
+	if (IsValidPageType(header->type)) {
+		hdr.type = header->type;
+		hdr.first_freeblock = Be2Le(&header->first_freeblock);
+		hdr.cells_count = Be2Le(&header->cells_count);
+		hdr.cells_area = Be2Le(&header->cells_area);
+		if ((hdr.type == kIntIndexPage) || (hdr.type == kIntTablePage)) {
+			hdr.right_ptr = Be2Le(&header->right_ptr);
+			hdr.offsets = (WORD *)&header->offsets;
 		}
 		else {
-			hdr->offsets = (WORD *)&hdr->right_ptr;
+			hdr.offsets = (WORD *)&header->right_ptr;
 		}
 	}
 }
 
 void Page::InitializeCellPointerArray()
 {
-	if (IsValidPageType(hdr->type)) {
-		WORD *idx = hdr->offsets;
-		for (DWORD i = 0; i < hdr->cells_count; i++) {
+	if (IsValidPageType(hdr.type)) {
+		WORD *idx = hdr.offsets;
+		for (DWORD i = 0; i < hdr.cells_count; i++) {
 			idx[i] = Be2Le(&idx[i]);
 		}
 	}
@@ -66,7 +205,16 @@ void Page::InitializeCellPointerArray()
 
 BOOL Page::IsValidPageType(const BYTE &page_type)
 {
-	return ((page_type == kLeafTablePage) || (page_type == kLeafIndexPage) || (page_type == kIntTablePage) || (page_type == kIntIndexPage));
+	if (page_type == kLeafTablePage) {
+		return TRUE;
+	} else if (page_type == kLeafIndexPage) {
+		return TRUE;
+	} else if (page_type == kIntTablePage) {
+		return TRUE;
+	} else if (page_type == kIntIndexPage) {
+		return TRUE;
+	}
+	return FALSE;
 }
 
 void Page::Cleanup(void)
@@ -91,9 +239,9 @@ void Page::Initialize(BYTE *page_buff, DWORD page_size, DWORD page_number)
 
 BYTE *Page::GetCell(DWORD cell_num, DWORD *max_size)
 {
-	assert(hdr->cells_count && (cell_num < hdr->cells_count));
+	assert(hdr.cells_count && (cell_num < hdr.cells_count));
 
-	WORD *idx = hdr->offsets;
+	WORD *idx = hdr.offsets;
 	if (idx[cell_num] < this->size) {
 		if (max_size) {
 			*max_size = GetAvaliableBytesForCell(cell_num);
@@ -105,12 +253,12 @@ BYTE *Page::GetCell(DWORD cell_num, DWORD *max_size)
 
 DWORD Page::GetAvaliableBytesForCell(DWORD cell_num)
 {
-	assert(hdr->cells_count && (cell_num < hdr->cells_count));
+	assert(hdr.cells_count && (cell_num < hdr.cells_count));
 
-	WORD *idx = hdr->offsets;
+	WORD *idx = hdr.offsets;
 	WORD cell_offs = idx[cell_num];
 	DWORD threshold = size;
-	for (DWORD i = 0; i < hdr->cells_count; i++) {
+	for (DWORD i = 0; i < hdr.cells_count; i++) {
 		if ((idx[i] > cell_offs) && (idx[i] < threshold)) {
 			threshold = idx[i];
 		}
@@ -123,16 +271,16 @@ DWORD Page::GetAvaliableBytesForCell(DWORD cell_num)
 
 DWORD Page::RecordsCount(void)
 {
-	if ((hdr->type == kIntIndexPage) || (hdr->type == kLeafIndexPage) || (hdr->type == kLeafTablePage)) {
-		return hdr->cells_count;
+	if ((hdr.type == kIntIndexPage) || (hdr.type == kLeafIndexPage) || (hdr.type == kLeafTablePage)) {
+		return hdr.cells_count;
 	}
 	return 0;
 }
 
-void Page::GetRecord(DWORD record_num)
+BOOL Page::GetRecord(DWORD record_num, Record *record)
 {
-	assert(hdr->cells_count && (record_num < hdr->cells_count));
-	if ((hdr->type == kIntIndexPage) || (hdr->type == kLeafIndexPage) || (hdr->type == kLeafTablePage)) {
+	assert(hdr.cells_count && (record_num < hdr.cells_count) && record);
+	if ((hdr.type == kIntIndexPage) || (hdr.type == kLeafIndexPage) || (hdr.type == kLeafTablePage)) {
 		DWORD rw = 0;
 		LONGLONG payload_size = 0;
 		LONGLONG row_id = 0;
@@ -140,13 +288,13 @@ void Page::GetRecord(DWORD record_num)
 		BYTE *payload = NULL;
 		BYTE *raw_cell = GetCell(record_num, &max_cell_size);
 		if (raw_cell) {
-			switch (hdr->type) {
+			switch (hdr.type) {
 				case kLeafTablePage:
 					rw += GetVarint(&raw_cell[0], &payload_size);
 					rw += GetVarint(&raw_cell[rw], &row_id);
 					payload = &raw_cell[rw];
 					if ((payload_size + rw) <= (LONGLONG)max_cell_size) {
-						int x = 0;
+						return record->Initialize(payload, (DWORD)payload_size);
 					}
 					break;
 				default :
@@ -154,7 +302,7 @@ void Page::GetRecord(DWORD record_num)
 			}
 		}
 	}
-	int x = 0;
+	return FALSE;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -527,6 +675,44 @@ string UTF8ToCP1251(const char *str)
 	delete[] cres;
 	
 	return res;
+}
+
+BOOL UTF8ToCP1251(const char *str, DWORD len, string *res_str)
+{
+	assert(str && len && res_str);
+ 
+	int result_u, result_c;
+
+	result_u = MultiByteToWideChar(CP_UTF8, 0, str, len, 0, 0);
+	if (!result_u) {
+		return FALSE;
+	}
+
+	wchar_t *ures = new wchar_t[result_u + 1];
+	memset(ures, 0x00, sizeof(wchar_t)*(result_u + 1));
+	if(!MultiByteToWideChar(CP_UTF8, 0, str, len, ures, result_u)) {
+		delete[] ures;
+		return FALSE;
+	}
+
+	result_c = WideCharToMultiByte(1251, 0, ures, -1, 0, 0, 0, 0);
+	if(!result_c) {
+		delete [] ures;
+		return FALSE;
+	}
+
+	char *cres = new char[result_c];
+	if(!WideCharToMultiByte(1251, 0, ures, -1, cres, result_c, 0, 0)) {
+		delete[] cres;
+		return FALSE;
+	}
+
+	delete[] ures;
+	res_str->assign(cres);
+	delete[] cres;
+
+	return TRUE;
+
 }
 
 }
