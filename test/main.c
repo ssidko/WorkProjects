@@ -3,13 +3,15 @@
 #include "stm32f4xx.h"
 #include "stm32f4xx_gpio.h"
 #include "stm32f4xx_rcc.h"
+#include "stm32f4xx_usart.h"
+#include "core_cm4.h"
 
 #define VECT_TAB_OFFSET  0x00
 
-#define RCC_PLLCFGR_M						((uint32_t)0x00000008)
-#define RCC_PLLCFGR_N						((uint32_t)0x00000150) // 336
-#define RCC_PLLCFGR_P						((uint32_t)0x00000002)
-#define RCC_PLLCFGR_Q						((uint32_t)0x00000007)
+#define RCC_PLLCFGR_M						((uint32_t)8)
+#define RCC_PLLCFGR_N						((uint32_t)336)
+#define RCC_PLLCFGR_P						((uint32_t)2)
+#define RCC_PLLCFGR_Q						((uint32_t)7)
 
 void SystemInitialization(void)
 {
@@ -47,19 +49,66 @@ void SystemInitialization(void)
 	RCC->CFGR |= RCC_CFGR_SW_PLL;
 }
 
+void InitializeUSART2(void)
+{
+	RCC_APB1PeriphClockCmd(RCC_APB1Periph_USART2, ENABLE);
+	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA, ENABLE);
+
+
+	GPIO_InitTypeDef init_port;
+	init_port.GPIO_Pin = GPIO_Pin_1 | GPIO_Pin_2;
+	init_port.GPIO_Mode = GPIO_Mode_AF;
+	init_port.GPIO_Speed = GPIO_Speed_50MHz;
+	init_port.GPIO_OType = GPIO_OType_PP;
+	init_port.GPIO_PuPd = GPIO_PuPd_UP;
+
+	GPIO_Init(GPIOA, &init_port);
+
+	GPIO_PinAFConfig(GPIOA, GPIO_PinSource1, GPIO_AF_USART2);
+	GPIO_PinAFConfig(GPIOA, GPIO_PinSource2, GPIO_AF_USART2);
+
+	USART_InitTypeDef usart_init;
+	usart_init.USART_BaudRate = 9600;
+	usart_init.USART_Mode = USART_Mode_Rx | USART_Mode_Tx;
+	usart_init.USART_WordLength = USART_WordLength_8b;
+	usart_init.USART_Parity = USART_Parity_No;
+	usart_init.USART_StopBits = USART_StopBits_1;
+	usart_init.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
+
+	USART_Init(USART2, &usart_init);
+
+	USART_ITConfig(USART2, USART_IT_RXNE, ENABLE);
+	//USART_ITConfig(USART2, USART_IT_TC, ENABLE);
+	USART_Cmd(USART2, ENABLE);
+
+	NVIC_EnableIRQ(USART2_IRQn);
+}
+
+void USARTx_OutString(USART_TypeDef *USARTx, char *str)
+{
+	while (*str != 0x00) {
+		while( !(USARTx->SR & USART_SR_TC) );
+		USART_SendData(USARTx, (uint16_t)(*str));
+		++str;
+	}
+}
+
 int main(void)
 {
-
-	//SystemInit();
-
 	SystemInitialization();
+
+	__enable_irq();
+
+	InitializeUSART2();
+
+	USARTx_OutString(USART2, "System initialized\r\n");
 
 	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOD, ENABLE);
 
 	GPIO_InitTypeDef init_port_D;
 	GPIO_StructInit(&init_port_D);
 
-	init_port_D.GPIO_Pin = /*GPIO_Pin_All*/GPIO_Pin_12|GPIO_Pin_13|GPIO_Pin_14|GPIO_Pin_15;
+	init_port_D.GPIO_Pin = GPIO_Pin_12|GPIO_Pin_13|GPIO_Pin_14|GPIO_Pin_15;
 	init_port_D.GPIO_Mode = GPIO_Mode_OUT;
 	init_port_D.GPIO_Speed = GPIO_Speed_50MHz;
 	init_port_D.GPIO_OType = GPIO_OType_PP;
@@ -69,10 +118,12 @@ int main(void)
 
 	//GPIO_SetBits(GPIOD, GPIO_Pin_5);
 
+	/*
 	GPIO_SetBits(GPIOD, GPIO_Pin_12);
 	GPIO_SetBits(GPIOD, GPIO_Pin_13);
 	GPIO_SetBits(GPIOD, GPIO_Pin_14);
 	GPIO_SetBits(GPIOD, GPIO_Pin_15);
+	*/
 
 	/*
 	GPIO_ResetBits(GPIOD, GPIO_Pin_12);
@@ -81,8 +132,18 @@ int main(void)
 	GPIO_ResetBits(GPIOD, GPIO_Pin_15);
 	*/
 
+
+
     while(1)
     {
     	int x = 0;
+    	x++;
     }
+}
+
+void USART1_IRQHandler(void)
+{
+	int x = 0;
+	x++;
+	GPIO_SetBits(GPIOD, GPIO_Pin_12);
 }
