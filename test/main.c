@@ -8,7 +8,7 @@
 
 #define RCC_PLLCFGR_M						((uint32_t)8)
 #define RCC_PLLCFGR_N						((uint32_t)336)
-#define RCC_PLLCFGR_P						((uint32_t)2)
+#define RCC_PLLCFGR_P						((uint32_t)0) // PLLP = 2
 #define RCC_PLLCFGR_Q						((uint32_t)7)
 
 inline void Delay(int delay)
@@ -59,14 +59,14 @@ void InitializeUSART2(void)
 	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA, ENABLE);
 
 	GPIO_InitTypeDef init_port;
-	init_port.GPIO_Pin = GPIO_Pin_1 | GPIO_Pin_2;
+	init_port.GPIO_Pin = GPIO_Pin_2 | GPIO_Pin_3;
 	init_port.GPIO_Mode = GPIO_Mode_AF;
 	init_port.GPIO_Speed = GPIO_Speed_50MHz;
 	init_port.GPIO_OType = GPIO_OType_PP;
 	init_port.GPIO_PuPd = GPIO_PuPd_UP;
 	GPIO_Init(GPIOA, &init_port);
-	GPIO_PinAFConfig(GPIOA, GPIO_PinSource1, GPIO_AF_USART2);
 	GPIO_PinAFConfig(GPIOA, GPIO_PinSource2, GPIO_AF_USART2);
+	GPIO_PinAFConfig(GPIOA, GPIO_PinSource3, GPIO_AF_USART2);
 
 	USART_InitTypeDef usart_init;
 	usart_init.USART_BaudRate = 9600;
@@ -76,30 +76,32 @@ void InitializeUSART2(void)
 	usart_init.USART_StopBits = USART_StopBits_1;
 	usart_init.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
 	USART_Init(USART2, &usart_init);
-	USART_ITConfig(USART2, USART_IT_RXNE, ENABLE);
 
+	USART_ITConfig(USART2, USART_IT_RXNE, ENABLE);
 	NVIC_EnableIRQ(USART2_IRQn);
 
 	USART_Cmd(USART2, ENABLE);
-
 }
 
 void USARTx_OutString(USART_TypeDef *USARTx, char *str)
 {
 	while (*str != 0x00) {
-		while( !(USARTx->SR & USART_SR_TC) );
+		while((USARTx->SR & USART_SR_TXE) == RESET);
 		USART_SendData(USARTx, (uint16_t)(*str));
 		++str;
 	}
 }
+
+#define USART_RX_BUFFER_LEN			128
+
+static char usart_rx_buffer[USART_RX_BUFFER_LEN] = {0};
+static char *rx_buff_ptr = usart_rx_buffer;
 
 int main(void)
 {
 	SystemInitialization();
 
 	InitializeUSART2();
-
-	USARTx_OutString(USART2, "System initialized\r\n");
 
 	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOD, ENABLE);
 
@@ -109,13 +111,14 @@ int main(void)
 	init_port_D.GPIO_Mode = GPIO_Mode_OUT;
 	init_port_D.GPIO_Speed = GPIO_Speed_2MHz;
 	init_port_D.GPIO_OType = GPIO_OType_PP;
-	init_port_D.GPIO_PuPd = GPIO_PuPd_NOPULL;
+	init_port_D.GPIO_PuPd = GPIO_PuPd_UP;
 	GPIO_Init(GPIOD, &init_port_D);
-
 
 	GPIO_SetBits(GPIOD, GPIO_Pin_12);
 
 	int res = SysTick_Config(16777214);
+
+	USARTx_OutString(USART2, "System initialized.\r\n");
 
     while(1)
     {
@@ -126,22 +129,16 @@ int main(void)
     }
 }
 
-
-
 void USART2_IRQHandler(void)
 {
-	int x = 0;
-	x++;
-	GPIO_SetBits(GPIOD, GPIO_Pin_15);
-	Delay(1500);
-	GPIO_ResetBits(GPIOD, GPIO_Pin_15);
-	Delay(1000);
+	if (USART_GetITStatus(USART2, USART_IT_RXNE) != RESET) {
+		*rx_buff_ptr = USART_ReceiveData(USART2);
+		++rx_buff_ptr;
+	}
 }
 
 void SysTick_Handler(void)
 {
-	int x = 0;
-	x++;
 	GPIO_SetBits(GPIOD, GPIO_Pin_14);
 	Delay(100);
 	GPIO_ResetBits(GPIOD, GPIO_Pin_14);
