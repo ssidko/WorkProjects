@@ -5,16 +5,21 @@
 #include "stm32f4xx_rcc.h"
 #include "stm32f4xx_usart.h"
 #include "core_cm4.h"
+#include "stm32f4xx_syscfg.h"
+#include "stm32f4xx_exti.h"
+#include "misc.h"
 
 #define RCC_PLLCFGR_M						((uint32_t)8)
 #define RCC_PLLCFGR_N						((uint32_t)336)
 #define RCC_PLLCFGR_P						((uint32_t)0) // PLLP = 2
 #define RCC_PLLCFGR_Q						((uint32_t)7)
 
+int sys_tick_counter;
+
 inline void Delay(int delay)
 {
-	delay *= 1000;
-	while (delay--);
+	sys_tick_counter = delay;
+	while (sys_tick_counter);
 }
 
 void SystemInitialization(void)
@@ -97,6 +102,44 @@ void USARTx_OutString(USART_TypeDef *USARTx, char *str)
 static char usart_rx_buffer[USART_RX_BUFFER_LEN] = {0};
 static char *rx_buff_ptr = usart_rx_buffer;
 
+void InitializeUserButton(void)
+{
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_SYSCFG, ENABLE);
+
+	//RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA, ENABLE);
+
+	GPIO_InitTypeDef init_port;
+	init_port.GPIO_Pin = GPIO_Pin_0;
+	init_port.GPIO_Mode = GPIO_Mode_IN;
+	init_port.GPIO_Speed = GPIO_Speed_2MHz;
+	init_port.GPIO_OType = GPIO_OType_PP;
+	init_port.GPIO_PuPd = GPIO_PuPd_NOPULL;
+	GPIO_Init(GPIOA, &init_port);
+
+	SYSCFG_EXTILineConfig(EXTI_PortSourceGPIOA, EXTI_PinSource0);
+
+	EXTI_InitTypeDef exti_init;
+	exti_init.EXTI_Line = EXTI_Line0;
+	exti_init.EXTI_Mode = EXTI_Mode_Interrupt;
+	exti_init.EXTI_Trigger = EXTI_Trigger_Rising;
+	exti_init.EXTI_LineCmd = ENABLE;
+	EXTI_Init(&exti_init);
+
+	NVIC_EnableIRQ(EXTI0_IRQn);
+}
+
+int led;
+
+void EXTI0_IRQHandler(void)
+{
+	if(EXTI_GetITStatus(EXTI_Line0) != RESET)
+	{
+		led = !(led);
+	    /* Clear the EXTI line 0 pending bit */
+		EXTI_ClearITPendingBit(EXTI_Line0);
+	}
+}
+
 int main(void)
 {
 	SystemInitialization();
@@ -116,16 +159,24 @@ int main(void)
 
 	GPIO_SetBits(GPIOD, GPIO_Pin_12);
 
-	int res = SysTick_Config(16777214);
+	SysTick_Config(168000);
 
 	USARTx_OutString(USART2, "System initialized.\r\n");
+
+	InitializeUserButton();
 
     while(1)
     {
     	GPIO_SetBits(GPIOD, GPIO_Pin_13);
-    	Delay(1500);
+    	Delay(1000);
     	GPIO_ResetBits(GPIOD, GPIO_Pin_13);
     	Delay(1000);
+    	if (led) {
+        	GPIO_SetBits(GPIOD, GPIO_Pin_15);
+        	Delay(200);
+        	GPIO_ResetBits(GPIOD, GPIO_Pin_15);
+        	Delay(200);
+    	}
     }
 }
 
@@ -139,8 +190,5 @@ void USART2_IRQHandler(void)
 
 void SysTick_Handler(void)
 {
-	GPIO_SetBits(GPIOD, GPIO_Pin_14);
-	Delay(100);
-	GPIO_ResetBits(GPIOD, GPIO_Pin_14);
-	Delay(100);
+	--sys_tick_counter;
 }
