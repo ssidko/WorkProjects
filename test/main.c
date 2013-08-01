@@ -8,6 +8,7 @@
 #include "stm32f4xx_syscfg.h"
 #include "stm32f4xx_exti.h"
 #include "misc.h"
+#include "stm32f4xx_tim.h"
 
 #define RCC_PLLCFGR_M						((uint32_t)8)
 #define RCC_PLLCFGR_N						((uint32_t)336)
@@ -20,6 +21,15 @@ inline void Delay(int delay)
 {
 	sys_tick_counter = delay;
 	while (sys_tick_counter);
+}
+
+void USARTx_OutString(USART_TypeDef *USARTx, char *str)
+{
+	while (*str != 0x00) {
+		while((USARTx->SR & USART_SR_TXE) == RESET);
+		USART_SendData(USARTx, (uint16_t)(*str));
+		++str;
+	}
 }
 
 void SystemInitialization(void)
@@ -88,19 +98,45 @@ void InitializeUSART2(void)
 	USART_Cmd(USART2, ENABLE);
 }
 
-void USARTx_OutString(USART_TypeDef *USARTx, char *str)
+void InitializeTIM4(void)
 {
-	while (*str != 0x00) {
-		while((USARTx->SR & USART_SR_TXE) == RESET);
-		USART_SendData(USARTx, (uint16_t)(*str));
-		++str;
-	}
+	RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM4, ENABLE);
+
+	GPIO_InitTypeDef init_port;
+	init_port.GPIO_Pin = GPIO_Pin_15;
+	init_port.GPIO_Mode = GPIO_Mode_AF;
+	init_port.GPIO_Speed = GPIO_Speed_50MHz;
+	init_port.GPIO_OType = GPIO_OType_PP;
+	init_port.GPIO_PuPd = GPIO_PuPd_UP;
+	GPIO_Init(GPIOD, &init_port);
+	GPIO_PinAFConfig(GPIOD, GPIO_PinSource15, GPIO_AF_TIM4);
+
+	TIM_TimeBaseInitTypeDef tim_init;
+	tim_init.TIM_Prescaler = 0;
+	tim_init.TIM_CounterMode = TIM_CounterMode_Up;
+	tim_init.TIM_Period = 1000; // TIMx_ARR
+	tim_init.TIM_ClockDivision = TIM_CKD_DIV1;
+	tim_init.TIM_RepetitionCounter - 0x00; // Ignored
+	TIM_TimeBaseInit(TIM4, &tim_init);
+
+	TIM_OCInitTypeDef oc_tim_init;
+	oc_tim_init.TIM_OCMode = TIM_OCMode_PWM2/*TIM_OCMode_PWM2*/;
+	oc_tim_init.TIM_OutputState = TIM_OutputState_Enable/*TIM_OutputState_Disable*/;
+	oc_tim_init.TIM_OutputNState = 0x00; // Ignored. This parameter is valid only for TIM1 and TIM8. */
+	oc_tim_init.TIM_Pulse = 10;
+	oc_tim_init.TIM_OCPolarity = /*TIM_OCPolarity_High*/TIM_OCPolarity_Low;
+	oc_tim_init.TIM_OCNPolarity = 0x00; // Ignored. This parameter is valid only for TIM1 and TIM8. */
+	oc_tim_init.TIM_OCIdleState = 0x00; // Ignored. This parameter is valid only for TIM1 and TIM8. */
+	oc_tim_init.TIM_OCNIdleState = 0x00; // Ignored. This parameter is valid only for TIM1 and TIM8. */
+	TIM_OC4Init(TIM4, &oc_tim_init);
+
+	  /* TIM1 counter enable */
+	TIM_Cmd(TIM4, ENABLE);
+
+	  /* TIM1 Main Output Enable */
+	TIM_CtrlPWMOutputs(TIM4, ENABLE);
+
 }
-
-#define USART_RX_BUFFER_LEN			128
-
-static char usart_rx_buffer[USART_RX_BUFFER_LEN] = {0};
-static char *rx_buff_ptr = usart_rx_buffer;
 
 void InitializeUserButton(void)
 {
@@ -128,6 +164,54 @@ void InitializeUserButton(void)
 	NVIC_EnableIRQ(EXTI0_IRQn);
 }
 
+void InitializeLCD(void)
+{
+	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE);
+	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOC, ENABLE);
+	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOD, ENABLE);
+	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOE, ENABLE);
+
+
+	GPIO_InitTypeDef init_port;
+	init_port.GPIO_Pin = GPIO_Pin_All;
+	init_port.GPIO_Mode = GPIO_Mode_OUT;
+	init_port.GPIO_Speed = GPIO_Speed_100MHz;
+	init_port.GPIO_OType = GPIO_OType_PP;
+	init_port.GPIO_PuPd = GPIO_PuPd_NOPULL;
+	GPIO_Init(GPIOE, &init_port);
+
+	// LCD_DB1
+	init_port.GPIO_Pin = GPIO_Pin_13;
+	GPIO_Init(GPIOC, &init_port);
+
+	// LCD_CS, LCD_RD, LCD_WR.
+	init_port.GPIO_Pin = GPIO_Pin_11 | GPIO_Pin_13 | GPIO_Pin_15;
+	GPIO_Init(GPIOB, &init_port);
+
+	// LCD_RESET
+	init_port.GPIO_Pin = GPIO_Pin_9;
+	GPIO_Init(GPIOD, &init_port);
+
+	// Set LCD_RESET line to high "1".
+	GPIO_SetBits(GPIOD, GPIO_Pin_9);
+}
+
+void LCD_Reset(void)
+{
+	//Make Reset
+	GPIO_SetBits(GPIOD, GPIO_Pin_9);
+	Delay(50);
+	GPIO_ResetBits(GPIOD, GPIO_Pin_9);
+	Delay(5);
+	GPIO_SetBits(GPIOD, GPIO_Pin_9);
+	Delay(150);
+}
+
+#define USART_RX_BUFFER_LEN			128
+
+static char usart_rx_buffer[USART_RX_BUFFER_LEN] = {0};
+static char *rx_buff_ptr = usart_rx_buffer;
+
 int led;
 
 void EXTI0_IRQHandler(void)
@@ -150,7 +234,7 @@ int main(void)
 
 	GPIO_InitTypeDef init_port_D;
 	GPIO_StructInit(&init_port_D);
-	init_port_D.GPIO_Pin = GPIO_Pin_12 | GPIO_Pin_13 | GPIO_Pin_14 | GPIO_Pin_15;
+	init_port_D.GPIO_Pin = GPIO_Pin_12 | GPIO_Pin_13 | GPIO_Pin_14 /*| GPIO_Pin_15*/;
 	init_port_D.GPIO_Mode = GPIO_Mode_OUT;
 	init_port_D.GPIO_Speed = GPIO_Speed_2MHz;
 	init_port_D.GPIO_OType = GPIO_OType_PP;
@@ -165,18 +249,51 @@ int main(void)
 
 	InitializeUserButton();
 
+	//
+	// Work with LCD
+	//
+	InitializeLCD();
+	LCD_Reset();
+
+
+	InitializeTIM4();
+
+	int pulse = 0;
+	int is_fading = 0;
+	int step = 4;
+	int delay = 5;
+	int pulse_threshold = 1000;
+
     while(1)
     {
+    	/*
     	GPIO_SetBits(GPIOD, GPIO_Pin_13);
     	Delay(1000);
     	GPIO_ResetBits(GPIOD, GPIO_Pin_13);
     	Delay(1000);
     	if (led) {
-        	GPIO_SetBits(GPIOD, GPIO_Pin_15);
+        	GPIO_SetBits(GPIOD, GPIO_Pin_14);
         	Delay(200);
-        	GPIO_ResetBits(GPIOD, GPIO_Pin_15);
+        	GPIO_ResetBits(GPIOD, GPIO_Pin_14);
         	Delay(200);
     	}
+    	*/
+    	/*
+    	pulse = 0;
+    	while(pulse < pulse_threshold) {
+    		pulse += step;
+    		TIM4->CCR4 = pulse;
+    		Delay(delay);
+    	}
+    	*/
+
+    	pulse = 1000;
+    	while(pulse > 0) {
+    		pulse -= step;
+    		TIM4->CCR4 = pulse;
+    		Delay(delay);
+    	}
+    	Delay(200);
     }
 }
 
