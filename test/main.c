@@ -18,7 +18,7 @@
 
 int sys_tick_counter;
 
-inline void Delay(int delay)
+void Delay(int delay)
 {
 	sys_tick_counter = delay;
 	while (sys_tick_counter);
@@ -212,7 +212,7 @@ int main(void)
 	//
 	// Work with LCD
 	//
-	LCD_LineConfig();
+	LCD_ili9320_Initialize();
 
 
 
