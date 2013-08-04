@@ -226,7 +226,7 @@ int main(void)
 
     while(1)
     {
-    	/*
+
     	GPIO_SetBits(GPIOD, GPIO_Pin_13);
     	Delay(1000);
     	GPIO_ResetBits(GPIOD, GPIO_Pin_13);
@@ -237,15 +237,7 @@ int main(void)
         	GPIO_ResetBits(GPIOD, GPIO_Pin_14);
         	Delay(200);
     	}
-    	*/
-    	/*
-    	pulse = 0;
-    	while(pulse < pulse_threshold) {
-    		pulse += step;
-    		TIM4->CCR4 = pulse;
-    		Delay(delay);
-    	}
-    	*/
+
 
     	pulse = 1000;
     	while(pulse > 0) {
