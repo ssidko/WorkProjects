@@ -25,7 +25,7 @@ void LCD_LineConfig(void)
 	GPIO_InitTypeDef init_port;
 	init_port.GPIO_Pin = GPIO_Pin_All;
 	init_port.GPIO_Mode = GPIO_Mode_OUT;
-	init_port.GPIO_Speed = GPIO_Speed_50MHz;
+	init_port.GPIO_Speed = GPIO_Speed_100MHz;
 	init_port.GPIO_OType = GPIO_OType_PP;
 	init_port.GPIO_PuPd = GPIO_PuPd_NOPULL;
 	GPIO_Init(GPIOE, &init_port);
@@ -44,7 +44,7 @@ void LCD_ConfigureDBusOUT(void)
 	GPIO_InitTypeDef init_port;
 	init_port.GPIO_Pin = GPIO_Pin_All && ~GPIO_Pin_15;
 	init_port.GPIO_Mode = GPIO_Mode_OUT;
-	init_port.GPIO_Speed = GPIO_Speed_50MHz;
+	init_port.GPIO_Speed = GPIO_Speed_100MHz;
 	init_port.GPIO_OType = GPIO_OType_PP;
 	init_port.GPIO_PuPd = GPIO_PuPd_NOPULL;
 	GPIO_Init(GPIOE, &init_port);
@@ -59,7 +59,7 @@ void LCD_ConfigureDBusIN(void)
 	GPIO_InitTypeDef init_port;
 	init_port.GPIO_Pin = GPIO_Pin_All & ~GPIO_Pin_15;
 	init_port.GPIO_Mode = GPIO_Mode_IN;
-	init_port.GPIO_Speed = GPIO_Speed_50MHz;
+	init_port.GPIO_Speed = GPIO_Speed_100MHz;
 	init_port.GPIO_OType = GPIO_OType_PP;
 	init_port.GPIO_PuPd = GPIO_PuPd_NOPULL;
 	GPIO_Init(GPIOE, &init_port);
@@ -161,81 +161,83 @@ void LCD_ili9320_Initialize(void)
 
 	LCD_ili9320_Reset();
 
-	LCD_ili9320_WriteToReg(0x00e5,0x8000);
-	LCD_ili9320_WriteToReg(0x0000,0x0001);
-	LCD_ili9320_WriteToReg(0x0001,0x0100);
-	Delay(1);
+	LCD_WriteToDB(0x55AA);
+	tmp = LCD_ReadFromDB();
 
-	/*
-	LCD_ili9320_WriteToReg(0x0002,0x0700);
-	LCD_ili9320_WriteToReg(0x0004,0x0000);
-	LCD_ili9320_WriteToReg(0x0008,0x0207);
-	LCD_ili9320_WriteToReg(0x0009,0x0000);
-	LCD_ili9320_WriteToReg(0x000a,0x0000);
-	LCD_ili9320_WriteToReg(0x000c,0x0001);
-	LCD_ili9320_WriteToReg(0x000d,0x0000);
-	LCD_ili9320_WriteToReg(0x000f,0x0000);
-	LCD_ili9320_WriteToReg(0x0010,0x0000);
-	LCD_ili9320_WriteToReg(0x0011,0x0000);
-	LCD_ili9320_WriteToReg(0x0012,0x0000);
-	LCD_ili9320_WriteToReg(0x0013,0x0000);
-	Delay(1);
-	/*
-	LCD_ili9320_WriteToReg(0x0010,0x17b0);
-	LCD_ili9320_WriteToReg(0x0011,0x0137);
-	Delay(1);
-	LCD_ili9320_WriteToReg(0x0012,0x0139);
-	Delay(1);
-	LCD_ili9320_WriteToReg(0x0013,0x1700);
-	LCD_ili9320_WriteToReg(0x0029,0x000c);
-	Delay(1);
-	/*
-	LCD_ili9320_WriteToReg(0x0020,0x0000);
-	LCD_ili9320_WriteToReg(0x0021,0x0000);
+	//************* Start Initial Sequence **********//
+	LCD_ili9320_WriteToReg(0x00E5, 0x8000); // Set the internal vcore voltage
+	LCD_ili9320_WriteToReg(0x0000, 0x0001); // Start internal OSC.
+	Delay(10);
+	LCD_ili9320_WriteToReg(0x0001, 0x0100); // set SS and SM bit
+	LCD_ili9320_WriteToReg(0x0002, 0x0700); // set 1 line inversion
+	LCD_ili9320_WriteToReg(0x0003, 0x1030); // set GRAM write direction and BGR=1.
+	LCD_ili9320_WriteToReg(0x0004, 0x0000); // Resize register
+	LCD_ili9320_WriteToReg(0x0008, 0x0202); // set the back porch and front porch
+	LCD_ili9320_WriteToReg(0x0009, 0x0000); // set non-display area refresh cycle ISC[3:0]
+	LCD_ili9320_WriteToReg(0x000A, 0x0000); // FMARK function
+	LCD_ili9320_WriteToReg(0x000C, 0x0000); // RGB interface setting
+	LCD_ili9320_WriteToReg(0x000D, 0x0000); // Frame marker Position
+	LCD_ili9320_WriteToReg(0x000F, 0x0000); // RGB interface polarity
+	//*************Power On sequence ****************//
+	LCD_ili9320_WriteToReg(0x0010, 0x0000); // SAP, BT[3:0], AP, DSTB, SLP, STB
+	LCD_ili9320_WriteToReg(0x0011, 0x0007); // DC1[2:0], DC0[2:0], VC[2:0]
+	LCD_ili9320_WriteToReg(0x0012, 0x0000); // VREG1OUT voltage
+	LCD_ili9320_WriteToReg(0x0013, 0x0000); // VDV[4:0] for VCOM amplitude
+	Delay(200); // Dis-charge capacitor power voltage
+	LCD_ili9320_WriteToReg(0x0010, 0x17B0); // SAP, BT[3:0], AP, DSTB, SLP, STB
+	LCD_ili9320_WriteToReg(0x0011, 0x0147); // DC1[2:0], DC0[2:0], VC[2:0]
+	Delay(50); // Delay 50ms
+	LCD_ili9320_WriteToReg(0x0012, 0x013C); // VREG1OUT voltage
+	Delay(50); // Delay 50ms
+	LCD_ili9320_WriteToReg(0x0013, 0x0E00); // VDV[4:0] for VCOM amplitude
+	LCD_ili9320_WriteToReg(0x0029, 0x0009); // VCM[4:0] for VCOMH
+	Delay(50);
+	LCD_ili9320_WriteToReg(0x0020, 0x0000); // GRAM horizontal Address
+	LCD_ili9320_WriteToReg(0x0021, 0x0000); // GRAM Vertical Address
+	// ----------- Adjust the Gamma Curve ----------//
+	LCD_ili9320_WriteToReg(0x0030, 0x0207);
+	LCD_ili9320_WriteToReg(0x0031, 0x0505);
+	LCD_ili9320_WriteToReg(0x0032, 0x0102);
+	LCD_ili9320_WriteToReg(0x0035, 0x0006);
+	LCD_ili9320_WriteToReg(0x0036, 0x0606);
+	LCD_ili9320_WriteToReg(0x0037, 0x0707);
+	LCD_ili9320_WriteToReg(0x0038, 0x0506);
+	LCD_ili9320_WriteToReg(0x0039, 0x0407);
+	LCD_ili9320_WriteToReg(0x003C, 0x0106);
+	LCD_ili9320_WriteToReg(0x003D, 0x0601);
+	//------------------ Set GRAM area ---------------//
+	LCD_ili9320_WriteToReg(0x0050, 0x0000); // Horizontal GRAM Start Address
+	LCD_ili9320_WriteToReg(0x0051, 0x00EF); // Horizontal GRAM End Address
+	LCD_ili9320_WriteToReg(0x0052, 0x0000); // Vertical GRAM Start Address
+	LCD_ili9320_WriteToReg(0x0053, 0x013F); // Vertical GRAM Start Address
+	LCD_ili9320_WriteToReg(0x0060, 0x2700); // Gate Scan Line
+	LCD_ili9320_WriteToReg(0x0061, 0x0001); // NDL,VLE, REV
+	LCD_ili9320_WriteToReg(0x006A, 0x0000); // set scrolling line
+	//-------------- Partial Display Control ---------//
+	LCD_ili9320_WriteToReg(0x0080, 0x0000);
+	LCD_ili9320_WriteToReg(0x0081, 0x0000);
+	LCD_ili9320_WriteToReg(0x0082, 0x0000);
+	LCD_ili9320_WriteToReg(0x0083, 0x0000);
+	LCD_ili9320_WriteToReg(0x0084, 0x0000);
+	LCD_ili9320_WriteToReg(0x0085, 0x0000);
+	//-------------- Panel Control -------------------//
+	LCD_ili9320_WriteToReg(0x0090, 0x0010);
+	LCD_ili9320_WriteToReg(0x0092, 0x0000);
+	LCD_ili9320_WriteToReg(0x0093, 0x0003);
+	LCD_ili9320_WriteToReg(0x0095, 0x0110);
+	LCD_ili9320_WriteToReg(0x0097, 0x0000);
+	LCD_ili9320_WriteToReg(0x0098, 0x0000);
+	LCD_ili9320_WriteToReg(0x0007, 0x0173); // 262K color and display ON
 
-
-	/*
-	LCD_ili9320_WriteToReg(0x0030,0x0000);
-	LCD_ili9320_WriteToReg(0x0031,0x0507);
-	LCD_ili9320_WriteToReg(0x0032,0x0104);
-	LCD_ili9320_WriteToReg(0x0035,0x0105);
-	LCD_ili9320_WriteToReg(0x0036,0x0404);
-	LCD_ili9320_WriteToReg(0x0037,0x0603);
-	LCD_ili9320_WriteToReg(0x0038,0x0004);
-	LCD_ili9320_WriteToReg(0x0039,0x0007);
-	LCD_ili9320_WriteToReg(0x003c,0x0501);
-	LCD_ili9320_WriteToReg(0x003d,0x0404);
-	LCD_ili9320_WriteToReg(0x0050,0x0000);
-	LCD_ili9320_WriteToReg(0x0051,0x00ef);
-	LCD_ili9320_WriteToReg(0x0052,0x0000);
-	LCD_ili9320_WriteToReg(0x0053,0x013f);
-
-	LCD_ili9320_WriteToReg(0x0060,0x2700);
-	LCD_ili9320_WriteToReg(0x0061,0x0001);
-	LCD_ili9320_WriteToReg(0x006a,0x0000);
-	LCD_ili9320_WriteToReg(0x0080,0x0000);
-	LCD_ili9320_WriteToReg(0x0081,0x0000);
-	LCD_ili9320_WriteToReg(0x0082,0x0000);
-	LCD_ili9320_WriteToReg(0x0083,0x0000);
-	LCD_ili9320_WriteToReg(0x0084,0x0000);
-	LCD_ili9320_WriteToReg(0x0085,0x0000);
-	LCD_ili9320_WriteToReg(0x0090,0x0010);
-	LCD_ili9320_WriteToReg(0x0092,0x0000);
-	LCD_ili9320_WriteToReg(0x0093,0x0003);
-	LCD_ili9320_WriteToReg(0x0095,0x0110);
-	LCD_ili9320_WriteToReg(0x0097,0x0000);
-	LCD_ili9320_WriteToReg(0x0098,0x0000);
-	LCD_ili9320_WriteToReg(0x0007,0x0173);
-	*/
-
-
-	tmp = LCD_ili9320_ReadFromReg(0x0000);
-	tmp = LCD_ili9320_ReadFromReg(0x0000);
-
-	LCD_ili9320_WriteToReg(0x0022, 0x3333);
-	LCD_ili9320_WriteToReg(0x0022, 0x3333);
-	LCD_ili9320_WriteToReg(0x0022, 0x3333);
-	LCD_ili9320_WriteToReg(0x0022, 0x3333);
+	int i = 0;
+	unsigned short colour = Red;
+	LCD_StartWriteGRAM();
+	for (; i < 320*240; ++i) {
+		LCD_WriteToDB(colour);
+		LCD_LineWR(DISABLE);
+		LCD_LineWR(ENABLE);
+	}
+	LCD_LineCS(ENABLE);
 
 	int x = 0;
 	x++;
@@ -247,15 +249,11 @@ void LCD_ili9320_WriteToReg(unsigned short reg_index, unsigned short value)
 	LCD_LineRS(DISABLE);
 	LCD_WriteToDB(reg_index);
 	LCD_LineWR(DISABLE);
-	LCD_LineWR(DISABLE);
-	//Delay(1);
 	LCD_LineWR(ENABLE);
 	LCD_LineRS(ENABLE);
 	//Delay(1);
 	LCD_WriteToDB(value);
 	LCD_LineWR(DISABLE);
-	LCD_LineWR(DISABLE);
-	//Delay(1);
 	LCD_LineWR(ENABLE);
 	LCD_LineCS(ENABLE);
 }
@@ -268,7 +266,6 @@ unsigned short LCD_ili9320_ReadFromReg(unsigned short reg_index)
 	LCD_LineRS(DISABLE);
 	LCD_WriteToDB(reg_index);
 	LCD_LineWR(DISABLE);
-	LCD_LineWR(DISABLE);
 	LCD_LineWR(ENABLE);
 	LCD_LineRS(ENABLE);
 
@@ -276,13 +273,7 @@ unsigned short LCD_ili9320_ReadFromReg(unsigned short reg_index)
 
 	// Make Read strob
 	LCD_LineRD(DISABLE);
-	LCD_LineRD(DISABLE);
 	LCD_LineRD(ENABLE);
-
-	// Make Read strob
-	//LCD_LineRD(DISABLE);
-	//LCD_LineRD(DISABLE);
-	//LCD_LineRD(ENABLE);
 
 	tmp = LCD_ReadFromDB();
 
@@ -291,6 +282,16 @@ unsigned short LCD_ili9320_ReadFromReg(unsigned short reg_index)
 	LCD_ConfigureDBusOUT();
 
 	return tmp;
+}
+
+void LCD_StartWriteGRAM(void)
+{
+	LCD_LineCS(DISABLE);
+	LCD_LineRS(DISABLE);
+	LCD_WriteToDB(0x0022);
+	LCD_LineWR(DISABLE);
+	LCD_LineWR(ENABLE);
+	LCD_LineRS(ENABLE);
 }
 
 
