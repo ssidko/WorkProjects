@@ -13,21 +13,41 @@
 <part id="0"/>
 <part id="2"/>
 <part id="1"/>
+<part id="3"/>
+<part id="4"/>
+<part id="5"/>
+<part id="6"/>
 </presentation>
 </folder>
 </info>
 </editorArea>
-<editor id="org.eclipse.cdt.ui.editor.CEditor" name="main.c" partName="main.c" path="J:/GitHub/WorkProjects/test/main.c" title="main.c" tooltip="J:/GitHub/WorkProjects/test/main.c" workbook="DefaultEditorWorkbook">
+<editor activePart="true" focus="true" id="org.eclipse.cdt.ui.editor.CEditor" name="main.c" partName="main.c" path="J:/GitHub/WorkProjects/test/main.c" title="main.c" tooltip="J:/GitHub/WorkProjects/test/main.c" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/test/main.c"/>
-<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="5813" selectionTopPixel="2321"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="5785" selectionTopPixel="2685"/>
 </editor>
-<editor activePart="true" focus="true" id="org.eclipse.cdt.ui.editor.CEditor" name="ili9320.c" partName="ili9320.c" path="J:/GitHub/WorkProjects/test/ili9320.c" title="ili9320.c" tooltip="J:/GitHub/WorkProjects/test/ili9320.c" workbook="DefaultEditorWorkbook">
+<editor id="org.eclipse.cdt.ui.editor.CEditor" name="ili9320.c" partName="ili9320.c" path="J:/GitHub/WorkProjects/test/ili9320.c" title="ili9320.c" tooltip="J:/GitHub/WorkProjects/test/ili9320.c" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/test/LCD/ili9320.c"/>
-<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="9778" selectionTopPixel="2430"/>
+<editorState selectionHorizontalPixel="0" selectionLength="9" selectionOffset="9650" selectionTopPixel="3195"/>
 </editor>
 <editor id="org.eclipse.cdt.ui.editor.CEditor" name="ili9320.h" partName="ili9320.h" path="J:/GitHub/WorkProjects/test/ili9320.h" title="ili9320.h" tooltip="J:/GitHub/WorkProjects/test/ili9320.h" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/test/LCD/ili9320.h"/>
-<editorState selectionHorizontalPixel="0" selectionLength="3" selectionOffset="327" selectionTopPixel="0"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="761" selectionTopPixel="0"/>
+</editor>
+<editor id="org.eclipse.cdt.ui.editor.CEditor" name="startup_stm32f4xx.c" partName="startup_stm32f4xx.c" path="J:/GitHub/WorkProjects/test/cmsis_boot/startup/startup_stm32f4xx.c" title="startup_stm32f4xx.c" tooltip="J:/GitHub/WorkProjects/test/cmsis_boot/startup/startup_stm32f4xx.c" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/test/lib/startup/startup_stm32f4xx.c"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="14795" selectionTopPixel="3810"/>
+</editor>
+<editor id="org.eclipse.cdt.ui.editor.CEditor" name="core_cmInstr.h" partName="core_cmInstr.h" path="J:/GitHub/WorkProjects/test/cmsis/core_cmInstr.h" title="core_cmInstr.h" tooltip="J:/GitHub/WorkProjects/test/cmsis/core_cmInstr.h" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/test/lib/cmsis/core_cmInstr.h"/>
+<editorState selectionHorizontalPixel="0" selectionLength="5" selectionOffset="7734" selectionTopPixel="3600"/>
+</editor>
+<editor id="org.eclipse.cdt.ui.editor.CEditor" name="stm32f4xx_gpio.h" partName="stm32f4xx_gpio.h" path="J:/GitHub/WorkProjects/test/cmsis_lib/include/stm32f4xx_gpio.h" title="stm32f4xx_gpio.h" tooltip="J:/GitHub/WorkProjects/test/cmsis_lib/include/stm32f4xx_gpio.h" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/test/lib/std_periph/include/stm32f4xx_gpio.h"/>
+<editorState selectionHorizontalPixel="0" selectionLength="18" selectionOffset="16489" selectionTopPixel="5231"/>
+</editor>
+<editor id="org.eclipse.cdt.ui.editor.CEditor" name="stm32f4xx_gpio.c" partName="stm32f4xx_gpio.c" path="J:/GitHub/WorkProjects/test/cmsis_lib/source/stm32f4xx_gpio.c" title="stm32f4xx_gpio.c" tooltip="J:/GitHub/WorkProjects/test/cmsis_lib/source/stm32f4xx_gpio.c" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/test/lib/std_periph/source/stm32f4xx_gpio.c"/>
+<editorState selectionHorizontalPixel="0" selectionLength="18" selectionOffset="10547" selectionTopPixel="3885"/>
 </editor>
 </editors>
 <views>
@@ -35,9 +55,12 @@
 <viewState CommonNavigator.LINKING_ENABLED="0" horizontalPosition="0" org.eclipse.ui.navigator.resources.workingSets.showTopLevelWorkingSets="0" verticalPosition="0">
 <expanded>
 <element path="/test"/>
+<element path="/test/lib"/>
+<element path="/test/lib/std_periph"/>
+<element path="/test/lib/std_periph/include"/>
 </expanded>
 <selection>
-<element path="/test"/>
+<element path="/test/lib/std_periph/include/stm32f4xx_gpio.h"/>
 </selection>
 </viewState>
 </view>
@@ -103,7 +126,6 @@
 <fastViewBar fastViewLocation="1024" id="org.eclipse.ui.internal.ViewStack@19c260c" orientation="256" selectedTabId="org.eclipse.ui.console.ConsoleView" style="0">
 <fastViews>
 <view id="org.eclipse.ui.console.ConsoleView" ratio="0.29891303"/>
-<view id="org.eclipse.debug.ui.BreakpointView" ratio="0.3"/>
 </fastViews>
 </fastViewBar>
 </fastViewBars>
@@ -232,7 +254,7 @@
 </folder>
 </info>
 <info folder="true" part="org.eclipse.ui.internal.ViewStack@10a2092" ratio="0.7" ratioLeft="644" ratioRight="276" relationship="4" relative="org.eclipse.ui.internal.ViewStack@160cc2f">
-<folder activePageID="org.eclipse.ui.console.ConsoleView" appearance="2" expanded="2">
+<folder activePageID="org.eclipse.debug.ui.DebugView" appearance="2" expanded="2">
 <page content="org.eclipse.ui.console.ConsoleView" label="Console"/>
 <page content="org.eclipse.debug.ui.DebugView" label="Debug"/>
 <page content="org.eclipse.debug.ui.BreakpointView" label="Breakpoints"/>
@@ -277,159 +299,162 @@
 <navigationHistory>
 <editors>
 <editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/test/LCD/ili9320.c"/>
-<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/test/lib/startup/startup_stm32f4xx.c"/>
 <editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/test/main.c"/>
 <editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/test/LCD/ili9320.h"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/test/lib/cmsis/core_cmInstr.h"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/test/lib/startup/startup_stm32f4xx.c"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/test/lib/std_periph/source/stm32f4xx_gpio.c"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/test/lib/std_periph/include/stm32f4xx_gpio.h"/>
 </editors>
-<item historyLabel="ili9320.c" index="0">
-<position info="not_deleted" x="10584" y="0"/>
+<item historyLabel="core_cmInstr.h" index="3">
+<position info="not_deleted" x="7734" y="5"/>
+</item>
+<item historyLabel="main.c" index="1">
+<position info="not_deleted" x="6350" y="0"/>
+</item>
+<item historyLabel="ili9320.h" index="2">
+<position info="not_deleted" x="1775" y="20"/>
 </item>
 <item historyLabel="ili9320.c" index="0">
-<position info="not_deleted" x="6281" y="0"/>
-</item>
-<item historyLabel="startup_stm32f4xx.c" index="1">
-<position/>
-</item>
-<item historyLabel="main.c" index="2">
-<position/>
-</item>
-<item historyLabel="main.c" index="2">
-<position/>
+<position info="not_deleted" x="9431" y="0"/>
 </item>
 <item historyLabel="ili9320.c" index="0">
-<position info="not_deleted" x="6073" y="0"/>
+<position info="not_deleted" x="9595" y="15"/>
 </item>
-<item historyLabel="ili9320.c" index="0">
-<position info="not_deleted" x="6205" y="0"/>
-</item>
-<item historyLabel="ili9320.c" index="0">
-<position/>
-</item>
-<item historyLabel="ili9320.c" index="0">
-<position info="not_deleted" x="6422" y="0"/>
-</item>
-<item historyLabel="startup_stm32f4xx.c" index="1">
-<position/>
-</item>
-<item historyLabel="main.c" index="2">
-<position info="not_deleted" x="5785" y="0"/>
-</item>
-<item historyLabel="main.c" index="2">
-<position info="not_deleted" x="5813" y="0"/>
-</item>
-<item historyLabel="ili9320.c" index="0">
-<position info="not_deleted" x="6073" y="0"/>
-</item>
-<item historyLabel="ili9320.c" index="0">
-<position info="not_deleted" x="6205" y="0"/>
-</item>
-<item historyLabel="ili9320.c" index="0">
-<position info="not_deleted" x="6281" y="0"/>
-</item>
-<item historyLabel="ili9320.c" index="0">
-<position info="not_deleted" x="6359" y="0"/>
-</item>
-<item historyLabel="ili9320.c" index="0">
-<position/>
-</item>
-<item historyLabel="ili9320.c" index="0">
-<position info="not_deleted" x="6422" y="0"/>
-</item>
-<item historyLabel="ili9320.c" index="0">
-<position info="not_deleted" x="6357" y="0"/>
-</item>
-<item historyLabel="startup_stm32f4xx.c" index="1">
-<position/>
-</item>
-<item historyLabel="main.c" index="2">
-<position info="not_deleted" x="5813" y="0"/>
-</item>
-<item historyLabel="ili9320.c" index="0">
-<position info="not_deleted" x="6073" y="0"/>
-</item>
-<item historyLabel="ili9320.c" index="0">
-<position info="not_deleted" x="6205" y="0"/>
-</item>
-<item historyLabel="ili9320.c" index="0">
-<position info="not_deleted" x="9891" y="0"/>
-</item>
-<item historyLabel="ili9320.c" index="0">
-<position info="not_deleted" x="9891" y="0"/>
-</item>
-<item historyLabel="ili9320.c" index="0">
-<position/>
-</item>
-<item historyLabel="ili9320.h" index="3">
-<position info="not_deleted" x="1062" y="23"/>
-</item>
-<item historyLabel="ili9320.h" index="3">
-<position info="not_deleted" x="1116" y="30"/>
-</item>
-<item historyLabel="ili9320.c" index="0">
-<position/>
-</item>
-<item historyLabel="ili9320.c" index="0">
-<position info="not_deleted" x="10786" y="0"/>
-</item>
-<item historyLabel="ili9320.c" index="0">
-<position info="not_deleted" x="9761" y="0"/>
-</item>
-<item historyLabel="ili9320.c" index="0">
-<position info="not_deleted" x="9889" y="0"/>
-</item>
-<item historyLabel="ili9320.c" index="0">
-<position info="not_deleted" x="9789" y="0"/>
-</item>
-<item historyLabel="ili9320.c" index="0">
-<position info="not_deleted" x="9816" y="0"/>
-</item>
-<item historyLabel="ili9320.c" index="0">
-<position info="not_deleted" x="9844" y="0"/>
-</item>
-<item historyLabel="ili9320.c" index="0">
-<position info="not_deleted" x="9738" y="0"/>
-</item>
-<item historyLabel="startup_stm32f4xx.c" index="1">
-<position/>
-</item>
-<item historyLabel="startup_stm32f4xx.c" index="1">
-<position/>
-</item>
-<item historyLabel="startup_stm32f4xx.c" index="1">
-<position/>
-</item>
-<item historyLabel="ili9320.c" index="0">
-<position info="not_deleted" x="9738" y="0"/>
-</item>
-<item historyLabel="ili9320.c" index="0">
-<position info="not_deleted" x="9496" y="0"/>
-</item>
-<item historyLabel="ili9320.h" index="3">
-<position info="not_deleted" x="1116" y="30"/>
-</item>
-<item historyLabel="main.c" index="2">
-<position info="not_deleted" x="5813" y="0"/>
-</item>
-<item historyLabel="ili9320.h" index="3">
-<position info="not_deleted" x="327" y="3"/>
-</item>
-<item historyLabel="main.c" index="2">
-<position info="not_deleted" x="5813" y="0"/>
-</item>
-<item historyLabel="ili9320.c" index="0">
-<position info="not_deleted" x="9496" y="0"/>
-</item>
-<item historyLabel="ili9320.c" index="0">
-<position info="not_deleted" x="6119" y="0"/>
-</item>
-<item historyLabel="ili9320.c" index="0">
-<position info="not_deleted" x="6130" y="0"/>
-</item>
-<item historyLabel="startup_stm32f4xx.c" index="1">
+<item historyLabel="startup_stm32f4xx.c" index="4">
 <position info="not_deleted" x="14795" y="0"/>
 </item>
-<item active="true" historyLabel="ili9320.c" index="0">
-<position info="not_deleted" x="6130" y="0"/>
+<item historyLabel="main.c" index="1">
+<position info="not_deleted" x="5785" y="0"/>
+</item>
+<item historyLabel="ili9320.c" index="0">
+<position info="not_deleted" x="5643" y="0"/>
+</item>
+<item historyLabel="ili9320.c" index="0">
+<position info="not_deleted" x="5748" y="0"/>
+</item>
+<item historyLabel="startup_stm32f4xx.c" index="4">
+<position info="not_deleted" x="14795" y="0"/>
+</item>
+<item historyLabel="main.c" index="1">
+<position info="not_deleted" x="5785" y="0"/>
+</item>
+<item historyLabel="ili9320.c" index="0">
+<position info="not_deleted" x="5643" y="0"/>
+</item>
+<item historyLabel="ili9320.c" index="0">
+<position info="not_deleted" x="9515" y="0"/>
+</item>
+<item historyLabel="ili9320.c" index="0">
+<position info="not_deleted" x="9530" y="0"/>
+</item>
+<item historyLabel="ili9320.c" index="0">
+<position info="not_deleted" x="9542" y="0"/>
+</item>
+<item historyLabel="ili9320.c" index="0">
+<position info="not_deleted" x="9557" y="0"/>
+</item>
+<item historyLabel="ili9320.c" index="0">
+<position info="not_deleted" x="9569" y="0"/>
+</item>
+<item historyLabel="ili9320.c" index="0">
+<position info="not_deleted" x="9597" y="0"/>
+</item>
+<item historyLabel="ili9320.c" index="0">
+<position info="not_deleted" x="9612" y="0"/>
+</item>
+<item historyLabel="ili9320.c" index="0">
+<position info="not_deleted" x="9624" y="0"/>
+</item>
+<item historyLabel="ili9320.c" index="0">
+<position info="not_deleted" x="9637" y="0"/>
+</item>
+<item historyLabel="ili9320.c" index="0">
+<position info="not_deleted" x="9655" y="0"/>
+</item>
+<item historyLabel="ili9320.h" index="2">
+<position info="not_deleted" x="899" y="0"/>
+</item>
+<item historyLabel="ili9320.c" index="0">
+<position info="not_deleted" x="1527" y="9"/>
+</item>
+<item historyLabel="stm32f4xx_gpio.c" index="5">
+<position info="not_deleted" x="7588" y="9"/>
+</item>
+<item historyLabel="stm32f4xx_gpio.h" index="6">
+<position info="not_deleted" x="16234" y="11"/>
+</item>
+<item historyLabel="stm32f4xx_gpio.c" index="5">
+<position info="not_deleted" x="5662" y="11"/>
+</item>
+<item historyLabel="stm32f4xx_gpio.h" index="6">
+<position info="not_deleted" x="16489" y="18"/>
+</item>
+<item historyLabel="stm32f4xx_gpio.c" index="5">
+<position info="not_deleted" x="10547" y="18"/>
+</item>
+<item historyLabel="ili9320.c" index="0">
+<position info="not_deleted" x="5593" y="0"/>
+</item>
+<item historyLabel="ili9320.h" index="2">
+<position info="not_deleted" x="1294" y="0"/>
+</item>
+<item historyLabel="ili9320.c" index="0">
+<position info="not_deleted" x="5593" y="0"/>
+</item>
+<item historyLabel="startup_stm32f4xx.c" index="4">
+<position info="not_deleted" x="14795" y="0"/>
+</item>
+<item historyLabel="main.c" index="1">
+<position info="not_deleted" x="5785" y="0"/>
+</item>
+<item historyLabel="ili9320.c" index="0">
+<position info="not_deleted" x="5643" y="0"/>
+</item>
+<item historyLabel="ili9320.c" index="0">
+<position info="not_deleted" x="5722" y="0"/>
+</item>
+<item historyLabel="ili9320.c" index="0">
+<position info="not_deleted" x="9515" y="0"/>
+</item>
+<item historyLabel="ili9320.c" index="0">
+<position info="not_deleted" x="9530" y="0"/>
+</item>
+<item historyLabel="ili9320.c" index="0">
+<position info="not_deleted" x="9542" y="0"/>
+</item>
+<item historyLabel="ili9320.c" index="0">
+<position info="not_deleted" x="9557" y="0"/>
+</item>
+<item historyLabel="ili9320.c" index="0">
+<position info="not_deleted" x="9569" y="0"/>
+</item>
+<item historyLabel="ili9320.c" index="0">
+<position info="not_deleted" x="9597" y="0"/>
+</item>
+<item historyLabel="ili9320.c" index="0">
+<position info="not_deleted" x="9612" y="0"/>
+</item>
+<item historyLabel="ili9320.c" index="0">
+<position info="not_deleted" x="9624" y="0"/>
+</item>
+<item historyLabel="ili9320.c" index="0">
+<position info="not_deleted" x="9637" y="0"/>
+</item>
+<item historyLabel="ili9320.c" index="0">
+<position info="not_deleted" x="9650" y="9"/>
+</item>
+<item historyLabel="ili9320.h" index="2">
+<position info="not_deleted" x="218" y="67"/>
+</item>
+<item historyLabel="ili9320.c" index="0">
+<position info="not_deleted" x="9650" y="9"/>
+</item>
+<item historyLabel="ili9320.h" index="2">
+<position info="not_deleted" x="761" y="0"/>
+</item>
+<item active="true" historyLabel="main.c" index="1">
+<position info="not_deleted" x="5785" y="0"/>
 </item>
 </navigationHistory>
 <input factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/" type="8"/>
@@ -438,14 +463,17 @@
 <actionBarAdvisor/>
 </window>
 <mruList>
-<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="startup_stm32f4xx.c" tooltip="test/lib/startup/startup_stm32f4xx.c">
-<persistable path="/test/lib/startup/startup_stm32f4xx.c"/>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="stm32f4xx_gpio.c" tooltip="test/lib/std_periph/source/stm32f4xx_gpio.c">
+<persistable path="/test/lib/std_periph/source/stm32f4xx_gpio.c"/>
 </file>
 <file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="stm32f4xx_gpio.h" tooltip="test/lib/std_periph/include/stm32f4xx_gpio.h">
 <persistable path="/test/lib/std_periph/include/stm32f4xx_gpio.h"/>
 </file>
-<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="stm32f4xx_gpio.c" tooltip="test/lib/std_periph/source/stm32f4xx_gpio.c">
-<persistable path="/test/lib/std_periph/source/stm32f4xx_gpio.c"/>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="core_cmInstr.h" tooltip="test/lib/cmsis/core_cmInstr.h">
+<persistable path="/test/lib/cmsis/core_cmInstr.h"/>
+</file>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="startup_stm32f4xx.c" tooltip="test/lib/startup/startup_stm32f4xx.c">
+<persistable path="/test/lib/startup/startup_stm32f4xx.c"/>
 </file>
 <file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="board.h" tooltip="test/board.h">
 <persistable path="/test/board.h"/>
@@ -476,13 +504,6 @@
 </file>
 <file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="stm32f4xx_tim.c" tooltip="test/lib/std_periph/source/stm32f4xx_tim.c">
 <persistable path="/test/lib/std_periph/source/stm32f4xx_tim.c"/>
-</file>
-<file factoryID="org.coocox.component.ui.editors.repository.RepositoryElementFactory" id="org.coocox.builder.ui.editors.repository.RepositoryBrowser" name="Repository" tooltip="Repository">
-<persistable>&#x0A;<subPage/>
-</persistable>
-</file>
-<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="usbd_cdc_vcp.c" tooltip="[CoIDE]_USB_CDC_Example/Libraries/usb_cdc/CDC/usbd_cdc_vcp.c">
-<persistable path="/[CoIDE]_USB_CDC_Example/Libraries/usb_cdc/CDC/usbd_cdc_vcp.c"/>
 </file>
 </mruList>
 </workbench>
