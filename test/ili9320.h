@@ -62,6 +62,7 @@ unsigned short LCD_ReadFromDB(void); // Read from Date BUS
 void LCD_ili9320_Reset(void);
 void LCD_ili9320_Initialize(void);
 void LCD_ili9320_WriteToReg(unsigned short reg_index, unsigned short value);
+unsigned short LCD_ili9320_8bit_ReadFromReg(unsigned short reg_index);
 unsigned short LCD_ili9320_ReadFromReg(unsigned short reg_index);
 void LCD_StartWriteGRAM(void);
 

@@ -143,13 +143,18 @@ void LCD_ili9320_Initialize(void)
 	LCD_SetRD;
 	LCD_SetWR;
 	LCD_SetRESET;
+	LCD_WriteToDB(0xFFFF);
 
 	LCD_ili9320_Reset();
+
+	tmp = LCD_ili9320_ReadFromReg(0x0000);
+	//tmp = LCD_ili9320_8bit_ReadFromReg(0x0000);
 
 	//************* Start Initial Sequence **********//
 	LCD_ili9320_WriteToReg(0x00E5, 0x8000); // Set the internal vcore voltage
 	LCD_ili9320_WriteToReg(0x0000, 0x0001); // Start internal OSC.
 	LCD_ili9320_WriteToReg(0x0001, 0x0100); // set SS and SM bit
+	tmp = LCD_ili9320_ReadFromReg(0x0000);
 	LCD_ili9320_WriteToReg(0x0002, 0x0700); // set 1 line inversion
 	LCD_ili9320_WriteToReg(0x0003, 0x1030); // set GRAM write direction and BGR=1.
 	LCD_ili9320_WriteToReg(0x0004, 0x0000); // Resize register
@@ -212,7 +217,6 @@ void LCD_ili9320_Initialize(void)
 
 	int i = 0;
 	unsigned short colour = Magenta;
-	/*
 	LCD_StartWriteGRAM();
 	for (; i < 320*240; ++i) {
 		LCD_WriteToDB(colour);
@@ -221,7 +225,7 @@ void LCD_ili9320_Initialize(void)
 		LCD_SetWR;
 	}
 	LCD_LineCS(ENABLE);
-	*/
+
 	int x = 0;
 	x++;
 }
@@ -229,21 +233,16 @@ void LCD_ili9320_Initialize(void)
 void LCD_ili9320_WriteToReg(unsigned short reg_index, unsigned short value)
 {
 	LCD_ClearCS;
-	Delay(1);
 	LCD_ClearRS;
-	Delay(1);
 	LCD_WriteToDB(reg_index);
 	LCD_ClearWR;
-	Delay(1);
+	LCD_ClearWR;
 	LCD_SetWR;
-	Delay(1);
 	LCD_SetRS;
-	Delay(1);
 	LCD_WriteToDB(value);
 	LCD_ClearWR;
-	Delay(1);
+	LCD_ClearWR;
 	LCD_SetWR;
-	Delay(1);
 	LCD_SetCS;
 }
 
@@ -258,7 +257,6 @@ unsigned short LCD_ili9320_ReadFromReg(unsigned short reg_index)
 	LCD_ClearWR;
 	LCD_SetWR;
 	LCD_SetRS;
-
 	LCD_ConfigureDBusIN();
 	LCD_ClearRD;
 	LCD_ClearRD;
@@ -267,6 +265,31 @@ unsigned short LCD_ili9320_ReadFromReg(unsigned short reg_index)
 	LCD_SetCS;
 	LCD_ConfigureDBusOUT();
 
+	return data;
+}
+
+unsigned short LCD_ili9320_8bit_ReadFromReg(unsigned short reg_index)
+{
+	unsigned short data = 0;
+
+	LCD_ClearCS;
+	LCD_ClearRS;
+	LCD_WriteToDB(0x00);
+	LCD_ClearWR;
+	LCD_SetWR;
+	LCD_WriteToDB(reg_index);
+	LCD_ClearWR;
+	LCD_SetWR;
+
+	LCD_ConfigureDBusIN();
+	LCD_ClearRD;
+	LCD_ClearRD;
+	data = LCD_ReadFromDB() << 8;
+	LCD_ClearRD;
+	LCD_ClearRD;
+	data |= LCD_ReadFromDB();
+	LCD_SetCS;
+	LCD_ConfigureDBusOUT();
 	return data;
 }
 
