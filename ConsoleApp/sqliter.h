@@ -4,6 +4,7 @@
 #include <memory>
 #include <vector>
 #include "W32Lib.h"
+#include <ctime>
 
 namespace sqliter
 {

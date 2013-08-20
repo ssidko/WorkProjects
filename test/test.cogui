@@ -452,8 +452,7 @@
 <persistable path="/test/cmsis_lib/include/stm32f4xx_spi.h"/>
 </file>
 <file factoryID="org.coocox.component.ui.editors.repository.RepositoryElementFactory" id="org.coocox.builder.ui.editors.repository.RepositoryBrowser" name="Repository" tooltip="Repository">
-<persistable>
-<subPage/>
+<persistable>&#x0A;<subPage/>
 </persistable>
 </file>
 <file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="stm32f4xx_rcc.c" tooltip="test/lib/std_periph/source/stm32f4xx_rcc.c">

@@ -46,6 +46,9 @@
     <Filter Include="dvr-h264">
       <UniqueIdentifier>{3c03be41-7e89-418a-b192-e4c33723d913}</UniqueIdentifier>
     </Filter>
+    <Filter Include="MXF">
+      <UniqueIdentifier>{00b38679-d534-460a-9513-d2bf59ccb419}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Calc.cpp">
@@ -96,6 +99,9 @@
     <ClCompile Include="h264.cpp" />
     <ClCompile Include="sqliter.cpp">
       <Filter>SQLite</Filter>
+    </ClCompile>
+    <ClCompile Include="mxf.cpp">
+      <Filter>MXF</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -155,6 +161,9 @@
     <ClInclude Include="h264.h" />
     <ClInclude Include="sqliter.h">
       <Filter>SQLite</Filter>
+    </ClInclude>
+    <ClInclude Include="mxf.h">
+      <Filter>MXF</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -715,5 +715,112 @@ BOOL UTF8ToCP1251(const char *str, DWORD len, string *res_str)
 
 }
 
+void testing_recovery(void) {
+
+#define CHAT_NAME_FIELD				(DWORD)3
+#define AUTHOR_FIELD				(DWORD)4
+#define DIALOG_PARTNER_FIELD		(DWORD)8
+#define TIMESTAMP_FIELD				(DWORD)9
+#define MESSAGE_TYPE_FIELD			(DWORD)10
+#define MESSAGE_TEXT_FIELD			(DWORD)17
+
+	enum MessageType {
+		kAddToContactsList = 50,
+		kText = 61,
+		kSendFile = 68
+	};
+
+	static const DWORD max_len = 2048;
+	char line[max_len] = {0};
+	char timestamp_str[max_len] = {0};
+
+	FileEx out_file(_T("J:\\Work\\33116\\out.txt"));
+
+	Record rec;
+	const FIELD *field = NULL;
+	const STRING_FIELD *str_field = NULL;
+	const INTEGER_FIELD *int_field = NULL;
+
+	multimap<time_t, string> messages;
+
+	SQLiter db(_T("J:\\Work\\33116\\main.db"));
+	//SQLiter db(_T("d:\\GitHub\\main.db"));
+	if (db.Open() && out_file.Create()) {
+		for (DWORD i = 1; i <= db.FreePagesCount(); i++) {
+			Page *page = db.GetFreePage(i);
+
+			//for (DWORD i = 1; i <= db.PagesCount(); i++) {
+			//	Page *page = db.GetPage(i);
+
+			if (page && (page->Type() == kLeafTablePage)) {
+				for (DWORD r = 0; r < page->RecordsCount(); r++) {
+					if (page->GetRecord(r, &rec)) {
+
+						string out_line = "";
+						string chat_name = "";
+						string message_text = "";
+						string author = "";
+						string dialog_partner;
+						string time = "";
+						time_t raw_time = 0;
+
+						if (rec.FieldsCount() != 36) continue;
+
+						if (rec[CHAT_NAME_FIELD]->type != kString) continue;
+						chat_name = ((STRING_FIELD *)rec[CHAT_NAME_FIELD])->val;
+
+						if ((chat_name.find("oleg_anshlag") == string::npos) || (chat_name.find("babay.andr") == string::npos)) continue;
+
+						if (((INTEGER_FIELD *)rec[MESSAGE_TYPE_FIELD])->val != kText) continue;
+
+						if (rec[MESSAGE_TEXT_FIELD]->type != kString) continue;
+						message_text = ((STRING_FIELD *)rec[MESSAGE_TEXT_FIELD])->val;
+
+						if (rec[AUTHOR_FIELD]->type != kString) continue;
+						author = ((STRING_FIELD *)rec[AUTHOR_FIELD])->val;
+
+						if (rec[DIALOG_PARTNER_FIELD]->type != kString) continue;
+						dialog_partner = ((STRING_FIELD *)rec[DIALOG_PARTNER_FIELD])->val;
+
+						if (rec[TIMESTAMP_FIELD]->type != kInteger) continue;
+						raw_time = (time_t)((INTEGER_FIELD *)rec[TIMESTAMP_FIELD])->val;
+						time = ctime(&raw_time);
+
+						time[time.size() - 1] = ' ';
+
+						out_line += time;
+						out_line += "- ";
+						out_line += author;
+
+						//out_line += "(";
+						//if (author.find(dialog_partner) == string::npos) {
+						//	out_line += dialog_partner;
+						//} else {
+						//	out_line += "oleg_anshlag";
+						//}
+						//out_line += ")";
+
+						out_line += ": ";
+						out_line += message_text;
+						out_line += "\r\n";
+
+						messages.insert (pair<time_t, string>(raw_time, out_line));
+
+						//out_file.Write((void *)out_line.c_str(), out_line.size());
+						int x = 0;
+					}
+				}
+				delete page;
+				page = NULL;
+			}
+		}
+	}
+
+	multimap<time_t, string>::iterator it;
+	for (it = messages.begin(); it != messages.end(); ++it) {
+		out_file.Write((void *)((*it).second.c_str()), (*it).second.size());
+	}
+}
+
 }
 
