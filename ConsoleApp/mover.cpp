@@ -137,7 +137,6 @@ namespace mover
 	{
 		assert(hdr);
 		return ('ftyp' == Be2Le(hdr->type));
-		//return ((MOV_HEADER_SIZE == Be2Le(hdr->size)) && ('ftyp' == Be2Le(hdr->type)));
 	}
 
 	BOOL FindNextMovHeader(File *file, LONGLONG *offset)
