@@ -52,12 +52,38 @@ bool CreateSubFolders(TCHAR *path, String &video_path, String &audio_path)
 	return TRUE;
 }
 
+LONGLONG FindNextHeader(PhysicalDrive &drive)
+{
+	DWORD rw = 0;
+	BYTE *buff = new BYTE[256*512];
+	LONGLONG offset = 0;
+	MXF_HEADER *hdr = NULL;
+	while (true) {
+		drive.GetPointer(&offset);
+		if (rw = drive.Read(buff, 256*512)) {
+			for (DWORD i = 0; i < rw/512; i++) {
+				hdr = (MXF_HEADER *)&buff[i*512];
+				if (hdr->IsValid()) {
+					drive.SetPointer(offset + i*512);
+					delete[] buff;
+					return offset + i*512;
+				}
+			}
+		}
+		else {
+			delete[] buff;
+			return -1;
+		}
+	}
+}
+
 int Run(PhysicalDrive &drive, String &video_path, String &audio_path)
 {
+
 	return 0;
 }
 
-} // namespace mxf {
+} // namespace mxf
 
 int mxf_main(DWORD drive_number, TCHAR *out_dir)
 {
@@ -74,5 +100,3 @@ int mxf_main(DWORD drive_number, TCHAR *out_dir)
 
 	return mxf::Run(drive, video_path, audio_path);
 }
-
-
