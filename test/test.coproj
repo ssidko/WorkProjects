@@ -7,6 +7,7 @@
         <Option name="OptimizationLevel" value="0"/>
         <Option name="UseFPU" value="0"/>
         <Option name="UserEditCompiler" value=""/>
+        <Option name="SupportCPlusplus" value="1"/>
         <Includepaths>
           <Includepath path="."/>
         </Includepaths>
@@ -15,6 +16,7 @@
           <Define name="STM32F4XX"/>
           <Define name="USE_STDPERIPH_DRIVER"/>
           <Define name="__ASSEMBLY__"/>
+          <Define name="SUPPORT_CPLUSPLUS"/>
         </DefinedSymbols>
       </Compile>
       <Link useDefault="0">
@@ -24,6 +26,8 @@
         <Option name="LTO" value="0"/>
         <Option name="IsNewStartupCode" value="1"/>
         <Option name="Library" value="Not use C Library"/>
+        <Option name="UserEditLinker" value="-lstdc++; "/>
+        <Option name="nostartfiles" value="0"/>
         <LinkedLibraries/>
         <MemoryAreas debugInFlashNotRAM="1">
           <Memory name="IROM1" type="ReadOnly" size="0x00100000" startValue="0x08000000"/>
@@ -48,7 +52,7 @@
     <DebugOption>
       <Option name="org.coocox.codebugger.gdbjtag.core.adapter" value="ST-Link"/>
       <Option name="org.coocox.codebugger.gdbjtag.core.debugMode" value="SWD"/>
-      <Option name="org.coocox.codebugger.gdbjtag.core.clockDiv" value="1M"/>
+      <Option name="org.coocox.codebugger.gdbjtag.core.clockDiv" value="2M"/>
       <Option name="org.coocox.codebugger.gdbjtag.corerunToMain" value="1"/>
       <Option name="org.coocox.codebugger.gdbjtag.core.jlinkgdbserver" value=""/>
       <Option name="org.coocox.codebugger.gdbjtag.core.userDefineGDBScript" value=""/>
@@ -84,13 +88,14 @@
     <File name="board/SPI3.h" path="SPI3/SPI3.h" type="1"/>
     <File name="lib/std_periph/include/stm32f4xx_exti.h" path="cmsis_lib/include/stm32f4xx_exti.h" type="1"/>
     <File name="lib/std_periph/source/stm32f4xx_syscfg.c" path="cmsis_lib/source/stm32f4xx_syscfg.c" type="1"/>
-    <File name="lib/std_periph/source/stm32f4xx_rcc.c" path="cmsis_lib/source/stm32f4xx_rcc.c" type="1"/>
     <File name="lib/std_periph/stm32f4xx.h" path="cmsis_boot/stm32f4xx.h" type="1"/>
+    <File name="lib/std_periph/source/stm32f4xx_rcc.c" path="cmsis_lib/source/stm32f4xx_rcc.c" type="1"/>
     <File name="LCD/ili9320.h" path="ili9320.h" type="1"/>
-    <File name="cmsis_boot" path="" type="2"/>
     <File name="lib/std_periph/include/misc.h" path="cmsis_lib/include/misc.h" type="1"/>
-    <File name="lib/std_periph/source/stm32f4xx_usart.c" path="cmsis_lib/source/stm32f4xx_usart.c" type="1"/>
+    <File name="cmsis_boot" path="" type="2"/>
     <File name="lib/startup/startup_stm32f4xx.c" path="cmsis_boot/startup/startup_stm32f4xx.c" type="1"/>
+    <File name="lib/std_periph/source/stm32f4xx_usart.c" path="cmsis_lib/source/stm32f4xx_usart.c" type="1"/>
+    <File name="test_spp.h" path="test_spp.h" type="1"/>
     <File name="lib/std_periph/source/misc.c" path="cmsis_lib/source/misc.c" type="1"/>
     <File name="lib/std_periph/source/stm32f4xx_tim.c" path="cmsis_lib/source/stm32f4xx_tim.c" type="1"/>
     <File name="cmsis_lib/source/stm32f4xx_spi.c" path="cmsis_lib/source/stm32f4xx_spi.c" type="1"/>
@@ -99,8 +104,8 @@
     <File name="lib/startup" path="" type="2"/>
     <File name="board/SPI3.c" path="SPI3/SPI3.c" type="1"/>
     <File name="cmsis_lib/include/stm32f4xx_spi.h" path="cmsis_lib/include/stm32f4xx_spi.h" type="1"/>
-    <File name="lib/cmsis/core_cm4.h" path="cmsis/core_cm4.h" type="1"/>
     <File name="lib/std_periph/include/stm32f4xx_tim.h" path="cmsis_lib/include/stm32f4xx_tim.h" type="1"/>
+    <File name="lib/cmsis/core_cm4.h" path="cmsis/core_cm4.h" type="1"/>
     <File name="lib/std_periph/include/stm32f4xx_usart.h" path="cmsis_lib/include/stm32f4xx_usart.h" type="1"/>
     <File name="LCD" path="" type="2"/>
     <File name="lib/std_periph/include/stm32f4xx_syscfg.h" path="cmsis_lib/include/stm32f4xx_syscfg.h" type="1"/>
@@ -109,23 +114,23 @@
     <File name="cmsis_lib" path="" type="2"/>
     <File name="lib/cmsis/core_cmInstr.h" path="cmsis/core_cmInstr.h" type="1"/>
     <File name="cmsis_lib/source" path="" type="2"/>
+    <File name="main.cpp" path="main.cpp" type="1"/>
     <File name="lib/cmsis/core_cmFunc.h" path="cmsis/core_cmFunc.h" type="1"/>
     <File name="lib/std_periph/source/stm32f4xx_gpio.c" path="cmsis_lib/source/stm32f4xx_gpio.c" type="1"/>
-    <File name="lib/std_periph/include/stm32f4xx_flash.h" path="cmsis_lib/include/stm32f4xx_flash.h" type="1"/>
-    <File name="lib/std_periph/include" path="" type="2"/>
     <File name="LCD/ili9320.c" path="ili9320.c" type="1"/>
+    <File name="lib/std_periph/include" path="" type="2"/>
+    <File name="lib/std_periph/include/stm32f4xx_flash.h" path="cmsis_lib/include/stm32f4xx_flash.h" type="1"/>
     <File name="cmsis_boot/stm32f4xx_conf.h" path="cmsis_boot/stm32f4xx_conf.h" type="1"/>
     <File name="cmsis_boot/system_stm32f4xx.h" path="cmsis_boot/system_stm32f4xx.h" type="1"/>
     <File name="lib/cmsis/core_cm4_simd.h" path="cmsis/core_cm4_simd.h" type="1"/>
     <File name="cmsis_lib/include" path="" type="2"/>
     <File name="lib/std_periph/source/stm32f4xx_exti.c" path="cmsis_lib/source/stm32f4xx_exti.c" type="1"/>
     <File name="lib/std_periph/source" path="" type="2"/>
-    <File name="lib/cmsis" path="" type="2"/>
     <File name="lib/std_periph/include/stm32f4xx_gpio.h" path="cmsis_lib/include/stm32f4xx_gpio.h" type="1"/>
-    <File name="board.h" path="board.h" type="1"/>
+    <File name="lib/cmsis" path="" type="2"/>
     <File name="lib" path="" type="2"/>
+    <File name="board.h" path="board.h" type="1"/>
     <File name="lib/std_periph/source/stm32f4xx_flash.c" path="cmsis_lib/source/stm32f4xx_flash.c" type="1"/>
-    <File name="main.c" path="main.c" type="1"/>
     <File name="lib/std_periph/include/stm32f4xx_rcc.h" path="cmsis_lib/include/stm32f4xx_rcc.h" type="1"/>
   </Files>
 </Project>

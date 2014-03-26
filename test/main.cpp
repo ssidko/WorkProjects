@@ -10,6 +10,7 @@
 #include "misc.h"
 #include "stm32f4xx_tim.h"
 #include "ili9320.h"
+#include "test_spp.h"
 
 #define RCC_PLLCFGR_M						((uint32_t)8)
 #define RCC_PLLCFGR_N						((uint32_t)336)
@@ -186,6 +187,10 @@ void EXTI0_IRQHandler(void)
 
 int main(void)
 {
+	A a;
+	a.x = 10;
+	a.y = 29;
+
 	SystemInitialization();
 
 	InitializeUSART2();

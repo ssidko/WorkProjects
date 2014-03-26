@@ -535,9 +535,210 @@ void testing(void)
 
 using namespace sqliter;
 
+namespace RAID6
+{
+
+#define DRIVES_COUNT				15
+#define RAID6_BLOCK_SIZE			(DWORD)256*512			
+
+	enum {
+		kDataBlock,
+		kParityBlock,
+		kRSBlock
+	};
+	
+	//
+	//	Rs	1	2	3	4	5	Pd
+	//	6	7	8	9	10	Pd	Rs
+	//	12	13	14	15	Pd	Rs	11
+	//	18	19	20	Pd	Rs	16	17
+	//	24	25	Pd	Rs	21	22	23
+	//
+
+	class DrivesOrder 
+	{
+	private:
+		DWORD *numbers;
+		DWORD count;
+	public:
+		DrivesOrder(DWORD drives_count) : count(drives_count)
+		{
+			numbers = new DWORD[drives_count];
+			memset(numbers, kDataBlock, count*sizeof(DWORD));
+			numbers[0] = kRSBlock;
+			numbers[count-1] = kParityBlock;			
+		}
+
+		~DrivesOrder() 
+		{
+			delete[] numbers;
+		}
+
+		DWORD DriveIndex(ULONGLONG logical_block_number)
+		{
+			ULONGLONG drive_block_number = logical_block_number / (count - 2);
+			DWORD row = drive_block_number % count;
+			DWORD column = logical_block_number % (count - 2);
+
+			DWORD counter = 0;
+			DWORD drive_number = column;
+			DWORD index = (MakeRow(row) + 1);
+
+			while (true) {
+				if (index >= count) {
+					index = 0;
+					continue;
+				}				
+				if (counter >= drive_number) {
+					return index;
+				}
+				if (numbers[index] == kDataBlock) {
+					counter++;
+					index++;
+					continue;
+				}
+				else {
+					index++;
+					continue;
+				}
+
+			}
+		}
+
+		DWORD MakeRow(DWORD row)
+		{
+			memset(numbers, kDataBlock, count*sizeof(DWORD));
+			DWORD rs_index = (row == 0 ? 0 : (count - row)); // RS block
+			DWORD pd_index = (count - 1) - row;
+			numbers[rs_index] = kRSBlock;
+			numbers[pd_index] = kParityBlock;
+			return rs_index;
+		}
+		
+		void Test(void)
+		{
+			for (DWORD r = 0; r < count; r++) {
+				MakeRow(r);
+				for (DWORD c = 0; c < count; c++) {
+					if (numbers[c] == kDataBlock)
+						cout << "00 ";
+					else if (numbers[c] ==kParityBlock)
+						cout << "Pr ";
+					else if (numbers[c] ==kRSBlock)
+						cout << "RS ";
+				}
+				cout << "\n";
+			}
+		}
+	};
+
+	class Raid6
+	{
+	private:
+		DrivesOrder order;
+		vector<PhysicalDrive *> drives;
+		DWORD block_size;
+	public:
+		Raid6(DWORD drives_numbers[], DWORD drives_count, DWORD raid_block_size) : order(drives_count), block_size(raid_block_size)
+		{
+			PhysicalDrive *drive = NULL;
+			for (DWORD x = 0; x < drives_count; x++) {
+				drive = new PhysicalDrive(drives_numbers[x]);
+				drives.push_back(drive);
+			}
+		}
+
+		BOOL Open(void)
+		{
+			for (DWORD x = 0; x < drives.size(); x++) {
+				if (!drives[x]->Open()) {
+					return FALSE;
+				}
+				else {
+					cout << "Drive #" << x << " opened" << "\n";
+				}
+			}
+			return TRUE;
+		}
+
+		BOOL ReadBlock(ULONGLONG &logical_block_number, BYTE *buffer)
+		{	
+			ULONGLONG drive_block_number = logical_block_number / (drives.size() - 2);
+			PhysicalDrive *drive = drives[order.DriveIndex(logical_block_number)];
+			drive->SetPointer((LONGLONG)(drive_block_number*RAID6_BLOCK_SIZE));
+			if ( drive->Read(buffer, RAID6_BLOCK_SIZE) == RAID6_BLOCK_SIZE ) {
+				return TRUE;
+			}
+			else {
+				cout << "Error read drive :" << ::GetLastError() << "\n";
+				return FALSE;
+			}
+		}
+	};
+
+	BOOL ConcatenateFiles(File &dst_file, LONGLONG &dst_offset, File &src_file, LONGLONG &src_offset) 
+	{
+		DWORD rw = 0;
+		const int buff_size = 256*512;
+		BYTE *buff = new BYTE[buff_size];
+		
+		if(!dst_file.IsOpen()) if(!dst_file.Open()) return FALSE;
+		if(!src_file.IsOpen()) if(!src_file.Open()) return FALSE;
+
+		dst_file.SetPointer(dst_offset);
+		src_file.SetPointer(src_offset);
+		if ((512 != dst_file.Read(&buff[0], 512)) || (512 != src_file.Read(&buff[512], 512))) return FALSE;
+		if (memcmp(&buff[0], &buff[512], 512)) return FALSE;
+
+		dst_file.SetPointer(dst_offset);
+		src_file.SetPointer(src_offset);
+		while (rw = src_file.Read(buff, buff_size)) {
+			dst_file.Write(buff, rw);
+		}
+		return TRUE;
+	}
+
+
+	int main(void)
+	{
+		//DWORD err = 0;
+		//DWORD drives_numbers[DRIVES_COUNT] = {8,16,3,14,15,10,2,6,9,5,12,7,13,1,11};
+		//ULONGLONG start_block = /*67108862*//*70464620*/71543383;
+		//Raid6 raid(drives_numbers, DRIVES_COUNT, RAID6_BLOCK_SIZE);
+		//if (raid.Open()) {
+		//	cout << "RAID opened\n";
+		//	File out_file(_T("Y:\\new\\tail.bin"));
+		//	if (out_file.Create()) {
+		//		cout << "Out file created\n";
+		//		BYTE *buff = new BYTE[RAID6_BLOCK_SIZE];
+		//		while (raid.ReadBlock(start_block, buff)) {
+		//			out_file.Write(buff, RAID6_BLOCK_SIZE);
+		//			start_block++;
+		//		}
+		//	}
+		//	else {
+		//		cout << "Error craete file: " << ::GetLastError() << "\n";
+		//	}
+		//}
+
+		File dst_file(_T("G:\\35116\\Virtual Block RAID 1.dsk"));
+		//File src_file(_T("G:\\35116\\new\\tail-70464620.bin"));
+		//File src_file(_T("G:\\35116\\18315106048-sec.dsk"));
+		File src_file(_T("G:\\35116\\new\\tail-67108862.bin"));
+		LONGLONG dst_offset = (LONGLONG)(67108862LL*RAID6_BLOCK_SIZE);
+		LONGLONG src_offset = 0;
+
+		ConcatenateFiles(dst_file, dst_offset, src_file, src_offset); 
+
+
+		return 0;
+	}
+}
+
 int _tmain(int argc, _TCHAR* argv[])
 {
-	mxf_main(1, _T("G:\\34257"));
+
+	RAID6::main();
 
 	_tprintf(_T("\nPress any key for exit ..."));
 	_getch();
