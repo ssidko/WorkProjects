@@ -49,6 +49,9 @@
     <Filter Include="MXF">
       <UniqueIdentifier>{00b38679-d534-460a-9513-d2bf59ccb419}</UniqueIdentifier>
     </Filter>
+    <Filter Include="DirectShow">
+      <UniqueIdentifier>{aa5a9ab9-3b77-45d1-8a8d-3f7d8a798db3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Calc.cpp">
@@ -102,6 +105,9 @@
     </ClCompile>
     <ClCompile Include="mxf.cpp">
       <Filter>MXF</Filter>
+    </ClCompile>
+    <ClCompile Include="dshowtest.cpp">
+      <Filter>DirectShow</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -164,6 +170,9 @@
     </ClInclude>
     <ClInclude Include="mxf.h">
       <Filter>MXF</Filter>
+    </ClInclude>
+    <ClInclude Include="dshowtest.h">
+      <Filter>DirectShow</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

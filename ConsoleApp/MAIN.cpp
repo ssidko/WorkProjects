@@ -533,11 +533,15 @@ void testing(void)
 
 #include "mxf.h"
 
+#include "dshowtest.h"
+
 using namespace sqliter;
 
 int _tmain(int argc, _TCHAR* argv[])
 {
 	mxf_main(1, _T("G:\\34257"));
+
+	dshow_test();
 
 	_tprintf(_T("\nPress any key for exit ..."));
 	_getch();

@@ -121,11 +121,11 @@ void InitializeTIM4(void)
 	TIM_TimeBaseInit(TIM4, &tim_init);
 
 	TIM_OCInitTypeDef oc_tim_init;
-	oc_tim_init.TIM_OCMode = TIM_OCMode_PWM2/*TIM_OCMode_PWM2*/;
-	oc_tim_init.TIM_OutputState = TIM_OutputState_Enable/*TIM_OutputState_Disable*/;
+	oc_tim_init.TIM_OCMode = TIM_OCMode_PWM2;
+	oc_tim_init.TIM_OutputState = TIM_OutputState_Enable;
 	oc_tim_init.TIM_OutputNState = 0x00; // Ignored. This parameter is valid only for TIM1 and TIM8. */
 	oc_tim_init.TIM_Pulse = 10;
-	oc_tim_init.TIM_OCPolarity = /*TIM_OCPolarity_High*/TIM_OCPolarity_Low;
+	oc_tim_init.TIM_OCPolarity = TIM_OCPolarity_Low;
 	oc_tim_init.TIM_OCNPolarity = 0x00; // Ignored. This parameter is valid only for TIM1 and TIM8. */
 	oc_tim_init.TIM_OCIdleState = 0x00; // Ignored. This parameter is valid only for TIM1 and TIM8. */
 	oc_tim_init.TIM_OCNIdleState = 0x00; // Ignored. This parameter is valid only for TIM1 and TIM8. */
@@ -136,14 +136,11 @@ void InitializeTIM4(void)
 
 	  /* TIM1 Main Output Enable */
 	TIM_CtrlPWMOutputs(TIM4, ENABLE);
-
 }
 
 void InitializeUserButton(void)
 {
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_SYSCFG, ENABLE);
-
-	//RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA, ENABLE);
 
 	GPIO_InitTypeDef init_port;
 	init_port.GPIO_Pin = GPIO_Pin_0;
@@ -212,9 +209,7 @@ int main(void)
 	//
 	// Work with LCD
 	//
-	LCD_ili9320_Initialize();
-
-
+	//LCD_ili9320_Initialize();
 
 	InitializeTIM4();
 
@@ -226,7 +221,6 @@ int main(void)
 
     while(1)
     {
-
     	GPIO_SetBits(GPIOD, GPIO_Pin_13);
     	Delay(1000);
     	GPIO_ResetBits(GPIOD, GPIO_Pin_13);
@@ -237,7 +231,6 @@ int main(void)
         	GPIO_ResetBits(GPIOD, GPIO_Pin_14);
         	Delay(200);
     	}
-
 
     	pulse = 1000;
     	while(pulse > 0) {

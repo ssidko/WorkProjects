@@ -7,20 +7,22 @@
 
 #include "board.h"
 
+#define LCD_DBUS_PORT					GPIOE
+
 #define LCD_CS_PIN						GPIO_Pin_11
 #define LCD_CS_PORT						GPIOB
 
-#define LCD_RS_PIN						GPIO_Pin_15
-#define LCD_RS_PORT						GPIOE
+#define LCD_RS_PIN						GPIO_Pin_12
+#define LCD_RS_PORT						GPIOB
 
-#define LCD_RD_PIN						GPIO_Pin_13
+#define LCD_RD_PIN						GPIO_Pin_14
 #define LCD_RD_PORT						GPIOB
 
-#define LCD_WR_PIN						GPIO_Pin_15
+#define LCD_WR_PIN						GPIO_Pin_13
 #define LCD_WR_PORT						GPIOB
 
-#define LCD_RESET_PIN					GPIO_Pin_9
-#define LCD_RESET_PORT					GPIOD
+#define LCD_RESET_PIN					GPIO_Pin_10
+#define LCD_RESET_PORT					GPIOB
 
 #define LCD_ClearCS						GPIO_ResetBits(LCD_CS_PORT, LCD_CS_PIN);
 #define LCD_SetCS						GPIO_SetBits(LCD_CS_PORT, LCD_CS_PIN);
@@ -50,21 +52,18 @@
 #define Yellow							0xFFE0
 
 void LCD_LineConfig(void);
-inline void LCD_LineCS(FunctionalState new_state);
-inline void LCD_LineRS(FunctionalState new_state);
-inline void LCD_LineRD(FunctionalState new_state);
-inline void LCD_LineWR(FunctionalState new_state);
-inline void LCD_LineRESET(FunctionalState new_state);
 void LCD_ConfigureDBusOUT(void);
 void LCD_ConfigureDBusIN(void);
 void LCD_WriteToDB(unsigned short val); // Write to Data BUS (Db0 - Db15)
-unsigned short LCD_ReadFromDB(void); // Read from Date BUS
+unsigned short LCD_ReadFromDB(void); // Read from Data BUS
 void LCD_ili9320_Reset(void);
 void LCD_ili9320_Initialize(void);
 void LCD_ili9320_WriteToReg(unsigned short reg_index, unsigned short value);
 unsigned short LCD_ili9320_8bit_ReadFromReg(unsigned short reg_index);
 unsigned short LCD_ili9320_ReadFromReg(unsigned short reg_index);
 void LCD_StartWriteGRAM(void);
+
+void SetCursor(unsigned short x, unsigned short y);
 
 
 #endif // _ILI9320_H
