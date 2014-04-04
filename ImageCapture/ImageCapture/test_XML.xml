@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="windows-1251"?>
+<Buttons>
+    <Button Name="Button 1" BindPin="Pin1"/>
+    <Button Name="Button 2" BindPin="Pin2"/>
+    <Button Name="Button 3" BindPin="Pin3"/>
+</Buttons>
