@@ -3,8 +3,9 @@
 #include "stm32f4xx.h"
 #include "usbd_cdc_vcp.h" // подключаем USB CDC
 #include "i2c3.h"
+#include "stm32f4xx_gpio.h"
 
-#define I2C_CTPM_ADDRESS        (byte)0x38
+#define I2C_CTPM_ADDRESS        (char)0x38
 
 __ALIGN_BEGIN USB_OTG_CORE_HANDLE  USB_OTG_dev __ALIGN_END;
 
@@ -13,12 +14,12 @@ char ch4[]="receive 2\n";
 char ch5[]="receive 3\n";
 char ch6[]="receive 4\n";
 
-int sys_tick_counter;
+volatile int sys_tick_counter;
 
 void Delay(int delay)
 {
 	sys_tick_counter = delay;
-	while (sys_tick_counter);
+	while (sys_tick_counter > 0);
 }
 
 void PrepareForUpdate(void)
@@ -28,12 +29,36 @@ void PrepareForUpdate(void)
 
 }
 
+#define SLAVE_ADDRESS			(char)0x4A
+
+void i2c1_test(void)
+{
+	GPIO_ResetBits(GPIOD, GPIO_Pin_4);
+	Delay(10);
+	GPIO_SetBits(GPIOD, GPIO_Pin_4);
+	Delay(50);
+
+	int test = 0;
+	char reg = 0x01;
+	char val = 0x00;
+
+	I2C1_Write(SLAVE_ADDRESS, &reg, sizeof(reg));
+	I2C1_Read(SLAVE_ADDRESS, &val, sizeof(val));
+
+	test++;
+	test--;
+}
+
 int main(void)
 {
 	SystemInit();
 	SysTick_Config(168000);
  	USBD_Init(&USB_OTG_dev, USB_OTG_FS_CORE_ID, &USR_desc, &USBD_CDC_cb, &USR_cb);
-	I2C3_Initialize();
+
+ 	//I2C3_Initialize();
+
+ 	I2C1_Initialize();
+	i2c1_test();
 
 	while (1) {
 

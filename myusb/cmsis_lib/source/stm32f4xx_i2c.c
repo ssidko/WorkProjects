@@ -695,7 +695,7 @@ void I2C_SendData(I2C_TypeDef* I2Cx, uint8_t Data)
 }
 
 /**
-  * @brief  Returns the most recent received data by the I2Cx peripheral.
+  * @brief  .
   * @param  I2Cx: where x can be 1, 2 or 3 to select the I2C peripheral.
   * @retval The value of the received data.
   */
