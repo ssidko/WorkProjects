@@ -4,7 +4,7 @@
     <Device manufacturerId="9" manufacturerName="ST" chipId="344" chipName="STM32F407VG" boardId="" boardName=""/>
     <BuildOption>
       <Compile>
-        <Option name="OptimizationLevel" value="0"/>
+        <Option name="OptimizationLevel" value="1"/>
         <Option name="UseFPU" value="0"/>
         <Option name="UserEditCompiler" value=""/>
         <Option name="FPU" value="1"/>
@@ -34,7 +34,7 @@
           <Memory name="IROM2" type="ReadOnly" size="" startValue=""/>
           <Memory name="IRAM2" type="ReadWrite" size="0x00010000" startValue="0x10000000"/>
         </MemoryAreas>
-        <LocateLinkFile path="../../../coocox/coide/configuration/programdata/myusb/arm-gcc-link.ld" type="0"/>
+        <LocateLinkFile path="c:/coocox/coide/configuration/programdata/myusb/arm-gcc-link.ld" type="0"/>
       </Link>
       <Output>
         <Option name="OutputFileType" value="0"/>
@@ -79,58 +79,59 @@
     <Component id="524" name="MISC" path="" type="2"/>
   </Components>
   <Files>
-    <File name="cmsis_lib/source/stm32f4xx_gpio.c" path="cmsis_lib/source/stm32f4xx_gpio.c" type="1"/>
-    <File name="cmsis_lib/include/stm32f4xx_i2c.h" path="cmsis_lib/include/stm32f4xx_i2c.h" type="1"/>
     <File name="usblib/usb_conf.h" path="usblib/usb_conf.h" type="1"/>
-    <File name="usblib/usb_dcd_int.c" path="usblib/usb_dcd_int.c" type="1"/>
+    <File name="cmsis_lib/stm32f4xx_i2c.h" path="cmsis_lib/include/stm32f4xx_i2c.h" type="1"/>
     <File name="cmsis_boot" path="" type="2"/>
+    <File name="usblib/usb_dcd_int.c" path="usblib/usb_dcd_int.c" type="1"/>
+    <File name="cmsis_lib/stm32f4xx_gpio.c" path="cmsis_lib/source/stm32f4xx_gpio.c" type="1"/>
     <File name="cmsis/core_cm4_simd.h" path="cmsis/core_cm4_simd.h" type="1"/>
     <File name="cmsis_boot/stm32f4xx.h" path="cmsis_boot/stm32f4xx.h" type="1"/>
     <File name="cmsis_boot/startup" path="" type="2"/>
     <File name="cmsis/core_cmFunc.h" path="cmsis/core_cmFunc.h" type="1"/>
     <File name="cmsis/core_cm4.h" path="cmsis/core_cm4.h" type="1"/>
     <File name="usblib/usbd_desc.h" path="usblib/usbd_desc.h" type="1"/>
-    <File name="cmsis_lib/source/misc.c" path="cmsis_lib/source/misc.c" type="1"/>
-    <File name="cmsis_lib/source/stm32f4xx_i2c.c" path="cmsis_lib/source/stm32f4xx_i2c.c" type="1"/>
-    <File name="cmsis_lib/source" path="" type="2"/>
+    <File name="cmsis_lib/misc.c" path="cmsis_lib/source/misc.c" type="1"/>
+    <File name="cmsis_lib/stm32f4xx_gpio.h" path="cmsis_lib/include/stm32f4xx_gpio.h" type="1"/>
     <File name="usblib" path="" type="2"/>
+    <File name="fw_update" path="" type="2"/>
     <File name="usblib/usbd_ioreq.c" path="usblib/usbd_ioreq.c" type="1"/>
     <File name="usblib/usb_bsp.h" path="usblib/usb_bsp.h" type="1"/>
+    <File name="cmsis_lib/stm32f4xx_rcc.h" path="cmsis_lib/include/stm32f4xx_rcc.h" type="1"/>
     <File name="usblib/usbd_cdc_core.h" path="usblib/usbd_cdc_core.h" type="1"/>
     <File name="cmsis_boot/stm32f4xx_conf.h" path="cmsis_boot/stm32f4xx_conf.h" type="1"/>
     <File name="cmsis_boot/system_stm32f4xx.h" path="cmsis_boot/system_stm32f4xx.h" type="1"/>
     <File name="usblib/usb_dcd.h" path="usblib/usb_dcd.h" type="1"/>
-    <File name="cmsis_lib/include/stm32f4xx_rcc.h" path="cmsis_lib/include/stm32f4xx_rcc.h" type="1"/>
     <File name="usblib/usbd_conf_template.h" path="usblib/usbd_conf_template.h" type="1"/>
+    <File name="cmsis_lib/misc.h" path="cmsis_lib/include/misc.h" type="1"/>
     <File name="cmsis_boot/startup/startup_stm32f4xx.c" path="cmsis_boot/startup/startup_stm32f4xx.c" type="1"/>
-    <File name="cmsis_lib/source/stm32f4xx_rcc.c" path="cmsis_lib/source/stm32f4xx_rcc.c" type="1"/>
-    <File name="usblib/usbd_cdc_core.c" path="usblib/usbd_cdc_core.c" type="1"/>
-    <File name="usblib/usbd_cdc_vcp.h" path="usblib/usbd_cdc_vcp.h" type="1"/>
     <File name="usblib/usb_dcd.c" path="usblib/usb_dcd.c" type="1"/>
-    <File name="cmsis/core_cmInstr.h" path="cmsis/core_cmInstr.h" type="1"/>
+    <File name="usblib/usbd_cdc_vcp.h" path="usblib/usbd_cdc_vcp.h" type="1"/>
+    <File name="usblib/usbd_cdc_core.c" path="usblib/usbd_cdc_core.c" type="1"/>
     <File name="usblib/usbd_desc.c" path="usblib/usbd_desc.c" type="1"/>
+    <File name="cmsis/core_cmInstr.h" path="cmsis/core_cmInstr.h" type="1"/>
     <File name="usblib/usbd_req.h" path="usblib/usbd_req.h" type="1"/>
     <File name="usblib/usb_regs.h" path="usblib/usb_regs.h" type="1"/>
     <File name="usblib/usb_dcd_int.h" path="usblib/usb_dcd_int.h" type="1"/>
     <File name="usblib/usbd_core.h" path="usblib/usbd_core.h" type="1"/>
-    <File name="usblib/usbd_usr.c" path="usblib/usbd_usr.c" type="1"/>
     <File name="usblib/usb_core.c" path="usblib/usb_core.c" type="1"/>
-    <File name="cmsis_lib/include/stm32f4xx_exti.h" path="cmsis_lib/include/stm32f4xx_exti.h" type="1"/>
-    <File name="cmsis_lib/source/stm32f4xx_exti.c" path="cmsis_lib/source/stm32f4xx_exti.c" type="1"/>
+    <File name="usblib/usbd_usr.c" path="usblib/usbd_usr.c" type="1"/>
     <File name="cmsis_boot/system_stm32f4xx.c" path="cmsis_boot/system_stm32f4xx.c" type="1"/>
     <File name="usblib/usbd_ioreq.h" path="usblib/usbd_ioreq.h" type="1"/>
+    <File name="fw_update/i2c3.h" path="fw_update/i2c3.h" type="1"/>
     <File name="usblib/usb_core.h" path="usblib/usb_core.h" type="1"/>
+    <File name="cmsis_lib/stm32f4xx_exti.c" path="cmsis_lib/source/stm32f4xx_exti.c" type="1"/>
+    <File name="cmsis_lib/stm32f4xx_i2c.c" path="cmsis_lib/source/stm32f4xx_i2c.c" type="1"/>
     <File name="cmsis" path="" type="2"/>
     <File name="usblib/usb_conf_template.h" path="usblib/usb_conf_template.h" type="1"/>
     <File name="cmsis_lib" path="" type="2"/>
-    <File name="cmsis_lib/include/stm32f4xx_gpio.h" path="cmsis_lib/include/stm32f4xx_gpio.h" type="1"/>
+    <File name="cmsis_lib/stm32f4xx_exti.h" path="cmsis_lib/include/stm32f4xx_exti.h" type="1"/>
     <File name="usblib/usbd_def.h" path="usblib/usbd_def.h" type="1"/>
     <File name="usblib/usbd_req.c" path="usblib/usbd_req.c" type="1"/>
-    <File name="usblib/usbd_cdc_vcp.c" path="usblib/usbd_cdc_vcp.c" type="1"/>
+    <File name="cmsis_lib/stm32f4xx_rcc.c" path="cmsis_lib/source/stm32f4xx_rcc.c" type="1"/>
     <File name="usblib/usb_defines.h" path="usblib/usb_defines.h" type="1"/>
-    <File name="cmsis_lib/include/misc.h" path="cmsis_lib/include/misc.h" type="1"/>
+    <File name="usblib/usbd_cdc_vcp.c" path="usblib/usbd_cdc_vcp.c" type="1"/>
+    <File name="fw_update/i2c3.c" path="fw_update/i2c3.c" type="1"/>
     <File name="usblib/usb_bsp.c" path="usblib/usb_bsp.c" type="1"/>
-    <File name="cmsis_lib/include" path="" type="2"/>
     <File name="usblib/usbd_core.c" path="usblib/usbd_core.c" type="1"/>
     <File name="usblib/usbd_conf.h" path="usblib/usbd_conf.h" type="1"/>
     <File name="main.c" path="main.c" type="1"/>

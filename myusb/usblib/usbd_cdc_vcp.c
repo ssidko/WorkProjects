@@ -217,7 +217,7 @@ void usb_cdc_printf(char *s){
   * @retval Result of the opeartion: USBD_OK if all operations are OK else VCP_FAIL
   */
 
-#define APP_TX_BUF_SIZE 8
+#define APP_TX_BUF_SIZE 128
 uint8_t APP_Tx_Buffer[APP_TX_BUF_SIZE];
 uint32_t APP_tx_ptr_head;
 uint32_t APP_tx_ptr_tail;
