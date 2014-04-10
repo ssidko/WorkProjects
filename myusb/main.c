@@ -14,19 +14,18 @@ char ch4[]="receive 2\n";
 char ch5[]="receive 3\n";
 char ch6[]="receive 4\n";
 
-volatile int sys_tick_counter;
+volatile int delay_tick_counter;
+volatile unsigned int sys_tick_counter = 0;
 
 void Delay(int delay)
 {
-	sys_tick_counter = delay;
-	while (sys_tick_counter > 0);
+	delay_tick_counter = delay;
+	while (delay_tick_counter > 0);
 }
 
 void PrepareForUpdate(void)
 {
-	char cmd_buff[10] = {0};
-
-
+	//char cmd_buff[10] = {0};
 }
 
 #define SLAVE_ADDRESS			(char)0x4A
@@ -38,15 +37,36 @@ void i2c1_test(void)
 	GPIO_SetBits(GPIOD, GPIO_Pin_4);
 	Delay(50);
 
-	int test = 0;
+	int i = 0;
 	char reg = 0x01;
 	char val = 0x00;
+	char cmd[8];
+	I2C1_Write(SLAVE_ADDRESS << 1, &reg, sizeof(reg));
+	I2C1_Read(SLAVE_ADDRESS << 1, &val, sizeof(val));
 
-	I2C1_Write(SLAVE_ADDRESS, &reg, sizeof(reg));
-	I2C1_Read(SLAVE_ADDRESS, &val, sizeof(val));
+	reg = 0x02;
+	val = 0x00;
+	I2C1_Write(SLAVE_ADDRESS << 1, &reg, sizeof(reg));
+	I2C1_Read(SLAVE_ADDRESS << 1, &val, sizeof(val));
 
-	test++;
-	test--;
+	cmd[0] = 0x02; // reg
+	cmd[1] = 0x9E; // val - power on
+	I2C1_Write(SLAVE_ADDRESS << 1, cmd, 2);
+
+	while (1) {
+		reg = 0x01;
+		val = 0x00;
+		I2C1_Write(SLAVE_ADDRESS << 1, &reg, sizeof(reg));
+		I2C1_Read(SLAVE_ADDRESS << 1, &val, sizeof(val));
+
+		reg = 0x01;
+		val = 0x00;
+		I2C1_Write(SLAVE_ADDRESS << 1, &reg, sizeof(reg));
+		I2C1_Read(SLAVE_ADDRESS << 1, &val, sizeof(val));
+	}
+
+	i++;
+	i--;
 }
 
 int main(void)
@@ -88,5 +108,6 @@ int main(void)
 
 void SysTick_Handler(void)
 {
-	--sys_tick_counter;
+	--delay_tick_counter;
+	++sys_tick_counter;
 }

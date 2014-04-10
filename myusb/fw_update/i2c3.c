@@ -80,6 +80,7 @@ int I2C1_Initialize(void)
 
 	init_port.GPIO_Pin = GPIO_Pin_4;
 	init_port.GPIO_Mode = GPIO_Mode_OUT;
+	init_port.GPIO_OType = GPIO_OType_PP;
 	GPIO_Init(GPIOD, &init_port);
 
 	I2C_InitTypeDef i2c_init;
@@ -87,12 +88,9 @@ int I2C1_Initialize(void)
 	i2c_init.I2C_Mode = I2C_Mode_I2C;
 	i2c_init.I2C_DutyCycle = I2C_DutyCycle_2;
 	i2c_init.I2C_OwnAddress1 = 0x01;
-	i2c_init.I2C_Ack = I2C_Ack_Disable;
+	i2c_init.I2C_Ack = I2C_Ack_Enable;
 	i2c_init.I2C_AcknowledgedAddress = I2C_AcknowledgedAddress_7bit;
 	I2C_Init(I2C1, &i2c_init);
-
-	I2C_ITConfig(I2C1, I2C_IT_EVT, ENABLE);
-	//NVIC_EnableIRQ(I2C1_EV_IRQn);
 
 	I2C_Cmd(I2C1, ENABLE);
 
@@ -101,13 +99,11 @@ int I2C1_Initialize(void)
 
 void I2C1_Write(char slave_addr, char *buf, int len)
 {
+	int x = 0;
 	I2C_GenerateSTART(I2C1, ENABLE);
-
-	I2C_CheckEvent(I2C1, I2C_EVENT_MASTER_MODE_SELECT);
-	//while(SUCCESS != I2C_CheckEvent(I2C1, I2C_EVENT_MASTER_MODE_SELECT));
+	while(SUCCESS != I2C_CheckEvent(I2C1, I2C_EVENT_MASTER_MODE_SELECT));
 
 	I2C_Send7bitAddress(I2C1, slave_addr, I2C_Direction_Transmitter);
-
 	while(!I2C_CheckEvent(I2C1, I2C_EVENT_MASTER_TRANSMITTER_MODE_SELECTED));
 
 	int i = 0;
@@ -122,11 +118,9 @@ void I2C1_Write(char slave_addr, char *buf, int len)
 void I2C1_Read(char slave_addr, char *buf, int len)
 {
 	I2C_GenerateSTART(I2C1, ENABLE);
-
 	while(!I2C_CheckEvent(I2C1, I2C_EVENT_MASTER_MODE_SELECT));
 
 	I2C_Send7bitAddress(I2C1, slave_addr, I2C_Direction_Receiver);
-
 	while(!I2C_CheckEvent(I2C1, I2C_EVENT_MASTER_RECEIVER_MODE_SELECTED));
 
 	int i = 0;
