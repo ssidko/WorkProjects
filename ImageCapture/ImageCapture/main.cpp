@@ -1,10 +1,12 @@
 #include "mainwindow.h"
 #include <QtWidgets/QApplication>
 
+
 #include <QFile>
 #include <QXmlStreamWriter>
 #include <QXmlStreamReader>
 #include <QTextCodec>
+#include <QCamera>
 
 #include "NewCaseDialog.h"
 
@@ -150,26 +152,15 @@ int main(int argc, char *argv[])
 {
 	QApplication a(argc, argv);
 
-	WriterWindow wnd;
-	wnd.show();
-
-	//WinDevicesManager dev_mgr;
-	//dev_mgr.Test();
-
-	//NewCaseDialog dlg;
-	//dlg.exec();
+	NewCaseDialog dlg;
+	dlg.exec();
 
 	// QDialog::Accepted	1
 	// QDialog::Rejected	0
-	//int result = dlg.result();
+	int result = dlg.result();
 
-	//MainWindow w;
-	//w.show();
+	MainWindow w;
+	w.show();
 
-	//TestXML();
-
-	//CreateTestTemplate(QString::fromLocal8Bit("template.xml"));
-	//ReadTestTemplate(QString::fromLocal8Bit("template.xml"));
-	
 	return a.exec();
 }

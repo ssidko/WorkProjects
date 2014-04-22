@@ -8,12 +8,13 @@ class MainWindow : public QMainWindow
 {
 	Q_OBJECT
 
+private:
+	Ui::MainWindow ui;
 public:
 	MainWindow(QWidget *parent = 0);
 	~MainWindow();
 
-private:
-	Ui::MainWindow ui;
+	bool Initialize(void);
 };
 
 #endif // MAINWINDOW_H

@@ -22,7 +22,7 @@
      <widget class="QListView" name="listView"/>
     </item>
     <item row="0" column="1">
-     <widget class="QWidget" name="ScreenWidget" native="true">
+     <widget class="QCameraViewfinder" name="ScreenWidget" native="true">
       <property name="minimumSize">
        <size>
         <width>640</width>
@@ -182,6 +182,14 @@
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QCameraViewfinder</class>
+   <extends>QWidget</extends>
+   <header>QCameraViewfinder</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>
