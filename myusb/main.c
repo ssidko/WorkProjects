@@ -44,6 +44,7 @@ void i2c1_test(void)
 	I2C1_Write(SLAVE_ADDRESS << 1, &reg, sizeof(reg));
 	I2C1_Read(SLAVE_ADDRESS << 1, &val, sizeof(val));
 
+	/*
 	reg = 0x02;
 	val = 0x00;
 	I2C1_Write(SLAVE_ADDRESS << 1, &reg, sizeof(reg));
@@ -67,6 +68,7 @@ void i2c1_test(void)
 
 	i++;
 	i--;
+	*/
 }
 
 int main(void)

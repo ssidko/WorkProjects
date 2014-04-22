@@ -75,10 +75,8 @@ BOOL IsValidBlock(BLOCK *block)
 	DWORD marker_counter = 0;
 	PAGE *page = (PAGE *)block;
 
-	for (DWORD i = 0 ; i < 128; i++)
-	{
-		if (page->marker == PAGE_MARKER)
-		{
+	for (DWORD i = 0 ; i < 128; i++) {
+		if (page->marker == PAGE_MARKER) {
 			marker_counter++;
 		}
 		page++;
@@ -603,7 +601,6 @@ namespace RAID6
 					index++;
 					continue;
 				}
-
 			}
 		}
 
@@ -740,9 +737,7 @@ namespace RAID6
 int _tmain(int argc, _TCHAR* argv[])
 {
 
-	RAID6::main();
-
-	dshow_test();
+	ForEachFileFolder();
 
 	_tprintf(_T("\nPress any key for exit ..."));
 	_getch();

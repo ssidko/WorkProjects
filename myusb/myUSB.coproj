@@ -35,7 +35,7 @@
           <Memory name="IROM2" type="ReadOnly" size="" startValue=""/>
           <Memory name="IRAM2" type="ReadWrite" size="0x00010000" startValue="0x10000000"/>
         </MemoryAreas>
-        <LocateLinkFile path="../../../coocox/coide/configuration/programdata/myusb/arm-gcc-link.ld" type="0"/>
+        <LocateLinkFile path="c:/coocox/coide/configuration/programdata/myusb/arm-gcc-link.ld" type="0"/>
       </Link>
       <Output>
         <Option name="OutputFileType" value="0"/>
@@ -81,9 +81,9 @@
   </Components>
   <Files>
     <File name="usblib/usb_conf.h" path="usblib/usb_conf.h" type="1"/>
-    <File name="cmsis_lib/stm32f4xx_i2c.h" path="cmsis_lib/include/stm32f4xx_i2c.h" type="1"/>
     <File name="usblib/usb_dcd_int.c" path="usblib/usb_dcd_int.c" type="1"/>
     <File name="cmsis_boot" path="" type="2"/>
+    <File name="cmsis_lib/stm32f4xx_i2c.h" path="cmsis_lib/include/stm32f4xx_i2c.h" type="1"/>
     <File name="cmsis_lib/stm32f4xx_gpio.c" path="cmsis_lib/source/stm32f4xx_gpio.c" type="1"/>
     <File name="cmsis_boot/stm32f4xx.h" path="cmsis_boot/stm32f4xx.h" type="1"/>
     <File name="cmsis/core_cm4_simd.h" path="cmsis/core_cm4_simd.h" type="1"/>
@@ -105,9 +105,9 @@
     <File name="usblib/usbd_conf_template.h" path="usblib/usbd_conf_template.h" type="1"/>
     <File name="cmsis_lib/misc.h" path="cmsis_lib/include/misc.h" type="1"/>
     <File name="cmsis_boot/startup/startup_stm32f4xx.c" path="cmsis_boot/startup/startup_stm32f4xx.c" type="1"/>
-    <File name="usblib/usb_dcd.c" path="usblib/usb_dcd.c" type="1"/>
     <File name="usblib/usbd_cdc_vcp.h" path="usblib/usbd_cdc_vcp.h" type="1"/>
     <File name="usblib/usbd_cdc_core.c" path="usblib/usbd_cdc_core.c" type="1"/>
+    <File name="usblib/usb_dcd.c" path="usblib/usb_dcd.c" type="1"/>
     <File name="cmsis/core_cmInstr.h" path="cmsis/core_cmInstr.h" type="1"/>
     <File name="usblib/usbd_desc.c" path="usblib/usbd_desc.c" type="1"/>
     <File name="usblib/usbd_req.h" path="usblib/usbd_req.h" type="1"/>
