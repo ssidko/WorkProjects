@@ -8,7 +8,7 @@ class Case
 private:
 	QString name;
 	QString description;
-	QString direcory;
+	QString directory;
 public:
 	Case(void);
 	~Case(void);
