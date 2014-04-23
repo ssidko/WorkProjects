@@ -1,4 +1,5 @@
 #include "NewCaseDialog.h"
+#include <QFileDialog>
 
 NewCaseDialog::NewCaseDialog(QWidget *parent)
 	: QDialog(parent)
@@ -7,6 +8,7 @@ NewCaseDialog::NewCaseDialog(QWidget *parent)
 	UpdateWindowTitle();
 	UpdateTemplatesComboBox();
 	connect(ui.case_name_edit, SIGNAL(textChanged(const QString &)), SLOT(UpdateWindowTitle()));
+	connect(ui.DirectoryPushButton, SIGNAL(clicked(bool)), SLOT(SelectTaskDirectory()));
 }
 
 NewCaseDialog::~NewCaseDialog()
@@ -36,7 +38,19 @@ void NewCaseDialog::UpdateTemplatesComboBox( void )
 	}
 }
 
-void NewCaseDialog::CreateNewTask( void )
+void NewCaseDialog::CreateNewTask(void)
 {
 
+}
+
+void NewCaseDialog::SelectTaskDirectory(void)
+{
+	QFileDialog file_dialog;
+	file_dialog.setFileMode(QFileDialog::Directory);
+	file_dialog.setViewMode(QFileDialog::List);
+	file_dialog.setWindowTitle(QString::fromLocal8Bit("Выброр каталога"));
+	file_dialog.exec();
+	QString dir = file_dialog.directory().absolutePath();
+	ui.DirectoryLineEdit->setText(file_dialog.directory().absolutePath());
+	this->activateWindow();
 }

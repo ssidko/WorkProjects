@@ -170,23 +170,15 @@ int COMTest(void)
 int main(int argc, char *argv[])
 {
 	QApplication a(argc, argv);
-
-	QList<QString> templates_list = Template::AllTemplates();
-	Template t;
-	t.Initialize(templates_list[0]);
-
-	const QList<TEMPLATE_BUTTON> *buttons = t.Buttons();
-	const QList<QString> *sections = t.Sections();
-
 	NewCaseDialog dlg;
-	dlg.exec();
-
-	// QDialog::Accepted	1
-	// QDialog::Rejected	0
-	int result = dlg.result();
-
 	MainWindow w;
+	
+	dlg.exec();
 	w.show();
-
+	w.activateWindow();
+	//if (QDialog::Accepted == dlg.result()) {
+	//	w.show();
+	//	w.activateWindow();
+	//}
 	return a.exec();
 }

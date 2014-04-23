@@ -31,15 +31,8 @@
     <Filter Include="Core">
       <UniqueIdentifier>{e0047e7c-0f85-418c-b0a0-4125c34af422}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;cxx;c;def</Extensions>
-      <ParseFiles>true</ParseFiles>
-    </Filter>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h</Extensions>
-      <ParseFiles>true</ParseFiles>
+    <Filter Include="FWriter">
+      <UniqueIdentifier>{af692074-1037-48ba-9e10-c502500f836a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -68,9 +61,6 @@
     <ClCompile Include="WinDevicesManager.cpp">
       <Filter>Core</Filter>
     </ClCompile>
-    <ClCompile Include="WriterWindow.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\Debug\moc_WriterWindow.cpp">
       <Filter>Generated Files\Debug</Filter>
     </ClCompile>
@@ -82,6 +72,9 @@
     </ClCompile>
     <ClCompile Include="Task.cpp">
       <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="WriterWindow.cpp">
+      <Filter>FWriter</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -100,11 +93,11 @@
     <CustomBuild Include="Forms\MainWindow.ui">
       <Filter>GUI\Forms</Filter>
     </CustomBuild>
-    <CustomBuild Include="WriterWindow.h">
-      <Filter>Header Files</Filter>
-    </CustomBuild>
     <CustomBuild Include="WriterWindow.ui">
       <Filter>GUI\Forms</Filter>
+    </CustomBuild>
+    <CustomBuild Include="WriterWindow.h">
+      <Filter>FWriter</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>

@@ -4,8 +4,8 @@
         <Button Name="¬верх" Command="Pin1"/>
         <Button Name="¬низ" Command="Pin2"/>
         <Button Name="¬лево" Command="Pin3"/>
-		<Button Name="¬право" Command="Pin3"/>
-		<Button Name="¬вод" Command="Pin3"/>
+		<Button Name="¬право" Command="Pin4"/>
+		<Button Name="¬вод" Command="Pin5"/>
     </Buttons>
     <Sections>
         <Section Name="√лавный экран"/>
