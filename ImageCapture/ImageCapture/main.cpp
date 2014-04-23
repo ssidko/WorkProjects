@@ -55,26 +55,43 @@ bool CreateTestTemplate(QString &file_name)
 
 		xml.writeStartElement("Template");
 		xml.writeAttribute("Name", QString::fromLocal8Bit("Игровой автомат №1"));
+		xml.writeAttribute("Description", QString::fromLocal8Bit("Однорукий бандит, тип 1"));
 
 		xml.writeStartElement("Buttons");
 
 		xml.writeStartElement("Button");
 		xml.writeAttribute("Name", "Button 1");
-		xml.writeAttribute("BindPin", "Pin1");
+		xml.writeAttribute("Command", "Pin1");
 		xml.writeEndElement();
 
 		xml.writeStartElement("Button");
 		xml.writeAttribute("Name", "Button 2");
-		xml.writeAttribute("BindPin", "Pin2");
+		xml.writeAttribute("Command", "Pin2");
 		xml.writeEndElement();
 
 		xml.writeStartElement("Button");
 		xml.writeAttribute("Name", "Button 3");
-		xml.writeAttribute("BindPin", "Pin3");
+		xml.writeAttribute("Command", "Pin3");
 		xml.writeEndElement();
 
 		xml.writeEndElement(); // Buttons
 
+		xml.writeStartElement("Sections");
+
+		xml.writeStartElement("Section");
+		xml.writeAttribute("Name", QString::fromLocal8Bit("Главный экран"));
+		xml.writeEndElement();
+
+		xml.writeStartElement("Section");
+		xml.writeAttribute("Name", QString::fromLocal8Bit("Экран статистики"));
+		xml.writeEndElement();
+
+		xml.writeStartElement("Section");
+		xml.writeAttribute("Name", QString::fromLocal8Bit("Разное"));
+		xml.writeEndElement();
+
+		xml.writeEndElement(); // Sections
+		
 		xml.writeEndElement(); // Template
 
 		xml.writeEndDocument();
@@ -148,9 +165,18 @@ int COMTest(void)
 #include "WinDevicesManager.h"
 #include "WriterWindow.h"
 
+#include "Template.h"
+
 int main(int argc, char *argv[])
 {
 	QApplication a(argc, argv);
+
+	QList<QString> templates_list = Template::AllTemplates();
+	Template t;
+	t.Initialize(templates_list[0]);
+
+	QList<TEMPLATE_BUTTON> buttons = t.Buttons();
+	QList<QString> sections = t.Sections();
 
 	NewCaseDialog dlg;
 	dlg.exec();

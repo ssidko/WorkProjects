@@ -80,6 +80,9 @@
     <ClCompile Include="Case.cpp">
       <Filter>Core</Filter>
     </ClCompile>
+    <ClCompile Include="Template.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="mainwindow.qrc">
@@ -117,5 +120,14 @@
     <ClInclude Include="Case.h">
       <Filter>Core</Filter>
     </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Template.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="ImageCapture.rc" />
   </ItemGroup>
 </Project>

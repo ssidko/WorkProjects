@@ -105,6 +105,7 @@
     <ClCompile Include="GUI\NewCaseDialog.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="mainwindow.cpp" />
+    <ClCompile Include="Template.cpp" />
     <ClCompile Include="WinDevicesManager.cpp" />
     <ClCompile Include="WriterWindow.cpp" />
   </ItemGroup>
@@ -175,6 +176,8 @@
     <ClInclude Include="Case.h" />
     <ClInclude Include="GeneratedFiles\ui_MainWindow.h" />
     <ClInclude Include="GeneratedFiles\ui_WriterWindow.h" />
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="Template.h" />
     <ClInclude Include="WinDevicesManager.h" />
     <CustomBuild Include="WriterWindow.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
@@ -200,12 +203,15 @@
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\uic.exe" -o ".\GeneratedFiles\ui_%(Filename).h" "%(FullPath)"</Command>
     </CustomBuild>
   </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="ImageCapture.rc" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties UicDir=".\GeneratedFiles" MocDir=".\GeneratedFiles\$(ConfigurationName)" MocOptions="" RccDir=".\GeneratedFiles" lupdateOnBuild="0" lupdateOptions="" lreleaseOptions="" Qt5Version_x0020_Win32="5.1.1-msvc2010" />
+      <UserProperties UicDir=".\GeneratedFiles" MocDir=".\GeneratedFiles\$(ConfigurationName)" MocOptions="" RccDir=".\GeneratedFiles" lupdateOnBuild="0" lupdateOptions="" lreleaseOptions="" Qt5Version_x0020_Win32="qt5" />
     </VisualStudio>
   </ProjectExtensions>
 </Project>

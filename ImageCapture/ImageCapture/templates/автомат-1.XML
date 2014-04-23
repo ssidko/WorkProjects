@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="windows-1251"?>
+<Template Name="Блэк Джек" Description="Модификация 149">
+    <Buttons>
+        <Button Name="Вверх" Command="Pin1"/>
+        <Button Name="Вниз" Command="Pin2"/>
+        <Button Name="Влево" Command="Pin3"/>
+		<Button Name="Вправо" Command="Pin3"/>
+		<Button Name="Ввод" Command="Pin3"/>
+    </Buttons>
+    <Sections>
+        <Section Name="Главный экран"/>
+        <Section Name="Экран статистики"/>
+        <Section Name="Журнал"/>
+        <Section Name="Другое"/>
+    </Sections>
+</Template>

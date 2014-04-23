@@ -2,14 +2,14 @@
 #include <QVideoWidget>
 #include <QCamera>
 
-//#define CAMERA_NAME			"iLook 300"
-#define CAMERA_NAME				"ASUS USB2.0 Webcam"
+#define CAMERA_NAME					"iLook 300"
+//#define CAMERA_NAME				"ASUS USB2.0 Webcam"
 
 MainWindow::MainWindow(QWidget *parent)
 	: QMainWindow(parent)
 {
 	ui.setupUi(this);
-	Initialize();
+	//Initialize();
 }
 
 MainWindow::~MainWindow()

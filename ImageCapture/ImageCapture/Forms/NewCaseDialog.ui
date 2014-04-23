@@ -66,16 +66,6 @@
           <string>Выберите тип автомата</string>
          </property>
         </item>
-        <item>
-         <property name="text">
-          <string>Автомат 1</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>Автомат 2</string>
-         </property>
-        </item>
        </widget>
       </item>
      </layout>

@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'NewCaseDialog.ui'
 **
-** Created by: Qt User Interface Compiler version 5.1.1
+** Created by: Qt User Interface Compiler version 5.2.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -154,8 +154,6 @@ public:
         TemplateComboBox->clear();
         TemplateComboBox->insertItems(0, QStringList()
          << QApplication::translate("NewCaseDialog", "\320\222\321\213\320\261\320\265\321\200\320\270\321\202\320\265 \321\202\320\270\320\277 \320\260\320\262\321\202\320\276\320\274\320\260\321\202\320\260", 0)
-         << QApplication::translate("NewCaseDialog", "\320\220\320\262\321\202\320\276\320\274\320\260\321\202 1", 0)
-         << QApplication::translate("NewCaseDialog", "\320\220\320\262\321\202\320\276\320\274\320\260\321\202 2", 0)
         );
         groupBox_2->setTitle(QApplication::translate("NewCaseDialog", "\320\232\320\260\321\202\320\260\320\273\320\276\320\263 \320\276\321\202\321\207\321\221\321\202\320\260", 0));
         DirectoryLineEdit->setText(QApplication::translate("NewCaseDialog", "\320\222\321\213\320\261\320\265\321\200\320\270\321\202\320\265 \320\272\320\260\321\202\320\260\320\273\320\276\320\263", 0));
