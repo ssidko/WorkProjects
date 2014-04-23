@@ -175,8 +175,8 @@ int main(int argc, char *argv[])
 	Template t;
 	t.Initialize(templates_list[0]);
 
-	QList<TEMPLATE_BUTTON> buttons = t.Buttons();
-	QList<QString> sections = t.Sections();
+	const QList<TEMPLATE_BUTTON> *buttons = t.Buttons();
+	const QList<QString> *sections = t.Sections();
 
 	NewCaseDialog dlg;
 	dlg.exec();

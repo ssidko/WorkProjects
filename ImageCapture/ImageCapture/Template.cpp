@@ -102,7 +102,6 @@ bool Template::Initialize(QString &template_path)
 				xml.skipCurrentElement();
 			}
 		}
-
 		file_path = template_path;
 		file.close();
 		return true;

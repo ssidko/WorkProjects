@@ -77,10 +77,10 @@
     <ClCompile Include="GeneratedFiles\Release\moc_WriterWindow.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
-    <ClCompile Include="Case.cpp">
+    <ClCompile Include="Template.cpp">
       <Filter>Core</Filter>
     </ClCompile>
-    <ClCompile Include="Template.cpp">
+    <ClCompile Include="Task.cpp">
       <Filter>Core</Filter>
     </ClCompile>
   </ItemGroup>
@@ -117,13 +117,13 @@
     <ClInclude Include="GeneratedFiles\ui_WriterWindow.h">
       <Filter>Generated Files</Filter>
     </ClInclude>
-    <ClInclude Include="Case.h">
-      <Filter>Core</Filter>
-    </ClInclude>
     <ClInclude Include="resource.h">
       <Filter>Generated Files</Filter>
     </ClInclude>
     <ClInclude Include="Template.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Task.h">
       <Filter>Core</Filter>
     </ClInclude>
   </ItemGroup>

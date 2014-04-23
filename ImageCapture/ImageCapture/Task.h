@@ -1,17 +1,17 @@
-#ifndef CASE_H
-#define CASE_H
+#ifndef TASK_H
+#define TASK_H
 
 #include <QString>
 
-class Case
+class Task
 {
 private:
 	QString name;
 	QString description;
 	QString directory;
 public:
-	Case(void);
-	~Case(void);
+	Task(void);
+	~Task(void);
 };
 
 #endif

@@ -29,8 +29,8 @@ public:
 	bool Initialize(QString &template_path);
 	QString Name(void) {return name;}
 	QString Description(void) {return description;}
-	QList<TEMPLATE_BUTTON> Buttons(void) {return buttons;}
-	QList<QString> Sections(void) {return sections;}
+	const QList<TEMPLATE_BUTTON> *Buttons(void) {return &buttons;}
+	const QList<QString> *Sections(void) {return &sections;}
 };
 
 #endif

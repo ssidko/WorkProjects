@@ -35,3 +35,8 @@ void NewCaseDialog::UpdateTemplatesComboBox( void )
 		}
 	}
 }
+
+void NewCaseDialog::CreateNewTask( void )
+{
+
+}
