@@ -162,23 +162,23 @@ int COMTest(void)
 	return 0;
 }
 
+//=-=-=-=-==-=-=-=-===-===-=-=-=-=-=-===---=-=-==-=-
+// После отладки удалить!!!
+//
 #include "WinDevicesManager.h"
 #include "WriterWindow.h"
-
 #include "Template.h"
+#include "ControlUnit.h"
 
 int main(int argc, char *argv[])
 {
 	QApplication a(argc, argv);
 	NewCaseDialog dlg;
 	MainWindow w;
-	
+
 	dlg.exec();
 	w.show();
 	w.activateWindow();
-	//if (QDialog::Accepted == dlg.result()) {
-	//	w.show();
-	//	w.activateWindow();
-	//}
+
 	return a.exec();
 }

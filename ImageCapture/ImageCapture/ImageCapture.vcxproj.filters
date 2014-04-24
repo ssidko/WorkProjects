@@ -76,6 +76,9 @@
     <ClCompile Include="WriterWindow.cpp">
       <Filter>FWriter</Filter>
     </ClCompile>
+    <ClCompile Include="ControlUnit.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="mainwindow.qrc">
@@ -117,6 +120,9 @@
       <Filter>Core</Filter>
     </ClInclude>
     <ClInclude Include="Task.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="ControlUnit.h">
       <Filter>Core</Filter>
     </ClInclude>
   </ItemGroup>
