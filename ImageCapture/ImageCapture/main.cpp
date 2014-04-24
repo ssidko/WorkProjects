@@ -144,9 +144,6 @@ int main(int argc, char *argv[])
 	NewTaskDialog dlg;
 	MainWindow w;
 
-	//Task task;
-	//task.Create("test task", "J:\\GitHub\\WorkProjects\\ImageCapture\\ImageCapture\\tasks");
-
 	dlg.exec();
 	w.show();
 	w.activateWindow();

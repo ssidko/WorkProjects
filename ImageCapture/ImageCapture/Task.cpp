@@ -16,6 +16,18 @@ bool Task::Create(const QString &task_name, const QString &path)
 	if (dir.mkpath(task_directory)) {
 		directory = task_directory;
 		name = task_name;
+		return true;
 	}
-	return true;
+	return false;
+}
+
+bool Task::AddTemplate(const QString &template_path)
+{
+	Template t;
+	if (t.Initialize(template_path)) {
+		AddTemplate(t);
+		return true;
+	} else {
+		return false;
+	}
 }

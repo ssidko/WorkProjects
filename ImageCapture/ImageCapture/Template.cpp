@@ -69,7 +69,7 @@ QString Template::TemplateDescription(QString &template_path)
 	return description; 
 }
 
-bool Template::Initialize(QString &template_path)
+bool Template::Initialize(const QString &template_path)
 {
 	QFile file(template_path);
 	if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
@@ -93,8 +93,9 @@ bool Template::Initialize(QString &template_path)
 			} else if (xml.name() == "Sections") {
 				while(xml.readNextStartElement()) {
 					if (xml.name() == "Section") {
-						QString name = xml.attributes().value("Name").toString();
-						sections.push_back(name);
+						TEMPLATE_SECTION section;
+						section.name = xml.attributes().value("Name").toString();
+						sections.push_back(section);
 					}
 					xml.skipCurrentElement();
 				}

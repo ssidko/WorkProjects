@@ -61,11 +61,6 @@
           <height>0</height>
          </size>
         </property>
-        <item>
-         <property name="text">
-          <string>Выберите тип автомата</string>
-         </property>
-        </item>
        </widget>
       </item>
      </layout>
@@ -80,7 +75,7 @@
       <item>
        <widget class="QLineEdit" name="DirectoryLineEdit">
         <property name="text">
-         <string>Выберите каталог</string>
+         <string/>
         </property>
         <property name="readOnly">
          <bool>true</bool>

@@ -4,6 +4,11 @@
 #include <QString>
 #include <Windows.h>
 
+//			
+// TODO: Реализовать механизм получения доступных в системе COM портов по правильному,
+//		 а не через тупой перебор :).
+//
+
 class ControlUnit
 {
 private:
