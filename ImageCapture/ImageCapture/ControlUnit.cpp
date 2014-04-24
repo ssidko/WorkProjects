@@ -102,11 +102,12 @@ bool ControlUnit::Open()
 	for (int i = 0; i < MAX_COM_PORT_NUMBER; i++) {
 		com_name = "\\\\.\\COM" + QString::number(i, 10);
 		handle = OpenComPort(com_name.toLocal8Bit().data());
-		if (handle == INVALID_HANDLE_VALUE) continue;
-		if (IsControlUnit(handle)) {
-			return true;
+		if (handle != INVALID_HANDLE_VALUE) {
+			if (IsControlUnit(handle)) {
+				return true;
+			}
+			::CloseHandle(handle);
 		}
-		::CloseHandle(handle);
 	}
 	com_name = "";
 	return false;

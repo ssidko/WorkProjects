@@ -1,27 +1,28 @@
-#include "NewCaseDialog.h"
+#include "NewTaskDialog.h"
 #include <QFileDialog>
 
-NewCaseDialog::NewCaseDialog(QWidget *parent)
-	: QDialog(parent)
+NewTaskDialog::NewTaskDialog(QWidget *parent)
+	: QDialog(parent), task(NULL)
 {
 	ui.setupUi(this);
 	UpdateWindowTitle();
 	UpdateTemplatesComboBox();
-	connect(ui.case_name_edit, SIGNAL(textChanged(const QString &)), SLOT(UpdateWindowTitle()));
+	connect(ui.TaskNameEdit, SIGNAL(textChanged(const QString &)), SLOT(UpdateWindowTitle()));
 	connect(ui.DirectoryPushButton, SIGNAL(clicked(bool)), SLOT(SelectTaskDirectory()));
+	connect(ui.CreateTaskPushButton, SIGNAL(clicked(bool)), SLOT(CreateNewTask()));
 }
 
-NewCaseDialog::~NewCaseDialog()
+NewTaskDialog::~NewTaskDialog()
 {
 
 }
 
-void NewCaseDialog::UpdateWindowTitle()
+void NewTaskDialog::UpdateWindowTitle()
 {
-	this->setWindowTitle(QString::fromLocal8Bit("Новая задача: ") + ui.case_name_edit->text());
+	setWindowTitle(QString::fromLocal8Bit("Новая задача: ") + ui.TaskNameEdit->text());
 }
 
-void NewCaseDialog::UpdateTemplatesComboBox( void )
+void NewTaskDialog::UpdateTemplatesComboBox( void )
 {
 	QStringList templates = Template::AllTemplates();
 	QString name = "";
@@ -38,12 +39,19 @@ void NewCaseDialog::UpdateTemplatesComboBox( void )
 	}
 }
 
-void NewCaseDialog::CreateNewTask(void)
+void NewTaskDialog::CreateNewTask(void)
 {
-
+	QString name = ui.TaskNameEdit->text();
+	QString directory = ui.DirectoryLineEdit->text();
+	task = new Task();
+	if (task) {
+		if (task->Create(name, directory)) {
+			task->SetDescription(ui.TaskDescriptionEdit->text());
+		}
+	}
 }
 
-void NewCaseDialog::SelectTaskDirectory(void)
+void NewTaskDialog::SelectTaskDirectory(void)
 {
 	QFileDialog file_dialog;
 	file_dialog.setFileMode(QFileDialog::Directory);

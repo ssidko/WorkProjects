@@ -2,20 +2,19 @@
 #define NEWCASEDIALOG_H
 
 #include <QDialog>
-#include "ui_NewCaseDialog.h"
+#include "ui_NewTaskDialog.h"
 #include "Template.h"
 #include "Task.h"
 
-class NewCaseDialog : public QDialog
+class NewTaskDialog : public QDialog
 {
 	Q_OBJECT
-
 private:
-	Ui::NewCaseDialog ui;
-	Task new_task;
+	Ui::NewTaskDialog ui;
+	Task *task;
 public:
-	NewCaseDialog(QWidget *parent = 0);
-	~NewCaseDialog();
+	NewTaskDialog(QWidget *parent = 0);
+	~NewTaskDialog();
 private slots:
 	void UpdateWindowTitle();
 	void UpdateTemplatesComboBox(void);

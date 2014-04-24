@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>NewCaseDialog</class>
- <widget class="QDialog" name="NewCaseDialog">
+ <class>NewTaskDialog</class>
+ <widget class="QDialog" name="NewTaskDialog">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -21,24 +21,24 @@
      </property>
      <layout class="QGridLayout" name="gridLayout">
       <item row="0" column="0">
-       <widget class="QLabel" name="CaseNameLabel">
+       <widget class="QLabel" name="TaskNameLabel">
         <property name="text">
          <string>Имя:</string>
         </property>
        </widget>
       </item>
       <item row="1" column="0" colspan="2">
-       <widget class="QLabel" name="CaseDescriptionLabel">
+       <widget class="QLabel" name="TaskDescriptionLabel">
         <property name="text">
          <string>Описание:</string>
         </property>
        </widget>
       </item>
       <item row="1" column="2">
-       <widget class="QLineEdit" name="CaseDescriptionLineEdit"/>
+       <widget class="QLineEdit" name="TaskDescriptionEdit"/>
       </item>
       <item row="0" column="2">
-       <widget class="QLineEdit" name="case_name_edit">
+       <widget class="QLineEdit" name="TaskNameEdit">
         <property name="text">
          <string>Новая задача</string>
         </property>
@@ -109,7 +109,7 @@
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout_3">
      <item>
-      <widget class="QPushButton" name="CreateCasePushButton">
+      <widget class="QPushButton" name="CreateTaskPushButton">
        <property name="text">
         <string>Создать</string>
        </property>
@@ -130,20 +130,20 @@
   </layout>
  </widget>
  <tabstops>
-  <tabstop>case_name_edit</tabstop>
-  <tabstop>CaseDescriptionLineEdit</tabstop>
+  <tabstop>TaskNameEdit</tabstop>
+  <tabstop>TaskDescriptionEdit</tabstop>
   <tabstop>TemplateComboBox</tabstop>
   <tabstop>DirectoryLineEdit</tabstop>
   <tabstop>DirectoryPushButton</tabstop>
-  <tabstop>CreateCasePushButton</tabstop>
+  <tabstop>CreateTaskPushButton</tabstop>
   <tabstop>CancelPushButton</tabstop>
  </tabstops>
  <resources/>
  <connections>
   <connection>
-   <sender>CreateCasePushButton</sender>
+   <sender>CreateTaskPushButton</sender>
    <signal>clicked()</signal>
-   <receiver>NewCaseDialog</receiver>
+   <receiver>NewTaskDialog</receiver>
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -159,7 +159,7 @@
   <connection>
    <sender>CancelPushButton</sender>
    <signal>clicked()</signal>
-   <receiver>NewCaseDialog</receiver>
+   <receiver>NewTaskDialog</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">

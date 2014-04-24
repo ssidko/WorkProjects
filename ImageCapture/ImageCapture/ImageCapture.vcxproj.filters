@@ -36,28 +36,10 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="GeneratedFiles\Debug\moc_mainwindow.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_mainwindow.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\qrc_mainwindow.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="mainwindow.cpp">
-      <Filter>GUI</Filter>
-    </ClCompile>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="GeneratedFiles\Debug\moc_NewCaseDialog.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_NewCaseDialog.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
-    <ClCompile Include="GUI\NewCaseDialog.cpp">
-      <Filter>GUI</Filter>
-    </ClCompile>
     <ClCompile Include="WinDevicesManager.cpp">
       <Filter>Core</Filter>
     </ClCompile>
@@ -79,19 +61,28 @@
     <ClCompile Include="ControlUnit.cpp">
       <Filter>Core</Filter>
     </ClCompile>
+    <ClCompile Include="GUI\NewTaskDialog.cpp">
+      <Filter>GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_NewTaskDialog.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_NewTaskDialog.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="MainWindow.cpp">
+      <Filter>GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_MainWindow.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_MainWindow.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="mainwindow.qrc">
       <Filter>Resource Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="mainwindow.h">
-      <Filter>GUI</Filter>
-    </CustomBuild>
-    <CustomBuild Include="Forms\NewCaseDialog.ui">
-      <Filter>GUI\Forms</Filter>
-    </CustomBuild>
-    <CustomBuild Include="GUI\NewCaseDialog.h">
-      <Filter>GUI</Filter>
     </CustomBuild>
     <CustomBuild Include="Forms\MainWindow.ui">
       <Filter>GUI\Forms</Filter>
@@ -101,6 +92,15 @@
     </CustomBuild>
     <CustomBuild Include="WriterWindow.h">
       <Filter>FWriter</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Forms\NewTaskDialog.ui">
+      <Filter>GUI\Forms</Filter>
+    </CustomBuild>
+    <CustomBuild Include="GUI\NewTaskDialog.h">
+      <Filter>GUI</Filter>
+    </CustomBuild>
+    <CustomBuild Include="MainWindow.h">
+      <Filter>GUI</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
@@ -124,6 +124,9 @@
     </ClInclude>
     <ClInclude Include="ControlUnit.h">
       <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="GeneratedFiles\ui_NewTaskDialog.h">
+      <Filter>Generated Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

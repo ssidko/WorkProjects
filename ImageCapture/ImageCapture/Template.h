@@ -29,6 +29,7 @@ public:
 	bool Initialize(QString &template_path);
 	QString Name(void) {return name;}
 	QString Description(void) {return description;}
+	QString FilePath(void) {return file_path;}
 	const QList<TEMPLATE_BUTTON> *Buttons(void) {return &buttons;}
 	const QList<QString> *Sections(void) {return &sections;}
 };

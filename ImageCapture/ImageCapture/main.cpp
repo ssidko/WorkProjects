@@ -8,7 +8,7 @@
 #include <QTextCodec>
 #include <QCamera>
 
-#include "NewCaseDialog.h"
+#include "NewTaskDialog.h"
 
 void TestXML(void)
 {
@@ -128,39 +128,6 @@ bool ReadTestTemplate(QString &file_name)
 #include "windows.h"
 #include "TCHAR.h"
 
-int COMTest(void)
-{
-	HANDLE com = NULL;
-	DWORD err = 0;
-	com = ::CreateFileA(_T("\\\\.\\COM12"), GENERIC_READ|GENERIC_WRITE, 0/*exclusive access*/, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
-	if (com == INVALID_HANDLE_VALUE) return -1;
-	
-	DCB com_param;
-	memset(&com_param, 0x00, sizeof(com_param));
-	if (!GetCommState(com, &com_param)) {
-		err = ::GetLastError();
-		return -1;
-	}
-	com_param.BaudRate = CBR_9600;
-	com_param.ByteSize = 8;
-	com_param.StopBits = ONESTOPBIT;
-	com_param.Parity = NOPARITY;
-	if (!SetCommState(com, &com_param)) {
-		err = ::GetLastError();
-		return -1;
-	}
-
-	char *cmd = "echo\n";
-	int len = strlen(cmd);
-	DWORD rw = 0;
-	if (!WriteFile(com, cmd, strlen(cmd), &rw, NULL)) {
-		err = ::GetLastError();
-		return -1;
-	}
-	
-	::CloseHandle(com);
-	return 0;
-}
 
 //=-=-=-=-==-=-=-=-===-===-=-=-=-=-=-===---=-=-==-=-
 // После отладки удалить!!!
@@ -169,12 +136,16 @@ int COMTest(void)
 #include "WriterWindow.h"
 #include "Template.h"
 #include "ControlUnit.h"
+#include "Task.h"
 
 int main(int argc, char *argv[])
 {
 	QApplication a(argc, argv);
-	NewCaseDialog dlg;
+	NewTaskDialog dlg;
 	MainWindow w;
+
+	//Task task;
+	//task.Create("test task", "J:\\GitHub\\WorkProjects\\ImageCapture\\ImageCapture\\tasks");
 
 	dlg.exec();
 	w.show();
