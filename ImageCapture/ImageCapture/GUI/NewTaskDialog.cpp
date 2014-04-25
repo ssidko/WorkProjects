@@ -67,6 +67,9 @@ void NewTaskDialog::CreateNewTask(void)
 				task->SetDescription(ui.TaskDescriptionEdit->text());
 				template_path = ui.TemplateComboBox->itemData(ui.TemplateComboBox->currentIndex()).toString();
 				task->AddTemplate(template_path);
+				if (task->Save()) {
+					accept();
+				}
 			}
 		}
 	} else {

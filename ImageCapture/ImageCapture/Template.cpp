@@ -81,7 +81,7 @@ bool Template::Initialize(const QString &template_path)
 			} else if (xml.name() == "Buttons") {
 				while(xml.readNextStartElement()) {
 					if (xml.name() == "Button") {
-						TEMPLATE_BUTTON button;
+						BUTTON button;
 						button.name = xml.attributes().value("Name").toString();
 						button.command = xml.attributes().value("Command").toString();
 						if ((button.name != "")&&(button.command != "")) {
@@ -93,7 +93,7 @@ bool Template::Initialize(const QString &template_path)
 			} else if (xml.name() == "Sections") {
 				while(xml.readNextStartElement()) {
 					if (xml.name() == "Section") {
-						TEMPLATE_SECTION section;
+						SECTION section;
 						section.name = xml.attributes().value("Name").toString();
 						sections.push_back(section);
 					}
