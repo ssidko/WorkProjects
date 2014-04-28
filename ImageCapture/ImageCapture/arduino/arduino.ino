@@ -1,6 +1,6 @@
 #define MAX_PIN_NUMBER          12
 #define LED_PIN                 13
-#define IMPULSE_WIDTH           1000
+#define IMPULSE_WIDTH           30
 
 String command = "";
 boolean cmd_complete = false;

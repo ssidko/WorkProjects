@@ -5,8 +5,6 @@
 #include <QXmlStreamWriter>
 #include <QXmlStreamReader>
 
-#define TASK_RESOURCE_DIRECTORY					"res"
-
 Task::Task(void)
 {
 }

@@ -3,6 +3,8 @@
 
 
 #include <QFile>
+#include <QFileInfo>
+#include <QDir>
 #include <QXmlStreamWriter>
 #include <QXmlStreamReader>
 #include <QTextCodec>
@@ -144,7 +146,17 @@ int main(int argc, char *argv[])
 	NewTaskDialog dlg;
 	MainWindow w;
 
-	dlg.exec();
+	/*
+	QStringList paths = QCoreApplication::libraryPaths();
+	paths.append(".");
+	paths.append("platforms");
+	QCoreApplication::setLibraryPaths(paths);
+	*/
+
+	if (dlg.exec() == QDialog::Accepted) {
+		w.SetTask(dlg.NewTask());
+	}
+
 	w.show();
 	w.activateWindow();
 

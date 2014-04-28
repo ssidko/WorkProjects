@@ -15,6 +15,7 @@ private:
 public:
 	NewTaskDialog(QWidget *parent = 0);
 	~NewTaskDialog();
+	Task *NewTask(void) {return task;}
 private slots:
 	void UpdateWindowTitle();
 	void UpdateTemplatesComboBox(void);

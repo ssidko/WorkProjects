@@ -5,6 +5,8 @@
 #include <QList>
 #include "Template.h"
 
+#define TASK_RESOURCE_DIRECTORY					"res"
+
 class Task
 {
 private:
@@ -19,6 +21,8 @@ public:
 	bool Create(const QString &task_name, const QString &path);
 	QString Name(void) const {return name;}
 	QString Description(void) const {return description;}
+	QString Directory(void) const {return directory;}
+	QString ResDirectory(void) const {return res_directory;}
 	void SetDescription(const QString &task_description) {description = task_description;}
 	bool AddTemplate(const QString &template_path);
 	void AddTemplate(const Template &t) {templates.push_back(t);}
