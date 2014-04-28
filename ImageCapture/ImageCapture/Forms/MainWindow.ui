@@ -116,47 +116,11 @@
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout_2">
         <item>
-         <widget class="QGroupBox" name="groupBox">
+         <widget class="QGroupBox" name="ButtonsGroupBox">
           <property name="title">
            <string>Кнопки управления</string>
           </property>
-          <layout class="QHBoxLayout" name="horizontalLayout">
-           <item>
-            <widget class="QPushButton" name="pushButton">
-             <property name="text">
-              <string>Вверх</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QPushButton" name="pushButton_2">
-             <property name="text">
-              <string>Вниз</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QPushButton" name="pushButton_3">
-             <property name="text">
-              <string>Влево</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QPushButton" name="pushButton_5">
-             <property name="text">
-              <string>Вправо</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QPushButton" name="pushButton_4">
-             <property name="text">
-              <string>Ввод</string>
-             </property>
-            </widget>
-           </item>
-          </layout>
+          <layout class="QHBoxLayout" name="ButtonsHLayout"/>
          </widget>
         </item>
         <item>
@@ -211,7 +175,6 @@
    <addaction name="TaskMenu"/>
    <addaction name="ReportMenu"/>
   </widget>
-  <widget class="QStatusBar" name="statusbar"/>
   <action name="CreateReportAction">
    <property name="text">
     <string>Сформировать</string>

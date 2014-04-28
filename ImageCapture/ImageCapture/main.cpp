@@ -143,7 +143,6 @@ bool ReadTestTemplate(QString &file_name)
 int main(int argc, char *argv[])
 {
 	QApplication a(argc, argv);
-	NewTaskDialog dlg;
 	MainWindow w;
 
 	/*
@@ -152,10 +151,6 @@ int main(int argc, char *argv[])
 	paths.append("platforms");
 	QCoreApplication::setLibraryPaths(paths);
 	*/
-
-	if (dlg.exec() == QDialog::Accepted) {
-		w.SetTask(dlg.NewTask());
-	}
 
 	w.show();
 	w.activateWindow();

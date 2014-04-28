@@ -3,7 +3,7 @@
 #define MAX_COM_PORT_NUMBER			50
 #define RESPONSE_CODE				0x6948
 
-ControlUnit::ControlUnit(void) : handle(NULL), com_name("")
+ControlUnit::ControlUnit(void) : handle(NULL), com_name(""), opened(false)
 {
 }
 
@@ -104,6 +104,7 @@ bool ControlUnit::Open()
 		handle = OpenComPort(com_name.toLocal8Bit().data());
 		if (handle != INVALID_HANDLE_VALUE) {
 			if (IsControlUnit(handle)) {
+				opened = true;
 				return true;
 			}
 			::CloseHandle(handle);
@@ -119,6 +120,7 @@ void ControlUnit::Close()
 	if (handle && (handle != INVALID_HANDLE_VALUE)) {
 		handle = NULL;
 		::CloseHandle(handle);
+		opened = false;
 	}
 }
 

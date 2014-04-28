@@ -14,6 +14,7 @@ class ControlUnit
 private:
 	HANDLE handle;
 	QString com_name;
+	bool opened;
 	static HANDLE OpenComPort(const char *name);
 	static bool WriteComPort(HANDLE handle, const void *buff, int size);
 	static bool ReadComPort(HANDLE handle, void *buff, int size);
@@ -22,6 +23,7 @@ public:
 	ControlUnit(void);
 	~ControlUnit(void);
 	static bool IsAvailable(void);
+	bool IsOpened(void) {return opened;}
 	bool Open();
 	void Close();
 	bool SenCommand(QString cmd);
