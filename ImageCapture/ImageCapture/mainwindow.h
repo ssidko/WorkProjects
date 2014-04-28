@@ -40,6 +40,7 @@ private:
 	QCameraImageCapture *image_capture;
 	ControlUnit control_unit;
 	QList<CmdButton *> buttons;
+	QTreeWidgetItem *current_item;
 public:
 	MainWindow(QWidget *parent = 0);
 	~MainWindow();
@@ -52,6 +53,8 @@ public slots:
 	void SetTask(Task *new_task);
 	void TakeScreenshot(void);
 	bool SendCommand(QString command);
+	void CheckSelection(QTreeWidgetItem *current, QTreeWidgetItem *previous);
+	void ChangeSection(void);
 };
 
 #endif // MAINWINDOW_H

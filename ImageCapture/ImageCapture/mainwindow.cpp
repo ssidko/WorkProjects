@@ -1,6 +1,6 @@
 #include "mainwindow.h"
 
-#define CAMERA_NAME						"USB 2861 Video"
+#define CAMERA_NAME							"USB 2861 Video"
 //#define CAMERA_NAME						"iLook 300"
 //#define CAMERA_NAME						"ASUS USB2.0 Webcam"
 
@@ -16,6 +16,8 @@ MainWindow::MainWindow(QWidget *parent)
 	connect(ui.SaveAction, SIGNAL(triggered()), SLOT(SaveTask()));
 	ui.SaveAction->setShortcut(tr("Ctrl+S"));
 	ui.ButtonsGroupBox->setAlignment(Qt::AlignHCenter);
+	connect(ui.TaskTreeWidget, SIGNAL(currentItemChanged(QTreeWidgetItem*, QTreeWidgetItem*)), SLOT(CheckSelection(QTreeWidgetItem*, QTreeWidgetItem*)));
+	connect(ui.TaskTreeWidget, SIGNAL(itemSelectionChanged()), SLOT(ChangeSection()));
 }
 
 MainWindow::~MainWindow()
@@ -52,7 +54,6 @@ bool MainWindow::Initialize()
 	return true;
 }
 
-
 bool MainWindow::CreateButtons(const Template &t)
 {
 	if (task) {
@@ -71,7 +72,6 @@ bool MainWindow::CreateButtons(const Template &t)
 	return false;
 }
 
-
 void MainWindow::DestroyButtons(void)
 {
 	foreach (CmdButton *button, buttons) {
@@ -79,7 +79,6 @@ void MainWindow::DestroyButtons(void)
 	}
 	buttons.clear();
 }
-
 
 bool MainWindow::CreateNewTask(void)
 {
@@ -95,8 +94,9 @@ bool MainWindow::SaveTask( void )
 {
 	if (task) {
 		return task->Save();
+	} else {
+		return false;	
 	}
-	return false;
 }
 
 void MainWindow::SetTask(Task *new_task)
@@ -112,6 +112,8 @@ void MainWindow::SetTask(Task *new_task)
 		ui.TaskTreeWidget->setHeaderLabel(QString::fromLocal8Bit("Задача"));
 
 		QTreeWidgetItem *task_item = new QTreeWidgetItem(ui.TaskTreeWidget);
+		QFont segoe_font("Segoe UI", 9, QFont::Bold);
+		task_item->setFont(0, segoe_font);
 		task_item->setText(0, task->Name());
 		task_item->setFlags(Qt::ItemIsEnabled);
 		task_item->setExpanded(true);
@@ -127,8 +129,12 @@ void MainWindow::SetTask(Task *new_task)
 			template_item->setExpanded(true);
 			foreach (const SECTION &section, *t.Sections()) {
 				QTreeWidgetItem *section_item = new QTreeWidgetItem(template_item);
+				QVariant data(QString("section"));
 				section_item->setText(0, section.name);
+				section_item->setData(0, Qt::AccessibleDescriptionRole, data);
 			}
+			template_item->child(0)->setSelected(true);
+			ui.ScreenGroupBox->setTitle(template_item->child(0)->text(0));
 		}
 		CreateButtons((*task->Templates())[0]);
 	}
@@ -153,4 +159,28 @@ bool MainWindow::SendCommand(QString command)
 		return true;
 	}
 	return false;
+}
+
+void MainWindow::CheckSelection(QTreeWidgetItem *current, QTreeWidgetItem *previous)
+{
+	if (current && previous) {
+		QString current_name = current->text(0);
+		QString prev_name = previous->text(0);
+		QVariant data = current->data(0, Qt::AccessibleDescriptionRole);
+		if (data.toString() != "section") {
+			previous->setSelected(true);
+		}
+	}
+}
+
+void MainWindow::ChangeSection(void)
+{
+	QTreeWidgetItem *item = ui.TaskTreeWidget->currentItem();
+	if (item) {
+		QVariant data = item->data(0, Qt::AccessibleDescriptionRole);
+		if (data.toString() == "section") {
+			ui.ScreenGroupBox->setTitle(item->text(0));
+			current_item = item;
+		}
+	}
 }
