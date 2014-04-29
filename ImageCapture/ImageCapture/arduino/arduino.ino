@@ -1,6 +1,6 @@
 #define MAX_PIN_NUMBER          12
 #define LED_PIN                 13
-#define IMPULSE_WIDTH           30
+#define IMPULSE_WIDTH           50
 
 String command = "";
 boolean cmd_complete = false;
@@ -31,6 +31,7 @@ void loop ()
     command.trim();
     if (command == "Hello") {
       Serial.write("Hi");
+      Serial.flush();
     } else if (command == "Pin2") {
       MakeImpulse(2);
     } else if (command == "Pin3") {

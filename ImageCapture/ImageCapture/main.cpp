@@ -145,12 +145,18 @@ int main(int argc, char *argv[])
 	QApplication a(argc, argv);
 	MainWindow w;
 
-	/*
-	QStringList paths = QCoreApplication::libraryPaths();
-	paths.append(".");
-	paths.append("platforms");
-	QCoreApplication::setLibraryPaths(paths);
-	*/
+	//QStringList paths = QCoreApplication::libraryPaths();
+	//paths.append(".");
+	//paths.append("platforms");
+	//QCoreApplication::setLibraryPaths(paths);
+
+	//ControlUnit control_unit;
+	//control_unit.Testing();
+	//control_unit.Testing();
+	//control_unit.Testing();
+	//if (control_unit.Open()) {
+	//	int x = 0;
+	//}
 
 	w.show();
 	w.activateWindow();

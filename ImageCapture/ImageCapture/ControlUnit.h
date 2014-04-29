@@ -12,7 +12,7 @@
 class ControlUnit
 {
 private:
-	HANDLE handle;
+	HANDLE com_handle;
 	QString com_name;
 	bool opened;
 	static HANDLE OpenComPort(const char *name);
@@ -27,6 +27,7 @@ public:
 	bool Open();
 	void Close();
 	bool SenCommand(QString cmd);
+	bool Testing(void);
 };
 
 #endif

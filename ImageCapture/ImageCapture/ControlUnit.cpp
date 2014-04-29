@@ -1,9 +1,11 @@
 #include "ControlUnit.h"
+#include <QMessageBox>
 
 #define MAX_COM_PORT_NUMBER			50
 #define RESPONSE_CODE				0x6948
 
-ControlUnit::ControlUnit(void) : handle(NULL), com_name(""), opened(false)
+
+ControlUnit::ControlUnit(void) : com_handle(NULL), com_name(""), opened(false)
 {
 }
 
@@ -39,32 +41,70 @@ bool ControlUnit::WriteComPort(HANDLE handle, const void *buff, int size)
 {
 	DWORD rw = 0;
 	OVERLAPPED o;
+	DWORD wait_result;
+	bool ret = false;
 	memset(&o, 0x00, sizeof(o));
-	HANDLE ev = ::CreateEventA(NULL, FALSE, FALSE /*nonsignaled*/, NULL);
-	if (!ev) return false;
-	o.hEvent = ev;
-	if (!::WriteFile(handle, buff, size, &rw, &o)) {
-		if (ERROR_IO_PENDING != ::GetLastError()) {
-			return false;
-		}
+	o.hEvent = ::CreateEventA(NULL, FALSE, FALSE, NULL);
+	if (!o.hEvent) {
+		return false;
 	}
-	return (WAIT_OBJECT_0 == WaitForSingleObject(ev, 1000));
+	if (!::WriteFile(handle, buff, size, &rw, &o)) {
+		if (ERROR_IO_PENDING == ::GetLastError()) {
+			wait_result = WaitForSingleObject(o.hEvent, 1000);
+			switch (wait_result) {
+				case WAIT_OBJECT_0:
+					if (::GetOverlappedResult(handle, &o, &rw, FALSE)) {
+						ret = true;
+						break;
+					} 
+				default:
+					::CancelIo(handle);
+					ret = false;
+					break;
+			}
+		} else {
+			ret = false;
+		}
+	} else {
+		ret = true;
+	}
+	::CloseHandle(o.hEvent);
+	return ret;
 }
 
 bool ControlUnit::ReadComPort(HANDLE handle, void *buff, int size)
 {
 	DWORD rw = 0;
 	OVERLAPPED o;
+	DWORD wait_result;
+	bool ret = false;
 	memset(&o, 0x00, sizeof(o));
-	HANDLE ev = ::CreateEventA(NULL, FALSE, FALSE /*nonsignaled*/, NULL);
-	if (!ev) return false;
-	o.hEvent = ev;
-	if (!::ReadFile(handle, buff, size, &rw, &o)) {
-		if (ERROR_IO_PENDING != ::GetLastError()) {
-			return false;
-		}
+	o.hEvent = ::CreateEventA(NULL, FALSE, FALSE, NULL);
+	if (!o.hEvent) {
+		return false;
 	}
-	return (WAIT_OBJECT_0 == ::WaitForSingleObject(ev, 1000));
+	if (!::ReadFile(handle, buff, size, &rw, &o)) {
+		if (ERROR_IO_PENDING == ::GetLastError()) {
+			wait_result = WaitForSingleObject(o.hEvent, 1000);
+			switch (wait_result) {
+				case WAIT_OBJECT_0:
+					if (::GetOverlappedResult(handle, &o, &rw, FALSE)) {
+						ret = true;
+						break;
+					} 
+				default:
+					::CancelIo(handle);
+					ret = false;
+					break;
+			}
+		} else {
+			ret = false;
+		}
+	} else {
+		ret = true;
+	}
+	::CloseHandle(o.hEvent);
+	return ret;
 }
 
 bool ControlUnit::IsControlUnit(HANDLE handle)
@@ -101,13 +141,14 @@ bool ControlUnit::Open()
 	Close();
 	for (int i = 0; i < MAX_COM_PORT_NUMBER; i++) {
 		com_name = "\\\\.\\COM" + QString::number(i, 10);
-		handle = OpenComPort(com_name.toLocal8Bit().data());
-		if (handle != INVALID_HANDLE_VALUE) {
-			if (IsControlUnit(handle)) {
+		com_handle = OpenComPort(com_name.toLocal8Bit().data());
+		if (com_handle != INVALID_HANDLE_VALUE) {
+			if (IsControlUnit(com_handle)) {
 				opened = true;
 				return true;
 			}
-			::CloseHandle(handle);
+			::CloseHandle(com_handle);
+			com_handle = NULL;
 		}
 	}
 	com_name = "";
@@ -117,15 +158,116 @@ bool ControlUnit::Open()
 void ControlUnit::Close()
 {
 	com_name = "";
-	if (handle && (handle != INVALID_HANDLE_VALUE)) {
-		handle = NULL;
-		::CloseHandle(handle);
-		opened = false;
+	opened = false;
+	if (com_handle && (com_handle != INVALID_HANDLE_VALUE)) {
+		::CloseHandle(com_handle);
+		com_handle = NULL;
 	}
 }
 
 bool ControlUnit::SenCommand(QString cmd)
 {
 	cmd += "\n";
-	return 	WriteComPort(handle, cmd.toLocal8Bit().data(), cmd.size());
+	return 	WriteComPort(com_handle, cmd.toLocal8Bit().data(), cmd.size());
+}
+
+bool ControlUnit::Testing( void )
+{
+	DWORD rw;
+	DWORD error_code = 0;
+	DWORD ret_code;
+	char buff[10] = {0};
+	bool status = false;
+	QString com_name = "\\\\.\\COM4";
+	HANDLE com_handle = OpenComPort(com_name.toLocal8Bit().data());
+	if (com_handle != INVALID_HANDLE_VALUE) {
+		CancelIo(com_handle);
+		HANDLE ev = ::CreateEvent(NULL, TRUE, FALSE, NULL);
+		if (ev) {
+				OVERLAPPED ov;
+				memset(&ov, 0x00, sizeof(OVERLAPPED));
+				::ResetEvent(ev);
+				ov.hEvent = ev;
+
+				if (!::WriteFile(com_handle, "Hello\n", 6, &rw, &ov)) {
+					error_code = ::GetLastError();
+					if (ERROR_IO_PENDING == error_code) {
+						// Операция еще выполняется, необходимо подождать.
+						ret_code = WaitForSingleObject(ev, 5000);
+						switch (ret_code) {
+							case WAIT_OBJECT_0: // 0
+								if (GetOverlappedResult(com_handle, &ov, &rw, FALSE)) {
+									// Read completed successfully.
+									error_code = 0;
+									status = true;
+								} else {
+									// Error
+									error_code = ::GetLastError();
+									status = false;
+								}
+								break;
+							default:
+								// An error has occurred in WaitForSingleObject.
+								// This usually indicates a problem with the
+								// OVERLAPPED structure's event handle.
+								error_code = ::GetLastError();
+								status = false;
+								break;
+						}
+					} else {
+						// Произошла ошибка.
+						error_code = ::GetLastError();
+						status = false;
+					}
+				} else {
+					// WriteFile completed immediately..
+					error_code = 0;
+					status = true;
+				}
+				
+				memset(&ov, 0x00, sizeof(OVERLAPPED));
+				::ResetEvent(ev);
+				ov.hEvent = ev;
+
+				if (!::ReadFile(com_handle, buff, 2, &rw, &ov)) {
+					error_code = ::GetLastError();
+					if (ERROR_IO_PENDING == error_code) {
+						// Операция еще выполняется, необходимо подождать.
+						ret_code = WaitForSingleObject(ev, 5000);
+						switch (ret_code) {
+							case WAIT_OBJECT_0: // 0
+								if (GetOverlappedResult(com_handle, &ov, &rw, FALSE)) {
+									// Read completed successfully.
+									error_code = 0;
+									status = true;
+								} else {
+									// Error
+									error_code = ::GetLastError();
+									status =false;
+								}
+								break;
+							case WAIT_TIMEOUT: // 258
+							case WAIT_FAILED: 
+							default:
+								// Error
+								error_code = ::GetLastError();
+								status = false;
+								break;
+						}
+					} else {
+						// Произошла ошибка.
+						error_code = ::GetLastError();
+						status = false;
+					}
+				} else {
+					// В буфере уже прочитанные данны. Можно юзать.
+					error_code = 0;
+					status = true;
+				}
+				CloseHandle(ev);
+		}
+		::CloseHandle(com_handle);
+	}
+	return status;
+
 }

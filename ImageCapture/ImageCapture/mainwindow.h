@@ -20,13 +20,13 @@ public:
 	{
 		connect(this, SIGNAL(clicked(bool)), SLOT(ButtonClicked()));
 	}
-	public slots:
-		void ButtonClicked(void)
-		{
-			emit SendCommand(cmd);
-		}
+public slots:
+	void ButtonClicked(void)
+	{
+		emit SendCommand(cmd);
+	}
 signals:
-		void SendCommand(QString command);
+	void SendCommand(QString command);
 
 };
 

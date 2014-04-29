@@ -1,8 +1,8 @@
 #include "mainwindow.h"
 
-#define CAMERA_NAME							"USB 2861 Video"
-//#define CAMERA_NAME						"iLook 300"
-//#define CAMERA_NAME						"ASUS USB2.0 Webcam"
+//#define CAMERA_NAME							"USB 2861 Video"
+//#define CAMERA_NAME							"iLook 300"
+#define CAMERA_NAME								"ASUS USB2.0 Webcam"
 
 MainWindow::MainWindow(QWidget *parent)
 	: QMainWindow(parent), task(NULL), camera(NULL), image_capture(NULL)
@@ -27,9 +27,7 @@ MainWindow::~MainWindow()
 
 bool MainWindow::Initialize()
 {
-	QVideoWidget *wdgt = NULL;
 	QString description;
-	QString tst;
 	foreach(const QByteArray &device_name, QCamera::availableDevices()) {
 		description = QCamera::deviceDescription(device_name);
 		if (description == CAMERA_NAME) {
@@ -83,10 +81,12 @@ void MainWindow::DestroyButtons(void)
 bool MainWindow::CreateNewTask(void)
 {
 	NewTaskDialog dlg;
-	if (dlg.exec() == QDialog::Accepted) {
-		SetTask(dlg.NewTask());
-		return true;
-	}
+	if (control_unit.Open()) {
+		if (dlg.exec() == QDialog::Accepted) {
+			SetTask(dlg.NewTask());
+			return true;
+		}
+	} 
 	return false;
 }
 
