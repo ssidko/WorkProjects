@@ -269,5 +269,4 @@ bool ControlUnit::Testing( void )
 		::CloseHandle(com_handle);
 	}
 	return status;
-
 }

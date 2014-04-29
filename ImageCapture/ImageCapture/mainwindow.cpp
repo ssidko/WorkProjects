@@ -1,4 +1,5 @@
 #include "mainwindow.h"
+#include <QFileInfo>
 
 //#define CAMERA_NAME							"USB 2861 Video"
 //#define CAMERA_NAME							"iLook 300"
@@ -22,7 +23,6 @@ MainWindow::MainWindow(QWidget *parent)
 
 MainWindow::~MainWindow()
 {
-
 }
 
 bool MainWindow::Initialize()
@@ -37,12 +37,13 @@ bool MainWindow::Initialize()
 				camera->setCaptureMode(QCamera::CaptureStillImage);
 				image_capture = new QCameraImageCapture(camera);
 				image_capture->setCaptureDestination(QCameraImageCapture::CaptureToFile);
-				
+				connect(image_capture, SIGNAL(imageSaved(int, const QString&)), SLOT(AddPictureItem(int, const QString&)));
+
 				QImageEncoderSettings image_settings;
 				image_settings.setCodec("image/jpeg");
 				image_settings.setResolution(640, 480);
 				image_capture->setEncodingSettings(image_settings);
-
+	
 				camera->start();
 			} else {
 				return false;
@@ -133,7 +134,7 @@ void MainWindow::SetTask(Task *new_task)
 				section_item->setText(0, section.name);
 				section_item->setData(0, Qt::AccessibleDescriptionRole, data);
 			}
-			template_item->child(0)->setSelected(true);
+			ui.TaskTreeWidget->setCurrentItem(template_item->child(0));
 			ui.ScreenGroupBox->setTitle(template_item->child(0)->text(0));
 		}
 		CreateButtons((*task->Templates())[0]);
@@ -168,7 +169,10 @@ void MainWindow::CheckSelection(QTreeWidgetItem *current, QTreeWidgetItem *previ
 		QString prev_name = previous->text(0);
 		QVariant data = current->data(0, Qt::AccessibleDescriptionRole);
 		if (data.toString() != "section") {
-			previous->setSelected(true);
+			ui.TaskTreeWidget->setCurrentItem(previous);
+			//previous->setSelected(true);
+		} else {
+			//previous->setSelected(false);
 		}
 	}
 }
@@ -183,4 +187,19 @@ void MainWindow::ChangeSection(void)
 			current_item = item;
 		}
 	}
+}
+
+void MainWindow::AddPictureItem(int id, const QString &file_path)
+{
+	QFileInfo file_info(file_path);
+	QString name = file_info.fileName();// file_info.baseName();
+
+	QTreeWidgetItem *section_item = new QTreeWidgetItem(ui.TaskTreeWidget->currentItem());
+	QVariant data(QString("picture"));
+	section_item->setText(0, name);
+	section_item->setData(0, Qt::AccessibleDescriptionRole, data);
+	section_item->setFlags(Qt::NoItemFlags);
+	ui.TaskTreeWidget->currentItem()->setExpanded(true);
+
+	int x = 0;
 }

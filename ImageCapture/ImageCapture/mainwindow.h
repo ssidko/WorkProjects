@@ -55,6 +55,7 @@ public slots:
 	bool SendCommand(QString command);
 	void CheckSelection(QTreeWidgetItem *current, QTreeWidgetItem *previous);
 	void ChangeSection(void);
+	void AddPictureItem(int id, const QString &file_name);
 };
 
 #endif // MAINWINDOW_H
