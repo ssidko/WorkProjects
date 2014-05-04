@@ -9,7 +9,6 @@ MainWindow::MainWindow(QWidget *parent)
 	: QMainWindow(parent), task(NULL), camera(NULL), image_capture(NULL)
 {
 	ui.setupUi(this);
-	setWindowTitle("");
 	Initialize();
 	connect(ui.ScreenshotButton, SIGNAL(clicked(bool)), SLOT(TakeScreenshot(void)));
 	connect(ui.CreateAction, SIGNAL(triggered()), SLOT(CreateNewTask()));
@@ -37,7 +36,7 @@ bool MainWindow::Initialize()
 				camera->setCaptureMode(QCamera::CaptureStillImage);
 				image_capture = new QCameraImageCapture(camera);
 				image_capture->setCaptureDestination(QCameraImageCapture::CaptureToFile);
-				connect(image_capture, SIGNAL(imageSaved(int, const QString&)), SLOT(AddPictureItem(int, const QString&)));
+				connect(image_capture, SIGNAL(imageSaved(int, const QString&)), SLOT(AddScreenshot(int, const QString&)));
 
 				QImageEncoderSettings image_settings;
 				image_settings.setCodec("image/jpeg");
@@ -57,11 +56,11 @@ bool MainWindow::CreateButtons(const Template &t)
 {
 	if (task) {
 		DestroyButtons();
-		foreach (const BUTTON button, *t.Buttons()) {
-			CmdButton *cmd_button = new CmdButton(button.command, ui.ButtonsGroupBox);
+		foreach (const BUTTON *button, t.Buttons()) {
+			CmdButton *cmd_button = new CmdButton(button->command, ui.ButtonsGroupBox);
 			if (cmd_button) {
 				buttons.append(cmd_button);
-				cmd_button->setText(button.name);
+				cmd_button->setText(button->name);
 				ui.ButtonsHLayout->addWidget(cmd_button);
 				cmd_button->show();
 				connect(cmd_button, SIGNAL(SendCommand(QString)), SLOT(SendCommand(QString)));
@@ -100,6 +99,13 @@ bool MainWindow::SaveTask( void )
 	}
 }
 
+QString MainWindow::MakeTemplateItemName(const Template &t)
+{
+	QString item_name;
+	item_name = t.Name() + ", " + t.Description();
+	return item_name;
+}
+
 void MainWindow::SetTask(Task *new_task)
 {
 	//
@@ -123,21 +129,23 @@ void MainWindow::SetTask(Task *new_task)
 		task_description->setText(0, QString::fromLocal8Bit("Описание: ") + task->Description());
 		task_description->setFlags(Qt::ItemIsEnabled);
 
-		foreach(const Template &t, *task->Templates()) {
+		foreach(const Template *t, task->Templates()) {
 			QTreeWidgetItem *template_item = new QTreeWidgetItem(task_item);
-			template_item->setText(0, t.Name() + ", " + t.Description());
+			QVariant template_data(QString("template"));
+			template_item->setText(0, MakeTemplateItemName(*t));
+			template_item->setData(0, Qt::AccessibleDescriptionRole, template_data);
 			template_item->setFlags(Qt::ItemIsEnabled);
 			template_item->setExpanded(true);
-			foreach (const SECTION &section, *t.Sections()) {
+			foreach (const SECTION *section, t->Sections()) {
 				QTreeWidgetItem *section_item = new QTreeWidgetItem(template_item);
-				QVariant data(QString("section"));
-				section_item->setText(0, section.name);
-				section_item->setData(0, Qt::AccessibleDescriptionRole, data);
+				QVariant section_data(QString("section"));
+				section_item->setText(0, section->name);
+				section_item->setData(0, Qt::AccessibleDescriptionRole, section_data);
 			}
 			ui.TaskTreeWidget->setCurrentItem(template_item->child(0));
 			ui.ScreenGroupBox->setTitle(template_item->child(0)->text(0));
 		}
-		CreateButtons((*task->Templates())[0]);
+		CreateButtons(*(task->Templates())[0]);
 	}
 }
 
@@ -189,17 +197,60 @@ void MainWindow::ChangeSection(void)
 	}
 }
 
-void MainWindow::AddPictureItem(int id, const QString &file_path)
+void MainWindow::AddScreenshot(int id, const QString &file_path)
 {
-	QFileInfo file_info(file_path);
-	QString name = file_info.fileName();// file_info.baseName();
+	QTreeWidgetItem *current_item = ui.TaskTreeWidget->currentItem();
+	if (!current_item) {
+		return;
+	}
 
-	QTreeWidgetItem *section_item = new QTreeWidgetItem(ui.TaskTreeWidget->currentItem());
-	QVariant data(QString("picture"));
-	section_item->setText(0, name);
-	section_item->setData(0, Qt::AccessibleDescriptionRole, data);
-	section_item->setFlags(Qt::NoItemFlags);
+	if (current_item->data(0, Qt::AccessibleDescriptionRole).toString() != "section") {
+		return;			
+	}
+
+	QFileInfo file_info(file_path);
+	QString item_name = file_info.fileName();
+	QString section_name = current_item->text(0);
+	QTreeWidgetItem *picture_item = new QTreeWidgetItem(current_item);
+	picture_item->setText(0, item_name);
+	picture_item->setData(0, Qt::AccessibleDescriptionRole, QVariant(QString("picture")));
+	picture_item->setFlags(Qt::NoItemFlags);
 	ui.TaskTreeWidget->currentItem()->setExpanded(true);
 
-	int x = 0;
+	Template *t = CurrentTemplate();
+	if (t) {
+		foreach (SECTION *section, t->Sections()) {
+			if (section->name == section_name) {
+				section->pictures.push_back(item_name);
+			}
+		}
+	}
+}
+
+Template *MainWindow::CurrentTemplate(void)
+{
+	if (!task) {
+		return NULL;
+	}
+	
+	QString template_name = "";
+	QTreeWidgetItem *current_item = ui.TaskTreeWidget->currentItem();
+	if (!current_item) {
+		return NULL;
+	}
+	QVariant data = current_item->data(0, Qt::AccessibleDescriptionRole);
+	if (data.toString() == "section") {
+		template_name = current_item->parent()->text(0);		
+	} else if (data.toString() == "template") {
+		template_name = current_item->text(0);
+	} else {
+		return NULL;
+	}
+
+	foreach (Template *t, task->Templates()) {
+		if (template_name == MakeTemplateItemName(*t)) {
+			return t;
+		}
+	}
+	return NULL;
 }

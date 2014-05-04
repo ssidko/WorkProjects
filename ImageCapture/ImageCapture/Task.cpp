@@ -29,9 +29,18 @@ bool Task::Create(const QString &task_name, const QString &path)
 
 bool Task::AddTemplate(const QString &template_path)
 {
-	Template t;
-	if (t.Initialize(template_path)) {
-		AddTemplate(t);
+	Template *t = new Template();
+	if (t && t->Initialize(template_path)) {
+		return AddTemplate(t);
+	} else {
+		return false;
+	}
+}
+
+bool Task::AddTemplate(Template *t)
+{
+	if (t) {
+		templates.push_back(t);
 		return true;
 	} else {
 		return false;
@@ -53,14 +62,14 @@ bool Task::Save(void)
 		xml.writeAttribute("Description", description);
 		xml.writeAttribute("Directory", directory);
 		
-		foreach (const Template &templ, templates) {
+		foreach (const Template *templ, templates) {
 			xml.writeStartElement("Template");
-			xml.writeAttribute("Path", templ.FilePath());
-			foreach (const SECTION &section, *templ.Sections()) {
-				if (section.pictures.size()) {
+			xml.writeAttribute("Path", templ->FilePath());
+			foreach (const SECTION *section, templ->Sections()) {
+				if (section->pictures.size()) {
 					xml.writeStartElement("Section");
-					xml.writeAttribute("Name", section.name);
-					foreach (const QString &pict_name, section.pictures) {
+					xml.writeAttribute("Name", section->name);
+					foreach (const QString &pict_name, section->pictures) {
 						xml.writeStartElement("Picture");
 						xml.writeAttribute("Name", pict_name);
 						xml.writeEndElement(); // "Picture"

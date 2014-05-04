@@ -14,7 +14,7 @@ private:
 	QString description;
 	QString directory;
 	QString res_directory;
-	QList<Template> templates;
+	QList<Template *> templates;
 public:
 	Task(void);
 	~Task(void);
@@ -25,8 +25,8 @@ public:
 	QString ResDirectory(void) const {return res_directory;}
 	void SetDescription(const QString &task_description) {description = task_description;}
 	bool AddTemplate(const QString &template_path);
-	void AddTemplate(const Template &t) {templates.push_back(t);}
-	const QList<Template> *Templates(void) {return &templates;}
+	bool AddTemplate(Template *t);
+	const QList<Template *> &Templates(void) {return templates;}
 	bool Save(void);
 };
 

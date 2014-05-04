@@ -8,6 +8,7 @@
 #include <QCameraImageCapture>
 #include <QVideoWidget>
 #include "NewTaskDialog.h"
+#include "Template.h"
 #include "ControlUnit.h"
 
 class CmdButton : public QPushButton
@@ -41,12 +42,14 @@ private:
 	ControlUnit control_unit;
 	QList<CmdButton *> buttons;
 	QTreeWidgetItem *current_item;
+	QString MakeTemplateItemName(const Template &t);
 public:
 	MainWindow(QWidget *parent = 0);
 	~MainWindow();
 	bool Initialize(void);
 	bool CreateButtons(const Template &t);
 	void DestroyButtons(void);
+	Template *CurrentTemplate(void);
 public slots:
 	bool CreateNewTask(void);
 	bool SaveTask(void);
@@ -55,7 +58,7 @@ public slots:
 	bool SendCommand(QString command);
 	void CheckSelection(QTreeWidgetItem *current, QTreeWidgetItem *previous);
 	void ChangeSection(void);
-	void AddPictureItem(int id, const QString &file_name);
+	void AddScreenshot(int id, const QString &file_name);
 };
 
 #endif // MAINWINDOW_H

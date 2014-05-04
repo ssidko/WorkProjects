@@ -23,8 +23,8 @@ private:
 	QString name;
 	QString description;
 	QString file_path;
-	QList<BUTTON> buttons;
-	QList<SECTION> sections;
+	QList<BUTTON *> buttons;
+	QList<SECTION *> sections;
 public:
 	Template(void);
 	~Template(void);
@@ -35,8 +35,8 @@ public:
 	QString Name(void) const {return name;}
 	QString Description(void) const {return description;}
 	QString FilePath(void) const {return file_path;}
-	const QList<BUTTON> *Buttons(void) const {return &buttons;}
-	const QList<SECTION> *Sections(void) const {return &sections;}
+	const QList<BUTTON *> &Buttons(void) const {return buttons;}
+	const QList<SECTION *> &Sections(void) const {return sections;}
 };
 
 #endif

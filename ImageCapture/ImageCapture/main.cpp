@@ -139,6 +139,7 @@ bool ReadTestTemplate(QString &file_name)
 #include "Template.h"
 #include "ControlUnit.h"
 #include "Task.h"
+#include "DirectShow.h"
 
 int main(int argc, char *argv[])
 {
@@ -157,6 +158,9 @@ int main(int argc, char *argv[])
 	//if (control_unit.Open()) {
 	//	int x = 0;
 	//}
+
+	//DirectShow dshow;
+	//dshow.Test();
 
 	w.show();
 	w.activateWindow();

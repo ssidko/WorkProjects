@@ -34,6 +34,9 @@
     <Filter Include="FWriter">
       <UniqueIdentifier>{af692074-1037-48ba-9e10-c502500f836a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="DirectShow">
+      <UniqueIdentifier>{9a7f3d5d-101f-40b7-87e1-2042594db164}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GeneratedFiles\qrc_mainwindow.cpp">
@@ -78,6 +81,9 @@
     </ClCompile>
     <ClCompile Include="GeneratedFiles\Release\moc_MainWindow.cpp">
       <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="DirectShow.cpp">
+      <Filter>DirectShow</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -127,6 +133,9 @@
     </ClInclude>
     <ClInclude Include="GeneratedFiles\ui_NewTaskDialog.h">
       <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DirectShow.h">
+      <Filter>DirectShow</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
