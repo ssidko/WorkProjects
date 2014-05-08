@@ -26,8 +26,6 @@ int main(int argc, char *argv[])
 	QCoreApplication::setApplicationName(QString::fromLocal8Bit(APPLICATION_NAME));
 	a.setWindowIcon(QIcon(":/MainWindow/images/app.png"));
 
-	//QString val = QSettings().value("task_directory").toString();
-
 	w.show();
 	w.activateWindow();
 

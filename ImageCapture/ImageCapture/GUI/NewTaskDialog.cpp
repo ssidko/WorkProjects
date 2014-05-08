@@ -89,7 +89,8 @@ void NewTaskDialog::SelectTaskDirectory(void)
 	file_dialog.setFileMode(QFileDialog::Directory);
 	file_dialog.setViewMode(QFileDialog::List);
 	file_dialog.setWindowTitle(QString::fromLocal8Bit("Выброр каталога"));
-	file_dialog.exec();
-	ui.DirectoryLineEdit->setText(file_dialog.directory().absolutePath());
+	if (QDialog::Accepted == file_dialog.exec()) {
+		ui.DirectoryLineEdit->setText(file_dialog.directory().absolutePath());
+	}
 	this->activateWindow();
 }

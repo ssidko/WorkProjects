@@ -20,6 +20,8 @@ public:
 	Task(void);
 	~Task(void);
 	bool Create(const QString &task_name, const QString &path);
+	bool Open(const QString &task_file);
+	void Close(void);
 	QString Name(void) const {return name;}
 	QString Description(void) const {return description;}
 	QString Directory(void) const {return directory;}

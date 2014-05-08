@@ -37,6 +37,7 @@ public:
 	QString FilePath(void) const {return file_path;}
 	const QList<BUTTON *> &Buttons(void) const {return buttons;}
 	const QList<SECTION *> &Sections(void) const {return sections;}
+	void AddPicture(const QString &section, const QString &picture);
 };
 
 #endif

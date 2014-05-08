@@ -109,3 +109,12 @@ bool Template::Initialize(const QString &template_path)
 	}
 	return false; 
 }
+
+void Template::AddPicture(const QString &section, const QString &picture)
+{
+	foreach (SECTION *s, sections) {
+		if (s->name == section) {
+			s->pictures.push_back(picture);
+		}
+	}
+}

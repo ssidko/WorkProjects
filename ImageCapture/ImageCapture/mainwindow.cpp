@@ -3,8 +3,8 @@
 #include <QMessageBox>
 
 //#define CAMERA_NAME							"USB 2861 Video"
-//#define CAMERA_NAME							"iLook 300"
-#define CAMERA_NAME								"ASUS USB2.0 Webcam"
+#define CAMERA_NAME								"iLook 300"
+//#define CAMERA_NAME							"ASUS USB2.0 Webcam"
 
 MainWindow::MainWindow(QWidget *parent)
 	: QMainWindow(parent), task(NULL), camera(NULL), image_capture(NULL)
@@ -19,7 +19,7 @@ MainWindow::MainWindow(QWidget *parent)
 	UpdateWindowTitle();
 
 	ui.statusBar->setSizeGripEnabled(false);
-	ui.statusBar->showMessage(QString::fromLocal8Bit("Усё готово!"));
+	//ui.statusBar->showMessage(QString::fromLocal8Bit("Усё готово!"));
 }
 
 MainWindow::~MainWindow()
@@ -125,13 +125,13 @@ void MainWindow::DestroyButtons(void)
 bool MainWindow::CreateNewTask(void)
 {
 	NewTaskDialog dlg;
-	//if (control_unit.Open()) {
-		if (dlg.exec() == QDialog::Accepted) {
-			SetTask(dlg.NewTask());
-			UpdateWindowTitle();
-			return true;
-		}
-	//} 
+	if (dlg.exec() == QDialog::Accepted) {
+		SetTask(dlg.NewTask());
+		control_unit.IsAvailable();
+		control_unit.Open();
+		UpdateWindowTitle();
+		return true;
+	}
 	return false;
 }
 
@@ -150,7 +150,7 @@ bool MainWindow::SaveTask( void )
 	}		
 }
 
-QString MainWindow::MakeTemplateItemName(const Template &t)
+QString MainWindow::ComposeTemplateItemName(const Template &t)
 {
 	QString item_name;
 	item_name = t.Name() + ", " + t.Description();
@@ -184,7 +184,7 @@ void MainWindow::SetTask(Task *new_task)
 		foreach(const Template *t, task->Templates()) {
 			QTreeWidgetItem *template_item = new QTreeWidgetItem(task_item);
 			QVariant template_data(QString("template"));
-			template_item->setText(0, MakeTemplateItemName(*t));
+			template_item->setText(0, ComposeTemplateItemName(*t));
 			template_item->setData(0, Qt::AccessibleDescriptionRole, template_data);
 			template_item->setFlags(Qt::ItemIsEnabled);
 			template_item->setExpanded(true);
@@ -204,12 +204,13 @@ void MainWindow::SetTask(Task *new_task)
 void MainWindow::TakeScreenshot(void)
 {
 	static unsigned int counter = 0;
-	if (task) {
+	if (task && camera) {
 		QString picture_name = task->ResDirectory() + "/" + QString::number(counter, 10) + ".jpg";
 		camera->searchAndLock();
 		image_capture->capture(picture_name);
 		camera->unlock();
 		counter++;
+		ui.ScreenshotButton->setEnabled(false);
 	}
 }
 
@@ -253,10 +254,12 @@ void MainWindow::AddScreenshot(int id, const QString &file_path)
 {
 	QTreeWidgetItem *current_item = ui.TaskTreeWidget->currentItem();
 	if (!current_item) {
+		ui.ScreenshotButton->setEnabled(true);
 		return;
 	}
 
 	if (current_item->data(0, Qt::AccessibleDescriptionRole).toString() != "section") {
+		ui.ScreenshotButton->setEnabled(true);
 		return;			
 	}
 
@@ -277,6 +280,7 @@ void MainWindow::AddScreenshot(int id, const QString &file_path)
 			}
 		}
 	}
+	ui.ScreenshotButton->setEnabled(true);
 }
 
 Template *MainWindow::CurrentTemplate(void)
@@ -300,7 +304,7 @@ Template *MainWindow::CurrentTemplate(void)
 	}
 
 	foreach (Template *t, task->Templates()) {
-		if (template_name == MakeTemplateItemName(*t)) {
+		if (template_name == ComposeTemplateItemName(*t)) {
 			return t;
 		}
 	}

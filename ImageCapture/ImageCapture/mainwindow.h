@@ -47,7 +47,7 @@ private:
 	void InitializeActions(void);
 	bool CreateButtons(const Template &t);
 	void DestroyButtons(void);
-	QString MakeTemplateItemName(const Template &t);
+	QString ComposeTemplateItemName(const Template &t);
 public:
 	MainWindow(QWidget *parent = 0);
 	~MainWindow();

@@ -11,6 +11,7 @@ Task::Task(void)
 
 Task::~Task(void)
 {
+	Close();
 }
 
 bool Task::Create(const QString &task_name, const QString &path)
@@ -25,6 +26,67 @@ bool Task::Create(const QString &task_name, const QString &path)
 		return true;
 	}
 	return false;
+}
+
+
+bool Task::Open(const QString &task_file)
+{
+	Close();
+	QFile file(task_file);
+	if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+		QXmlStreamReader xml(&file);
+		while(xml.readNextStartElement()) {
+			if (xml.name() == "Task") {
+				name = xml.attributes().value("Name").toString();
+				description = xml.attributes().value("Description").toString();
+			} else if (xml.name() == "Template") {
+				QString template_path = xml.attributes().value("Path").toString();
+				Template *t = new Template();
+				if (!t) {
+					Close();
+					return false;
+				} 
+				if (t->Initialize(template_path)) {
+					templates.push_back(t);
+					while(xml.readNextStartElement()) {
+						if (xml.name() == "Section") {
+							QString section_name = xml.attributes().value("Name").toString();
+							while(xml.readNextStartElement()) {
+								if (xml.name() == "Picture") {
+									QString picture_name = xml.attributes().value("Name").toString();
+									t->AddPicture(section_name, picture_name);
+								} 
+								xml.skipCurrentElement();
+							}
+						} else {
+							xml.skipCurrentElement();
+						}
+					}
+				} else {
+					xml.skipCurrentElement();
+				}
+			} else {
+				xml.skipCurrentElement();
+			}
+		}
+		return true;
+	}
+	return false;
+}
+
+
+void Task::Close( void )
+{
+	name = "";
+	description = "";
+	directory = "";
+	res_directory = "";
+	foreach (const Template *t, templates) {
+		if (t) {
+			delete t;
+		}
+	}
+	templates.clear();
 }
 
 bool Task::AddTemplate(const QString &template_path)
