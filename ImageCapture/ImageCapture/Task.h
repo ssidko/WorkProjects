@@ -5,7 +5,8 @@
 #include <QList>
 #include "Template.h"
 
-#define TASK_RESOURCE_DIRECTORY					"res"
+#define TASK_RESOURCES_DIRECTORY					"res"
+#define TASK_FILE_EXTENSION							".igr"
 
 class Task
 {

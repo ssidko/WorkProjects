@@ -1,3 +1,13 @@
 <RCC>
-    <qresource prefix="/MainWindow"/>
+    <qresource prefix="/MainWindow">
+        <file>images/new.png</file>
+        <file>images/open.png</file>
+        <file>images/save.png</file>
+        <file>images/app.png</file>
+        <file>images/addtab.png</file>
+        <file>images/camera.png</file>
+        <file>images/task.png</file>
+        <file>images/properties.png</file>
+        <file>images/report-1.png</file>
+    </qresource>
 </RCC>

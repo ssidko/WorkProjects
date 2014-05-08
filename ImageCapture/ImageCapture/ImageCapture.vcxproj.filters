@@ -85,6 +85,9 @@
     <ClCompile Include="DirectShow.cpp">
       <Filter>DirectShow</Filter>
     </ClCompile>
+    <ClCompile Include="global.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="mainwindow.qrc">
@@ -136,6 +139,9 @@
     </ClInclude>
     <ClInclude Include="DirectShow.h">
       <Filter>DirectShow</Filter>
+    </ClInclude>
+    <ClInclude Include="global.h">
+      <Filter>Core</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include <QFileInfo>
+#include <QMessageBox>
 
 //#define CAMERA_NAME							"USB 2861 Video"
 //#define CAMERA_NAME							"iLook 300"
@@ -9,19 +10,23 @@ MainWindow::MainWindow(QWidget *parent)
 	: QMainWindow(parent), task(NULL), camera(NULL), image_capture(NULL)
 {
 	ui.setupUi(this);
-	Initialize();
 	connect(ui.ScreenshotButton, SIGNAL(clicked(bool)), SLOT(TakeScreenshot(void)));
-	connect(ui.CreateAction, SIGNAL(triggered()), SLOT(CreateNewTask()));
-	ui.CreateAction->setShortcut(tr("Ctrl+N"));
-	connect(ui.SaveAction, SIGNAL(triggered()), SLOT(SaveTask()));
-	ui.SaveAction->setShortcut(tr("Ctrl+S"));
-	ui.ButtonsGroupBox->setAlignment(Qt::AlignHCenter);
+	ui.ScreenshotButton->setDefault(true);
 	connect(ui.TaskTreeWidget, SIGNAL(currentItemChanged(QTreeWidgetItem*, QTreeWidgetItem*)), SLOT(CheckSelection(QTreeWidgetItem*, QTreeWidgetItem*)));
 	connect(ui.TaskTreeWidget, SIGNAL(itemSelectionChanged()), SLOT(ChangeSection()));
+	Initialize();
+	InitializeActions();
+	UpdateWindowTitle();
+
+	ui.statusBar->setSizeGripEnabled(false);
+	ui.statusBar->showMessage(QString::fromLocal8Bit("Усё готово!"));
 }
 
 MainWindow::~MainWindow()
 {
+	if (camera) {
+		delete camera;
+	}
 }
 
 bool MainWindow::Initialize()
@@ -52,6 +57,45 @@ bool MainWindow::Initialize()
 	return true;
 }
 
+void MainWindow::InitializeActions(void)
+{
+	connect(ui.CreateAction, SIGNAL(triggered()), SLOT(CreateNewTask()));
+	ui.CreateAction->setShortcut(tr("Ctrl+N"));
+	ui.CreateAction->setIcon(QIcon(":/MainWindow/images/new.png"));
+	ui.CreateAction->setStatusTip(QString::fromLocal8Bit("Создать новую задачу"));
+
+	connect(ui.OpenAction, SIGNAL(triggered()), SLOT(OpenTask()));
+	ui.OpenAction->setShortcut(tr("Ctrl+O"));
+	ui.OpenAction->setIcon(QIcon(":/MainWindow/images/open.png"));
+	ui.OpenAction->setStatusTip(QString::fromLocal8Bit("Открыть существующую задачу"));
+
+	connect(ui.SaveAction, SIGNAL(triggered()), SLOT(SaveTask()));
+	ui.SaveAction->setShortcut(tr("Ctrl+S"));
+	ui.SaveAction->setIcon(QIcon(":/MainWindow/images/save.png"));
+	ui.SaveAction->setStatusTip(QString::fromLocal8Bit("Сохранить текущую задачу"));
+
+	ui.PropertiesAction->setIcon(QIcon(":/MainWindow/images/properties.png"));
+	ui.PropertiesAction->setStatusTip(QString::fromLocal8Bit("Посмотреть/отредактировать свойства текущей задачи"));
+
+	ui.CreateReportAction->setIcon(QIcon(":/MainWindow/images/report-1.png"));
+	ui.CreateReportAction->setStatusTip(QString::fromLocal8Bit("Сформировать отчет по текущей задаче"));
+
+	connect(ui.AboutAction, SIGNAL(triggered()), SLOT(ShowAboutDialog()));
+
+	connect(ui.HelpAction, SIGNAL(triggered()), SLOT(ShowHelp()));
+	ui.HelpAction->setIcon(QIcon(":/MainWindow/images/addtab.png"));
+}
+
+void MainWindow::UpdateWindowTitle()
+{
+	QString title;
+	if (task) {
+		title = task->Name() + " - ";
+	}
+	setWindowTitle(title + QString::fromLocal8Bit(MAIN_WINDOW_TITLE));
+}
+
+
 bool MainWindow::CreateButtons(const Template &t)
 {
 	if (task) {
@@ -81,22 +125,29 @@ void MainWindow::DestroyButtons(void)
 bool MainWindow::CreateNewTask(void)
 {
 	NewTaskDialog dlg;
-	if (control_unit.Open()) {
+	//if (control_unit.Open()) {
 		if (dlg.exec() == QDialog::Accepted) {
 			SetTask(dlg.NewTask());
+			UpdateWindowTitle();
 			return true;
 		}
-	} 
+	//} 
 	return false;
 }
 
 bool MainWindow::SaveTask( void )
 {
 	if (task) {
-		return task->Save();
+		if (task->Save()) {
+			QMessageBox::information(this, this->windowTitle(), QString::fromLocal8Bit("Задача успешно сохранена"));
+			return true;
+		} else {
+			QMessageBox::warning(this, this->windowTitle(), QString::fromLocal8Bit("При сохранении задачи произошла ошибка"));
+			return false;
+		}
 	} else {
-		return false;	
-	}
+		return false;
+	}		
 }
 
 QString MainWindow::MakeTemplateItemName(const Template &t)
@@ -122,6 +173,7 @@ void MainWindow::SetTask(Task *new_task)
 		QFont segoe_font("Segoe UI", 9, QFont::Bold);
 		task_item->setFont(0, segoe_font);
 		task_item->setText(0, task->Name());
+		task_item->setIcon(0, QIcon(":/MainWindow/images/task.png"));
 		task_item->setFlags(Qt::ItemIsEnabled);
 		task_item->setExpanded(true);
 
@@ -253,4 +305,25 @@ Template *MainWindow::CurrentTemplate(void)
 		}
 	}
 	return NULL;
+}
+
+void MainWindow::ShowAboutDialog(void)
+{
+	QString str;
+	str += QString::fromLocal8Bit("<p><b style='mso-bidi-font-weight:normal'><span lang=RU>Аппаратно-программный комплекс «Игроскан-01»<o:p></o:p></span></b></p>");
+	str += QString::fromLocal8Bit("<p><span lang=RU>Исследование устройств, предназначенных для проведения азартных игр<o:p></o:p></span></p>");
+	str += QString::fromLocal8Bit("<p><span lang=RU>Версия 0.1<o:p></o:p></span></p>");
+	str += QString::fromLocal8Bit("<p><span lang=RU>(с) Лаборатория компьютерной криминалистики, 2014<o:p></o:p></span></p>");
+	str += QString::fromLocal8Bit("<p><a href=\"www.forensictools.com.ua\">www.forensictools.com.ua</a></p>");
+	QMessageBox::about(this, QString::fromLocal8Bit("О программе ") + QString::fromLocal8Bit(MAIN_WINDOW_TITLE), str);
+}
+
+void MainWindow::ShowHelp( void )
+{
+	QMessageBox::information(this, QString::fromLocal8Bit("Помощь"), QString::fromLocal8Bit("Ждите в следующих релизах"));
+}
+
+bool MainWindow::OpenTask( void )
+{
+	return false;
 }

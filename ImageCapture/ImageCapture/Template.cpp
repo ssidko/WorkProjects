@@ -20,7 +20,7 @@ QStringList Template::AllTemplates(void)
 	QString dir_name = dir.absolutePath();
 	if (dir.exists()) {
 		QStringList filters;
-		filters << TEMPLATES_EXTENSION;
+		filters << "*" << TEMPLATES_FILE_EXTENSION;
 		dir.setFilter(QDir::Files);
 		dir.setNameFilters(filters);
 		templates = dir.entryList();

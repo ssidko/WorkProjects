@@ -3,6 +3,7 @@
 
 #include <QDialog>
 #include "ui_NewTaskDialog.h"
+#include "global.h"
 #include "Template.h"
 #include "Task.h"
 

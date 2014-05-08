@@ -1,6 +1,8 @@
 #include "NewTaskDialog.h"
 #include <QFileDialog>
 #include <QMessageBox>
+#include <QSettings>
+#include <QCoreApplication>
 
 #define TEMPLATE_COMBOBOX_DEFAULT_STRING			"Выберите игровой автомат"
 #define DIRECTORY_LINE_EDIT_DEFAULT_STRING			"Выберите каталог"
@@ -12,7 +14,8 @@ NewTaskDialog::NewTaskDialog(QWidget *parent)
 	UpdateWindowTitle();
 	ui.TemplateComboBox->addItem(QString::fromLocal8Bit(TEMPLATE_COMBOBOX_DEFAULT_STRING));
 	UpdateTemplatesComboBox();
-	ui.DirectoryLineEdit->setText(QString::fromLocal8Bit(DIRECTORY_LINE_EDIT_DEFAULT_STRING));
+	ui.DirectoryLineEdit->setText(QSettings().value(SETTINGS_TASK_DIRECTORY, QString::fromLocal8Bit(DIRECTORY_LINE_EDIT_DEFAULT_STRING)).toString());
+
 	connect(ui.TaskNameEdit, SIGNAL(textChanged(const QString &)), SLOT(UpdateWindowTitle()));
 	connect(ui.DirectoryPushButton, SIGNAL(clicked(bool)), SLOT(SelectTaskDirectory()));
 	connect(ui.CreateTaskPushButton, SIGNAL(clicked(bool)), SLOT(CreateNewTask()));
@@ -68,6 +71,7 @@ void NewTaskDialog::CreateNewTask(void)
 				template_path = ui.TemplateComboBox->itemData(ui.TemplateComboBox->currentIndex()).toString();
 				task->AddTemplate(template_path);
 				if (task->Save()) {
+					QSettings().setValue(SETTINGS_TASK_DIRECTORY, directory);
 					accept();
 				}
 			}

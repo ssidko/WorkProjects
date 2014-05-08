@@ -4,8 +4,8 @@
 #include <QString>
 #include <QList>
 
-#define TEMPLATES_DIRECTORY_NAME		"templates"
-#define TEMPLATES_EXTENSION				"*.xml"
+#define TEMPLATES_DIRECTORY_NAME				"templates"
+#define TEMPLATES_FILE_EXTENSION				".avt"
 
 typedef struct _BUTTON {
 	QString name;

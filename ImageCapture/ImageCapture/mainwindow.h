@@ -11,6 +11,8 @@
 #include "Template.h"
 #include "ControlUnit.h"
 
+#define MAIN_WINDOW_TITLE					"Игроскан"
+
 class CmdButton : public QPushButton
 {
 	Q_OBJECT
@@ -28,7 +30,6 @@ public slots:
 	}
 signals:
 	void SendCommand(QString command);
-
 };
 
 class MainWindow : public QMainWindow
@@ -42,16 +43,19 @@ private:
 	ControlUnit control_unit;
 	QList<CmdButton *> buttons;
 	QTreeWidgetItem *current_item;
+	bool Initialize(void);
+	void InitializeActions(void);
+	bool CreateButtons(const Template &t);
+	void DestroyButtons(void);
 	QString MakeTemplateItemName(const Template &t);
 public:
 	MainWindow(QWidget *parent = 0);
 	~MainWindow();
-	bool Initialize(void);
-	bool CreateButtons(const Template &t);
-	void DestroyButtons(void);
+	void UpdateWindowTitle();
 	Template *CurrentTemplate(void);
 public slots:
 	bool CreateNewTask(void);
+	bool OpenTask(void);
 	bool SaveTask(void);
 	void SetTask(Task *new_task);
 	void TakeScreenshot(void);
@@ -59,6 +63,8 @@ public slots:
 	void CheckSelection(QTreeWidgetItem *current, QTreeWidgetItem *previous);
 	void ChangeSection(void);
 	void AddScreenshot(int id, const QString &file_name);
+	void ShowAboutDialog(void);
+	void ShowHelp(void);
 };
 
 #endif // MAINWINDOW_H

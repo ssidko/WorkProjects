@@ -17,7 +17,7 @@ bool Task::Create(const QString &task_name, const QString &path)
 {
 	QDir dir;
 	QString task_directory = path + "/" + task_name;
-	QString resource_directory = task_directory + "/" + TASK_RESOURCE_DIRECTORY;
+	QString resource_directory = task_directory + "/" + TASK_RESOURCES_DIRECTORY;
 	if (!dir.exists(task_directory) && dir.mkpath(task_directory) && dir.mkpath(resource_directory)) {
 		name = task_name;
 		directory = task_directory;
@@ -49,7 +49,7 @@ bool Task::AddTemplate(Template *t)
 
 bool Task::Save(void)
 {
-	QString file_name = directory + "/" + name + ".xml";
+	QString file_name = directory + "/" + name + TASK_FILE_EXTENSION;
 	QFile file(file_name);
 	if (file.open(QIODevice::ReadWrite | QIODevice::Text)) {
 		QXmlStreamWriter xml(&file);

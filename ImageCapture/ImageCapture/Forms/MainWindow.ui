@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>942</width>
-    <height>618</height>
+    <height>635</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -16,6 +16,18 @@
     <verstretch>0</verstretch>
    </sizepolicy>
   </property>
+  <property name="minimumSize">
+   <size>
+    <width>942</width>
+    <height>635</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>942</width>
+    <height>635</height>
+   </size>
+  </property>
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
@@ -23,6 +35,12 @@
    <locale language="Russian" country="Russia"/>
   </property>
   <widget class="QWidget" name="centralwidget">
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
    <layout class="QHBoxLayout" name="horizontalLayout">
     <item>
      <widget class="QTreeWidget" name="TaskTreeWidget">
@@ -52,6 +70,12 @@
          <item row="0" column="0">
           <widget class="QCameraViewfinder" name="ScreenWidget" native="true">
            <property name="minimumSize">
+            <size>
+             <width>640</width>
+             <height>480</height>
+            </size>
+           </property>
+           <property name="maximumSize">
             <size>
              <width>640</width>
              <height>480</height>
@@ -144,16 +168,22 @@
         <item>
          <widget class="QGroupBox" name="ButtonsGroupBox">
           <property name="title">
-           <string>Кнопки управления</string>
+           <string>Управление</string>
           </property>
           <layout class="QHBoxLayout" name="ButtonsHLayout"/>
          </widget>
         </item>
         <item>
          <widget class="QPushButton" name="ScreenshotButton">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
           <property name="minimumSize">
            <size>
-            <width>50</width>
+            <width>100</width>
             <height>50</height>
            </size>
           </property>
@@ -164,7 +194,17 @@
            </size>
           </property>
           <property name="text">
-           <string>Сделать снимок</string>
+           <string>Скриншот</string>
+          </property>
+          <property name="icon">
+           <iconset resource="../mainwindow.qrc">
+            <normaloff>:/MainWindow/images/camera.png</normaloff>:/MainWindow/images/camera.png</iconset>
+          </property>
+          <property name="iconSize">
+           <size>
+            <width>32</width>
+            <height>32</height>
+           </size>
           </property>
          </widget>
         </item>
@@ -190,7 +230,8 @@
     <addaction name="CreateAction"/>
     <addaction name="OpenAction"/>
     <addaction name="SaveAction"/>
-    <addaction name="InfoAction"/>
+    <addaction name="separator"/>
+    <addaction name="PropertiesAction"/>
    </widget>
    <widget class="QMenu" name="ReportMenu">
     <property name="title">
@@ -198,12 +239,22 @@
     </property>
     <addaction name="CreateReportAction"/>
    </widget>
+   <widget class="QMenu" name="HelpMenu">
+    <property name="title">
+     <string>Помощь</string>
+    </property>
+    <addaction name="HelpAction"/>
+    <addaction name="separator"/>
+    <addaction name="AboutAction"/>
+   </widget>
    <addaction name="TaskMenu"/>
    <addaction name="ReportMenu"/>
+   <addaction name="HelpMenu"/>
   </widget>
+  <widget class="QStatusBar" name="statusBar"/>
   <action name="CreateReportAction">
    <property name="text">
-    <string>Сформировать</string>
+    <string>Сформировать в формате html</string>
    </property>
   </action>
   <action name="OpenAction">
@@ -216,14 +267,24 @@
     <string>Сохранить</string>
    </property>
   </action>
-  <action name="InfoAction">
+  <action name="PropertiesAction">
    <property name="text">
-    <string>Информация</string>
+    <string>Свойства</string>
    </property>
   </action>
   <action name="CreateAction">
    <property name="text">
     <string>Создать</string>
+   </property>
+  </action>
+  <action name="AboutAction">
+   <property name="text">
+    <string>О программе</string>
+   </property>
+  </action>
+  <action name="HelpAction">
+   <property name="text">
+    <string>Помощь</string>
    </property>
   </action>
  </widget>
@@ -235,6 +296,8 @@
    <container>1</container>
   </customwidget>
  </customwidgets>
- <resources/>
+ <resources>
+  <include location="../mainwindow.qrc"/>
+ </resources>
  <connections/>
 </ui>
