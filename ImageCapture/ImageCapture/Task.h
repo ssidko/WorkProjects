@@ -6,7 +6,8 @@
 #include "Template.h"
 
 #define TASK_RESOURCES_DIRECTORY					"res"
-#define TASK_FILE_EXTENSION							".igr"
+#define TASK_FILE_EXTENSION							"igr"
+#define REPORT_FILE_NAME							"report.html"
 
 class Task
 {
@@ -15,6 +16,8 @@ private:
 	QString description;
 	QString directory;
 	QString res_directory;
+	QString creation_time;
+	QString control_unit_id;
 	QList<Template *> templates;
 public:
 	Task(void);
@@ -31,6 +34,7 @@ public:
 	bool AddTemplate(Template *t);
 	const QList<Template *> &Templates(void) {return templates;}
 	bool Save(void);
+	bool CreateReport(void);
 };
 
 #endif

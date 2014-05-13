@@ -58,6 +58,8 @@ public slots:
 	bool OpenTask(void);
 	bool SaveTask(void);
 	void SetTask(Task *new_task);
+	void CloseTask(void);
+	bool CreateReport(void);
 	void TakeScreenshot(void);
 	bool SendCommand(QString command);
 	void CheckSelection(QTreeWidgetItem *current, QTreeWidgetItem *previous);

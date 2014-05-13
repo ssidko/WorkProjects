@@ -1,9 +1,11 @@
 #include "mainwindow.h"
 #include <QFileInfo>
 #include <QMessageBox>
+#include <QFileDialog>
+#include <QSettings>
 
-//#define CAMERA_NAME							"USB 2861 Video"
-#define CAMERA_NAME								"iLook 300"
+#define CAMERA_NAME								"USB 2861 Video"
+//#define CAMERA_NAME							"iLook 300"
 //#define CAMERA_NAME							"ASUS USB2.0 Webcam"
 
 MainWindow::MainWindow(QWidget *parent)
@@ -77,6 +79,7 @@ void MainWindow::InitializeActions(void)
 	ui.PropertiesAction->setIcon(QIcon(":/MainWindow/images/properties.png"));
 	ui.PropertiesAction->setStatusTip(QString::fromLocal8Bit("Посмотреть/отредактировать свойства текущей задачи"));
 
+	connect(ui.CreateReportAction, SIGNAL(triggered()), SLOT(CreateReport()));
 	ui.CreateReportAction->setIcon(QIcon(":/MainWindow/images/report-1.png"));
 	ui.CreateReportAction->setStatusTip(QString::fromLocal8Bit("Сформировать отчет по текущей задаче"));
 
@@ -126,10 +129,8 @@ bool MainWindow::CreateNewTask(void)
 {
 	NewTaskDialog dlg;
 	if (dlg.exec() == QDialog::Accepted) {
+		CloseTask();
 		SetTask(dlg.NewTask());
-		control_unit.IsAvailable();
-		control_unit.Open();
-		UpdateWindowTitle();
 		return true;
 	}
 	return false;
@@ -162,6 +163,11 @@ void MainWindow::SetTask(Task *new_task)
 	//
 	// SaveCurrentTask();
 	//
+	
+	if (!control_unit.IsOpened()) {
+		control_unit.IsAvailable();
+		control_unit.Open();
+	}
 
 	if (new_task) {
 		task = new_task;
@@ -193,11 +199,19 @@ void MainWindow::SetTask(Task *new_task)
 				QVariant section_data(QString("section"));
 				section_item->setText(0, section->name);
 				section_item->setData(0, Qt::AccessibleDescriptionRole, section_data);
+				foreach (QString picture, section->pictures) {
+					QTreeWidgetItem *picture_item = new QTreeWidgetItem(section_item);
+					picture_item->setText(0, picture);
+					picture_item->setData(0, Qt::AccessibleDescriptionRole, QVariant(QString("picture")));
+					picture_item->setFlags(Qt::NoItemFlags);
+				}
+				section_item->setExpanded(true);
 			}
 			ui.TaskTreeWidget->setCurrentItem(template_item->child(0));
 			ui.ScreenGroupBox->setTitle(template_item->child(0)->text(0));
 		}
 		CreateButtons(*(task->Templates())[0]);
+		UpdateWindowTitle();
 	}
 }
 
@@ -205,7 +219,7 @@ void MainWindow::TakeScreenshot(void)
 {
 	static unsigned int counter = 0;
 	if (task && camera) {
-		QString picture_name = task->ResDirectory() + "/" + QString::number(counter, 10) + ".jpg";
+		QString picture_name = task->ResDirectory() + "/" + QString::number(counter, 10)/* + ".jpg"*/;
 		camera->searchAndLock();
 		image_capture->capture(picture_name);
 		camera->unlock();
@@ -327,7 +341,45 @@ void MainWindow::ShowHelp( void )
 	QMessageBox::information(this, QString::fromLocal8Bit("Помощь"), QString::fromLocal8Bit("Ждите в следующих релизах"));
 }
 
-bool MainWindow::OpenTask( void )
+bool MainWindow::OpenTask(void)
 {
+	QString filter = QString("*.") + TASK_FILE_EXTENSION;
+	QString task_file = QFileDialog::getOpenFileName(this, QString::fromLocal8Bit("Открыть задачу"), QSettings().value(SETTINGS_TASK_DIRECTORY).toString(), filter);
+	if (!task_file.isEmpty()) {
+		Task *new_task = new Task();
+		if (new_task) {
+			if (new_task->Open(task_file)) {
+				CloseTask();
+				SetTask(new_task);
+				return true;
+			} else {
+				delete new_task;
+				QMessageBox::warning(this, this->windowTitle(), QString::fromLocal8Bit("Открыть задачу не удалось"));
+				return false;
+			}
+		}
+	}
+	return false;
+}
+
+void MainWindow::CloseTask(void)
+{
+	if (task) {
+		delete task;
+		task = NULL;
+	}
+	ui.TaskTreeWidget->clear();
+}
+
+bool MainWindow::CreateReport(void)
+{
+	if (task) {
+		if (task->CreateReport()) {
+			QMessageBox::information(this, this->windowTitle(), QString::fromLocal8Bit("Отчет успешно сформирован"));
+			return true;
+		} else {
+			QMessageBox::warning(this, this->windowTitle(), QString::fromLocal8Bit("Сформировать отчет не удалось"));
+		}
+	}
 	return false;
 }

@@ -3,7 +3,8 @@
 
 #define MAX_COM_PORT_NUMBER			50
 #define RESPONSE_CODE				0x6948
-
+#define GET_ID_CMD					"GetID"
+#define GET_VERSION_CMD				"GetVer"
 
 ControlUnit::ControlUnit(void) : com_handle(NULL), com_name(""), opened(false)
 {

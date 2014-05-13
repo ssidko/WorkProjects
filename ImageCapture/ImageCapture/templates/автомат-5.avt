@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="windows-1251"?>
-<Template Name="IgroSoft IGP-1" Description="Красная">
+<Template Name="Блэк Джек" Description="Модификация 149">
     <Buttons>
         <Button Name="Вверх" Command="Pin2"/>
         <Button Name="Вниз" Command="Pin3"/>
@@ -9,15 +9,9 @@
 		<Button Name="Start" Command="Pin7"/>
     </Buttons>
     <Sections>
-        <Section Name="Общий вид"/>
-        <Section Name="Краткая статистика"/>
-        <Section Name="Сервисное меню"/>
-        <Section Name="Статистика"/>
-		<Section Name="События"/>
-		<Section Name="Установки даты и времени"/>
-		<Section Name="Статистика игры"/>
-		<Section Name="Настройки игры"/>
+        <Section Name="Главный экран"/>
+        <Section Name="Экран статистики"/>
+        <Section Name="Журнал"/>
+        <Section Name="Другое"/>
     </Sections>
 </Template>
-
- 

@@ -4,6 +4,8 @@
 #define APPLICATION_NAME				"Игроскан"
 #define ORGANIZATION_NAME				"MiracleSoftware"
 
+
+
 #define SETTINGS_TASK_DIRECTORY			"TaskDirectory"
 
 #endif
