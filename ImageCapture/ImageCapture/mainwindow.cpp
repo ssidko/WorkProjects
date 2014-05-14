@@ -18,7 +18,7 @@ MainWindow::MainWindow(QWidget *parent)
 	connect(ui.TaskTreeWidget, SIGNAL(itemSelectionChanged()), SLOT(ChangeSection()));
 	Initialize();
 	InitializeActions();
-	UpdateWindowTitle();
+	//UpdateWindowTitle();
 
 	ui.statusBar->setSizeGripEnabled(false);
 	//ui.statusBar->showMessage(QString::fromLocal8Bit("Усё готово!"));

@@ -1,12 +1,16 @@
 <?xml version="1.0" encoding="windows-1251"?>
 <Template Name="IgroSoft IGP-1" Description="Красная">
     <Buttons>
-        <Button Name="Вверх" Command="Pin2"/>
-        <Button Name="Вниз" Command="Pin3"/>
-        <Button Name="Full Stat" Command="Pin10"/>
-		<Button Name="Статитстика" Command="Pin9"/>
-		<Button Name="Bet" Command="Pin8"/>
+        <Button Name="hold1" Command="Pin2"/>
+        <Button Name="hold2" Command="Pin3"/>
+        <Button Name="hold3" Command="Pin4"/>
+		<Button Name="hold4" Command="Pin5"/>
+		<Button Name="hold5" Command="Pin6"/>
 		<Button Name="Start" Command="Pin7"/>
+		<Button Name="Bet" Command="Pin8"/>
+		<Button Name="Vax bet" Command="Pin9"/>
+		<Button Name="Statistic" Command="Pin10"/>
+		<Button Name="Service" Command="Pin11"/>
     </Buttons>
     <Sections>
         <Section Name="Общий вид"/>
