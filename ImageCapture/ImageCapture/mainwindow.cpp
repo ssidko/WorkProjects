@@ -173,7 +173,7 @@ void MainWindow::SetTask(Task *new_task)
 		task = new_task;
 		setWindowTitle(QString::fromLocal8Bit("Задача: ") + task->Name());
 		ui.TaskTreeWidget->setColumnCount(1);
-		ui.TaskTreeWidget->setHeaderLabel(QString::fromLocal8Bit("Задача"));
+		//ui.TaskTreeWidget->setHeaderLabel(QString::fromLocal8Bit("Задача"));
 
 		QTreeWidgetItem *task_item = new QTreeWidgetItem(ui.TaskTreeWidget);
 		QFont segoe_font("Segoe UI", 9, QFont::Bold);

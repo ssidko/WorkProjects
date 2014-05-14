@@ -47,6 +47,9 @@
       <property name="columnCount">
        <number>0</number>
       </property>
+      <attribute name="headerVisible">
+       <bool>false</bool>
+      </attribute>
      </widget>
     </item>
     <item>

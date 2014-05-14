@@ -26,7 +26,7 @@ bool Task::Create(const QString &task_name, const QString &path)
 		name = task_name;
 		directory = task_directory;
 		res_directory = resource_directory;
-		creation_time = QDateTime::currentDateTime().toString();
+		creation_time = QDateTime::currentDateTime().toString("dd.MM.yyyy hh:mm:ss");
 		return true;
 	}
 	return false;
@@ -161,7 +161,7 @@ bool Task::Save(void)
 bool Task::CreateReport(void)
 {
 	int counter = 0;
-	QFile file(directory + "/" +QString::fromLocal8Bit(REPORT_FILE_NAME));
+	QFile file(directory + "/" + QString::fromLocal8Bit(REPORT_FILE_NAME));
 	if (file.open(QIODevice::ReadWrite | QIODevice::Text)) {
 		QTextStream out(&file);
 

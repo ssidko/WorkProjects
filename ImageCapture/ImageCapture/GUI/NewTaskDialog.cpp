@@ -85,12 +85,18 @@ void NewTaskDialog::CreateNewTask(void)
 
 void NewTaskDialog::SelectTaskDirectory(void)
 {
-	QFileDialog file_dialog;
-	file_dialog.setFileMode(QFileDialog::Directory);
-	file_dialog.setViewMode(QFileDialog::List);
-	file_dialog.setWindowTitle(QString::fromLocal8Bit("Выброр каталога"));
-	if (QDialog::Accepted == file_dialog.exec()) {
-		ui.DirectoryLineEdit->setText(file_dialog.directory().absolutePath());
+	QString task_directory = QFileDialog::getExistingDirectory(this, QString::fromLocal8Bit("Выброр каталога"), "", QFileDialog::ShowDirsOnly|QFileDialog::DontResolveSymlinks);
+	if (!task_directory.isEmpty()) {
+		ui.DirectoryLineEdit->setText(task_directory);
 	}
+
+	//QFileDialog file_dialog;
+	//file_dialog.setFileMode(QFileDialog::Directory);
+	//file_dialog.setViewMode(QFileDialog::List);
+	//file_dialog.setOption(QFileDialog::ShowDirsOnly, true);
+	//file_dialog.setWindowTitle(QString::fromLocal8Bit("Выброр каталога"));
+	//if (QDialog::Accepted == file_dialog.exec()) {
+	//	ui.DirectoryLineEdit->setText(file_dialog.directory().absolutePath());
+	//}
 	this->activateWindow();
 }
