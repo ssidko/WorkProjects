@@ -96,7 +96,6 @@ public:
 	virtual DWORD Write(void *buffer, DWORD count);
 	virtual BOOL SetPointer(LONGLONG pointer, DWORD dwMoveMethod = FILE_BEGIN);
 	virtual BOOL GetPointer(LONGLONG *pointer);
-
 };
 
 class VMFS

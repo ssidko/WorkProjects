@@ -6,7 +6,7 @@
 #define GET_ID_CMD					"GetID"
 #define GET_VERSION_CMD				"GetVer"
 
-ControlUnit::ControlUnit(void) : com_handle(NULL), com_name(""), opened(false)
+ControlUnit::ControlUnit(void) : com_handle(INVALID_HANDLE_VALUE), com_name(""), opened(false)
 {
 }
 
@@ -19,7 +19,7 @@ HANDLE ControlUnit::OpenComPort(const char *name)
 {
 	HANDLE handle = ::CreateFileA(name, GENERIC_READ|GENERIC_WRITE, 0/*exclusive access*/, NULL, OPEN_EXISTING, FILE_FLAG_OVERLAPPED, NULL);
 	if (handle != INVALID_HANDLE_VALUE) {
-		SetupComm(handle, 1500, 1500);
+		SetupComm(handle, 2048, 2048);
 
 		COMMTIMEOUTS com_time_outs;
 		com_time_outs.ReadIntervalTimeout = 0xFFFFFFFF;
@@ -53,7 +53,9 @@ HANDLE ControlUnit::OpenComPort(const char *name)
 			::CloseHandle(handle);
 			return INVALID_HANDLE_VALUE;
 		}
+		::PurgeComm(handle, PURGE_RXCLEAR|PURGE_TXABORT);
 		::CancelIo(handle);
+		::Sleep(2000); // Без этого не работает. Скорее всего что ардуина не увспевает сконфигурироваться.
 		return handle;
 	}
 	return INVALID_HANDLE_VALUE;
@@ -66,7 +68,7 @@ bool ControlUnit::WriteComPort(HANDLE handle, const void *buff, int size)
 	DWORD wait_result;
 	bool ret = false;
 	memset(&o, 0x00, sizeof(o));
-	o.hEvent = ::CreateEventA(NULL, FALSE, FALSE, NULL);
+	o.hEvent = ::CreateEventA(NULL, TRUE, FALSE, NULL);
 	if (!o.hEvent) {
 		return false;
 	}
@@ -90,6 +92,7 @@ bool ControlUnit::WriteComPort(HANDLE handle, const void *buff, int size)
 	} else {
 		ret = true;
 	}
+	FlushFileBuffers(handle);
 	::CloseHandle(o.hEvent);
 	return ret;
 }
@@ -101,7 +104,7 @@ bool ControlUnit::ReadComPort(HANDLE handle, void *buff, int size)
 	DWORD wait_result;
 	bool ret = false;
 	memset(&o, 0x00, sizeof(o));
-	o.hEvent = ::CreateEventA(NULL, FALSE, FALSE, NULL);
+	o.hEvent = ::CreateEventA(NULL, TRUE, FALSE, NULL);
 	if (!o.hEvent) {
 		return false;
 	}
@@ -110,7 +113,7 @@ bool ControlUnit::ReadComPort(HANDLE handle, void *buff, int size)
 			wait_result = WaitForSingleObject(o.hEvent, 1000);
 			switch (wait_result) {
 				case WAIT_OBJECT_0:
-					if (::GetOverlappedResult(handle, &o, &rw, FALSE)) {
+					if (::GetOverlappedResult(handle, &o, &rw, TRUE)) {
 						ret = true;
 						break;
 					} 
@@ -170,7 +173,7 @@ bool ControlUnit::Open()
 				return true;
 			}
 			::CloseHandle(com_handle);
-			com_handle = NULL;
+			com_handle = INVALID_HANDLE_VALUE;
 		}
 	}
 	com_name = "";
@@ -181,9 +184,9 @@ void ControlUnit::Close()
 {
 	com_name = "";
 	opened = false;
-	if (com_handle && (com_handle != INVALID_HANDLE_VALUE)) {
+	if (com_handle != INVALID_HANDLE_VALUE) {
 		::CloseHandle(com_handle);
-		com_handle = NULL;
+		com_handle = INVALID_HANDLE_VALUE;
 	}
 }
 
@@ -200,16 +203,24 @@ bool ControlUnit::Testing( void )
 	DWORD ret_code;
 	char buff[10] = {0};
 	bool status = false;
-	QString com_name = "\\\\.\\COM4";
+	QString com_name = "\\\\.\\COM12";
 	HANDLE com_handle = OpenComPort(com_name.toLocal8Bit().data());
 	if (com_handle != INVALID_HANDLE_VALUE) {
+
+		//::Sleep(2000);
+
+		DWORD comm_mask;
+		status = ::GetCommMask(com_handle, &comm_mask);
+		comm_mask |= EV_RXCHAR;
+		status = ::SetCommMask(com_handle, comm_mask);
+
 		CancelIo(com_handle);
 		HANDLE ev = ::CreateEvent(NULL, TRUE, FALSE, NULL);
 		if (ev) {
 				OVERLAPPED ov;
 				memset(&ov, 0x00, sizeof(OVERLAPPED));
-				::ResetEvent(ev);
 				ov.hEvent = ev;
+				::ResetEvent(ov.hEvent);
 
 				if (!::WriteFile(com_handle, "Hello\n", 6, &rw, &ov)) {
 					error_code = ::GetLastError();
@@ -246,19 +257,21 @@ bool ControlUnit::Testing( void )
 					error_code = 0;
 					status = true;
 				}
-				
+
+				FlushFileBuffers(com_handle);
+
 				memset(&ov, 0x00, sizeof(OVERLAPPED));
-				::ResetEvent(ev);
 				ov.hEvent = ev;
+				::ResetEvent(ov.hEvent);
 
 				if (!::ReadFile(com_handle, buff, 2, &rw, &ov)) {
 					error_code = ::GetLastError();
 					if (ERROR_IO_PENDING == error_code) {
 						// Операция еще выполняется, необходимо подождать.
-						ret_code = WaitForSingleObject(ev, 5000);
+						ret_code = WaitForSingleObject(ev, 30000);
 						switch (ret_code) {
 							case WAIT_OBJECT_0: // 0
-								if (GetOverlappedResult(com_handle, &ov, &rw, FALSE)) {
+								if (GetOverlappedResult(com_handle, &ov, &rw, TRUE)) {
 									// Read completed successfully.
 									error_code = 0;
 									status = true;

@@ -16,6 +16,18 @@ void setup ()
   }
 }
 
+void Blink()
+{
+  digitalWrite(LED_PIN, LOW);
+  for (int x = 0; x < 3; x++) {
+    digitalWrite(LED_PIN, HIGH);
+    delay(50);
+    digitalWrite(LED_PIN, LOW);
+    delay(50);
+  }
+  digitalWrite(LED_PIN, LOW);
+}
+
 void MakeImpulse(int pin)
 {
   digitalWrite(LED_PIN, HIGH);
@@ -28,6 +40,7 @@ void MakeImpulse(int pin)
 void loop ()
 {
   if (cmd_complete) {
+    Blink();
     command.trim();
     if (command == "Hello") {
       Serial.write("Hi");
