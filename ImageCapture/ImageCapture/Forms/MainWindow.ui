@@ -254,7 +254,11 @@
    <addaction name="ReportMenu"/>
    <addaction name="HelpMenu"/>
   </widget>
-  <widget class="QStatusBar" name="statusBar"/>
+  <widget class="QStatusBar" name="statusBar">
+   <property name="sizeGripEnabled">
+    <bool>false</bool>
+   </property>
+  </widget>
   <action name="CreateReportAction">
    <property name="text">
     <string>Сформировать в формате html</string>

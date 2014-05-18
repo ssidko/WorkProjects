@@ -18,10 +18,18 @@ MainWindow::MainWindow(QWidget *parent)
 	connect(ui.TaskTreeWidget, SIGNAL(itemSelectionChanged()), SLOT(ChangeSection()));
 	Initialize();
 	InitializeActions();
-	//UpdateWindowTitle();
+	UpdateWindowTitle();
 
-	ui.statusBar->setSizeGripEnabled(false);
-	//ui.statusBar->showMessage(QString::fromLocal8Bit("Усё готово!"));
+	QLabel *control_status_label = new QLabel(this);
+	//control_status_label->show();
+	ui.statusBar->addWidget(control_status_label);
+	control_status_label->setText("Control unit: ");
+
+	QLabel *capture_status_label = new QLabel(this);
+	//control_status_label->show();
+	ui.statusBar->addWidget(capture_status_label);
+	capture_status_label->setText("Capture: ");
+
 }
 
 MainWindow::~MainWindow()
