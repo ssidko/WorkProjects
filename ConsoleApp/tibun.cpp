@@ -50,8 +50,7 @@ int Unpack(FileEx *src_file, FileEx *out_file)
 		{
 			out_file->Write(unpack_buff, unpack_data_size);
 			int x = 0;
-		}
-	
+		}	
 	}
 
 
