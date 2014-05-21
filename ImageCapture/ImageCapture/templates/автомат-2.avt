@@ -4,10 +4,11 @@
 		<Button Name="Button 1" Command="Pin1"/>
 		<Button Name="Button 2" Command="Pin2"/>
 		<Button Name="Button 3" Command="Pin3"/>
-    <Buttons/>
+		<Button Name="Button 4" Command="Pin4"/>
+	</Buttons>
     <Sections>
 		<Section Name="Главный экран"/>
 		<Section Name="Экран статистики"/>
 		<Section Name="Разное"/>
-    <Sections/>
-<Template/>
+    </Sections>
+</Template>

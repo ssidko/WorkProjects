@@ -43,8 +43,10 @@ private:
 	ControlUnit control_unit;
 	QList<CmdButton *> buttons;
 	QTreeWidgetItem *current_item;
-	bool Initialize(void);
+	bool InitializeCaptureDevice(void);
 	void InitializeActions(void);
+	void InitializeStatusBar(void);
+	void InitializeTaskTreeWidget(void);
 	bool CreateButtons(const Template &t);
 	void DestroyButtons(void);
 	QString ComposeTemplateItemName(const Template &t);

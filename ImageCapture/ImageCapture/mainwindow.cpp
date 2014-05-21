@@ -4,7 +4,7 @@
 #include <QFileDialog>
 #include <QSettings>
 
-#define CAMERA_NAME								"USB 2861 Video"
+#define CAMERA_NAME							"USB 2861 Video"
 //#define CAMERA_NAME							"iLook 300"
 //#define CAMERA_NAME							"ASUS USB2.0 Webcam"
 
@@ -14,22 +14,11 @@ MainWindow::MainWindow(QWidget *parent)
 	ui.setupUi(this);
 	connect(ui.ScreenshotButton, SIGNAL(clicked(bool)), SLOT(TakeScreenshot(void)));
 	ui.ScreenshotButton->setDefault(true);
-	connect(ui.TaskTreeWidget, SIGNAL(currentItemChanged(QTreeWidgetItem*, QTreeWidgetItem*)), SLOT(CheckSelection(QTreeWidgetItem*, QTreeWidgetItem*)));
-	connect(ui.TaskTreeWidget, SIGNAL(itemSelectionChanged()), SLOT(ChangeSection()));
-	Initialize();
 	InitializeActions();
+	InitializeStatusBar();
+	InitializeTaskTreeWidget();
 	UpdateWindowTitle();
-
-	QLabel *control_status_label = new QLabel(this);
-	//control_status_label->show();
-	ui.statusBar->addWidget(control_status_label);
-	control_status_label->setText("Control unit: ");
-
-	QLabel *capture_status_label = new QLabel(this);
-	//control_status_label->show();
-	ui.statusBar->addWidget(capture_status_label);
-	capture_status_label->setText("Capture: ");
-
+	InitializeCaptureDevice();
 }
 
 MainWindow::~MainWindow()
@@ -39,7 +28,7 @@ MainWindow::~MainWindow()
 	}
 }
 
-bool MainWindow::Initialize()
+bool MainWindow::InitializeCaptureDevice()
 {
 	QString description;
 	foreach(const QByteArray &device_name, QCamera::availableDevices()) {
@@ -97,6 +86,24 @@ void MainWindow::InitializeActions(void)
 	ui.HelpAction->setIcon(QIcon(":/MainWindow/images/addtab.png"));
 }
 
+void MainWindow::InitializeStatusBar(void)
+{
+	QLabel *control_status_label = new QLabel(this);
+	ui.statusBar->addWidget(control_status_label);
+	control_status_label->setText("Control unit: ");
+
+	QLabel *capture_status_label = new QLabel(this);
+	ui.statusBar->addWidget(capture_status_label);
+	capture_status_label->setText("Capture: ");
+}
+
+void MainWindow::InitializeTaskTreeWidget(void)
+{
+	ui.TaskTreeWidget->setColumnCount(1);
+	connect(ui.TaskTreeWidget, SIGNAL(currentItemChanged(QTreeWidgetItem*, QTreeWidgetItem*)), SLOT(CheckSelection(QTreeWidgetItem*, QTreeWidgetItem*)));
+	connect(ui.TaskTreeWidget, SIGNAL(itemSelectionChanged()), SLOT(ChangeSection()));
+}
+
 void MainWindow::UpdateWindowTitle()
 {
 	QString title;
@@ -105,7 +112,6 @@ void MainWindow::UpdateWindowTitle()
 	}
 	setWindowTitle(title + QString::fromLocal8Bit(MAIN_WINDOW_TITLE));
 }
-
 
 bool MainWindow::CreateButtons(const Template &t)
 {
@@ -173,15 +179,11 @@ void MainWindow::SetTask(Task *new_task)
 	//
 	
 	if (!control_unit.IsOpened()) {
-		control_unit.IsAvailable();
 		control_unit.Open();
 	}
 
 	if (new_task) {
 		task = new_task;
-		setWindowTitle(QString::fromLocal8Bit("Задача: ") + task->Name());
-		ui.TaskTreeWidget->setColumnCount(1);
-		//ui.TaskTreeWidget->setHeaderLabel(QString::fromLocal8Bit("Задача"));
 
 		QTreeWidgetItem *task_item = new QTreeWidgetItem(ui.TaskTreeWidget);
 		QFont segoe_font("Segoe UI", 9, QFont::Bold);
