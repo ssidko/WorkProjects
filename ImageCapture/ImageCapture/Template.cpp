@@ -71,15 +71,18 @@ QString Template::TemplateDescription(QString &template_path)
 
 bool Template::Initialize(const QString &template_path)
 {
+	QString test;
 	QFile file(template_path);
 	if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
 		QXmlStreamReader xml(&file);
 		while(xml.readNextStartElement()) {
+			test = xml.name().toString();
 			if (xml.name() == "Template") {
 				name = xml.attributes().value("Name").toString();
 				description = xml.attributes().value("Description").toString();
 			} else if (xml.name() == "Buttons") {
 				while(xml.readNextStartElement()) {
+					test = xml.name().toString();
 					if (xml.name() == "Button") {
 						BUTTON *button = new BUTTON;
 						button->name = xml.attributes().value("Name").toString();
@@ -92,6 +95,7 @@ bool Template::Initialize(const QString &template_path)
 				}
 			} else if (xml.name() == "Sections") {
 				while(xml.readNextStartElement()) {
+					test = xml.name().toString();
 					if (xml.name() == "Section") {
 						SECTION *section = new SECTION;
 						section->name = xml.attributes().value("Name").toString();
