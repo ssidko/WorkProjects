@@ -3,11 +3,11 @@
 
 #include <QString>
 
-#define APPLICATION_NAME				"Игроскан"
-#define ORGANIZATION_NAME				"MiracleSoftware"
+#define APPLICATION_NAME							"Игроскан"
+#define ORGANIZATION_NAME							"MiracleSoftware"
 
-#define SETTINGS_TASK_DIRECTORY			"TaskDirectory"
+#define APP_SETTINGS_TASK_DIRECTORY					"TaskDirectory"
 
-QString ComputeMd5FromFile(QString file_path);
+QString ComputeMd5(QString file_path);
 
 #endif

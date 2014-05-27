@@ -22,17 +22,9 @@ int main(int argc, char *argv[])
 	QApplication a(argc, argv);
 	MainWindow w;
 
-	ControlUnit io;
-	bool res = false;
-	res = io.Open();
-	//res = io.Open();
-	//io.Testing();
-
 	QCoreApplication::setOrganizationName(QString::fromLocal8Bit(ORGANIZATION_NAME));
 	QCoreApplication::setApplicationName(QString::fromLocal8Bit(APPLICATION_NAME));
 	a.setWindowIcon(QIcon(":/MainWindow/images/app.png"));
-
-	ComputeMd5FromFile("J:/GitHub/0");
 	
 	w.show();
 	w.activateWindow();

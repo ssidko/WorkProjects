@@ -354,7 +354,7 @@ void MainWindow::ShowHelp( void )
 bool MainWindow::OpenTask(void)
 {
 	QString filter = QString("*.") + TASK_FILE_EXTENSION;
-	QString task_file = QFileDialog::getOpenFileName(this, QString::fromLocal8Bit("Открыть задачу"), QSettings().value(SETTINGS_TASK_DIRECTORY).toString(), filter);
+	QString task_file = QFileDialog::getOpenFileName(this, QString::fromLocal8Bit("Открыть задачу"), QSettings().value(APP_SETTINGS_TASK_DIRECTORY).toString(), filter);
 	if (!task_file.isEmpty()) {
 		Task *new_task = new Task();
 		if (new_task) {
