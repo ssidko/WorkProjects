@@ -7,5 +7,5 @@ public:
 	WinDevicesManager(void);
 	~WinDevicesManager(void);
 
-	void Test(void);
+	static void Test(void);
 };

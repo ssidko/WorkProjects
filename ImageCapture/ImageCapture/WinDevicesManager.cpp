@@ -62,6 +62,7 @@ WinDevicesManager::~WinDevicesManager(void)
 
 void WinDevicesManager::Test(void)
 {
+	BOOL result = false;
 	DWORD err = 0;
 	ULONG class_index = 0;
 	GUID class_guid;
@@ -70,21 +71,49 @@ void WinDevicesManager::Test(void)
 	BYTE buff[2048] = {0};
 	TCHAR *str = (TCHAR *)buff;
 
-	HDEVINFO dev_info = SetupDiGetClassDevs(/*&GUID_DEVCLASS_PORTS*/NULL, NULL, NULL, DIGCF_ALLCLASSES|DIGCF_PRESENT);
+	HDEVINFO dev_info = SetupDiGetClassDevs(&GUID_DEVCLASS_PORTS, NULL, NULL, DIGCF_PRESENT|DIGCF_DEVICEINTERFACE);
 	if (dev_info != INVALID_HANDLE_VALUE) {
 		DWORD dev_index = 0;
 		SP_DEVINFO_DATA info;
 		memset(&info, 0x00, sizeof(info));
 		info.cbSize = sizeof(info);
-		while (SetupDiEnumDeviceInfo(dev_info, dev_index++, &info)) {
-			memset(&buff, 0x00, sizeof(buff));
-			if (!SetupDiGetDeviceRegistryProperty(dev_info, &info, SPDRP_DRIVER, NULL, buff, 2048, NULL)) {
+
+		SP_DEVICE_INTERFACE_DATA interface_data;
+		memset(&interface_data, 0x00, sizeof(interface_data));
+		PSP_DEVICE_INTERFACE_DETAIL_DATA interface_datail_data = (PSP_DEVICE_INTERFACE_DETAIL_DATA)buff;
+
+		while (TRUE) {
+			result = SetupDiEnumDeviceInterfaces(dev_info, 0, &GUID_DEVCLASS_PORTS, dev_index, &interface_data);
+			if (!result) {
 				err = ::GetLastError();
 			}
-			else {
-				int x=0;
+
+			result = SetupDiGetDeviceInterfaceDetail(dev_info, &interface_data, interface_datail_data, 2048, NULL, NULL);
+			if (!result) {
+				err = ::GetLastError();
 			}
+
+			dev_index++;
 		}
+
+
+
+
+
+
+
+
+
+
+		//while (SetupDiEnumDeviceInfo(dev_info, dev_index++, &info)) {
+		//	memset(&buff, 0x00, sizeof(buff));
+		//	if (!SetupDiGetDeviceRegistryProperty(dev_info, &info, SPDRP_HARDWAREID, NULL, buff, 2048, NULL)) {
+		//		err = ::GetLastError();
+		//	}
+		//	else {
+		//		int x=0;
+		//	}
+		//}
 		err = ::GetLastError();
 		SetupDiDestroyDeviceInfoList(dev_info);
 	}
