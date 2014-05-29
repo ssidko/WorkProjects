@@ -1,6 +1,13 @@
 #include "ControlUnit.h"
 #include <QMessageBox>
 
+#include <Cfgmgr32.h>
+#include <Setupapi.h>
+
+#pragma comment(lib, "Setupapi.lib")
+
+DEFINE_GUID(GUID_DEVCLASS_PORTS, 0x4d36e978L, 0xe325, 0x11ce, 0xbf, 0xc1, 0x08, 0x00, 0x2b, 0xe1, 0x03, 0x18);
+
 #define MAX_COM_PORT_NUMBER			50
 #define RESPONSE_CODE				0x6948
 #define GET_ID_CMD					"GetID"
@@ -158,6 +165,56 @@ bool ControlUnit::IsAvailable(void)
 	}
 	com_name = "";
 	return false;
+}
+
+QStringList ControlUnit::AvailableComPorts(void)
+{
+	QStringList com_list;
+	QString dev_name_prefix = "\\\\.\\";
+	HDEVINFO dev_info_set = ::SetupDiGetClassDevs(&GUID_DEVINTERFACE_COMPORT, NULL, NULL, DIGCF_PRESENT | DIGCF_DEVICEINTERFACE);
+	if (dev_info_set != INVALID_HANDLE_VALUE) {
+		DWORD index = 0;
+		SP_DEVINFO_DATA dev_info;
+		memset(&dev_info, 0x00, sizeof(SP_DEVINFO_DATA));
+		dev_info.cbSize = sizeof(SP_DEVINFO_DATA);
+		while (::SetupDiEnumDeviceInfo(dev_info_set, index++, &dev_info)) {
+			HKEY key = ::SetupDiOpenDevRegKey(dev_info_set, &dev_info, DICS_FLAG_GLOBAL, 0, DIREG_DEV, KEY_READ);
+			if (key == INVALID_HANDLE_VALUE) {
+				continue;
+			}
+
+			QStringList registry_key_list;
+			registry_key_list << QString("PortName") << QString("PortNumber");
+
+			QString portName;
+			foreach (const QString &registry_key, registry_key_list) {
+				DWORD buff_size = 0;
+				DWORD dataType = 0;
+				QByteArray out_buff;
+				forever {
+					const LONG ret = ::RegQueryValueEx(key, reinterpret_cast<const wchar_t *>(registry_key.utf16()), NULL, &dataType, reinterpret_cast<unsigned char *>(out_buff.data()), &buff_size);
+					if (ret == ERROR_MORE_DATA) {
+						out_buff.resize(buff_size);
+						continue;
+					}
+					else if (ret == ERROR_SUCCESS) {
+						if (dataType == REG_SZ) {
+							portName = dev_name_prefix + QString::fromUtf16(((const wchar_t *)(out_buff.constData())));
+							com_list.push_back(portName);
+						}
+						else if (dataType == REG_DWORD) {
+							portName = dev_name_prefix + QStringLiteral("COM%1").arg(*(PDWORD(out_buff.constData())));
+							com_list.push_back(portName);
+						}
+					}
+					break;
+				}
+			}
+			::RegCloseKey(key);
+						
+		}
+	}
+	return com_list;
 }
 
 bool ControlUnit::Open()

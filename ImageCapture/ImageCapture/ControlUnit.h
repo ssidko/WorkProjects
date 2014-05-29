@@ -23,6 +23,7 @@ public:
 	ControlUnit(void);
 	~ControlUnit(void);
 	static bool IsAvailable(void);
+	static QStringList AvailableComPorts(void);
 	bool IsOpened(void) {return opened;}
 	bool Open();
 	void Close();
