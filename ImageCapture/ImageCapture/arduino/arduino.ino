@@ -2,6 +2,12 @@
 #define LED_PIN                 13
 #define IMPULSE_WIDTH           50
 
+#define ID_CMD		        "GetID"
+#define VERSION_CMD		"GetVer"
+
+#define ID                      "00014001"
+#define VERSION                 "00000001"
+
 String command = "";
 boolean cmd_complete = false;
 
@@ -42,10 +48,7 @@ void loop ()
   if (cmd_complete) {
     Blink();
     command.trim();
-    if (command == "Hello") {
-      Serial.write("Hi");
-      Serial.flush();
-    } else if (command == "Pin2") {
+    if (command == "Pin2") {
       MakeImpulse(2);
     } else if (command == "Pin3") {
       MakeImpulse(3);
@@ -67,7 +70,16 @@ void loop ()
       MakeImpulse(11);
     } else if (command == "Pin12") {
       MakeImpulse(12);
-    }    
+    } if (command == "Hello") {
+      Serial.write("Hi");
+      Serial.flush();
+    } else if (command == GET_ID_CMD) {
+      Serial.write(ID);
+      Serial.flush();
+    } else if (command == GET_VERSION_CMD) {
+      Serial.write(VERSION);
+      Serial.flush();
+    }
     command = "";
     cmd_complete = false;
   }

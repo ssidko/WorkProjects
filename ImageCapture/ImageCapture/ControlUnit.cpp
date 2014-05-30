@@ -149,21 +149,17 @@ bool ControlUnit::IsControlUnit(HANDLE handle)
 
 bool ControlUnit::IsAvailable(void)
 {
-	DWORD rw = 0;
-	DWORD err = 0;
-	HANDLE handle = NULL;
-	QString com_name = "";
-	for (int i = 0; i < MAX_COM_PORT_NUMBER; i++) {
-		com_name = "\\\\.\\COM" + QString::number(i, 10);
-		handle = OpenComPort(com_name.toLocal8Bit().data());
-		if (handle == INVALID_HANDLE_VALUE) continue;
-		if (IsControlUnit(handle)) {
-			::CloseHandle(handle);
-			return true;
+	foreach (QString com, AvailableComPorts()) {
+		HANDLE handle = OpenComPort(com.toLocal8Bit().data());
+		if (handle != INVALID_HANDLE_VALUE) {
+			if (IsControlUnit(handle)) {
+				::CloseHandle(handle);
+				return true;
+			}
+			else
+				return false;
 		}
-		::CloseHandle(handle);
 	}
-	com_name = "";
 	return false;
 }
 
@@ -217,29 +213,38 @@ QStringList ControlUnit::AvailableComPorts(void)
 	return com_list;
 }
 
-bool ControlUnit::Open()
+bool ControlUnit::Open(void)
 {
-	DWORD rw = 0;
 	Close();
-	for (int i = 0; i < MAX_COM_PORT_NUMBER; i++) {
-		com_name = "\\\\.\\COM" + QString::number(i, 10);
-		com_handle = OpenComPort(com_name.toLocal8Bit().data());
+	char buff[16];
+	foreach (QString com, AvailableComPorts()) {
+		com_handle = OpenComPort(com.toLocal8Bit().data());
 		if (com_handle != INVALID_HANDLE_VALUE) {
 			if (IsControlUnit(com_handle)) {
+				com_name = com;
+				memset(buff, 0x00, sizeof(buff));
+				if (SendCommand(GET_ID_CMD))
+					if (ReadComPort(com_handle, buff, 8))
+						id = buff;
+
+				memset(buff, 0x00, sizeof(buff));
+				if (SendCommand(GET_VERSION_CMD))
+					if (ReadComPort(com_handle, buff, 8))
+						version = buff;
+
 				opened = true;
 				return true;
 			}
-			::CloseHandle(com_handle);
-			com_handle = INVALID_HANDLE_VALUE;
-		}
+		}	
 	}
-	com_name = "";
 	return false;
 }
 
-void ControlUnit::Close()
+void ControlUnit::Close(void)
 {
 	com_name = "";
+	id = "";
+	version = "";
 	opened = false;
 	if (com_handle != INVALID_HANDLE_VALUE) {
 		::CloseHandle(com_handle);
@@ -247,7 +252,7 @@ void ControlUnit::Close()
 	}
 }
 
-bool ControlUnit::SenCommand(QString cmd)
+bool ControlUnit::SendCommand(QString cmd)
 {
 	cmd += "\n";
 	return 	WriteComPort(com_handle, cmd.toLocal8Bit().data(), cmd.size());

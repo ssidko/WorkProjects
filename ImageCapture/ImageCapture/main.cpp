@@ -25,7 +25,7 @@ int main(int argc, char *argv[])
 	QCoreApplication::setOrganizationName(QString::fromLocal8Bit(ORGANIZATION_NAME));
 	QCoreApplication::setApplicationName(QString::fromLocal8Bit(APPLICATION_NAME));
 	a.setWindowIcon(QIcon(":/MainWindow/images/app.png"));
-	
+
 	w.show();
 	w.activateWindow();
 

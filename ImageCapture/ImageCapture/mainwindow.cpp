@@ -241,7 +241,7 @@ void MainWindow::TakeScreenshot(void)
 bool MainWindow::SendCommand(QString command)
 {
 	if (control_unit.IsOpened()) {
-		control_unit.SenCommand(command);
+		control_unit.SendCommand(command);
 		return true;
 	}
 	return false;
