@@ -21,9 +21,6 @@ void Test(void)
 		QTextStream text_stream(&test_file);
 		QString line = text_stream.readLine();
 		while (!line.isNull()) {
-
-
-
 			line = text_stream.readLine();
 		}
 		int x=0;
