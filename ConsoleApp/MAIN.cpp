@@ -734,10 +734,50 @@ namespace RAID6
 	}
 }
 
+namespace DHFS
+{
+	typedef struct _TIME_STAMP {
+		DWORD sec:6;
+		DWORD min:6;
+		DWORD hour:5;
+		DWORD day:5;
+		DWORD month:4;
+		DWORD year:6;
+	} TIME_STAMP;
+
+#define FRAME_HEADER_MAGIC			'DHAV'
+
+	typedef struct _FRAME_HEADER {
+		DWORD magic;
+		WORD flags;
+		WORD camera;
+		DWORD counter;
+		DWORD size;
+		TIME_STAMP time;
+		BYTE unk1[8];
+		DWORD unk2;
+		BYTE data[1];
+	} FRAME_HEADER;
+
+#define FRAME_FOOTER_MAGIC			'dhav'
+
+	typedef struct _FRAME_FOOTER {
+		DWORD magic;
+		DWORD size;
+	} FRAME_FOOTER;
+
+}
+
+using namespace DHFS;
+
 int _tmain(int argc, _TCHAR* argv[])
 {
 
-	ForEachFileFolder();
+	TIME_STAMP date;
+	// 8137F538
+	DWORD raw = 0x3996EB5C;
+	DWORD x = FRAME_HEADER_MAGIC;
+	date = *((TIME_STAMP *)&raw);
 
 	_tprintf(_T("\nPress any key for exit ..."));
 	_getch();
