@@ -47,6 +47,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DMTools", "dm\dm.vcxproj", 
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FileRenamer", "FileRenamer\FileRenamer.vcxproj", "{2CC9FC4B-BEFF-4512-AFE3-AE81D0385BD0}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "VHDExtractor", "VHDExtractor\VHDExtractor.vcxproj", "{8024D24C-BF9C-44E7-82F5-6DD811B41EEC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -141,6 +143,10 @@ Global
 		{2CC9FC4B-BEFF-4512-AFE3-AE81D0385BD0}.Debug|Win32.Build.0 = Debug|Win32
 		{2CC9FC4B-BEFF-4512-AFE3-AE81D0385BD0}.Release|Win32.ActiveCfg = Release|Win32
 		{2CC9FC4B-BEFF-4512-AFE3-AE81D0385BD0}.Release|Win32.Build.0 = Release|Win32
+		{8024D24C-BF9C-44E7-82F5-6DD811B41EEC}.Debug|Win32.ActiveCfg = Debug|Win32
+		{8024D24C-BF9C-44E7-82F5-6DD811B41EEC}.Debug|Win32.Build.0 = Debug|Win32
+		{8024D24C-BF9C-44E7-82F5-6DD811B41EEC}.Release|Win32.ActiveCfg = Release|Win32
+		{8024D24C-BF9C-44E7-82F5-6DD811B41EEC}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

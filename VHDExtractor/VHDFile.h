@@ -1,5 +1,7 @@
 #pragma once
-#include "W32Lib.h"
+#include "windows.h"
+#include <QFile>
+#include <QString>
 
 #pragma pack(push)
 #pragma pack(1)
@@ -57,6 +59,8 @@ typedef struct _VHD_DYNAMIC_DISK_HEADER {
 
 #pragma pack(pop)
 
+#define VHD_SECTOR_SIZE				512
+
 //DWORD Be2Le(DWORD be_dw)
 //{
 //	DWORD le_dw;
@@ -71,19 +75,13 @@ typedef struct _VHD_DYNAMIC_DISK_HEADER {
 
 class VHDFile
 {
-	FileEx *io;
+	QFile *io;
 public:
-	VHDFile(const TCHAR *file_name)
-	{
-		io = new FileEx(file_name);
-	}
+	VHDFile(QString file_name);
+	~VHDFile();
 
-	BOOL Open()
-	{
-		return io->Open();
-	}
-
-	BOOL ReadFooter(void);
+	bool Open();
+	bool ReadFooter(void);
 };
 
 
