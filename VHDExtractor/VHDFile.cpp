@@ -69,8 +69,6 @@ bool VHDFile::ReadFooter(void)
 		footer.version = Be2Le(footer.version);
 		footer.data_offset = Be2Le(footer.data_offset);
 		footer.time_stamp = Be2Le(footer.time_stamp);
-		//footer.creator_app = Be2Le(footer.creator_app);
-		//footer.creator_os = Be2Le(footer.creator_os);
 		footer.creator_ver = Be2Le(footer.creator_ver);
 		footer.original_size = Be2Le(footer.original_size);
 		footer.current_size = Be2Le(footer.current_size);

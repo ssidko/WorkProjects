@@ -69,13 +69,13 @@ typedef struct _VHD_DYNAMIC_DISK_HEADER {
 
 class VHDFile
 {
+private:
 	QFile *io;
 	VHD_FOOTER footer;
 	VHD_DYNAMIC_DISK_HEADER dd_header;
 public:
 	VHDFile(QString file_name);
 	~VHDFile();
-
 	bool Open();
 	bool ReadFooter(void);
 	bool ReadDynamicDiskHeader(void);
