@@ -8,6 +8,7 @@ int main(int argc, char *argv[])
 	VHDFile vhd("J:\\test.vhd");
 	if (vhd.Open()) {
 		result = vhd.ReadFooter();
+		result = vhd.ReadDynamicDiskHeader();
 	}
 
 

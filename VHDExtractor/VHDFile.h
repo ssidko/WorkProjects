@@ -8,18 +8,24 @@
 	
 #define VHD_UNUSED_BAT_ENTRY						(DWORD)0xFFFFFFFF
 
+typedef struct _VHD_DISK_GEOMETRY {
+	WORD cylinder;
+	BYTE heads;
+	BYTE sectors_per_track;
+} VHD_DISK_GEOMETRY;
+
 typedef struct _VHD_FOOTER {
 	char cookie[8];
 	DWORD features;
 	DWORD version;
 	LONGLONG data_offset;
 	DWORD time_stamp;
-	DWORD creator_app;
+	BYTE creator_app[4];
 	DWORD creator_ver;
-	DWORD creator_os;
+	BYTE creator_os[4];
 	LONGLONG original_size;
 	LONGLONG current_size;
-	DWORD disk_geometry;
+	VHD_DISK_GEOMETRY geometry;
 	DWORD disk_type;
 	DWORD checksum;
 	BYTE id[16];
@@ -61,27 +67,18 @@ typedef struct _VHD_DYNAMIC_DISK_HEADER {
 
 #define VHD_SECTOR_SIZE				512
 
-//DWORD Be2Le(DWORD be_dw)
-//{
-//	DWORD le_dw;
-//	BYTE *le = (BYTE *)&le_dw;
-//	BYTE *be = (BYTE *)&be_dw;
-//	le[0] = be[3];
-//	le[1] = be[2];
-//	le[2] = be[1];
-//	le[3] = be[0];
-//	return le_dw;
-//}
-
 class VHDFile
 {
 	QFile *io;
+	VHD_FOOTER footer;
+	VHD_DYNAMIC_DISK_HEADER dd_header;
 public:
 	VHDFile(QString file_name);
 	~VHDFile();
 
 	bool Open();
 	bool ReadFooter(void);
+	bool ReadDynamicDiskHeader(void);
 };
 
 
