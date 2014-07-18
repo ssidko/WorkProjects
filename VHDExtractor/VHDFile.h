@@ -28,7 +28,7 @@ typedef struct _VHD_FOOTER {
 	VHD_DISK_GEOMETRY geometry;
 	DWORD disk_type;
 	DWORD checksum;
-	BYTE id[16];
+	UUID id;
 	BYTE saved_state;
 	BYTE reserved[427];
 } VHD_FOOTER;
@@ -55,7 +55,7 @@ typedef struct _VHD_DYNAMIC_DISK_HEADER {
 	DWORD max_table_entries;
 	DWORD block_size;
 	DWORD checksum;
-	BYTE parent_id[16];
+	UUID parent_id;
 	DWORD parent_time;
 	DWORD reserved_1;
 	BYTE parent_name[512];
@@ -67,18 +67,24 @@ typedef struct _VHD_DYNAMIC_DISK_HEADER {
 
 #define VHD_SECTOR_SIZE				512
 
+UUID;
+
 class VHDFile
 {
 private:
 	QFile *io;
 	VHD_FOOTER footer;
 	VHD_DYNAMIC_DISK_HEADER dd_header;
+	DWORD *bat;
+	bool opened;
+	bool ReadFooter(LONGLONG offset);
+	bool ReadDynamicDiskHeader(LONGLONG offset);
+	bool InitializeBAT(void);
 public:
 	VHDFile(QString file_name);
 	~VHDFile();
 	bool Open();
-	bool ReadFooter(void);
-	bool ReadDynamicDiskHeader(void);
+	void Close();
 };
 
 

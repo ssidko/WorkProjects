@@ -7,10 +7,9 @@ int main(int argc, char *argv[])
 	bool result;
 	VHDFile vhd("J:\\test.vhd");
 	if (vhd.Open()) {
-		result = vhd.ReadFooter();
-		result = vhd.ReadDynamicDiskHeader();
+		
+		int x = 0;
 	}
-
 
 	QApplication a(argc, argv);
 	VHDExtractor w;

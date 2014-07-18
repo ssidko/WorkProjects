@@ -39,7 +39,7 @@ LONGLONG Be2Le(LONGLONG be_ll)
 	return le_ll;
 }
 
-VHDFile::VHDFile(QString file_name)
+VHDFile::VHDFile(QString file_name) : opened(false), bat(NULL)
 {
 	io = new QFile(file_name);
 	memset(&footer, 0x00, sizeof(VHD_FOOTER));
@@ -48,20 +48,16 @@ VHDFile::VHDFile(QString file_name)
 
 VHDFile::~VHDFile()
 {
+	Close();
 }
 
-bool VHDFile::Open()
-{
-	return io->open(QIODevice::ReadOnly);
-}
-
-bool VHDFile::ReadFooter(void)
+bool VHDFile::ReadFooter(LONGLONG offset)
 {
 	assert(io);
 
 	memset(&footer, 0x00, sizeof(VHD_FOOTER));
 
-	if (!io->seek(io->size() - sizeof(VHD_FOOTER))) return false;
+	if (!io->seek(offset)) return false;
 	if (io->read((char *)&footer, sizeof(VHD_FOOTER)) == -1) return false;
 
 	if (QByteArray(footer.cookie, 8) == QByteArray("conectix", 8)) {
@@ -81,13 +77,13 @@ bool VHDFile::ReadFooter(void)
 	}
 }
 
-bool VHDFile::ReadDynamicDiskHeader(void)
+bool VHDFile::ReadDynamicDiskHeader(LONGLONG offset)
 {
 	assert(io);
 
 	memset(&dd_header, 0x00, sizeof(VHD_DYNAMIC_DISK_HEADER));
 
-	if (!io->seek(footer.data_offset)) return false;
+	if (!io->seek(offset)) return false;
 	if (io->read((char *)&dd_header, sizeof(VHD_DYNAMIC_DISK_HEADER)) == -1) return false;
 
 	if (QByteArray(dd_header.cookie, 8) == QByteArray("cxsparse", 8)) {
@@ -108,4 +104,45 @@ bool VHDFile::ReadDynamicDiskHeader(void)
 	} else {
 		return false;
 	}
+}
+
+bool VHDFile::InitializeBAT(void)
+{
+
+}
+
+bool VHDFile::Open()
+{
+	Close();
+	if (!io->open(QIODevice::ReadOnly)) {
+		return false;
+	}
+	if (!ReadFooter(0)) {
+		if (!ReadFooter(io->size() - 512)) {
+			if (!ReadFooter(io->size() - 511)) {
+				return false;
+			}
+		}
+	}
+	if ((footer.disk_type == kDynamicDisk) || (footer.disk_type == kDifferencingDisk)) {
+		if (!ReadDynamicDiskHeader(footer.data_offset)) {
+			if (!ReadDynamicDiskHeader(512)) {
+				return false;
+			}
+		}
+	}
+	return true;
+}
+
+void VHDFile::Close(void)
+{
+	if (io) {
+		io->close();
+	}
+	if (bat) {
+		delete[] bat;
+		bat = NULL;
+	}
+	memset(&footer, 0x00, sizeof(VHD_FOOTER));
+	memset(&dd_header, 0x00, sizeof(VHD_DYNAMIC_DISK_HEADER));
 }
