@@ -67,8 +67,6 @@ typedef struct _VHD_DYNAMIC_DISK_HEADER {
 
 #define VHD_SECTOR_SIZE				512
 
-UUID;
-
 class VHDFile
 {
 private:
@@ -76,6 +74,10 @@ private:
 	VHD_FOOTER footer;
 	VHD_DYNAMIC_DISK_HEADER dd_header;
 	DWORD *bat;
+	LONGLONG blocks_offset;
+	DWORD sector_bitmap_size;
+	DWORD sectors_per_block;
+	DWORD max_block_number;
 	bool opened;
 	bool ReadFooter(LONGLONG offset);
 	bool ReadDynamicDiskHeader(LONGLONG offset);
@@ -85,6 +87,10 @@ public:
 	~VHDFile();
 	bool Open();
 	void Close();
+	DWORD BlockSize(void);
+	DWORD SectorBitmapSize(void);
+	DWORD SectorsPerBlock(void);
+	bool ReadBlock(DWORD block_num, char *buff, DWORD size = 0);
 };
 
 
