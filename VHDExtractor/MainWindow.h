@@ -3,17 +3,29 @@
 
 #include <QtWidgets/QMainWindow>
 #include "ui_MainWindow.h"
+#include <QProgressBar>
+#include <QLabel>
 
-class VHDExtractor : public QMainWindow
+QStringList AvailablePhysicalDrives(void);
+
+class MainWindow : public QMainWindow
 {
 	Q_OBJECT
-
-public:
-	VHDExtractor(QWidget *parent = 0);
-	~VHDExtractor();
-
 private:
 	Ui::VHDExtractorClass ui;
+	QProgressBar *progress_bar;
+	QLabel *progress_text;
+public:
+	MainWindow(QWidget *parent = 0);
+	~MainWindow();
+	void InitializeWidgets(void);
+	void ShowProgress(void);
+	void HideProgress(void);
+	bool IsValidParameters(void);
+public slots:
+	void UpdateStartButtonState(void);
+	void SelectVHDFile(void);
+	void SrartExtraction();
 };
 
 #endif // MAINWINDOW_H
