@@ -2,6 +2,8 @@
 #include <QFile>
 #include <QFileInfo>
 #include <QFileDialog>
+#include <QMessageBox>
+
 
 #define FILE_PATH_LINE_EDIT_DEFAULT_STRING					"Select disk"
 
@@ -25,10 +27,12 @@ QStringList AvailablePhysicalDrives(void)
 MainWindow::MainWindow(QWidget *parent) 
 	: QMainWindow(parent),
 	progress_bar(NULL),
-	progress_text(NULL)
+	progress_text(NULL),
+	extractor(NULL)
 {
 	ui.setupUi(this);
 	InitializeWidgets();
+	setFixedSize(geometry().width(),geometry().height());
 }
 
 MainWindow::~MainWindow()
@@ -54,20 +58,19 @@ void MainWindow::InitializeWidgets(void)
 	connect(ui.FilePathLineEdit, SIGNAL(textChanged(const QString &)), SLOT(UpdateStartButtonState(void)));
 	connect(ui.DisksComboBox, SIGNAL(currentIndexChanged(const QString &)), SLOT(UpdateStartButtonState(void)));
 	connect(ui.OpenFilePushButton, SIGNAL(clicked(bool)), SLOT(SelectVHDFile(void)));
+	connect(ui.StartPushButton, SIGNAL(clicked(bool)), SLOT(SrartExtraction(void)));
 
-	//HideProgress();
-	ShowProgress();
+	EnableStatusBar(false);
 	UpdateStartButtonState();
 }
 
-void MainWindow::ShowProgress()
+void MainWindow::EnableStatusBar(bool enable)
 {
-	ui.statusBar->show();
-}
-
-void MainWindow::HideProgress()
-{
-	ui.statusBar->hide();
+	if (enable) {
+		ui.statusBar->show();
+	} else {
+		ui.statusBar->hide();
+	}
 }
 
 bool MainWindow::IsValidParameters(void)
@@ -99,5 +102,50 @@ void MainWindow::SelectVHDFile(void)
 
 void MainWindow::SrartExtraction()
 {
+	QString vhd_file_name = ui.FilePathLineEdit->text();
+	QString out_name = ui.DisksComboBox->currentText();
 
+	if (extractor) {
+		delete extractor;
+	}
+	extractor = new VHDExtractor(vhd_file_name, out_name);
+	if (extractor) {
+		connect(extractor, SIGNAL(Finished(int)), SLOT(ExtractionFinished(int)));
+		connect(extractor, SIGNAL(Progress(unsigned int,unsigned int)), SLOT(UpdateProgress(unsigned int,unsigned int)));
+		connect(extractor, SIGNAL(Error(QString)), SLOT(HandleExtractionError(QString)));
+		extractor->start();
+		EnableUserInput(false);
+		EnableStatusBar(true);
+	}
+}
+
+void MainWindow::EnableUserInput(bool enable)
+{
+	ui.FilePathLineEdit->setEnabled(enable);
+	ui.OpenFilePushButton->setEnabled(enable);
+	ui.DisksComboBox->setEnabled(enable);
+	ui.StartPushButton->setEnabled(enable);
+}
+
+void MainWindow::ExtractionFinished(int end_code)
+{
+	if (end_code >= 0) {
+		QMessageBox::information(NULL, "Congratulations!!!", "Extraction completed");
+	}
+	EnableUserInput(true);
+	EnableStatusBar(false);
+}
+
+void MainWindow::UpdateProgress(unsigned int current_block, unsigned int max_block)
+{
+	if (progress_bar && progress_text) {
+		progress_text->setText(QString::number(current_block, 10) + "/" + QString::number(max_block, 10));
+		progress_bar->setMaximum(max_block-1);
+		progress_bar->setValue(current_block);
+	}
+}
+
+void MainWindow::HandleExtractionError(QString error_message)
+{
+	QMessageBox::warning(NULL, "Error", error_message);
 }

@@ -39,7 +39,7 @@ LONGLONG Be2Le(LONGLONG be_ll)
 	return le_ll;
 }
 
-VHDFile::VHDFile(QString file_name) : opened(false), bat(NULL), blocks_offset(0),
+VHDFile::VHDFile(const QString &file_name) : opened(false), bat(NULL), blocks_offset(0),
 		sector_bitmap_size(0), sectors_per_block(0), max_block_number(0)
 {
 	io = new QFile(file_name);
@@ -195,6 +195,15 @@ DWORD VHDFile::BlockSize(void)
 		return dd_header.block_size;
 	} else {
 		return VHD_SECTOR_SIZE;
+	}
+}
+
+DWORD VHDFile::BlocksCount( void )
+{
+	if ((footer.disk_type == kDynamicDisk) || (footer.disk_type == kDifferencingDisk)) {
+		return dd_header.max_table_entries;
+	} else {
+		return (DWORD)(io->size()/VHD_SECTOR_SIZE);
 	}
 }
 

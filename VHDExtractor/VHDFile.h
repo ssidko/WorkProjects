@@ -83,11 +83,12 @@ private:
 	bool ReadDynamicDiskHeader(LONGLONG offset);
 	bool InitializeBAT(void);
 public:
-	VHDFile(QString file_name);
+	VHDFile(const QString &file_name);
 	~VHDFile();
 	bool Open();
 	void Close();
 	DWORD BlockSize(void);
+	DWORD BlocksCount(void);
 	DWORD SectorBitmapSize(void);
 	DWORD SectorsPerBlock(void);
 	bool ReadBlock(DWORD block_num, char *buff, DWORD size = 0);
