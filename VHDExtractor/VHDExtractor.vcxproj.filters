@@ -67,6 +67,9 @@
     <ClCompile Include="PhysicalDrive.cpp">
       <Filter>WLib</Filter>
     </ClCompile>
+    <ClCompile Include="BitMap.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="MainWindow.ui">
@@ -94,6 +97,9 @@
     </ClInclude>
     <ClInclude Include="PhysicalDrive.h">
       <Filter>WLib</Filter>
+    </ClInclude>
+    <ClInclude Include="BitMap.h">
+      <Filter>Core</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

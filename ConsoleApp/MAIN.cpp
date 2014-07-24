@@ -736,6 +736,8 @@ namespace RAID6
 
 namespace DHFS
 {
+#pragma push()
+#pragma pack(1)
 	typedef struct _TIME_STAMP {
 		DWORD sec:6;
 		DWORD min:6;
@@ -744,6 +746,7 @@ namespace DHFS
 		DWORD month:4;
 		DWORD year:6;
 	} TIME_STAMP;
+#pragma pop()
 
 #define FRAME_HEADER_MAGIC			'DHAV'
 
@@ -775,7 +778,7 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	TIME_STAMP date;
 	// 8137F538
-	DWORD raw = 0x3996EB5C;
+	DWORD raw = 0x38711EEE;
 	DWORD x = FRAME_HEADER_MAGIC;
 	date = *((TIME_STAMP *)&raw);
 
