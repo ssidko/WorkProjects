@@ -239,7 +239,7 @@ bool VHDFile::ReadBlock(DWORD block_num, char *buff, DWORD size)
 			}
 		} else if (footer.disk_type == kDifferencingDisk) {
 			//
-			//  Необходимо реализовать.
+			// Необходимо реализовать.
 			//
 			return false;
 		} else {

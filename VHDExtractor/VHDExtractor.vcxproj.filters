@@ -70,6 +70,9 @@
     <ClCompile Include="BitMap.cpp">
       <Filter>Core</Filter>
     </ClCompile>
+    <ClCompile Include="VDIFile.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="MainWindow.ui">
@@ -100,6 +103,9 @@
     </ClInclude>
     <ClInclude Include="BitMap.h">
       <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="VDIFile.h">
+      <Filter>Generated Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
