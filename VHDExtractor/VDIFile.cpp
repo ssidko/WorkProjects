@@ -97,7 +97,7 @@ bool VDIFile::ReadBlock(DWORD block_num, char *block_buff)
 			return true;
 		} else {
 			if (io->seek((qint64)header.data_blocks_offset + (qint64)header.block_size*bat[block_num])) {
-				if ((qint64)header.block_size == io->read(block_buff, header.block_size)) {
+				if (io->read(block_buff, header.block_size) != -1) {
 					return true;
 				}
 			}
@@ -112,7 +112,7 @@ bool VDIFile::ReadBlock(DWORD block_num, char *block_buff)
 			}
 		} else {
 			if (io->seek((qint64)header.data_blocks_offset + (qint64)header.block_size*block_num)) {
-				if ((qint64)header.block_size == io->read(block_buff, header.block_size)) {
+				if (io->read(block_buff, header.block_size) != -1) {
 					return true;
 				}
 			}

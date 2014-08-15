@@ -71,6 +71,7 @@ class VHDFile
 {
 private:
 	QFile *io;
+	VHDFile *parent;
 	VHD_FOOTER footer;
 	VHD_DYNAMIC_DISK_HEADER dd_header;
 	DWORD *bat;
@@ -87,11 +88,13 @@ public:
 	~VHDFile();
 	bool Open();
 	void Close();
+	void SetParent(VHDFile *parent_vhd);
 	DWORD BlockSize(void);
 	DWORD BlocksCount(void);
 	DWORD SectorBitmapSize(void);
 	DWORD SectorsPerBlock(void);
 	bool ReadBlock(DWORD block_num, char *buff, DWORD size = 0);
+	DWORD UsedEntriesInBAT(void);
 };
 
 

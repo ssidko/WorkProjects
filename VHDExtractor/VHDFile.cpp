@@ -40,7 +40,7 @@ LONGLONG Be2Le(LONGLONG be_ll)
 }
 
 VHDFile::VHDFile(const QString &file_name) : opened(false), bat(NULL), blocks_offset(0),
-		sector_bitmap_size(0), sectors_per_block(0), max_block_number(0)
+		sector_bitmap_size(0), sectors_per_block(0), max_block_number(0), parent(NULL)
 {
 	io = new QFile(file_name);
 	memset(&footer, 0x00, sizeof(VHD_FOOTER));
@@ -181,12 +181,26 @@ void VHDFile::Close(void)
 		delete[] bat;
 		bat = NULL;
 	}
+	if (parent) {
+		parent->Close();
+		delete parent;
+		parent = NULL;
+	}
 	memset(&footer, 0x00, sizeof(VHD_FOOTER));
 	memset(&dd_header, 0x00, sizeof(VHD_DYNAMIC_DISK_HEADER));
 	opened = false;
 	blocks_offset = 0;
 	sector_bitmap_size = 0;
 	sectors_per_block = 0;
+}
+
+void VHDFile::SetParent(VHDFile *parent_vhd)
+{
+	if (parent) {
+		parent->Close();
+		delete parent;
+	}
+	parent = parent_vhd;
 }
 
 DWORD VHDFile::BlockSize(void)
@@ -224,32 +238,51 @@ bool VHDFile::ReadBlock(DWORD block_num, char *buff, DWORD size)
 	if (!size) {
 		size = BlockSize();
 	}
-	if ((footer.disk_type == kDynamicDisk) || (footer.disk_type == kDifferencingDisk)) {
-		if (bat[block_num] == VHD_UNUSED_BAT_ENTRY) {
-			memset(buff, 0x00, size);
-			return true;
-		}
-	}
 	if (block_num < max_block_number) {
 		if (footer.disk_type == kDynamicDisk) {
-			if (io->seek((LONGLONG)((LONGLONG)bat[block_num]*VHD_SECTOR_SIZE + sector_bitmap_size))) {
-				if (io->read(buff, size) != -1) {
-					return true;
+			if (bat[block_num] == VHD_UNUSED_BAT_ENTRY) {
+				memset(buff, 0x00, size);
+				return true;		
+			} else {
+				if (io->seek((LONGLONG)((LONGLONG)bat[block_num]*VHD_SECTOR_SIZE + sector_bitmap_size))) {
+					if (io->read(buff, size) != -1) {
+						return true;
+					}
 				}
 			}
 		} else if (footer.disk_type == kDifferencingDisk) {
 			//
 			// Необходимо реализовать.
 			//
-			return false;
+			if (bat[block_num] == VHD_UNUSED_BAT_ENTRY) {
+				if (parent) {
+					parent->ReadBlock(block_num, buff, size);
+				} else {
+					memset(buff, 0x00, size);
+					return true;
+				}
+			} else {
+
+
+			}
 		} else {
 			if (io->seek((LONGLONG)block_num*VHD_SECTOR_SIZE)) {
-				if (io->read(buff,  BlockSize()) != -1) {
+				if (io->read(buff, BlockSize()) != -1) {
 					return true;
 				}
 			}
 		}
 	}
-
 	return false;
+}
+
+DWORD VHDFile::UsedEntriesInBAT( void )
+{
+	DWORD counter = 0;
+	for (int i = 0; i < dd_header.max_table_entries; i++) {
+		if (bat[i] != VHD_UNUSED_BAT_ENTRY) {
+			counter++;
+		}
+	}
+	return counter;
 }
