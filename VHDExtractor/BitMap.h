@@ -6,10 +6,10 @@
 class BitMap
 {
 private:
-	BYTE *buffer;
+	char *buffer;
 	DWORD size;	
 public:
-	explicit BitMap(BYTE *bit_buffer, DWORD bits_count);
+	explicit BitMap(char *bit_buffer, DWORD bits_count);
 	~BitMap(void);
 	bool TestBit(const DWORD &zero_based_bit_index);
 	void SetBit(const DWORD &zero_based_bit_index);

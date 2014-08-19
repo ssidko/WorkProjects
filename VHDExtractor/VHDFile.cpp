@@ -1,5 +1,6 @@
 #include "VHDFile.h"
 #include <assert.h>
+#include "BitMap.h"
 
 WORD Be2Le(WORD be_w)
 {
@@ -256,14 +257,37 @@ bool VHDFile::ReadBlock(DWORD block_num, char *buff, DWORD size)
 			//
 			if (bat[block_num] == VHD_UNUSED_BAT_ENTRY) {
 				if (parent) {
-					parent->ReadBlock(block_num, buff, size);
+					return parent->ReadBlock(block_num, buff, size);
 				} else {
 					memset(buff, 0x00, size);
 					return true;
 				}
 			} else {
+				if (io->seek((LONGLONG)((LONGLONG)bat[block_num]*VHD_SECTOR_SIZE))) {
+					bool result = false;
+					char *bitmap_buffer = new char[sector_bitmap_size];
+					memset(bitmap_buffer, 0x00, sector_bitmap_size);
 
+					char *parent_block_buffer = NULL;
 
+					if (io->read(bitmap_buffer, sector_bitmap_size) != -1) {
+						BitMap sectors_map(bitmap_buffer, sectors_per_block);
+						if (io->read(buff, size) != -1) {
+							for (DWORD i = 0; i < sectors_per_block; i++) {
+								if (sectors_map[i]) {
+									////
+								}
+							}
+						}
+					}
+
+					delete[] bitmap_buffer;
+					delete[] block_buffer; 
+					if (parent_block_buffer) {
+						delete[] parent_block_buffer;
+					}
+					return result;
+				}
 			}
 		} else {
 			if (io->seek((LONGLONG)block_num*VHD_SECTOR_SIZE)) {
