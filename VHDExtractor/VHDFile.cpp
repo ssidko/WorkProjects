@@ -241,9 +241,6 @@ bool VHDFile::ReadBlock(DWORD block_num, char *block_buffer)
 				}
 			}
 		} else if (footer.disk_type == kDifferencingDisk) {
-			//
-			// Необходимо реализовать.
-			//
 			if (bat[block_num] == VHD_UNUSED_BAT_ENTRY) {
 				if (parent) {
 					return parent->ReadBlock(block_num, block_buffer);
@@ -259,29 +256,22 @@ bool VHDFile::ReadBlock(DWORD block_num, char *block_buffer)
 					char *this_block = NULL;
 					char *bitmap_buffer = new char[sector_bitmap_size];
 					memset(bitmap_buffer, 0x00, sector_bitmap_size);
-
 					if (io->read(bitmap_buffer, sector_bitmap_size) != -1) {
-
 						BitMap sectors_map(bitmap_buffer, sectors_per_block);
 						DWORD count_1 = sectors_map.OneCount();
-
 						if ((count_1 == sectors_per_block) || !parent) {
 							if (io->read(block_buffer, block_size) != -1) {
 								result = true;
 							}
 						} else {
-
 							tmp_buffer = new char[block_size];
 							memset(tmp_buffer, 0x00, block_size);
-
 							this_block = block_buffer;
 							parrent_block = tmp_buffer;
-
 							if (count_1 < sectors_per_block/2) {
 								this_block = tmp_buffer;
 								parrent_block = block_buffer;
 							}
-
 							if (io->read(this_block, block_size) != -1) {
 								if (parent->ReadBlock(block_num, parrent_block)) {
 									for (DWORD i = 0; i < sectors_per_block; i++) {
@@ -294,7 +284,6 @@ bool VHDFile::ReadBlock(DWORD block_num, char *block_buffer)
 							}
 						}
 					}
-
 					delete[] bitmap_buffer;
 					if (tmp_buffer) {
 						delete[] tmp_buffer;
