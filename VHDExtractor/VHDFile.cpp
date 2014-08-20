@@ -251,32 +251,29 @@ bool VHDFile::ReadBlock(DWORD block_num, char *block_buffer)
 			} else {
 				if (io->seek((LONGLONG)((LONGLONG)bat[block_num]*VHD_SECTOR_SIZE))) {
 					bool result = false;
-					char *tmp_buffer = NULL;
-					char *parrent_block = NULL;
 					char *this_block = NULL;
+					char *parrent_block = NULL;
 					char *bitmap_buffer = new char[sector_bitmap_size];
 					memset(bitmap_buffer, 0x00, sector_bitmap_size);
 					if (io->read(bitmap_buffer, sector_bitmap_size) != -1) {
-						BitMap sectors_map(bitmap_buffer, sectors_per_block);
+						BitMapBE sectors_map(bitmap_buffer, sectors_per_block);
 						DWORD count_1 = sectors_map.OneCount();
 						if ((count_1 == sectors_per_block) || !parent) {
 							if (io->read(block_buffer, block_size) != -1) {
 								result = true;
 							}
 						} else {
-							tmp_buffer = new char[block_size];
-							memset(tmp_buffer, 0x00, block_size);
-							this_block = block_buffer;
-							parrent_block = tmp_buffer;
-							if (count_1 < sectors_per_block/2) {
-								this_block = tmp_buffer;
-								parrent_block = block_buffer;
-							}
+							this_block = new char[block_size];
+							memset(this_block, 0x00, block_size);
+							parrent_block = new char[block_size];
+							memset(parrent_block, 0x00, block_size);
 							if (io->read(this_block, block_size) != -1) {
 								if (parent->ReadBlock(block_num, parrent_block)) {
 									for (DWORD i = 0; i < sectors_per_block; i++) {
-										if (!sectors_map[i]) {
-											memcpy((void *)block_buffer[i*VHD_SECTOR_SIZE], (void *)tmp_buffer[i*VHD_SECTOR_SIZE], VHD_SECTOR_SIZE);
+										if (sectors_map[i]) {
+											memcpy((void *)&block_buffer[i*VHD_SECTOR_SIZE], (void *)&this_block[i*VHD_SECTOR_SIZE], VHD_SECTOR_SIZE);
+										} else {
+											memcpy((void *)&block_buffer[i*VHD_SECTOR_SIZE], (void *)&parrent_block[i*VHD_SECTOR_SIZE], VHD_SECTOR_SIZE);
 										}
 									}
 									result = true;
@@ -285,8 +282,11 @@ bool VHDFile::ReadBlock(DWORD block_num, char *block_buffer)
 						}
 					}
 					delete[] bitmap_buffer;
-					if (tmp_buffer) {
-						delete[] tmp_buffer;
+					if (this_block) {
+						delete[] this_block;
+					}
+					if (parrent_block) {
+						delete[] parrent_block;
 					}
 					return result;
 				}
