@@ -31,15 +31,19 @@ int main(int argc, char *argv[])
 	//	int x = 0; 
 	//}
 
-	QFile out_file(QString::fromLocal8Bit("G:\\222.bin"));
-	if (out_file.open(QIODevice::ReadWrite)) {
-		bool ret = false;
-		ret = out_file.seek(10000000);
-		int x = 64;
-		qint64 rw = out_file.read((char *)&x, sizeof(x));
-		rw = out_file.write((char *)&x, sizeof(x));
-
-		int y = 0;
+	VHDFile vhd("G:\\Test\\Fedora 20.vhd");
+	VHDFile snap1("G:\\Test\\{14090ed8-b88c-4b13-a323-d54096d20cf4}.vhd");
+	QFile out_file("G:\\Test\\result.img");
+	if (vhd.Open() && snap1.Open() && out_file.open(QIODevice::ReadWrite)) {
+		DWORD block_count = vhd.BlocksCount();
+		DWORD block_size = snap1.BlockSize();
+		snap1.SetParent(&vhd);
+		char *block = new char[block_size];
+		for (DWORD i = 0; i < block_count; i++) {
+			snap1.ReadBlock(i, block);
+			out_file.write(block, (qint64)block_size);
+		}
+		delete[] block;
 	}
 
 	QApplication a(argc, argv);

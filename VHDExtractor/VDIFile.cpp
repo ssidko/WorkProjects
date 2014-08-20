@@ -33,11 +33,6 @@ bool VDIFile::Open()
 
 void VDIFile::Close()
 {
-	if (parent) {
-		parent->Close();
-		delete parent;
-		parent = NULL;
-	}
 	if (bat) {
 		delete[] bat;
 		bat = NULL;
@@ -48,11 +43,6 @@ void VDIFile::Close()
 
 void VDIFile::SetParent(VDIFile *parent_vdi)
 {
-	if (parent) {
-		parent->Close();
-		delete parent;
-		parent = NULL;
-	}
 	parent = parent_vdi;
 }
 

@@ -182,11 +182,6 @@ void VHDFile::Close(void)
 		delete[] bat;
 		bat = NULL;
 	}
-	if (parent) {
-		parent->Close();
-		delete parent;
-		parent = NULL;
-	}
 	memset(&footer, 0x00, sizeof(VHD_FOOTER));
 	memset(&dd_header, 0x00, sizeof(VHD_DYNAMIC_DISK_HEADER));
 	opened = false;
@@ -197,10 +192,6 @@ void VHDFile::Close(void)
 
 void VHDFile::SetParent(VHDFile *parent_vhd)
 {
-	if (parent) {
-		parent->Close();
-		delete parent;
-	}
 	parent = parent_vhd;
 }
 
@@ -232,21 +223,19 @@ DWORD VHDFile::SectorsPerBlock(void)
 	return sectors_per_block; 
 }
 
-bool VHDFile::ReadBlock(DWORD block_num, char *buff, DWORD size)
+bool VHDFile::ReadBlock(DWORD block_num, char *block_buffer)
 {
-	assert(buff);
+	assert(block_buffer);
 
-	if (!size) {
-		size = BlockSize();
-	}
+	DWORD block_size = BlockSize();
 	if (block_num < max_block_number) {
 		if (footer.disk_type == kDynamicDisk) {
 			if (bat[block_num] == VHD_UNUSED_BAT_ENTRY) {
-				memset(buff, 0x00, size);
+				memset(block_buffer, 0x00, block_size);
 				return true;		
 			} else {
 				if (io->seek((LONGLONG)((LONGLONG)bat[block_num]*VHD_SECTOR_SIZE + sector_bitmap_size))) {
-					if (io->read(buff, size) != -1) {
+					if (io->read(block_buffer, block_size) != -1) {
 						return true;
 					}
 				}
@@ -257,41 +246,65 @@ bool VHDFile::ReadBlock(DWORD block_num, char *buff, DWORD size)
 			//
 			if (bat[block_num] == VHD_UNUSED_BAT_ENTRY) {
 				if (parent) {
-					return parent->ReadBlock(block_num, buff, size);
+					return parent->ReadBlock(block_num, block_buffer);
 				} else {
-					memset(buff, 0x00, size);
+					memset(block_buffer, 0x00, block_size);
 					return true;
 				}
 			} else {
 				if (io->seek((LONGLONG)((LONGLONG)bat[block_num]*VHD_SECTOR_SIZE))) {
 					bool result = false;
+					char *tmp_buffer = NULL;
+					char *parrent_block = NULL;
+					char *this_block = NULL;
 					char *bitmap_buffer = new char[sector_bitmap_size];
 					memset(bitmap_buffer, 0x00, sector_bitmap_size);
 
-					char *parent_block_buffer = NULL;
-
 					if (io->read(bitmap_buffer, sector_bitmap_size) != -1) {
+
 						BitMap sectors_map(bitmap_buffer, sectors_per_block);
-						if (io->read(buff, size) != -1) {
-							for (DWORD i = 0; i < sectors_per_block; i++) {
-								if (sectors_map[i]) {
-									////
+						DWORD count_1 = sectors_map.OneCount();
+
+						if ((count_1 == sectors_per_block) || !parent) {
+							if (io->read(block_buffer, block_size) != -1) {
+								result = true;
+							}
+						} else {
+
+							tmp_buffer = new char[block_size];
+							memset(tmp_buffer, 0x00, block_size);
+
+							this_block = block_buffer;
+							parrent_block = tmp_buffer;
+
+							if (count_1 < sectors_per_block/2) {
+								this_block = tmp_buffer;
+								parrent_block = block_buffer;
+							}
+
+							if (io->read(this_block, block_size) != -1) {
+								if (parent->ReadBlock(block_num, parrent_block)) {
+									for (DWORD i = 0; i < sectors_per_block; i++) {
+										if (!sectors_map[i]) {
+											memcpy((void *)block_buffer[i*VHD_SECTOR_SIZE], (void *)tmp_buffer[i*VHD_SECTOR_SIZE], VHD_SECTOR_SIZE);
+										}
+									}
+									result = true;
 								}
 							}
 						}
 					}
 
 					delete[] bitmap_buffer;
-					delete[] block_buffer; 
-					if (parent_block_buffer) {
-						delete[] parent_block_buffer;
+					if (tmp_buffer) {
+						delete[] tmp_buffer;
 					}
 					return result;
 				}
 			}
 		} else {
 			if (io->seek((LONGLONG)block_num*VHD_SECTOR_SIZE)) {
-				if (io->read(buff, BlockSize()) != -1) {
+				if (io->read(block_buffer, BlockSize()) != -1) {
 					return true;
 				}
 			}

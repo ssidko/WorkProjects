@@ -93,7 +93,7 @@ public:
 	DWORD BlocksCount(void);
 	DWORD SectorBitmapSize(void);
 	DWORD SectorsPerBlock(void);
-	bool ReadBlock(DWORD block_num, char *buff, DWORD size = 0);
+	bool ReadBlock(DWORD block_num, char *block_buffer);
 	DWORD UsedEntriesInBAT(void);
 };
 

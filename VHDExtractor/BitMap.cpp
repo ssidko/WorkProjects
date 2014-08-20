@@ -46,3 +46,25 @@ DWORD BitMap::Size(void)
 {
 	return size;
 }
+
+DWORD BitMap::OneCount( void )
+{
+	DWORD counter = 0;
+	for (DWORD i = 0; i < size; i++) {
+		if (TestBit(i)) {
+			counter++;
+		}
+	}
+	return counter;
+}
+
+DWORD BitMap::ZeroCount( void )
+{
+	DWORD counter = 0;
+	for (DWORD i = 0; i < size; i++) {
+		if (!TestBit(i)) {
+			counter++;
+		}
+	}
+	return counter;
+}
