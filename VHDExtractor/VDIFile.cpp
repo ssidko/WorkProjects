@@ -16,7 +16,6 @@ VDIFile::~VDIFile(void)
 
 bool VDIFile::Open()
 {
-	int x = sizeof(HEADER);
 	if (io->open(QIODevice::ReadOnly)) {
 		if ((qint64)sizeof(HEADER) == io->read((char *)&header, sizeof(HEADER))) {
 			if (header.signature != VDI_HEADER_SIGNATURE) {

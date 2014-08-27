@@ -80,7 +80,6 @@ BOOL PhysicalDrive::GetControllerNumber(DISK_CONTROLLER_NUMBER *dcn)
 	else
 	{
 		DWORD err = ::GetLastError();
-		int x = 0;
 		return FALSE;
 	}
 }
@@ -139,7 +138,6 @@ BOOL PhysicalDrive::GetStorageDeviceDescriptor()
 								&rw, NULL);
 
 	DWORD error = ::GetLastError();
- 	int x = 0;
 
 	return ret;
 }
