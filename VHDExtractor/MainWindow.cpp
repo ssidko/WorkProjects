@@ -4,7 +4,6 @@
 #include <QFileDialog>
 #include <QMessageBox>
 
-
 #define FILE_PATH_LINE_EDIT_DEFAULT_STRING					"Select disk"
 
 QStringList AvailablePhysicalDrives(void)
@@ -28,6 +27,7 @@ MainWindow::MainWindow(QWidget *parent)
 	: QMainWindow(parent),
 	progress_bar(NULL),
 	progress_text(NULL),
+	image_file(NULL),
 	extractor(NULL)
 {
 	ui.setupUi(this);
@@ -37,7 +37,6 @@ MainWindow::MainWindow(QWidget *parent)
 
 MainWindow::~MainWindow()
 {
-
 }
 
 void MainWindow::InitializeWidgets(void)
@@ -57,7 +56,7 @@ void MainWindow::InitializeWidgets(void)
 
 	connect(ui.FilePathLineEdit, SIGNAL(textChanged(const QString &)), SLOT(UpdateStartButtonState(void)));
 	connect(ui.DisksComboBox, SIGNAL(currentIndexChanged(const QString &)), SLOT(UpdateStartButtonState(void)));
-	connect(ui.OpenFilePushButton, SIGNAL(clicked(bool)), SLOT(SelectVHDFile(void)));
+	connect(ui.OpenFilePushButton, SIGNAL(clicked(bool)), SLOT(ChooseDiskImageFile(void)));
 	connect(ui.StartPushButton, SIGNAL(clicked(bool)), SLOT(SrartExtraction(void)));
 
 	EnableStatusBar(false);
@@ -94,7 +93,7 @@ void MainWindow::UpdateStartButtonState(void)
 	}
 }
 
-void MainWindow::SelectVHDFile(void)
+void MainWindow::ChooseDiskImageFile(void)
 {
 	QString vhd_file_name = QFileDialog::getOpenFileName();
 	ui.FilePathLineEdit->setText(vhd_file_name);
@@ -102,13 +101,11 @@ void MainWindow::SelectVHDFile(void)
 
 void MainWindow::SrartExtraction()
 {
-	QString vhd_file_name = ui.FilePathLineEdit->text();
-	QString out_name = ui.DisksComboBox->currentText();
-
+	QString output_file_name = ui.DisksComboBox->currentText();
 	if (extractor) {
 		delete extractor;
 	}
-	extractor = new VHDExtractor(vhd_file_name, out_name);
+	extractor = new DiskImageExtractor(image_file, output_file_name);
 	if (extractor) {
 		connect(extractor, SIGNAL(Finished(int)), SLOT(ExtractionFinished(int)));
 		connect(extractor, SIGNAL(Progress(unsigned int,unsigned int)), SLOT(UpdateProgress(unsigned int,unsigned int)));

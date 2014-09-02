@@ -1,9 +1,12 @@
-#pragma once
+#ifndef VDIFILE_H
+#define VDIFILE_H
+
 #include "windows.h"
 #include <QString>
 #include <QFile>
+#include "DiskImageFile.h"
 
-class VDIFile
+class VDIFile : public DiskImageFile
 {
 	enum ImageType {
 		kDynamicDisk = 1,
@@ -46,7 +49,7 @@ private:
 	bool InitializeBAT(void);
 public:
 	explicit VDIFile(QString vdi_file_name);
-	~VDIFile(void);
+	~VDIFile();
 	bool Open(void);
 	void Close(void);
 	void SetParent(VDIFile *parent_vdi);
@@ -55,3 +58,4 @@ public:
 	bool ReadBlock(DWORD block_num, char *block_buff);
 };
 
+#endif

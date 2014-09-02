@@ -3,7 +3,7 @@
 
 #include "VHDFile.h"
 #include "VDIFile.h"
-#include "VHDExtractor.h"
+#include "DiskImageExtractor.h"
 #include "BitMap.h"
 
 int main(int argc, char *argv[])

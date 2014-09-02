@@ -2,6 +2,9 @@
 #include <assert.h>
 #include "BitMap.h"
 
+#define VHD_UNUSED_BAT_ENTRY						(DWORD)0xFFFFFFFF
+#define VHD_SECTOR_SIZE								512
+
 WORD Be2Le(WORD be_w)
 {
 	WORD le_w;

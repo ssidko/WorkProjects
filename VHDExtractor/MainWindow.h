@@ -5,7 +5,8 @@
 #include "ui_MainWindow.h"
 #include <QProgressBar>
 #include <QLabel>
-#include "VHDExtractor.h"
+#include "DiskImageFile.h"
+#include "DiskImageExtractor.h"
 
 QStringList AvailablePhysicalDrives(void);
 
@@ -16,7 +17,8 @@ private:
 	Ui::VHDExtractorClass ui;
 	QProgressBar *progress_bar;
 	QLabel *progress_text;
-	VHDExtractor *extractor;
+	DiskImageFile *image_file;
+	DiskImageExtractor *extractor;
 	void EnableUserInput(bool enable);
 public:
 	MainWindow(QWidget *parent = 0);
@@ -28,7 +30,7 @@ public:
 	bool IsValidParameters(void);
 public slots:
 	void UpdateStartButtonState(void);
-	void SelectVHDFile(void);
+	void ChooseDiskImageFile(void);
 	void SrartExtraction();
 	void ExtractionFinished(int end_code);
 	void UpdateProgress(unsigned int current_block, unsigned int max_block);

@@ -1,13 +1,14 @@
-#pragma once
+#ifndef VHDFILE_H
+#define VHDFILE_H
+
 #include "windows.h"
-#include <QFile>
 #include <QString>
+#include <QFile>
+#include "DiskImageFile.h"
 
 #pragma pack(push)
 #pragma pack(1)
 	
-#define VHD_UNUSED_BAT_ENTRY						(DWORD)0xFFFFFFFF
-
 typedef struct _VHD_DISK_GEOMETRY {
 	WORD cylinder;
 	BYTE heads;
@@ -65,9 +66,7 @@ typedef struct _VHD_DYNAMIC_DISK_HEADER {
 
 #pragma pack(pop)
 
-#define VHD_SECTOR_SIZE				512
-
-class VHDFile
+class VHDFile : public DiskImageFile
 {
 private:
 	QFile *io;
@@ -96,5 +95,7 @@ public:
 	bool ReadBlock(DWORD block_num, char *block_buffer);
 	DWORD UsedEntriesInBAT(void);
 };
+
+#endif
 
 

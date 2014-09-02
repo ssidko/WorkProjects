@@ -52,15 +52,6 @@
     <ClCompile Include="VHDFile.cpp">
       <Filter>Core</Filter>
     </ClCompile>
-    <ClCompile Include="VHDExtractor.cpp">
-      <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_VHDExtractor.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_VHDExtractor.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
     <ClCompile Include="File.cpp">
       <Filter>WLib</Filter>
     </ClCompile>
@@ -71,7 +62,16 @@
       <Filter>Core</Filter>
     </ClCompile>
     <ClCompile Include="VDIFile.cpp">
-      <Filter>Generated Files</Filter>
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_DiskImageExtractor.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_DiskImageExtractor.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="DiskImageExtractor.cpp">
+      <Filter>Core</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -84,7 +84,7 @@
     <CustomBuild Include="MainWindow.h">
       <Filter>GUI</Filter>
     </CustomBuild>
-    <CustomBuild Include="VHDExtractor.h">
+    <CustomBuild Include="DiskImageExtractor.h">
       <Filter>Core</Filter>
     </CustomBuild>
   </ItemGroup>
@@ -105,7 +105,10 @@
       <Filter>Core</Filter>
     </ClInclude>
     <ClInclude Include="VDIFile.h">
-      <Filter>Generated Files</Filter>
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="DiskImageFile.h">
+      <Filter>Core</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
