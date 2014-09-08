@@ -3,6 +3,9 @@
 #include <QFileInfo>
 #include <QFileDialog>
 #include <QMessageBox>
+#include "VDIFile.h"
+#include "VHDFile.h"
+#include "DiskImageExtractor.h"
 
 #define FILE_PATH_LINE_EDIT_DEFAULT_STRING					"Select disk"
 
@@ -95,8 +98,12 @@ void MainWindow::UpdateStartButtonState(void)
 
 void MainWindow::ChooseDiskImageFile(void)
 {
-	QString vhd_file_name = QFileDialog::getOpenFileName();
-	ui.FilePathLineEdit->setText(vhd_file_name);
+	QString image_file_name = QFileDialog::getOpenFileName();
+
+
+
+
+	ui.FilePathLineEdit->setText(image_file_name);
 }
 
 void MainWindow::SrartExtraction()

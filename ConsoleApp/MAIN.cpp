@@ -775,10 +775,8 @@ using namespace DHFS;
 
 int _tmain(int argc, _TCHAR* argv[])
 {
-
 	TIME_STAMP date;
-	// 8137F538
-	DWORD raw = 0x38711EEE;
+	DWORD raw = 0x3a3a545a;
 	DWORD x = FRAME_HEADER_MAGIC;
 	date = *((TIME_STAMP *)&raw);
 

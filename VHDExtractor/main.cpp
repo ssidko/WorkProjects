@@ -6,44 +6,120 @@
 #include "DiskImageExtractor.h"
 #include "BitMap.h"
 
+#include <QDir>
+#include <QFileInfo>
+
+#include <time.h> 
+
+namespace dvr
+{
+	typedef struct _DATE_TIME {
+		DWORD sec:6;
+		DWORD min:6;
+		DWORD hour:5;
+		DWORD day:5;
+		DWORD month:4;
+		DWORD year:6;
+	} DATE_TIME;
+
+#define FRAME_HEADER_SIGNATURE				0x534D4248 //'HBMS'
+
+	typedef struct _FRAME_HEADER {
+		unsigned int signature;
+		unsigned int unk1;
+		unsigned int unk2;
+		unsigned int ctime;
+	} FRAME_HEADER;
+
+	QStringList GetFileList(QString &path)
+	{
+		QDir dir(path);
+		QStringList file_list;
+		QStringList filters;
+		filters << "*.dat";
+		QFileInfoList file_info_list = dir.entryInfoList(filters, QDir::Files);
+		foreach(QFileInfo file_info, file_info_list) {
+			file_list << file_info.absoluteFilePath ();
+		}
+		return file_list;
+	}
+
+	int FindFrame(const QByteArray &buff, const unsigned int offset)
+	{
+		int *dw = (int *)(&buff.data()[offset]);
+		while ((int)(dw + 4) <= (int)(buff.data() + buff.size())) {
+			if (*dw == FRAME_HEADER_SIGNATURE) {
+				return (int)((char *)dw - buff.data());
+			}
+			++dw;
+		}
+		return -1;
+	}
+
+	QString ComposeFileName(const QString &dir, const time_t &time, const ULONGLONG &counter)
+	{
+		QString file_name;
+		char time_str[128] = {0};
+		tm *timeinfo = localtime(&time);
+		strftime(time_str, 128, "%Y-%m-%d %H:%M:%S", timeinfo);
+		file_name.sprintf("%s/%s [%06lld].h264", dir.toLocal8Bit().data(), time_str, counter);
+		return file_name;
+	}
+
+	int NextFrameSequence(const QByteArray &buff, const unsigned int offset, unsigned int &size)
+	{
+		const int max_time_delta = 5;
+		unsigned int frame_offset = FindFrame(buff, 0);
+		FRAME_HEADER *header = (FRAME_HEADER *)&buff.data()[frame_offset];
+		time_t start_time = (time_t)header->ctime;
+		while (frame_offset != -1)
+		{
+			
+		}
+	
+		return -1;
+	}
+
+	void CutVideo(QString &src_file_path, QString &out_dir)
+	{
+		static ULONGLONG file_counter = 0;
+
+		QFile src_file(src_file_path);
+		QFile *dst_file = NULL;
+
+		if (src_file.open(QIODevice::ReadOnly)) {
+			QByteArray buff = src_file.readAll();
+			unsigned int frame_offset = FindFrame(buff, 0);
+
+			while((frame_offset = FindFrame(buff, frame_offset)) != -1) {
+				FRAME_HEADER *header = (FRAME_HEADER *)&buff.data()[frame_offset];
+				time_t time = (time_t)header->ctime;
+				// YYYY-MM-DD HH-MM-SS [counter]
+				char *str = ctime(&time);
+
+				QString time_str = ComposeFileName(out_dir, time, file_counter);
+
+				int x = 0;
+			}
+		}
+	}
+
+	void Run(QString &video_files_dir, QString &out_dir)
+	{
+		QStringList file_list = GetFileList(video_files_dir);
+		foreach(QString file_path, file_list) {
+			CutVideo(file_path, out_dir);
+		}		
+	}
+}
+
 int main(int argc, char *argv[])
 {
-	//VDIFile vdi(QString::fromLocal8Bit("K:\\36076\\backaps\\fs1C.vdi"));
-	//QFile out_file(QString::fromLocal8Bit("G:\\out.bin"));
-	//if (out_file.open(QIODevice::ReadWrite) && vdi.Open()) {
-	//	DWORD block_size = vdi.BlockSize();
-	//	DWORD block_count = vdi.BlocksCount();
-	//	char *buff = new char[block_size];
-	//	for (DWORD i = 0; i < block_count; i++) {
-	//		memset(buff, 0x00, block_size);
-	//		vdi.ReadBlock(i, buff);
-	//		out_file.write(buff, block_size);
-	//	}
-	//}
-
-	//VHDFile vhd("G:\\Windows 2003 Std x86 Courier d2.vhd");
-	//VHDFile snap1("G:\\Windows 2003 Std x86 Courier d2_E869CDB8-12F2-4ECF-AEE2-F57A8A4D0B53.avhd");
-	//VHDFile snap2("G:\\Windows 2003 Std x86 Courier d2_81A3833A-CE7E-4C08-8FD2-4D902FBE6319.avhd");
-	//VHDFile snap3("G:\\Windows 2003 Std x86 Courier d2_949C6D63-4EA8-49A8-A6A1-9E6DAC8C9BA0.avhd");
-	//QFile out_file("G:\\Test\\result.img");
-	//if (vhd.Open() && snap1.Open() && snap2.Open() && snap3.Open() && out_file.open(QIODevice::ReadWrite)) {
-	//	DWORD block_count = vhd.BlocksCount();
-	//	DWORD block_size = snap1.BlockSize();
-	//	snap3.SetParent(&snap2);
-	//	snap2.SetParent(&snap1);
-	//	snap1.SetParent(&vhd);
-	//	char *block = new char[block_size];
-	//	for (DWORD i = 0; i < block_count; i++) {
-	//		memset(block, 0x00, block_size);
-	//		snap3.ReadBlock(i, block);
-	//		out_file.write(block, (qint64)block_size);
-	//	}
-	//	delete[] block;
-	//}
-
 	QApplication a(argc, argv);
 	MainWindow w;
 	w.show();
+
+	dvr::Run(QString::fromLocal8Bit("G:/"), QString::fromLocal8Bit("E:/36183-36184"));
 
 	return a.exec();
 }
