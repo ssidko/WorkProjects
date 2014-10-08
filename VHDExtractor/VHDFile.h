@@ -94,6 +94,7 @@ public:
 	DWORD SectorsPerBlock(void);
 	bool ReadBlock(DWORD block_num, char *block_buffer);
 	DWORD UsedEntriesInBAT(void);
+	FileFormat ImageFileFormat(void) {return DiskImageFile::kVhdFile;}
 };
 
 #endif

@@ -6,12 +6,18 @@
 class DiskImageFile
 {
 public:
+	enum FileFormat {
+		kVdiFile,
+		kVhdFile
+	};
+
 	virtual ~DiskImageFile() {};
-	virtual bool Open() = 0;
-	virtual void Close() = 0;
-	virtual DWORD BlockSize() = 0;
-	virtual DWORD BlocksCount() = 0;
+	virtual bool Open(void) = 0;
+	virtual void Close(void) = 0;
+	virtual DWORD BlockSize(void) = 0;
+	virtual DWORD BlocksCount(void) = 0;
 	virtual bool ReadBlock(DWORD block_num, char *block_buff) = 0;
+	virtual FileFormat ImageFileFormat(void) = 0;
 };
 
 #endif
