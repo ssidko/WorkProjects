@@ -28,7 +28,7 @@ public:
 	void Print(const TCHAR *str);
 	void Print(const TCHAR *str, WORD text_colour);
 	void Print(const TCHAR *str, WORD text_colour, WORD background_colour);
-	void SetTextColour(WORD colour);
+	void SetTextColour(WORD text_colour);
 	void SetTextColour(WORD text_colour, WORD background_colour);
 	void SetPosition(short x, short y);
 	void Test();

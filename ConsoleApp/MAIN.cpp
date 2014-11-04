@@ -771,6 +771,8 @@ namespace DHFS
 
 }
 
+#include "WinConsole.h"
+
 using namespace DHFS;
 
 int _tmain(int argc, _TCHAR* argv[])
@@ -779,6 +781,9 @@ int _tmain(int argc, _TCHAR* argv[])
 	DWORD raw = 0x3a3a545a;
 	DWORD x = FRAME_HEADER_MAGIC;
 	date = *((TIME_STAMP *)&raw);
+
+	WinConsole console;
+	console.Test();
 
 	_tprintf(_T("\nPress any key for exit ..."));
 	_getch();

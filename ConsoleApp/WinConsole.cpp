@@ -1,6 +1,8 @@
 #include "WinConsole.h"
 
-WinConsole::WinConsole(void) : output(NULL), colour(kWhite)
+#define INVALID_COLOUR			(WORD)0xFFFF
+
+WinConsole::WinConsole(void) : output(NULL), colour(INVALID_COLOUR)
 {
 	::AllocConsole();
 	::SetConsoleCP(DEFAULT_CP);
@@ -14,14 +16,19 @@ WinConsole::~WinConsole(void)
 
 void WinConsole::SaveColour(void)
 {
-	CONSOLE_SCREEN_BUFFER_INFO buffer_info;
-	memset(&buffer_info, 0x00, sizeof(CONSOLE_SCREEN_BUFFER_INFO));
-	::GetConsoleScreenBufferInfo(output, &buffer_info);	
+	CONSOLE_SCREEN_BUFFER_INFO screen_info;
+	memset(&screen_info, 0x00, sizeof(CONSOLE_SCREEN_BUFFER_INFO));
+	::GetConsoleScreenBufferInfo(output, &screen_info);
+	colour = screen_info.wAttributes;
 }
 
 void WinConsole::RestoreColour(void)
 {
-	::SetConsoleTextAttribute(output, colour);
+	if (colour != INVALID_COLOUR) {
+		::SetConsoleTextAttribute(output, colour);
+	} else {
+		SetTextColour(kWhite, kBlack);
+	}
 }
 
 void WinConsole::Print(const TCHAR *str)
@@ -67,10 +74,24 @@ void WinConsole::SetPosition(short x, short y)
 
 void WinConsole::Test()
 {
-	Print(_T("####"), kWhite|kIntensity); Print(_T("####"), kWhite); Print(_T("####\n"), kIntensity);
-	Print(_T("WinConsole ver.:")); Print(_T(" 2")); Print(_T(" 2"), kIntensity); Print(_T(" 0.1\n"), kWhite|kIntensity);
-	Print(_T("New line\n"), kBlack, kIntensity);
-	Print(_T("New line\n"), kBlue);
-	Print(_T("New line\n"), kRed);
-	Print(_T("Initial colour")); Print(_T(" 1"), kRed); Print(_T(" 2")); Print(_T(" 2"), kIntensity); Print(_T(" 3\n"), kBlue|kGreen);
+	Print(_T("WinConsole\n"));
+
+	Print(_T("\n“ест основных цветов:\n"));
+
+	Print(_T(" ####")); Print(_T(" - цвет по умолчанию\n"));
+	Print(_T(" ####"), kWhite|kIntensity); Print(_T(" - интенсивный белый\n"));
+	Print(_T(" ####"), kBlue); Print(_T(" - синий\n"));
+	Print(_T(" ####"), kBlue|kIntensity); Print(_T(" - интенсивный синий\n"));
+	Print(_T(" ####"), kGreen); Print(_T(" - зеленый\n"));
+	Print(_T(" ####"), kGreen|kIntensity); Print(_T(" - интенсивный зеленый\n"));
+	Print(_T(" ####"), kRed); Print(_T(" - красный\n"));
+	Print(_T(" ####"), kRed|kIntensity); Print(_T(" - интенсивный красный\n"));	
+	
+	Print(_T("\n“ест смешаных цветов:\n"));
+	Print(_T(" ####"), kBlue|kGreen); Print(_T(" - синий+зеленый\n"));
+	Print(_T(" ####"), kBlue|kGreen|kIntensity); Print(_T(" - интенсивный синий+зеленый\n"));
+	Print(_T(" ####"), kBlue|kRed); Print(_T(" - синий+красный\n"));
+	Print(_T(" ####"), kBlue|kRed|kIntensity); Print(_T(" - интенсивный синий+красный\n"));
+	Print(_T(" ####"), kGreen|kRed); Print(_T(" - зеленый+красный\n"));
+	Print(_T(" ####"), kGreen|kRed|kIntensity); Print(_T(" - интенсивный зеленый+красный\n"));
 }
