@@ -108,7 +108,6 @@
     <ClCompile Include="vmfs.cpp" />
     <ClCompile Include="VMFSMain.cpp" />
     <ClCompile Include="cut_txt_main.cpp" />
-    <ClCompile Include="WinConsole.cpp" />
     <ClCompile Include="ZipRec.cpp" />
     <ClCompile Include="tibun.cpp" />
     <ClCompile Include="mp4_main.cpp" />
@@ -133,7 +132,6 @@
     <ClInclude Include="vmfs.h" />
     <ClInclude Include="VMFSMain.h" />
     <ClInclude Include="cut_txt_main.h" />
-    <ClInclude Include="WinConsole.h" />
     <ClInclude Include="ZipRec.h" />
     <ClInclude Include="tibun.h" />
     <ClInclude Include="zconf.h" />

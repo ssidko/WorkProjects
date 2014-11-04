@@ -81,9 +81,10 @@ LRESULT MainWnd::OnCreate(LPCREATESTRUCT pcs)
 		GetClientRect(&rc);
 		def_font.CreateFont(GetDC(), _T("Tahoma"), 8);
 
-		controls_gbox.Create(_T("Controls"), rc.left+5, rc.top/*+5*/, rc.right-2*5, (rc.bottom/2)-2*5, this, kControlsGBox);
-		controls_gbox.SetFont(&def_font);
+		//controls_gbox.Create(_T("Controls"), rc.left+5, rc.top/*+5*/, rc.right-2*5, (rc.bottom/2)-2*5, this, kControlsGBox);
+		//controls_gbox.SetFont(&def_font);
 
+		//painting_gbox.Create(_T("Painting"), rc.left+5, (rc.bottom/2), rc.right-2*5, (rc.bottom/2)-2*5, this, kPaintingGBox);
 		//painting_gbox.Create(_T("Painting"), 0, 0, 0, 0, this, kPaintingGBox);
 		//painting_gbox.SetFont(&def_font);
 

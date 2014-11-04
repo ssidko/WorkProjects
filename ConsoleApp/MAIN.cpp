@@ -738,16 +738,11 @@ namespace DHFS
 {
 #pragma push()
 #pragma pack(1)
-	//typedef struct _TIME_STAMP {
-	//	DWORD sec:6;
-	//	DWORD min:6;
-	//	DWORD hour:5;
-	//	DWORD day:5;
-	//	DWORD month:4;
-	//	DWORD year:6;
-	//} TIME_STAMP;
 	typedef struct _TIME_STAMP {
-		DWORD day:6;
+		DWORD sec:6;
+		DWORD min:6;
+		DWORD hour:5;
+		DWORD day:5;
 		DWORD month:4;
 		DWORD year:6;
 	} TIME_STAMP;
@@ -778,22 +773,15 @@ namespace DHFS
 
 using namespace DHFS;
 
-#include "WinConsole.h"
-
 int _tmain(int argc, _TCHAR* argv[])
 {
-	//TIME_STAMP date;
-	//DWORD raw = 0x39cA;
-	//DWORD x = FRAME_HEADER_MAGIC;
-	//date = *((TIME_STAMP *)&raw);
+	TIME_STAMP date;
+	DWORD raw = 0x3a3a545a;
+	DWORD x = FRAME_HEADER_MAGIC;
+	date = *((TIME_STAMP *)&raw);
 
-	//ULONGLONG tm = 60*60*24*31*12*365*14;
-	//tm *=1000;
-	//_tprintf(_T("\nPress any key for exit ..."));
-	//_getch();
-
-	WinConsole out;
-	out.Test();
+	_tprintf(_T("\nPress any key for exit ..."));
+	_getch();
 
 	return 0;
 }
