@@ -101,8 +101,6 @@ void MainWindow::ChooseDiskImageFile(void)
 	QString image_file_name = QFileDialog::getOpenFileName();
 
 
-
-
 	ui.FilePathLineEdit->setText(image_file_name);
 }
 
