@@ -4,37 +4,60 @@
 #include "PhysicalDrive.h"
 #include "Signature.h"
 
-using namespace W32Lib;
+#include <fstream>
+#include <iostream>
+
+using namespace std;
 
 void CreateSignatureMap(
-		unsigned int disk_number,
+		char *disk_name,
 		unsigned int start_sector,
 		unsigned int sector_count,
 		const char  *out_file,
 		unsigned int sector_size = 512,
 		unsigned int io_block_size = 256*512)
 {
-	PhysicalDrive disk(disk_number);
+	std::fstream disk(disk_name, ios_base::in|ios_base::out|ios_base::binary);
 	unsigned int sector_counter = 0;
+	unsigned int sectors_readed = 0;
 	unsigned int rw = 0;
 
 	char *buffer = new char[io_block_size];
+	char *sector = buffer;
 
-	if (disk.Open()) {
-		while (rw = disk.Read(buffer, io_block_size)) {
-			for (int i = 0; i < rw/sector_size; i++) {
+	if (disk.is_open()) {
+		do {
+			memset(buffer, 0x00, io_block_size);
+			disk.read(buffer, io_block_size);
+			for (sector = buffer; sector < buffer + io_block_size; sector += sector_size) {
 
-			
-				sector_counter++;
+
+
+				++sector_counter;
 			}
-		}
+		} while (!disk.good())
 	}
-
 }
 
 
 int main(int argc, char *argv[])
 {
+	std::fstream io("\\\\.\\PhysicalDrive1", std::ios_base::in|std::ios_base::out|std::ios_base::binary);
+	char buffer[512] = {0x00};
+	if (io.is_open()) {
+		io.read(buffer, 512);
+
+		memset(buffer, 0xFF, 512);
+		io.seekg(0);
+		io.write(buffer, 512);
+		io.flush();
+
+		io.seekg(0);
+		io.read(buffer, 512);
+
+		io.close();
+	}
+
 	QApplication a(argc, argv);
 	MainWindow w;
 	w.show();

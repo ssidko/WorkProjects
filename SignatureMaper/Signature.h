@@ -51,7 +51,7 @@ static const char *signature_description[] = {
 	"htc",
 	"bak, MS backup"
 	"7z"
-} ;
+};
 
 class Signature
 {
