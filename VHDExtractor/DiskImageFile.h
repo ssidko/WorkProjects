@@ -7,6 +7,7 @@ class DiskImageFile
 {
 public:
 	enum FileFormat {
+		kUnknownFileFormat,
 		kVdiFile,
 		kVhdFile
 	};

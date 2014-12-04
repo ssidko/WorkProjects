@@ -35,9 +35,10 @@ void CreateSignatureMap(
 
 				++sector_counter;
 			}
-		} while (!disk.good())
+		} while (!disk.good());
 	}
 }
+
 
 
 int main(int argc, char *argv[])
