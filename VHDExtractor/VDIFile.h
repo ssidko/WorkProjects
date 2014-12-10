@@ -56,7 +56,7 @@ public:
 	DWORD BlockSize(void);
 	DWORD BlocksCount(void);
 	bool ReadBlock(DWORD block_num, char *block_buff);
-	FileFormat ImageFileFormat(void) {return DiskImageFile::kVdiFile;}
+	Format ImageFileFormat(void) {return DiskImageFile::kVdiFile;}
 };
 
 #endif

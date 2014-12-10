@@ -73,6 +73,9 @@
     <ClCompile Include="DiskImageExtractor.cpp">
       <Filter>Core</Filter>
     </ClCompile>
+    <ClCompile Include="DBFile.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="MainWindow.ui">
@@ -108,6 +111,9 @@
       <Filter>Core</Filter>
     </ClInclude>
     <ClInclude Include="DiskImageFile.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="DBFile.h">
       <Filter>Core</Filter>
     </ClInclude>
   </ItemGroup>

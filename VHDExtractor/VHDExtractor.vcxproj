@@ -81,6 +81,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="BitMap.cpp" />
+    <ClCompile Include="DBFile.cpp" />
     <ClCompile Include="File.cpp" />
     <ClCompile Include="GeneratedFiles\Debug\moc_DiskImageExtractor.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
@@ -134,6 +135,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BitMap.h" />
+    <ClInclude Include="DBFile.h" />
     <ClInclude Include="DiskImageFile.h" />
     <ClInclude Include="File.h" />
     <ClInclude Include="GeneratedFiles\ui_MainWindow.h" />

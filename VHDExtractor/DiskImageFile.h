@@ -6,8 +6,8 @@
 class DiskImageFile
 {
 public:
-	enum FileFormat {
-		kUnknownFileFormat,
+	enum Format {
+		kUnknownFormat,
 		kVdiFile,
 		kVhdFile
 	};
@@ -18,7 +18,7 @@ public:
 	virtual DWORD BlockSize(void) = 0;
 	virtual DWORD BlocksCount(void) = 0;
 	virtual bool ReadBlock(DWORD block_num, char *block_buff) = 0;
-	virtual FileFormat ImageFileFormat(void) = 0;
+	virtual Format ImageFileFormat(void) = 0;
 };
 
 #endif
