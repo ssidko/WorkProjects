@@ -26,9 +26,6 @@ public:
 		unsigned char reserved_2[12];
 		unsigned char mdx_flag;
 		unsigned char reserved_3[3];
-
-
-
 	} HEADER;
 
 	#pragma pack(pop)
@@ -39,6 +36,13 @@ public:
 
 	DBFile(const char *file_name);
 	~DBFile(void);
+
+	bool ReadHeader(HEADER *header);
+	bool IsValidHeader(HEADER *header);
+	bool GetRecord(unsigned int record_number, char *record);
+	bool WriteRecord(unsigned int record_number, char *record);
+	bool IsValidRecord(unsigned char *record);
+	void RepairBadRecords(void);
 
 	bool Open(void);
 };

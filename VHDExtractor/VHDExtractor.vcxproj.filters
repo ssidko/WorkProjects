@@ -34,6 +34,9 @@
     <Filter Include="WLib">
       <UniqueIdentifier>{fdc28cb8-f534-40ac-a24c-70e23e99d00d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Utils">
+      <UniqueIdentifier>{17ee9bec-3964-42c7-b5c5-ffa5b27cb5ed}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GeneratedFiles\Debug\moc_MainWindow.cpp">
@@ -74,7 +77,7 @@
       <Filter>Core</Filter>
     </ClCompile>
     <ClCompile Include="DBFile.cpp">
-      <Filter>Core</Filter>
+      <Filter>Utils</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -114,7 +117,10 @@
       <Filter>Core</Filter>
     </ClInclude>
     <ClInclude Include="DBFile.h">
-      <Filter>Core</Filter>
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="ValidSymbols.h">
+      <Filter>Utils</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
