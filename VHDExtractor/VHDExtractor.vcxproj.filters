@@ -61,9 +61,6 @@
     <ClCompile Include="PhysicalDrive.cpp">
       <Filter>WLib</Filter>
     </ClCompile>
-    <ClCompile Include="BitMap.cpp">
-      <Filter>Core</Filter>
-    </ClCompile>
     <ClCompile Include="VDIFile.cpp">
       <Filter>Core</Filter>
     </ClCompile>
@@ -77,6 +74,9 @@
       <Filter>Core</Filter>
     </ClCompile>
     <ClCompile Include="DBFile.cpp">
+      <Filter>Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="BitMap.cpp">
       <Filter>Utils</Filter>
     </ClCompile>
   </ItemGroup>
@@ -107,9 +107,6 @@
     <ClInclude Include="PhysicalDrive.h">
       <Filter>WLib</Filter>
     </ClInclude>
-    <ClInclude Include="BitMap.h">
-      <Filter>Core</Filter>
-    </ClInclude>
     <ClInclude Include="VDIFile.h">
       <Filter>Core</Filter>
     </ClInclude>
@@ -120,6 +117,9 @@
       <Filter>Utils</Filter>
     </ClInclude>
     <ClInclude Include="ValidSymbols.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="BitMap.h">
       <Filter>Utils</Filter>
     </ClInclude>
   </ItemGroup>
