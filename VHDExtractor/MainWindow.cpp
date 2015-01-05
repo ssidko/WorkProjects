@@ -26,8 +26,7 @@ QStringList AvailablePhysicalDrives(void)
 	return disk_list;
 }
 
-MainWindow::MainWindow(QWidget *parent) 
-	: QMainWindow(parent),
+MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
 	progress_bar(NULL),
 	progress_text(NULL),
 	image_file(NULL),
@@ -35,7 +34,7 @@ MainWindow::MainWindow(QWidget *parent)
 {
 	ui.setupUi(this);
 	InitializeWidgets();
-	setFixedSize(geometry().width(),geometry().height());
+	//setFixedSize(geometry().width(), geometry().height());
 }
 
 MainWindow::~MainWindow()
@@ -54,12 +53,12 @@ void MainWindow::InitializeWidgets(void)
 	progress_bar->setFixedHeight(15);
 	progress_bar->setFixedWidth(200);
 
-	ui.DisksComboBox->addItem(QString::fromLocal8Bit(FILE_PATH_LINE_EDIT_DEFAULT_STRING));
-	ui.DisksComboBox->addItems(AvailablePhysicalDrives());
+	ui.DisksList_ComboBox->addItem(QString::fromLocal8Bit(FILE_PATH_LINE_EDIT_DEFAULT_STRING));
+	ui.DisksList_ComboBox->addItems(AvailablePhysicalDrives());
 
-	connect(ui.FilePathLineEdit, SIGNAL(textChanged(const QString &)), SLOT(UpdateStartButtonState(void)));
-	connect(ui.DisksComboBox, SIGNAL(currentIndexChanged(const QString &)), SLOT(UpdateStartButtonState(void)));
-	connect(ui.OpenFilePushButton, SIGNAL(clicked(bool)), SLOT(ChooseDiskImageFile(void)));
+	connect(ui.DiskImageFilePath_LineEdit, SIGNAL(textChanged(const QString &)), SLOT(UpdateStartButtonState(void)));
+	connect(ui.DisksList_ComboBox, SIGNAL(currentIndexChanged(const QString &)), SLOT(UpdateStartButtonState(void)));
+	connect(ui.OpenDiskImageFile_PushButton, SIGNAL(clicked(bool)), SLOT(OpenDiskImageFile(void)));
 	connect(ui.StartPushButton, SIGNAL(clicked(bool)), SLOT(SrartExtraction(void)));
 
 	EnableStatusBar(false);
@@ -77,8 +76,8 @@ void MainWindow::EnableStatusBar(bool enable)
 
 bool MainWindow::IsValidParameters(void)
 {
-	QString file_path = ui.FilePathLineEdit->text().trimmed();
-	QString disk_name = ui.DisksComboBox->currentText();
+	QString file_path = ui.DiskImageFilePath_LineEdit->text().trimmed();
+	QString disk_name = ui.DisksList_ComboBox->currentText();
 	QFileInfo file_info(file_path);
 	if (file_info.exists() && (disk_name != QString::fromLocal8Bit(FILE_PATH_LINE_EDIT_DEFAULT_STRING))) {
 		return true;
@@ -96,17 +95,17 @@ void MainWindow::UpdateStartButtonState(void)
 	}
 }
 
-void MainWindow::ChooseDiskImageFile(void)
+void MainWindow::OpenDiskImageFile(void)
 {
 	QString image_file_name = QFileDialog::getOpenFileName();
 
 
-	ui.FilePathLineEdit->setText(image_file_name);
+	ui.DiskImageFilePath_LineEdit->setText(image_file_name);
 }
 
 void MainWindow::SrartExtraction()
 {
-	QString output_file_name = ui.DisksComboBox->currentText();
+	QString output_file_name = ui.DisksList_ComboBox->currentText();
 	if (extractor) {
 		delete extractor;
 	}
@@ -123,9 +122,9 @@ void MainWindow::SrartExtraction()
 
 void MainWindow::EnableUserInput(bool enable)
 {
-	ui.FilePathLineEdit->setEnabled(enable);
-	ui.OpenFilePushButton->setEnabled(enable);
-	ui.DisksComboBox->setEnabled(enable);
+	ui.DiskImageFilePath_LineEdit->setEnabled(enable);
+	ui.OpenDiskImageFile_PushButton->setEnabled(enable);
+	ui.DisksList_ComboBox->setEnabled(enable);
 	ui.StartPushButton->setEnabled(enable);
 }
 

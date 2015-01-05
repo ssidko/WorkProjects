@@ -30,7 +30,7 @@ public:
 	bool IsValidParameters(void);
 public slots:
 	void UpdateStartButtonState(void);
-	void ChooseDiskImageFile(void);
+	void OpenDiskImageFile(void);
 	void SrartExtraction();
 	void ExtractionFinished(int end_code);
 	void UpdateProgress(unsigned int current_block, unsigned int max_block);
