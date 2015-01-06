@@ -4,13 +4,10 @@
 
 class DBFile
 {
-private:
-	std::fstream *io;
-
 public:
 
-	#pragma pack(push)
-	#pragma pack(1)
+#pragma pack(push)
+#pragma pack(1)
 
 	typedef struct _HEADER {
 		unsigned char flags;
@@ -24,12 +21,25 @@ public:
 		unsigned char transaction_incomplete_flag;
 		unsigned char encryption_flag;
 		unsigned char reserved_2[12];
-		unsigned char mdx_flag;
+		unsigned char index_flag;
 		unsigned char reserved_3[3];
 	} HEADER;
 
-	#pragma pack(pop)
+	typedef struct _FIELD_DESCRIPTOR {
+		unsigned char name[11];
+		unsigned char type;				// 'C', 'N', 'D'.
+		unsigned char reserved_1[4];	// 0x00
+		unsigned char size;
+		unsigned char fraction_size;	// Кол-во знаков после запятой
+		unsigned char reserved_2[14];	// 0x00
+	} FIELD_DESCRIPTOR;
 
+#pragma pack(pop)
+
+private:
+	std::fstream *io;
+
+public:
 	unsigned int header_size;
 	unsigned int record_size;
 	unsigned int records_count;
