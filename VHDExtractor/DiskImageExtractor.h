@@ -1,8 +1,10 @@
 #ifndef VHDEXTRACTOR_H
 #define VHDEXTRACTOR_H
 
+#include <fstream>
 #include <QThread>
 #include <QFile>
+#include <QMessageBox>
 #include "PhysicalDrive.h"
 #include "DiskImageFile.h"
 #include "VHDFile.h"
@@ -22,6 +24,7 @@ protected:
 public:
 	explicit DiskImageExtractor(DiskImageFile *disk_image_file, QString output_file);
 	~DiskImageExtractor(void);
+	void Extract(DiskImageFile &image, QString &out_file_name);
 signals:
 	void Finished(int exit_code);
 	void Progress(unsigned int current_block, unsigned int max_block);

@@ -20,6 +20,7 @@ private:
 	DiskImageFile *image_file;
 	DiskImageExtractor *extractor;
 	void EnableUserInput(bool enable);
+	void OpenDiskImageFile(void);
 public:
 	MainWindow(QWidget *parent = 0);
 	~MainWindow();
@@ -30,7 +31,7 @@ public:
 	bool IsValidParameters(void);
 public slots:
 	void UpdateStartButtonState(void);
-	void OpenDiskImageFile(void);
+	void SelectDiskImageFile(void);
 	void SrartExtraction();
 	void ExtractionFinished(int end_code);
 	void UpdateProgress(unsigned int current_block, unsigned int max_block);

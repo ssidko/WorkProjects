@@ -58,7 +58,7 @@ void MainWindow::InitializeWidgets(void)
 
 	connect(ui.DiskImageFilePath_LineEdit, SIGNAL(textChanged(const QString &)), SLOT(UpdateStartButtonState(void)));
 	connect(ui.DisksList_ComboBox, SIGNAL(currentIndexChanged(const QString &)), SLOT(UpdateStartButtonState(void)));
-	connect(ui.OpenDiskImageFile_PushButton, SIGNAL(clicked(bool)), SLOT(OpenDiskImageFile(void)));
+	connect(ui.OpenDiskImageFile_PushButton, SIGNAL(clicked(bool)), SLOT(SelectDiskImageFile(void)));
 	connect(ui.StartPushButton, SIGNAL(clicked(bool)), SLOT(SrartExtraction(void)));
 
 	EnableStatusBar(false);
@@ -97,9 +97,14 @@ void MainWindow::UpdateStartButtonState(void)
 
 void MainWindow::OpenDiskImageFile(void)
 {
-	QString image_file_name = QFileDialog::getOpenFileName();
+	QString image_file_name = QFileDialog::getOpenFileName(this, tr("Open File"), QString(), "(*.vhd *.vdi)");
 
 
+}
+
+void MainWindow::SelectDiskImageFile(void)
+{
+	QString image_file_name;
 	ui.DiskImageFilePath_LineEdit->setText(image_file_name);
 }
 
