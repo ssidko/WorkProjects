@@ -382,7 +382,9 @@ BOOL SQLiter::Open()
 	if (io.Open()) {
 		memset(&hdr, 0x00, sizeof(DB_HEADER));
 		if (ReadDbHeader(&hdr)) {
-			InitializeFreePagesList();
+			if (hdr.free_pages_counter && hdr.freelist_page) {
+				InitializeFreePagesList();
+			}
 			opened = TRUE;
 			return TRUE;
 		}

@@ -79,6 +79,9 @@
     <ClCompile Include="BitMap.cpp">
       <Filter>Utils</Filter>
     </ClCompile>
+    <ClCompile Include="Fat.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="MainWindow.ui">
@@ -121,6 +124,9 @@
     </ClInclude>
     <ClInclude Include="BitMap.h">
       <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Fat.h">
+      <Filter>Generated Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
