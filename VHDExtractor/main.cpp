@@ -39,31 +39,20 @@ void RepairAllDbf(QString &path)
 	}
 }
 
+typedef struct _DVR_DATE {
+	DWORD seconds:6;
+	DWORD minutes:6;
+	DWORD hours:5;
+	DWORD day:5;
+	DWORD month:4;
+	DWORD year:6;	
+} DVR_DATE;
+
 int main(int argc, char *argv[])
 {
 	using namespace fat;
+	fat::FindAndRepairDirectories("\\\\.\\PhysicalDrive1", (LONGLONG)953727*512, (DWORD)64*512, 4291533);
 	
-	LONGLONG offset = (LONGLONG)953727*512 + (LONGLONG)1144382*64*512;
-	DWORD cluster_size = 64*512;
-
-	PhysicalDrive disk("\\\\.\\PhysicalDrive0");
-	if (disk.Open()) {
-		char *buff = (char *)new char[cluster_size];
-		disk.SetPointer(offset);
-		while (cluster_size == disk.Read(buff, cluster_size)) {
-			DIR_ENTRY *entry = (DIR_ENTRY *)buff;
-			for (int i = 0; i < cluster_size/sizeof(DIR_ENTRY); i++) {
-				if (i == 0x45) {
-					int y = 0;
-				}
-				bool result = IsValidDirEntry((char *)entry);
-				entry++;
-			}
-			int x = 0;
-
-		}
-	}
-
 	QApplication a(argc, argv);
 	MainWindow w;
 	w.show();
