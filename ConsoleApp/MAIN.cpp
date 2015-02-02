@@ -736,7 +736,7 @@ namespace RAID6
 
 namespace DHFS
 {
-#pragma push()
+#pragma pack(push)
 #pragma pack(1)
 	typedef struct _TIME_STAMP {
 		DWORD sec:6;
@@ -772,6 +772,7 @@ namespace DHFS
 }
 
 #include "WinConsole.h"
+#include "h264_1.h"
 
 using namespace DHFS;
 
@@ -779,8 +780,7 @@ int _tmain(int argc, _TCHAR* argv[])
 {
 	_tprintf(_T("Test message\n"));
 	
-	WinConsole console;
-	console.Test();
+	h264_1::main(NULL, 0, NULL);
 
 	_tprintf(_T("\nPress any key for exit ..."));
 	_getch();

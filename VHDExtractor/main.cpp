@@ -51,7 +51,7 @@ typedef struct _DVR_DATE {
 int main(int argc, char *argv[])
 {
 	using namespace fat;
-	fat::FindAndRepairDirectories("\\\\.\\PhysicalDrive1", (LONGLONG)953727*512, (DWORD)64*512, 4291533);
+	fat::FindAndRepairDirectories("\\\\.\\PhysicalDrive1", (LONGLONG)953727*512, (DWORD)64*512, 4306432);
 	
 	QApplication a(argc, argv);
 	MainWindow w;

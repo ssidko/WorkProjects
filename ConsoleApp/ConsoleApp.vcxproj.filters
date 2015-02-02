@@ -115,6 +115,7 @@
     <ClCompile Include="WinConsole.cpp">
       <Filter>console</Filter>
     </ClCompile>
+    <ClCompile Include="h264_1.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Calc.h">
@@ -183,6 +184,7 @@
     <ClInclude Include="WinConsole.h">
       <Filter>console</Filter>
     </ClInclude>
+    <ClInclude Include="h264_1.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="ConsoleApp.rc" />

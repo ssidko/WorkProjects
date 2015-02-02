@@ -145,6 +145,7 @@ void fat::EraseBadDirEntry(DIR_ENTRY *entry, DWORD count)
 
 int fat::FindAndRepairDirectories(char *file_name, LONGLONG offset, DWORD cluster_size, DWORD max_cluster)
 {
+	DWORD err = 0;
 	DIR_ENTRY *entry = NULL;
 	DWORD entry_per_cluster = cluster_size/sizeof(DIR_ENTRY);
 	W32Lib::PhysicalDrive disk(file_name);
@@ -164,7 +165,9 @@ int fat::FindAndRepairDirectories(char *file_name, LONGLONG offset, DWORD cluste
 						memcpy(directory, &cluster[ii*sizeof(DIR_ENTRY)], (entry_per_cluster - ii)*sizeof(DIR_ENTRY));
 						EraseBadDirEntry((DIR_ENTRY *)directory, entry_per_cluster);
 						disk.SetPointer(offset + (LONGLONG)i*cluster_size);
-						disk.Write(directory, cluster_size);
+						if (disk.Write(directory, cluster_size) != cluster_size) {
+							err = ::GetLastError();
+						}
 
 						delete[] directory;
 						break;

@@ -24,48 +24,48 @@ public:
 		  buffer(NULL),
 		  offset(0),
 		  readed(0)
-	  {
-		  assert(file);
-		  if(!file->IsOpen())
-			  if (!file->Open())
-				  throw 0;
-		  if (!file->SetPointer(base_offset))
-			  throw 0;
+	{
+		assert(file);
+		if(!file->IsOpen())
+			if (!file->Open())
+				throw 0;
+		if (!file->SetPointer(base_offset))
+			throw 0;
 
-		  buffer_size = 128*SECTOR_SIZE;
-		  buffer = new BYTE[buffer_size];
-	  }
+		buffer_size = 128*SECTOR_SIZE;
+		buffer = new BYTE[buffer_size];
+	}
 	~OutStream()
-	  {
-		  if (buffer) delete[] buffer;
-	  }
+	{
+		if (buffer) delete[] buffer;
+	}
+
 	DWORD Read(BYTE *buff, DWORD count)
-	  {
-		  DWORD cnt = 0;
-		  DWORD out_buff_offset = 0;
-		  while (count) {
-			  cnt = min(count, (readed - offset));
-			  if (cnt) {
-				  memcpy(&buff[out_buff_offset], &buffer[offset], cnt);
-				  offset += cnt;
-				  out_buff_offset += cnt;
-				  count -= cnt;
-			  }
-			  else {
-				  offset = 0;
-				  buffer_offset += readed;
-				  if (!file->SetPointer(buffer_offset))
-					  break;
-				  if (!(readed = file->Read(buffer, buffer_size)))
-					  break;
-			  }
-		  }
-		  return out_buff_offset;
-	  }
+	{
+		DWORD cnt = 0;
+		DWORD out_buff_offset = 0;
+		while (count) {
+			cnt = min(count, (readed - offset));
+			if (cnt) {
+				memcpy(&buff[out_buff_offset], &buffer[offset], cnt);
+				offset += cnt;
+				out_buff_offset += cnt;
+				count -= cnt;
+			} else {
+				offset = 0;
+				buffer_offset += readed;
+				if (!file->SetPointer(buffer_offset))
+					break;
+				if (!(readed = file->Read(buffer, buffer_size)))
+					break;
+			}
+		}
+		return out_buff_offset;
+	}
 	void BytesReaded(LONGLONG &readed)
-	  {
-		  readed = buffer_offset + offset;	
-	  }
+	{
+		readed = buffer_offset + offset;	
+	}
 };
 
 #pragma pack (push)

@@ -100,6 +100,7 @@
     <ClCompile Include="dshowtest.cpp" />
     <ClCompile Include="ext_journal.cpp" />
     <ClCompile Include="h264.cpp" />
+    <ClCompile Include="h264_1.cpp" />
     <ClCompile Include="mxf.cpp" />
     <ClCompile Include="PlaChecker.cpp" />
     <ClCompile Include="smart.cpp" />
@@ -124,6 +125,7 @@
     <ClInclude Include="dshowtest.h" />
     <ClInclude Include="ext_journal.h" />
     <ClInclude Include="h264.h" />
+    <ClInclude Include="h264_1.h" />
     <ClInclude Include="mxf.h" />
     <ClInclude Include="PlaChecker.h" />
     <ClInclude Include="resource.h" />
