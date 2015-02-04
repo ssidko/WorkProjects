@@ -746,7 +746,7 @@ namespace DHFS
 		DWORD month:4;
 		DWORD year:6;
 	} TIME_STAMP;
-#pragma pop()
+#pragma pack(pop)
 
 #define FRAME_HEADER_MAGIC			'DHAV'
 
