@@ -102,11 +102,13 @@ namespace h264_1
 		return false;
 	}
 
+	
 	int main(TCHAR *file_name, LONGLONG offset, TCHAR *out_dir)
 	{
 		FileEx file(_T("G:\\36829\\original.dsk"));
 		if (file.Open()) {
 			LONGLONG offset = 0;
+			LONGLONG max_size = 0;
 			FRAME_DESCRIPTOR frame = {0};
 			while (NextFrame(file, offset, frame)) {
 
@@ -114,6 +116,10 @@ namespace h264_1
 					offset = (frame.offset + frame.clean_size);
 				} else {
 					offset = (frame.offset + frame.clean_size + 1);
+				}
+
+				if (frame.clean_size > max_size) {
+					max_size = frame.clean_size;
 				}
 
 				int x = 0;
