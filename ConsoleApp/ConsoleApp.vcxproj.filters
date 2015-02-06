@@ -102,7 +102,6 @@
     <ClCompile Include="ext_journal.cpp">
       <Filter>ext_journal</Filter>
     </ClCompile>
-    <ClCompile Include="h264.cpp" />
     <ClCompile Include="sqliter.cpp">
       <Filter>SQLite</Filter>
     </ClCompile>
@@ -115,7 +114,12 @@
     <ClCompile Include="WinConsole.cpp">
       <Filter>console</Filter>
     </ClCompile>
-    <ClCompile Include="h264_1.cpp" />
+    <ClCompile Include="h264.cpp">
+      <Filter>dvr-h264</Filter>
+    </ClCompile>
+    <ClCompile Include="h264_1.cpp">
+      <Filter>dvr-h264</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Calc.h">
@@ -171,7 +175,6 @@
     <ClInclude Include="ext_journal.h">
       <Filter>ext_journal</Filter>
     </ClInclude>
-    <ClInclude Include="h264.h" />
     <ClInclude Include="sqliter.h">
       <Filter>SQLite</Filter>
     </ClInclude>
@@ -184,7 +187,12 @@
     <ClInclude Include="WinConsole.h">
       <Filter>console</Filter>
     </ClInclude>
-    <ClInclude Include="h264_1.h" />
+    <ClInclude Include="h264.h">
+      <Filter>dvr-h264</Filter>
+    </ClInclude>
+    <ClInclude Include="h264_1.h">
+      <Filter>dvr-h264</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="ConsoleApp.rc" />

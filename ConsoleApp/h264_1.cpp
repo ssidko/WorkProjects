@@ -102,10 +102,15 @@ namespace h264_1
 		return false;
 	}
 
-	
+#define BUFFER_SIZE				DWORD(512*512)
+
 	int main(TCHAR *file_name, LONGLONG offset, TCHAR *out_dir)
 	{
 		FileEx file(_T("G:\\36829\\original.dsk"));
+		VideoStorage storage("J:\\Work\\36829\\out");
+		Timestamp min_time(2014, 6, 1);
+		Timestamp max_time(2014, 12, 1);
+		Timestamp time;
 		if (file.Open()) {
 			LONGLONG offset = 0;
 			LONGLONG max_size = 0;
@@ -118,10 +123,10 @@ namespace h264_1
 					offset = (frame.offset + frame.clean_size + 1);
 				}
 
-				if (frame.clean_size > max_size) {
-					max_size = frame.clean_size;
+				time = frame.timestamp;
+				if ( (time > min_time) && (time < max_time) ) {
+					storage.SaveFrame(file, frame);
 				}
-
 				int x = 0;
 			}
 		}
