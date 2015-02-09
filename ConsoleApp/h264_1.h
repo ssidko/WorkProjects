@@ -68,12 +68,15 @@ namespace h264_1
 
 
 	typedef struct _FRAME_DESCRIPTOR{
-		DWORD subframes_count;
 		LONGLONG offset;
-		DWORD size;
-		LONGLONG clean_size;
 		TIMESTAMP timestamp;
-		bool IsFull(void) {return (size == clean_size);}
+		DWORD subframes;
+		DWORD video_frames; 
+		DWORD size;
+		DWORD clean_size;
+
+		bool IsComplete(void) {return (size == clean_size);}
+		bool IsIncomplete(void) {return (size != clean_size);}
 	} FRAME_DESCRIPTOR;
 
 	class Timestamp
@@ -170,7 +173,7 @@ namespace h264_1
 		}
 	};
 
-#define MAX_DELTA_TIME				(DWORD)3
+#define MAX_DELTA_TIME				(LONGLONG)2
 #define FRAME_BUFFER_SIZE			(DWORD)512*512
 
 	class VideoStorage

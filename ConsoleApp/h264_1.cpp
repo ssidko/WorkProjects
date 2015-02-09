@@ -61,7 +61,7 @@ namespace h264_1
 		while (file.Find(magic, sizeof(magic)) != (-1)) {
 
 			SUBFRAME_HEADER hdr;
-			LONGLONG prev_size = 0;
+			DWORD prev_size = 0;
 			bool is_present_timestamp_subframe = false;
 			memset(&frame, 0x00, sizeof(FRAME_DESCRIPTOR));
 
@@ -79,7 +79,10 @@ namespace h264_1
 						}
 					}
 
-					frame.subframes_count++;
+					frame.subframes++;
+					if ((hdr.type == kType_0D) || (hdr.type == kWithTimestamp)) {
+						frame.video_frames++;
+					}
 					frame.size += (hdr.header_size + hdr.data_size);
 					frame.clean_size += prev_size;
 					file.SetPointer((LONGLONG)(hdr.header_size + hdr.data_size), FILE_CURRENT);
@@ -107,23 +110,39 @@ namespace h264_1
 	int main(TCHAR *file_name, LONGLONG offset, TCHAR *out_dir)
 	{
 		FileEx file(_T("G:\\36829\\original.dsk"));
-		VideoStorage storage("J:\\Work\\36829\\out");
+		FileEx log_file(_T("G:\\36829\\headers-timestamp.log"));
+		char log_str[128];
+		
+		VideoStorage storage("G:\\36829\\out");
 		Timestamp min_time(2014, 6, 1);
 		Timestamp max_time(2014, 12, 1);
 		Timestamp time;
-		if (file.Open()) {
-			LONGLONG offset = 0;
+		if (file.Open() && log_file.Create()) {
+			LONGLONG offset = 0x62F369C2B2;
 			LONGLONG max_size = 0;
 			FRAME_DESCRIPTOR frame = {0};
 			while (NextFrame(file, offset, frame)) {
 
-				if (frame.IsFull()) {
+				time = frame.timestamp;
+				memset(log_str, 0x00, sizeof(log_str));
+				sprintf_s(log_str, sizeof(log_str), "%08llX %s %02d/%02d %d/%d\n",
+					frame.offset, time.String(),
+					frame.video_frames,
+					frame.subframes,
+					frame.clean_size,
+					frame.size);
+				log_file.Write(log_str, strlen(log_str));
+
+				if (frame.IsComplete()) {
 					offset = (frame.offset + frame.clean_size);
 				} else {
 					offset = (frame.offset + frame.clean_size + 1);
+
+					memset(log_str, 0x00, sizeof(log_str));
+					sprintf_s(log_str, sizeof(log_str), "\n# New frame sequence --->\n");
+					log_file.Write(log_str, strlen(log_str));
 				}
 
-				time = frame.timestamp;
 				if ( (time > min_time) && (time < max_time) ) {
 					storage.SaveFrame(file, frame);
 				}
