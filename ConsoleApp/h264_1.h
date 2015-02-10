@@ -4,6 +4,8 @@
 #include <list>
 #include <string>
 #include <cstdlib>
+#include <sstream>
+#include <iostream>
 
 namespace h264_1
 {
@@ -195,6 +197,8 @@ namespace h264_1
 		}
 	} FRAME_SEQUENCE;
 
+#define MAX_DELTA_TIME				(LONGLONG)2
+
 	class VideoFile
 	{
 	private:
@@ -205,7 +209,8 @@ namespace h264_1
 		Timestamp last_time;
 	public:
 		VideoFile(const char *file_name, DWORD file_id) :  id(file_id), file_path(file_name) {}
-		bool Create() {return (file.Create(file_path.data()) != 0x00);}
+		bool Create(void) {return (file.Create(file_path.data()) != 0x00);}
+		void Close(void) {file.Close();}
 		const Timestamp *StartTime(void) {return &start_time;}
 		const Timestamp *LastTime(void) {return &last_time;}
 		bool SaveFrame(const FRAME_DESCRIPTOR &frame_descriptor, BYTE *frame_buff, DWORD frame_size)
@@ -216,28 +221,37 @@ namespace h264_1
 			last_time = frame_descriptor.timestamp;
 			return (file.Write(frame_buff, frame_size) == frame_size);
 		}
+		bool SaveFrameSequence(FRAME_SEQUENCE &sequence, BYTE *buff, DWORD size)
+		{
+			if (start_time.Seconds() == 0x00) {
+				start_time = sequence.start_time;
+			}
+			last_time = sequence.end_time;
+			return (file.Write(buff, sequence.size) == sequence.size);
+		}
+		bool ItsYour(Timestamp &time)
+		{
+			if (time.Seconds() >=  last_time.Seconds()) {
+				if ((time.Seconds() - last_time.Seconds()) <= MAX_DELTA_TIME) {
+					return true;
+				}
+			}
+			
+			return false;
+		}
 	};
-
-#define MAX_DELTA_TIME				(LONGLONG)2
-#define FRAME_BUFFER_SIZE			(DWORD)512*512
 
 	class VideoStorage
 	{
 	private:
-		BYTE *buffer;
 		DWORD next_id;
 		std::string dir_path;
 		VideoFile *current_file;
 		std::list<VideoFile *> files;
 	public:
-		VideoStorage(const char *directory) : buffer(NULL), next_id(0), dir_path(directory), current_file(NULL)
-		{
-			buffer = new BYTE[FRAME_BUFFER_SIZE];
-		}
-		~VideoStorage()
-		{
-			delete[] buffer;
-		}
+		VideoStorage(const char *directory) : next_id(0), dir_path(directory), current_file(NULL)	{}
+		~VideoStorage() {}
+
 		DWORD NextID(void)
 		{
 			++next_id;
@@ -247,61 +261,64 @@ namespace h264_1
 			return next_id;
 		}
 
-		VideoFile *CreateNewVideoFile(Timestamp &timestamp, DWORD id)
+		VideoFile *CreateNewFile(Timestamp &timestamp, DWORD id)
 		{
-			char id_str[16];
-			memset(id_str, 0x00, sizeof(id_str));
-			_itoa_s (id,id_str,sizeof(id_str),10);
-			std::string file_name = dir_path + "\\" + timestamp.String() + " [" + id_str + "]";
-			VideoFile *video_file = new VideoFile(file_name.c_str(), id);
-			if (!video_file) {
-				throw -1;
-			}
-			if (!video_file->Create()) {
+			std::stringstream file_name;
+			file_name << dir_path << "\\" << timestamp.String() << " [" << id << "]" << ".h264";
+			VideoFile *video_file = new VideoFile(file_name.str().c_str(), id);
+			if (!video_file || !video_file->Create()) {
 				throw -1;
 			}
 			return video_file;
 		}
 
-		VideoFile *GetVideoFile(Timestamp &timestamp)
+		void CloseAndRemoveFile(VideoFile *file)
 		{
-			VideoFile *vf = NULL;
-			LONGLONG delta = 0;
-			if (files.size()){
-				if (current_file) {
-					if (timestamp > *current_file->LastTime()) {
-						if ((timestamp - *current_file->LastTime()) <= MAX_DELTA_TIME) {
-							return current_file;
-						}
-					}
-				}
-				for (std::list<VideoFile *>::iterator it = files.begin(); it != files.end(); ++it) {
-					if (timestamp > *(*it)->LastTime()) {
-						if ((timestamp - *(*it)->LastTime()) <= MAX_DELTA_TIME) {
-							current_file = *it;
-							return current_file;
-						}
-					}
-				}
-			} 
-
-			current_file = CreateNewVideoFile(timestamp, NextID());
-			files.push_back(current_file);
-			return current_file;
+			file->Close();
+			files.remove(file);
+			delete file;
 		}
 
-		bool SaveFrame(FileEx &file, const FRAME_DESCRIPTOR &frame)
+		VideoFile *GetFileFor(FRAME_SEQUENCE &sequence)
 		{
-			Timestamp time = frame.timestamp;
-			if (file.Read(buffer, frame.size) != frame.size) {
-				return false;
+			bool found = false;
+			VideoFile *video_file = NULL;
+			std::list<VideoFile *>::iterator it;
+			std::list<VideoFile *> tmp_list;
+			for (it = files.begin(); it != files.end(); ++it) {
+				if ((*it)->ItsYour(sequence.start_time)) {
+					tmp_list.push_back(*it);
+				}
 			}
-			VideoFile *video_file = GetVideoFile(time);
+			size_t count = tmp_list.size();
+			if (count > 1) {
+				for (it = tmp_list.begin(); it != tmp_list.end(); ++it) {
+					CloseAndRemoveFile(*it);
+				}
+			} else if (count == 1) {
+				video_file = *tmp_list.begin();
+			}
+			if (video_file == NULL) {
+				video_file = CreateNewFile(sequence.start_time, NextID());
+				files.push_back(video_file);
+			}
+			return video_file;
+		}
+
+		bool SaveFrameSequence(FileEx &file,  FRAME_SEQUENCE &sequence)
+		{
+			bool result = false;
+			VideoFile *video_file = GetFileFor(sequence);
 			if (video_file) {
-				return video_file->SaveFrame(frame, buffer, frame.size);
-			} else {
-				return false;
+				DWORD rw = 0;
+				BYTE *buffer = new BYTE[sequence.size];
+				file.SetPointer(sequence.offset);
+				if (file.Read(buffer, sequence.size) == sequence.size) {
+					result = video_file->SaveFrameSequence(sequence, buffer, sequence.size);
+				}
+				delete [] buffer;
 			}
+			return result;
 		}
 	};
 

@@ -145,33 +145,19 @@ namespace h264_1
 	int main(TCHAR *file_name, LONGLONG offset, TCHAR *out_dir)
 	{
 		FileEx file(_T("G:\\36829\\original.dsk"));
-		FileEx log_file(_T("G:\\36829\\headers-timestamp.log"));
 		
-		VideoStorage storage("G:\\36829\\out");
 		Timestamp min_time(2014, 6, 1);
 		Timestamp max_time(2014, 12, 1);
-		Timestamp time;
-		std::string log_separator("\n# New frame sequence --->\n");
-		if (file.Open() && log_file.Create()) {
-			LONGLONG offset = 0;
-			LONGLONG max_size = 0;
-			FRAME_DESCRIPTOR frame = {0};
-			while (NextFrame(file, offset, frame)) {
 
-				time = frame.timestamp;
-				log_file.Write((void *)frame.Info().data(), frame.Info().length());
-
-				if (frame.IsComplete()) {
-					offset = (frame.offset + frame.clean_size);
-				} else {
-					offset = (frame.offset + frame.clean_size + 1);
-					log_file.Write((void *)log_separator.data(), log_separator.length());
+		VideoStorage storage("G:\\36829\\out");
+		if (file.Open()) {
+			LONGLONG offset = 0x00;
+			FRAME_SEQUENCE sequence;
+			while (NextFrameSequence(file, offset, sequence)) {
+				if (sequence.start_time.Seconds() >= min_time.Seconds()) {
+					storage.SaveFrameSequence(file, sequence);
 				}
-
-				if ( (time > min_time) && (time < max_time) ) {
-					storage.SaveFrame(file, frame);
-				}
-				int x = 0;
+				offset = sequence.next_offset;
 			}
 		}
 		return 0;
