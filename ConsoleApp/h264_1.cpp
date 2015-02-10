@@ -109,16 +109,23 @@ namespace h264_1
 	{
 		LONGLONG offset = start_offset;
 		FRAME_DESCRIPTOR frame = {0};
+		Timestamp curr_time;
 		sequence.Clear();
 		while (NextFrame(file, offset, frame)) {
 
+			curr_time = frame.timestamp;
 			if (sequence.frame_count == 0x00) {
-				sequence.start_time = frame.timestamp;
+				sequence.start_time = curr_time;
 				sequence.offset = frame.offset;
-			}
-			sequence.end_time = frame.timestamp;
-			sequence.frame_count++;
+			} 
+			sequence.end_time = curr_time;
 
+			if ((curr_time < sequence.end_time) || ((curr_time - sequence.end_time) > MAX_DELTA_TIME)) {
+				break;
+			}
+
+			sequence.frame_count++;
+			
 			if (frame.IsComplete()) {
 				offset = (frame.offset + frame.clean_size);
 				sequence.next_offset = offset;
@@ -139,35 +146,26 @@ namespace h264_1
 	{
 		FileEx file(_T("G:\\36829\\original.dsk"));
 		FileEx log_file(_T("G:\\36829\\headers-timestamp.log"));
-		char log_str[128];
 		
 		VideoStorage storage("G:\\36829\\out");
 		Timestamp min_time(2014, 6, 1);
 		Timestamp max_time(2014, 12, 1);
 		Timestamp time;
+		std::string log_separator("\n# New frame sequence --->\n");
 		if (file.Open() && log_file.Create()) {
-			LONGLONG offset = 0x62F369C2B2;
+			LONGLONG offset = 0;
 			LONGLONG max_size = 0;
 			FRAME_DESCRIPTOR frame = {0};
 			while (NextFrame(file, offset, frame)) {
 
 				time = frame.timestamp;
-				memset(log_str, 0x00, sizeof(log_str));
-				sprintf_s(log_str, sizeof(log_str), "%08llX %s %02d/%02d %d/%d\n",
-					frame.offset, time.String(),
-					frame.video_frames,
-					frame.subframes,
-					frame.clean_size,
-					frame.size);
-				log_file.Write(log_str, strlen(log_str));
+				log_file.Write((void *)frame.Info().data(), frame.Info().length());
 
 				if (frame.IsComplete()) {
 					offset = (frame.offset + frame.clean_size);
 				} else {
 					offset = (frame.offset + frame.clean_size + 1);
-					memset(log_str, 0x00, sizeof(log_str));
-					sprintf_s(log_str, sizeof(log_str), "\n# New frame sequence --->\n");
-					log_file.Write(log_str, strlen(log_str));
+					log_file.Write((void *)log_separator.data(), log_separator.length());
 				}
 
 				if ( (time > min_time) && (time < max_time) ) {

@@ -73,22 +73,6 @@ namespace h264_1
 #pragma pack (pop)
 
 
-	typedef struct _FRAME_DESCRIPTOR{
-		LONGLONG offset;
-		TIMESTAMP timestamp;
-		DWORD subframes;
-		DWORD video_frames; 
-		DWORD size;
-		DWORD clean_size;
-
-		void Clear(void)
-		{
-			memset(this, 0x00, sizeof(*this));
-		}
-		bool IsComplete(void) {return (size == clean_size);}
-		bool IsIncomplete(void) {return (size != clean_size);}
-	} FRAME_DESCRIPTOR;
-
 	class Timestamp
 	{
 	private:
@@ -164,6 +148,34 @@ namespace h264_1
 			seconds = (LONGLONG)(((year*365 + mounth*30 + day)*24 + hours)*60 + mins)*60 + sec;
 		}
 	};
+
+	typedef struct _FRAME_DESCRIPTOR{
+		LONGLONG offset;
+		TIMESTAMP timestamp;
+		DWORD subframes;
+		DWORD video_frames; 
+		DWORD size;
+		DWORD clean_size;
+
+		void Clear(void)
+		{
+			memset(this, 0x00, sizeof(*this));
+		}
+		bool IsComplete(void) {return (size == clean_size);}
+		bool IsIncomplete(void) {return (size != clean_size);}
+		std::string Info(void)
+		{
+			char str[128] = {0};
+			Timestamp time = timestamp;
+			sprintf_s(str, sizeof(str), "%012llX %s %03d/%03d %06d/%06d\n",
+				offset, time.String(),
+				video_frames,
+				subframes,
+				clean_size,
+				size);
+			return std::string(str);
+		}
+	} FRAME_DESCRIPTOR;
 
 	typedef struct _FRAME_SEQUENCE {
 		Timestamp start_time;
