@@ -62,6 +62,12 @@ namespace h264_1
 		DWORD data_size;
 		LONGLONG offset;
 		TIMESTAMP timestamp;
+
+		void Clear(void)
+		{
+			memset(this, 0x00, sizeof(*this));
+		}
+		bool IsVideoFrame(void) {return (type == kType_0D) || (type == kWithTimestamp);}
 	} SUBFRAME_HEADER;
 
 #pragma pack (pop)
@@ -75,6 +81,10 @@ namespace h264_1
 		DWORD size;
 		DWORD clean_size;
 
+		void Clear(void)
+		{
+			memset(this, 0x00, sizeof(*this));
+		}
 		bool IsComplete(void) {return (size == clean_size);}
 		bool IsIncomplete(void) {return (size != clean_size);}
 	} FRAME_DESCRIPTOR;
@@ -112,6 +122,10 @@ namespace h264_1
 			year = year_;
 			seconds = (LONGLONG)(((year*365 + mounth*30 + day)*24 + hours)*60 + mins)*60 + sec;
 		}
+		void Clear(void)
+		{
+			memset(this, 0x00, sizeof(*this));
+		}
 		LONGLONG Seconds(void)
 		{
 			return seconds;
@@ -122,6 +136,7 @@ namespace h264_1
 			sprintf_s(str, sizeof(str), "%04d-%02d-%02d %02d-%02d-%02d",year,mounth,day,hours,mins,sec);
 			return str;
 		}
+		
 		bool operator>(const Timestamp &t)
 		{
 			return (this->seconds > t.seconds);
@@ -149,6 +164,24 @@ namespace h264_1
 			seconds = (LONGLONG)(((year*365 + mounth*30 + day)*24 + hours)*60 + mins)*60 + sec;
 		}
 	};
+
+	typedef struct _FRAME_SEQUENCE {
+		Timestamp start_time;
+		Timestamp end_time;
+		LONGLONG offset;
+		LONGLONG next_offset;
+		DWORD size;
+		DWORD frame_count;
+
+		void Clear(void)
+		{
+			start_time.Clear();
+			end_time.Clear();
+			offset = 0;
+			size = 0;
+			frame_count = 0;
+		}
+	} FRAME_SEQUENCE;
 
 	class VideoFile
 	{

@@ -12,15 +12,15 @@ namespace h264_1
 
 	bool ReadSubframeHeader(FileEx &file, SUBFRAME_HEADER &subframe_header)
 	{
-		memset(&subframe_header, 0x00, sizeof(SUBFRAME_HEADER));
-		
 		BYTE buff[sizeof(SUBFRAME_TIME)] = {0};
 		COMMON_HEADER *header = (COMMON_HEADER *)buff;
 		SUBFRAME_TIME *subframe_time = (SUBFRAME_TIME *)buff;
 		SUBFRAME_0A *subframe_0a = (SUBFRAME_0A *)buff;
 		SUBFRAME_0D *subframe_0d = (SUBFRAME_0D *)buff;
 
+		subframe_header.Clear();
 		file.GetPointer(&subframe_header.offset);
+
 		if (file.Read(header, sizeof(buff)) == sizeof(buff)) {
 			file.SetPointer(subframe_header.offset);
 			if (header->IsValid()) {
@@ -63,8 +63,8 @@ namespace h264_1
 			SUBFRAME_HEADER hdr;
 			DWORD prev_size = 0;
 			bool is_present_timestamp_subframe = false;
-			memset(&frame, 0x00, sizeof(FRAME_DESCRIPTOR));
 
+			frame.Clear();
 			while (ReadSubframeHeader(file, hdr)) {
 
 				if (!hdr.unknown_type) {
@@ -80,7 +80,7 @@ namespace h264_1
 					}
 
 					frame.subframes++;
-					if ((hdr.type == kType_0D) || (hdr.type == kWithTimestamp)) {
+					if (hdr.IsVideoFrame()) {
 						frame.video_frames++;
 					}
 					frame.size += (hdr.header_size + hdr.data_size);
@@ -103,6 +103,34 @@ namespace h264_1
 			}
 		}
 		return false;
+	}
+
+	bool NextFrameSequence(FileEx &file, LONGLONG &start_offset, FRAME_SEQUENCE &sequence)
+	{
+		LONGLONG offset = start_offset;
+		FRAME_DESCRIPTOR frame = {0};
+		sequence.Clear();
+		while (NextFrame(file, offset, frame)) {
+
+			if (sequence.frame_count == 0x00) {
+				sequence.start_time = frame.timestamp;
+				sequence.offset = frame.offset;
+			}
+			sequence.end_time = frame.timestamp;
+			sequence.frame_count++;
+
+			if (frame.IsComplete()) {
+				offset = (frame.offset + frame.clean_size);
+				sequence.next_offset = offset;
+				sequence.size += frame.clean_size;
+
+			} else {
+				offset = (frame.offset + frame.clean_size + 1);
+				sequence.next_offset = offset;
+				break;
+			}
+		}
+		return (sequence.frame_count != 0x00);
 	}
 
 #define BUFFER_SIZE				DWORD(512*512)
@@ -137,7 +165,6 @@ namespace h264_1
 					offset = (frame.offset + frame.clean_size);
 				} else {
 					offset = (frame.offset + frame.clean_size + 1);
-
 					memset(log_str, 0x00, sizeof(log_str));
 					sprintf_s(log_str, sizeof(log_str), "\n# New frame sequence --->\n");
 					log_file.Write(log_str, strlen(log_str));
