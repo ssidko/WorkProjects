@@ -198,21 +198,23 @@ namespace h264_1
 	} FRAME_SEQUENCE;
 
 #define MAX_DELTA_TIME				(LONGLONG)2
+#define MAX_FRAME_SIZE				(DWORD)512*1024
 
 	class VideoFile
 	{
 	private:
-		DWORD id;
+		LONGLONG id;
 		FileEx file;
 		std::string file_path;
 		Timestamp start_time;
 		Timestamp last_time;
 	public:
-		VideoFile(const char *file_name, DWORD file_id) :  id(file_id), file_path(file_name) {}
+		VideoFile(const char *file_name, LONGLONG file_id) :  id(file_id), file_path(file_name) {}
 		bool Create(void) {return (file.Create(file_path.data()) != 0x00);}
 		void Close(void) {file.Close();}
-		const Timestamp *StartTime(void) {return &start_time;}
-		const Timestamp *LastTime(void) {return &last_time;}
+		Timestamp *StartTime(void) {return &start_time;}
+		Timestamp *LastTime(void) {return &last_time;}
+		std::string Name(void) {return file_path;}
 		bool SaveFrame(const FRAME_DESCRIPTOR &frame_descriptor, BYTE *frame_buff, DWORD frame_size)
 		{
 			if (start_time.Seconds() == 0x00) {
@@ -239,32 +241,38 @@ namespace h264_1
 			
 			return false;
 		}
+		LONGLONG Size(void)
+		{
+			return file.GetSize();
+		}
+		LONGLONG Id(void) {return id;}
 	};
 
 	class VideoStorage
 	{
 	private:
 		DWORD next_id;
-		std::string dir_path;
+		std::string dvr_dir;
+		std::string mkv_dir;
 		VideoFile *current_file;
 		std::list<VideoFile *> files;
 	public:
-		VideoStorage(const char *directory) : next_id(0), dir_path(directory), current_file(NULL)	{}
+		VideoStorage(const char *dvr_directory, const char *mkv_directory) : next_id(0), dvr_dir(dvr_directory), mkv_dir(mkv_directory), current_file(NULL)	{}
 		~VideoStorage() {}
 
-		DWORD NextID(void)
+		LONGLONG NextID(void)
 		{
-			++next_id;
+			++next_id; 
 			if (next_id == 0x00) {
 				++next_id;
 			}
 			return next_id;
 		}
 
-		VideoFile *CreateNewFile(Timestamp &timestamp, DWORD id)
+		VideoFile *CreateNewFile(Timestamp &timestamp, LONGLONG id)
 		{
 			std::stringstream file_name;
-			file_name << dir_path << "\\" << timestamp.String() << " [" << id << "]" << ".h264";
+			file_name << dvr_dir << "\\" << timestamp.String() << " " << id << ".dvr";
 			VideoFile *video_file = new VideoFile(file_name.str().c_str(), id);
 			if (!video_file || !video_file->Create()) {
 				throw -1;
@@ -305,19 +313,55 @@ namespace h264_1
 			return video_file;
 		}
 
+		void ConvertToMkv(VideoFile &file)
+		{
+			std::string t;
+			//std::string convertor_app("C:\\Program Files\\MKVToolNix\\mkvmerge.exe ");
+			std::string convertor_app("C:\\MKVToolNix\\mkvmerge.exe ");
+
+			std::stringstream src_file_path;
+			src_file_path << "\"" << file.Name() << "\"";
+			t = src_file_path.str();
+
+			std::stringstream src_file_name;
+			src_file_name << file.StartTime()->String() << " " << file.Id() << ".dvr";
+			t = src_file_name.str();
+
+			std::stringstream out_file_path;
+			out_file_path << "\"" <<  mkv_dir << "\\" << src_file_name.str() << ".mkv" << "\"";
+			t = out_file_path.str();
+
+			std::stringstream cmd_line;
+			cmd_line << convertor_app << "-o " << out_file_path.str() << " " << src_file_path.str();
+			t = cmd_line.str();
+			const char *zzz = t.data();
+			system(cmd_line.str().data());
+		}
+
 		bool SaveFrameSequence(FileEx &file,  FRAME_SEQUENCE &sequence)
 		{
 			bool result = false;
-			VideoFile *video_file = GetFileFor(sequence);
-			if (video_file) {
-				DWORD rw = 0;
-				BYTE *buffer = new BYTE[sequence.size];
-				file.SetPointer(sequence.offset);
-				if (file.Read(buffer, sequence.size) == sequence.size) {
-					result = video_file->SaveFrameSequence(sequence, buffer, sequence.size);
+			LONGLONG max_file_size = (LONGLONG)512*1024*1024;
+			static VideoFile *video_file = NULL;
+
+			DWORD rw = 0;
+			BYTE *buffer = new BYTE[sequence.size];
+			file.SetPointer(sequence.offset);
+			if (file.Read(buffer, sequence.size) == sequence.size) {
+				if(video_file && (video_file->Size() >= max_file_size)) {
+					video_file->Close();
+					ConvertToMkv(*video_file);
+					delete video_file;
+					video_file = NULL;
 				}
-				delete [] buffer;
+				if (video_file == NULL) {
+					video_file = CreateNewFile(sequence.start_time, sequence.offset);
+				}
+
+				result = video_file->SaveFrameSequence(sequence, buffer, sequence.size);
 			}
+			delete[] buffer;
+
 			return result;
 		}
 	};

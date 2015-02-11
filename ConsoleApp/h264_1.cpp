@@ -68,6 +68,9 @@ namespace h264_1
 			while (ReadSubframeHeader(file, hdr)) {
 
 				if (!hdr.unknown_type) {
+					if (hdr.data_size > MAX_FRAME_SIZE) {
+						break;
+					}
 					if (hdr.type == kWithTimestamp) {
 						if (!is_present_timestamp_subframe) {
 							is_present_timestamp_subframe = true;
@@ -149,7 +152,7 @@ namespace h264_1
 		Timestamp min_time(2014, 6, 1);
 		Timestamp max_time(2014, 12, 1);
 
-		VideoStorage storage("G:\\36829\\out");
+		VideoStorage storage("G:\\36829\\out", "G:\\36829\\mkv");
 		if (file.Open()) {
 			LONGLONG offset = 0x00;
 			FRAME_SEQUENCE sequence;
