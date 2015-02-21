@@ -35,7 +35,7 @@ namespace h264_1
 		DWORD mark_1:24;	// 0x010000
 		DWORD type:4;
 		DWORD mark_2:4;		// 0x0F
-		bool IsValid(void) { return ((this->mark_1 == HDR_MARK_1) && (this->mark_2 == HDR_MARK_2)); }
+		bool IsValidSignature(void) { return ((this->mark_1 == HDR_MARK_1) && (this->mark_2 == HDR_MARK_2)); }
 	} COMMON_HEADER;
 
 	typedef struct  _SUBFRAME_TIME{
@@ -237,8 +237,7 @@ namespace h264_1
 				if ((time.Seconds() - last_time.Seconds()) <= MAX_DELTA_TIME) {
 					return true;
 				}
-			}
-			
+			}			
 			return false;
 		}
 		LONGLONG Size(void)

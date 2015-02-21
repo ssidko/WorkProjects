@@ -23,7 +23,7 @@ namespace h264_1
 
 		if (file.Read(header, sizeof(buff)) == sizeof(buff)) {
 			file.SetPointer(subframe_header.offset);
-			if (header->IsValid()) {
+			if (header->IsValidSignature()) {
 				subframe_header.unknown_type = false;
 				subframe_header.type = header->type;
 				switch (header->type) {
@@ -99,7 +99,7 @@ namespace h264_1
 			if (frame.offset) {
 				file.SetPointer(frame.offset);
 			} else {
-				file.SetPointer(start_offset);
+				file.SetPointer((LONGLONG)1, FILE_CURRENT);
 			}
 			if (frame.size) {
 				return true;
@@ -152,9 +152,13 @@ namespace h264_1
 		Timestamp min_time(2014, 6, 1);
 		Timestamp max_time(2014, 12, 1);
 
+		DWORD d = 0x3B20C61A;
+		TIMESTAMP *t = (TIMESTAMP *)&d;
+
 		VideoStorage storage("G:\\36829\\out", "G:\\36829\\mkv");
 		if (file.Open()) {
-			LONGLONG offset = 0x00;
+			LONGLONG offset = 0x58DAA91C1;
+			//LONGLONG offset = 0x5B5E9FFFD;
 			FRAME_SEQUENCE sequence;
 			while (NextFrameSequence(file, offset, sequence)) {
 				if (sequence.start_time.Seconds() >= min_time.Seconds()) {

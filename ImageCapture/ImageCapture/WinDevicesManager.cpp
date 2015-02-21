@@ -72,7 +72,7 @@ void WinDevicesManager::Test(void)
 	DWORD buff_size = 2048;
 	TCHAR *str = (TCHAR *)buff;
 
-	HDEVINFO dev_info_set = SetupDiGetClassDevs(&/*GUID_DEVCLASS_PORTS*/GUID_DEVINTERFACE_COMPORT, NULL, NULL, DIGCF_PRESENT | DIGCF_DEVICEINTERFACE);
+	HDEVINFO dev_info_set = SetupDiGetClassDevs(&GUID_DEVINTERFACE_DISK, NULL, NULL, DIGCF_PRESENT | DIGCF_DEVICEINTERFACE);
 	if (dev_info_set != INVALID_HANDLE_VALUE) {
 		DWORD dev_index = 0;
 		SP_DEVINFO_DATA info;
@@ -82,8 +82,9 @@ void WinDevicesManager::Test(void)
 		SP_DEVICE_INTERFACE_DATA interface_data;
 		memset(&interface_data, 0x00, sizeof(interface_data));
 		interface_data.cbSize = sizeof(SP_DEVICE_INTERFACE_DATA);
+		TCHAR *str = (TCHAR *)buff;
 
-		while (::SetupDiEnumDeviceInfo(dev_info_set, dev_index, &info)) {
+		while (::SetupDiEnumDeviceInfo(dev_info_set, dev_index++, &info)) {
 
 			memset(&buff, 0x00, sizeof(buff));
 			if (!SetupDiGetDeviceRegistryProperty(dev_info_set, &info, SPDRP_DEVICEDESC, NULL, buff, 2048, NULL)) {

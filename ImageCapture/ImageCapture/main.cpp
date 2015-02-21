@@ -22,6 +22,8 @@ int main(int argc, char *argv[])
 	QApplication a(argc, argv);
 	MainWindow w;
 
+	//WinDevicesManager::Test();
+
 	QCoreApplication::setOrganizationName(QString::fromLocal8Bit(ORGANIZATION_NAME));
 	QCoreApplication::setApplicationName(QString::fromLocal8Bit(APPLICATION_NAME));
 	a.setWindowIcon(QIcon(":/MainWindow/images/app.png"));
