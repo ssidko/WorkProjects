@@ -17,6 +17,7 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -77,6 +78,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="dhfs.cpp" />
+    <ClCompile Include="File.cpp" />
+    <ClCompile Include="Frame.cpp" />
     <ClCompile Include="GeneratedFiles\Debug\moc_mainwindow.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
@@ -91,6 +95,7 @@
     </ClCompile>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="mainwindow.cpp" />
+    <ClCompile Include="Timestamp.cpp" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="mainwindow.h">
@@ -118,7 +123,11 @@
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="dhfs.h" />
+    <ClInclude Include="File.h" />
+    <ClInclude Include="Frame.h" />
     <ClInclude Include="GeneratedFiles\ui_mainwindow.h" />
+    <ClInclude Include="Timestamp.h" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="mainwindow.qrc">
