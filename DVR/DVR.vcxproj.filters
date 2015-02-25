@@ -34,7 +34,7 @@
     <Filter Include="Core\DHFS">
       <UniqueIdentifier>{059e99cd-9b3e-4864-ac6b-49a6ffd9c281}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Utility">
+    <Filter Include="Core\Utility">
       <UniqueIdentifier>{046a8a94-bdb5-4e60-a16b-494c178f818e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -59,10 +59,10 @@
       <Filter>Core\DHFS</Filter>
     </ClCompile>
     <ClCompile Include="File.cpp">
-      <Filter>Utility</Filter>
+      <Filter>Core\Utility</Filter>
     </ClCompile>
     <ClCompile Include="Frame.cpp">
-      <Filter>Generated Files</Filter>
+      <Filter>Core\DHFS</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -87,10 +87,10 @@
       <Filter>Core</Filter>
     </ClInclude>
     <ClInclude Include="File.h">
-      <Filter>Utility</Filter>
+      <Filter>Core\Utility</Filter>
     </ClInclude>
     <ClInclude Include="Frame.h">
-      <Filter>Generated Files</Filter>
+      <Filter>Core\DHFS</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

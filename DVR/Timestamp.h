@@ -18,11 +18,11 @@ private:
 	char str[32];
 public:
 	Timestamp();
-	Timestamp(DWORD year_, DWORD month_, DWORD day_);
+	Timestamp(DWORD year_, DWORD month_, DWORD day_, DWORD hours_, DWORD mins_, DWORD sec_);
 	~Timestamp();
 
 	void Clear(void);
-	LONGLONG Seconds(void);
+	LONGLONG Seconds(void) const;
 	const char *String(void);
 
 	bool operator>(const Timestamp &t);

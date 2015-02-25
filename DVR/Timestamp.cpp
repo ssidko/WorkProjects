@@ -5,11 +5,11 @@ Timestamp::Timestamp() : sec(0),mins(0),hours(0),day(0),mounth(0),year(0),second
 {
 }
 
-Timestamp::Timestamp( DWORD year_, DWORD month_, DWORD day_ )
+Timestamp::Timestamp(DWORD year_, DWORD month_, DWORD day_, DWORD hours_, DWORD mins_, DWORD sec_)
 {
-	sec = 0;
-	mins = 0;
-	hours = 0;
+	sec = sec_;
+	mins = mins_;
+	hours = hours_;
 	day = day_;
 	mounth = month_;
 	year = year_;
@@ -25,7 +25,7 @@ void Timestamp::Clear( void )
 	memset(this, 0x00, sizeof(*this));
 }
 
-LONGLONG Timestamp::Seconds( void )
+LONGLONG Timestamp::Seconds( void ) const
 {
 	return seconds;
 }

@@ -1,41 +1,36 @@
 #include "dhfs.h"
 #include <tchar.h>
 
+#include "Frame.h"
 
+using namespace DHFS;
 
-bool DHFS::NextFrame(W32Lib::FileEx &file)
-{
-	LONGLONG offset = 0;
-	DWORD header_magic = FRAME_HEADER_MAGIC;
-	while ( offset = file.Find((BYTE *)&header_magic, sizeof(header_magic)) ) {
-		FRAME_HEADER header = {0};
-		if (file.Read((void *)&header, sizeof(header)) != sizeof(header)) {
-			return false;
-		}
-
-		FRAME_FOOTER footer = {0};
-		file.SetPointer(offset + header.size - sizeof(footer));
-		if (file.Read((void *)&footer, sizeof(footer)) != sizeof(footer)) {
-			return false;
-		}
-		if ((footer.magic == FRAME_FOOTER_MAGIC) && (header.size == footer.size)) {
-			int x = 0;
-		}
-		
-		file.SetPointer(offset + 1);
-	}
-	return false;
-}
+#include <string>
 
 int DHFS::StartRecovering( void )
 {
 	W32Lib::FileEx file(_T("G:\\37025\\SAMSUNG HD103UJ 1AA01117.dsk"));
+	W32Lib::FileEx log(_T("G:\\37025\\frame_info.txt"));
 	if (!file.Open()) {
 		return -1;
 	}
+	if (!log.Create()) {
+		return -1;
+	}
 
-	while (NextFrame(file)) {
+	Frame *frame = NULL;
+	FrameSequence sequence;
+	//LONGLONG offset = 251000312LL;
+	//file.SetPointer(offset);
+
+	while (Frame::NextFrameSequence(file, sequence)) {
 		int x = 0;
+
+
+		//std::string info = frame->Info();
+		//log.Write(const_cast<void *>((void *)info.data()), info.size());
+		//log.Write(const_cast<void *>((void *)separator.data()), separator.size());
+		//delete frame;
 	}
 
 	return 0;
