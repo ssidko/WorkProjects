@@ -68,14 +68,14 @@ namespace DHFS
 		Frame(BYTE *frame_buffer, LONGLONG &frame_offset);
 	public:
 		~Frame(void);
-		static bool IsValidFrameHeader(FRAME_HEADER *hdr);
+		static bool IsValidHeader(FRAME_HEADER *hdr);
 		static Frame *NextFrame(W32Lib::FileEx &file);
 		bool IsNextFrame(Frame &next_frame);
 		static bool NextFrameSequence(W32Lib::FileEx &file, FrameSequence &sequence);
 		std::string Info(void);
 		LONGLONG Offset(void) {return offset;}
 		DWORD Size(void) {return header->size;}
-		const Timestamp &TimeStamp(void) {return timestamp;}
+		const Timestamp &Timestamp(void) {return timestamp;}
 		const FRAME_HEADER &Header(void) {return *header;}
 	};
 }

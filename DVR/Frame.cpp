@@ -34,7 +34,7 @@ Frame::~Frame(void)
 	}
 }
 
-bool DHFS::Frame::IsValidFrameHeader(FRAME_HEADER *hdr)
+bool DHFS::Frame::IsValidHeader(FRAME_HEADER *hdr)
 {
 	return (hdr->size <= FRAME_MAX_SIZE);
 }
@@ -50,7 +50,7 @@ Frame *Frame::NextFrame(W32Lib::FileEx &file)
 		if (file.Read((void *)&header, sizeof(header)) != sizeof(header)) {
 			return NULL;
 		}
-		if (IsValidFrameHeader(&header)) {
+		if (IsValidHeader(&header)) {
 			file.SetPointer(offset + header.size - sizeof(footer));
 			if (file.Read((void *)&footer, sizeof(footer)) != sizeof(footer)) {
 				return false;
@@ -71,8 +71,8 @@ Frame *Frame::NextFrame(W32Lib::FileEx &file)
 bool DHFS::Frame::IsNextFrame( Frame &next_frame )
 {
 	if (next_frame.Header().camera == header->camera) {
-		if (next_frame.TimeStamp().Seconds() >= timestamp.Seconds()) {
-			if ((next_frame.TimeStamp().Seconds() - timestamp.Seconds()) <= 2) {
+		if (next_frame.Timestamp().Seconds() >= timestamp.Seconds()) {
+			if ((next_frame.Timestamp().Seconds() - timestamp.Seconds()) <= 2) {
 				if ((next_frame.Header().counter - header->counter) <= 2) {
 					return true;
 				}
@@ -92,8 +92,8 @@ bool DHFS::Frame::NextFrameSequence(W32Lib::FileEx &file, FrameSequence &sequenc
 		if (prev_frame) {
 			if (prev_frame->IsNextFrame(*frame)) {
 				sequence.frame_count++;
-				sequence.size += frame->Header().size;
 				sequence.end_counter = frame->Header().counter;
+				sequence.size += frame->Header().size;
 			} else {
 
 				file.SetPointer(frame->Offset());
@@ -110,7 +110,7 @@ bool DHFS::Frame::NextFrameSequence(W32Lib::FileEx &file, FrameSequence &sequenc
 			delete prev_frame; prev_frame = NULL;
 
 		} else {
-			sequence.timestamp = frame->TimeStamp();
+			sequence.timestamp = frame->Timestamp();
 			sequence.camera = frame->Header().camera;
 			sequence.offset = frame->Offset();
 			sequence.frame_count++;
