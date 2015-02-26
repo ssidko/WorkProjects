@@ -7,7 +7,6 @@
 
 namespace DHFS
 {
-
 	int StartRecovering(void);
 }
 

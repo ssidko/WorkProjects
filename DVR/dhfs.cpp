@@ -20,12 +20,13 @@ int DHFS::StartRecovering( void )
 
 	Frame *frame = NULL;
 	FrameSequence sequence;
+	std::string info;
 	//LONGLONG offset = 251000312LL;
 	//file.SetPointer(offset);
 
 	while (Frame::NextFrameSequence(file, sequence)) {
+		sequence.Info(info);
 		int x = 0;
-
 
 		//std::string info = frame->Info();
 		//log.Write(const_cast<void *>((void *)info.data()), info.size());

@@ -96,7 +96,7 @@ bool DHFS::Frame::NextFrameSequence(W32Lib::FileEx &file, FrameSequence &sequenc
 				sequence.end_counter = frame->Header().counter;
 			} else {
 
-				file.SetPointer(frame->Offset() - frame->Size());
+				file.SetPointer(frame->Offset());
 				delete frame; frame = NULL;
 				delete prev_frame; prev_frame = NULL;
 				
@@ -110,6 +110,8 @@ bool DHFS::Frame::NextFrameSequence(W32Lib::FileEx &file, FrameSequence &sequenc
 			delete prev_frame; prev_frame = NULL;
 
 		} else {
+			sequence.timestamp = frame->TimeStamp();
+			sequence.camera = frame->Header().camera;
 			sequence.offset = frame->Offset();
 			sequence.frame_count++;
 			sequence.start_counter = frame->Header().counter;
@@ -136,4 +138,19 @@ std::string DHFS::Frame::Info( void )
 	stream << "flags: " << header->flags << " ";
 	stream << "\n";
 	return stream.str();
+}
+
+void DHFS::_FrameSequence::Info( std::string &info_str )
+{
+	std::stringstream stream;
+
+	stream << offset << " - ";
+	stream << "cam: " << camera << ", ";
+	stream << timestamp.String() << ", ";
+	stream << "frames: " << frame_count << ", ";
+	stream << "size: " << size ;
+	stream << ".\n";
+
+	info_str = stream.str();
+	
 }

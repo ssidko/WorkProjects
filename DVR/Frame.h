@@ -45,16 +45,16 @@ namespace DHFS
 #pragma pack(pop)
 
 	typedef struct _FrameSequence {
+		DWORD camera;
 		LONGLONG offset;
 		Timestamp timestamp;
 		DWORD frame_count;
 		DWORD start_counter;
 		DWORD end_counter;
 		DWORD size;
-		void Clear(void) {	memset(this, 0x00, sizeof(_FrameSequence)); }
+		void Clear(void) {memset(this, 0x00, sizeof(_FrameSequence));}
+		void Info(std::string &info_str);
 	} FrameSequence;
-
-	DWORD FrameDistance(DWORD current, DWORD next);
 
 	class Frame
 	{
