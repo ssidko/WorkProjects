@@ -12,7 +12,7 @@ Frame::Frame(FRAME_HEADER &frame_header, LONGLONG &frame_offset) :
 {
 	header = new FRAME_HEADER();
 	*header = frame_header;
-	timestamp = Timestamp(header->time.year + 2000, header->time.month, header->time.day, header->time.hours, header->time.minutes, header->time.seconds);
+	timestamp = Timestamp((header->time.year + 2000), header->time.month, header->time.day, header->time.hours, header->time.minutes, header->time.seconds);
 }
 
 Frame::Frame(BYTE *frame_buffer, LONGLONG &frame_offset) :
@@ -22,7 +22,7 @@ Frame::Frame(BYTE *frame_buffer, LONGLONG &frame_offset) :
 	footer(NULL)
 {
 	assert(frame_buffer);
-	timestamp = Timestamp(header->time.year + 2000, header->time.month, header->time.day, header->time.hours, header->time.minutes, header->time.seconds);
+	timestamp = Timestamp((header->time.year + 2000), header->time.month, header->time.day, header->time.hours, header->time.minutes, header->time.seconds);
 }
 
 Frame::~Frame(void)
