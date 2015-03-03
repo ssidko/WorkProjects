@@ -1,13 +1,13 @@
-#ifndef _DHFS
-#define _DHFS
+#ifndef _DHFS_H
+#define _DHFS_H
 
-#include <windows.h>
 #include "Timestamp.h"
-#include "File.h"
+#include "Frame.h"
+#include "FileStorage.h"
 
 namespace DHFS
 {
 	int StartRecovering(void);
 }
 
-#endif // _DHFS
+#endif // _DHFS_H

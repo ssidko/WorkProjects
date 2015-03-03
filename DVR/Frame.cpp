@@ -71,8 +71,8 @@ Frame *Frame::NextFrame(W32Lib::FileEx &file)
 bool DHFS::Frame::IsNextFrame( Frame &next_frame )
 {
 	if (next_frame.Header().camera == header->camera) {
-		if (next_frame.Timestamp().Seconds() >= timestamp.Seconds()) {
-			if ((next_frame.Timestamp().Seconds() - timestamp.Seconds()) <= 2) {
+		if (next_frame.Time().Seconds() >= timestamp.Seconds()) {
+			if ((next_frame.Time().Seconds() - timestamp.Seconds()) <= 2) {
 				if ((next_frame.Header().counter - header->counter) <= 2) {
 					return true;
 				}
@@ -91,6 +91,7 @@ bool DHFS::Frame::NextFrameSequence(W32Lib::FileEx &file, FrameSequence &sequenc
 	while (frame = Frame::NextFrame(file)) {
 		if (prev_frame) {
 			if (prev_frame->IsNextFrame(*frame)) {
+				sequence.end_time = frame->Time();
 				sequence.frame_count++;
 				sequence.end_counter = frame->Header().counter;
 				sequence.size += frame->Header().size;
@@ -110,7 +111,8 @@ bool DHFS::Frame::NextFrameSequence(W32Lib::FileEx &file, FrameSequence &sequenc
 			delete prev_frame; prev_frame = NULL;
 
 		} else {
-			sequence.timestamp = frame->Timestamp();
+			sequence.start_time = frame->Time();
+			sequence.end_time = frame->Time();
 			sequence.camera = frame->Header().camera;
 			sequence.offset = frame->Offset();
 			sequence.frame_count++;
@@ -146,7 +148,7 @@ void DHFS::_FrameSequence::Info( std::string &info_str )
 
 	stream << offset << " - ";
 	stream << "cam: " << camera << ", ";
-	stream << timestamp.String() << ", ";
+	stream << start_time.String() << "-" << end_time.String() << ", ";
 	stream << "frames: " << frame_count << ", ";
 	stream << "size: " << size ;
 	stream << ".\n";

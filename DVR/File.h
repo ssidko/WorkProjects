@@ -10,9 +10,9 @@ namespace W32Lib
 	{
 	public:
 		virtual BOOL Open(void) = 0;
-		virtual BOOL Open(const TCHAR *file_name) = 0;
+		virtual BOOL Open(const char *file_name) = 0;
 		virtual BOOL Create(void) = 0;
-		virtual BOOL Create(const TCHAR *file_name) = 0;
+		virtual BOOL Create(const char *file_name) = 0;
 		virtual BOOL IsOpen() = 0;
 		virtual void Close(void) = 0;
 		virtual DWORD Read(void *buffer, DWORD count) = 0;
@@ -26,19 +26,19 @@ namespace W32Lib
 	{
 		protected:
 			HANDLE hFile;
-			TCHAR name[MAX_PATH];
+			char name[MAX_PATH];
 
 		public :
 			File() : hFile(INVALID_HANDLE_VALUE) {memset(name, 0x00, sizeof(name));}
-			File(const TCHAR *file_name) : hFile(INVALID_HANDLE_VALUE) {_tcscpy_s(name, MAX_PATH, file_name);}
+			File(const char *file_name) : hFile(INVALID_HANDLE_VALUE) {_tcscpy_s(name, MAX_PATH, file_name);}
 
 			~File() {Close();}
 
 			BOOL Open();
-			BOOL Open(const TCHAR *file_name);
+			BOOL Open(const char *file_name);
 
 			BOOL Create();
-			BOOL Create(const TCHAR *file_name);
+			BOOL Create(const char *file_name);
 
 			BOOL IsOpen() {return (hFile != INVALID_HANDLE_VALUE) ? TRUE : FALSE;}
 
@@ -50,7 +50,7 @@ namespace W32Lib
 			BOOL SetPointer(LONGLONG pointer, DWORD dwMoveMethod = FILE_BEGIN);
 			BOOL GetPointer(LONGLONG *pointer);
 
-			const TCHAR* GetName() {return name;}
+			const char* GetName() {return name;}
 			const HANDLE GetHandle(void) {return hFile;}
 	};
 
@@ -58,7 +58,7 @@ namespace W32Lib
 	{
 		public :
 			FileEx() {};
-			FileEx(const TCHAR *file_name) : File(file_name) {}
+			FileEx(const char *file_name) : File(file_name) {}
 
 			~FileEx() {}; 
 
@@ -67,13 +67,13 @@ namespace W32Lib
 			using File::SetPointer;
 
 			BOOL Open(DWORD dwDesiredAccess, DWORD dwShareMode);
-			BOOL Open(const TCHAR *file_name, DWORD dwDesiredAccess, DWORD dwShareMode);
+			BOOL Open(const char *file_name, DWORD dwDesiredAccess, DWORD dwShareMode);
 
 			BOOL Create(DWORD dwDesiredAccess, DWORD dwShareMode);
-			BOOL Create(const TCHAR *file_name, DWORD dwDesiredAccess, DWORD dwShareMode);
+			BOOL Create(const char *file_name, DWORD dwDesiredAccess, DWORD dwShareMode);
 
 			BOOL Create(DWORD dwDesiredAccess, DWORD dwShareMode, DWORD dwCreationDisposition);
-			BOOL Create(const TCHAR *file_name, DWORD dwDesiredAccess, DWORD dwShareMode, DWORD dwCreationDisposition);
+			BOOL Create(const char *file_name, DWORD dwDesiredAccess, DWORD dwShareMode, DWORD dwCreationDisposition);
 			
 			BOOL SetPointer(LONGLONG pointer, LONGLONG *new_pointer, DWORD dwMoveMethod = FILE_BEGIN);
 			
@@ -83,7 +83,7 @@ namespace W32Lib
 			BOOL SetEndOfFile() {return ::SetEndOfFile(hFile);}
 			BOOL SetFileSize(LONGLONG new_size);
 
-			BOOL Rename(const TCHAR *new_name);
+			BOOL Rename(const char *new_name);
 
 			// Ф-ция осуществляет поиск с текущей позиции файлового указателя.
 			// Если строка найдена то файловый указатель устанавливается на начало

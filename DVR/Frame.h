@@ -47,7 +47,8 @@ namespace DHFS
 	typedef struct _FrameSequence {
 		DWORD camera;
 		LONGLONG offset;
-		Timestamp timestamp;
+		Timestamp start_time;
+		Timestamp end_time;
 		DWORD frame_count;
 		DWORD start_counter;
 		DWORD end_counter;
@@ -75,7 +76,7 @@ namespace DHFS
 		std::string Info(void);
 		LONGLONG Offset(void) {return offset;}
 		DWORD Size(void) {return header->size;}
-		const Timestamp &Timestamp(void) {return timestamp;}
+		const Timestamp &Time(void) {return timestamp;}
 		const FRAME_HEADER &Header(void) {return *header;}
 	};
 }

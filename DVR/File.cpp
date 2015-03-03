@@ -7,7 +7,7 @@ using namespace W32Lib;
 
 BOOL File::Open()
 {
-	hFile = CreateFile(name,
+	hFile = CreateFileA(name,
 						GENERIC_READ|GENERIC_WRITE,
 						FILE_SHARE_READ|FILE_SHARE_WRITE,
 						NULL,
@@ -21,9 +21,9 @@ BOOL File::Open()
 		return TRUE;
 }
 
-BOOL File::Open(const TCHAR *file_name)
+BOOL File::Open(const char *file_name)
 {
-	hFile = CreateFile(file_name,
+	hFile = CreateFileA(file_name,
 						GENERIC_READ|GENERIC_WRITE,
 						FILE_SHARE_READ|FILE_SHARE_WRITE,
 						NULL,
@@ -41,7 +41,7 @@ BOOL File::Open(const TCHAR *file_name)
 
 BOOL File::Create()
 {
-	hFile = CreateFile(name,
+	hFile = CreateFileA(name,
 						GENERIC_READ|GENERIC_WRITE,
 						FILE_SHARE_READ|FILE_SHARE_WRITE,
 						NULL,
@@ -55,9 +55,9 @@ BOOL File::Create()
 		return TRUE;
 }
 
-BOOL File::Create(const TCHAR *file_name)
+BOOL File::Create(const char *file_name)
 {
-	hFile = CreateFile(file_name,
+	hFile = CreateFileA(file_name,
 						GENERIC_READ|GENERIC_WRITE,
 						FILE_SHARE_READ|FILE_SHARE_WRITE,
 						NULL,
@@ -127,7 +127,7 @@ BOOL File::GetPointer(LONGLONG *pointer)
 
 BOOL FileEx::Open(DWORD dwDesiredAccess, DWORD dwShareMode)
 {
-	hFile = CreateFile(name,
+	hFile = CreateFileA(name,
 						dwDesiredAccess,
 						dwShareMode,
 						NULL,
@@ -141,9 +141,9 @@ BOOL FileEx::Open(DWORD dwDesiredAccess, DWORD dwShareMode)
 		return TRUE;
 }
 
-BOOL FileEx::Open(const TCHAR *file_name, DWORD dwDesiredAccess, DWORD dwShareMode)
+BOOL FileEx::Open(const char *file_name, DWORD dwDesiredAccess, DWORD dwShareMode)
 {
-	hFile = CreateFile(file_name,
+	hFile = CreateFileA(file_name,
 						dwDesiredAccess,
 						dwShareMode,
 						NULL,
@@ -161,7 +161,7 @@ BOOL FileEx::Open(const TCHAR *file_name, DWORD dwDesiredAccess, DWORD dwShareMo
 
 BOOL FileEx::Create(DWORD dwDesiredAccess, DWORD dwShareMode)
 {
-	hFile = CreateFile(name,
+	hFile = CreateFileA(name,
 						dwDesiredAccess,
 						dwShareMode,
 						NULL,
@@ -175,9 +175,9 @@ BOOL FileEx::Create(DWORD dwDesiredAccess, DWORD dwShareMode)
 		return TRUE;
 }
 
-BOOL FileEx::Create(const TCHAR *file_name, DWORD dwDesiredAccess, DWORD dwShareMode)
+BOOL FileEx::Create(const char *file_name, DWORD dwDesiredAccess, DWORD dwShareMode)
 {
-	hFile = CreateFile(file_name,
+	hFile = CreateFileA(file_name,
 						dwDesiredAccess,
 						dwShareMode,
 						NULL,
@@ -195,7 +195,7 @@ BOOL FileEx::Create(const TCHAR *file_name, DWORD dwDesiredAccess, DWORD dwShare
 
 BOOL FileEx::Create(DWORD dwDesiredAccess, DWORD dwShareMode, DWORD dwCreationDisposition)
 {
-	hFile = CreateFile(name,
+	hFile = CreateFileA(name,
 						dwDesiredAccess,
 						dwShareMode,
 						NULL,
@@ -209,9 +209,9 @@ BOOL FileEx::Create(DWORD dwDesiredAccess, DWORD dwShareMode, DWORD dwCreationDi
 		return TRUE;
 }
 
-BOOL FileEx::Create(const TCHAR *file_name, DWORD dwDesiredAccess, DWORD dwShareMode, DWORD dwCreationDisposition)
+BOOL FileEx::Create(const char *file_name, DWORD dwDesiredAccess, DWORD dwShareMode, DWORD dwCreationDisposition)
 {
-	hFile = CreateFile(file_name,
+	hFile = CreateFileA(file_name,
 						dwDesiredAccess,
 						dwShareMode,
 						NULL,
@@ -259,14 +259,14 @@ BOOL FileEx::SetFileSize(LONGLONG new_size)
 	return FALSE;
 }
 
-BOOL FileEx::Rename(const TCHAR *new_name)
+BOOL FileEx::Rename(const char *new_name)
 {
 	BOOL isOpen;
 	
 	if (isOpen = IsOpen())
 		Close();
 
-	if (MoveFile(name, new_name)) {
+	if (MoveFileA(name, new_name)) {
 		_tcscpy_s(name, MAX_PATH, new_name);
 		if (isOpen)
 			Open();

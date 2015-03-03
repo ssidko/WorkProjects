@@ -64,6 +64,9 @@
     <ClCompile Include="Frame.cpp">
       <Filter>Core\DHFS</Filter>
     </ClCompile>
+    <ClCompile Include="FileStorage.cpp">
+      <Filter>Core\DHFS</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="mainwindow.ui">
@@ -90,6 +93,9 @@
       <Filter>Core\Utility</Filter>
     </ClInclude>
     <ClInclude Include="Frame.h">
+      <Filter>Core\DHFS</Filter>
+    </ClInclude>
+    <ClInclude Include="FileStorage.h">
       <Filter>Core\DHFS</Filter>
     </ClInclude>
   </ItemGroup>
