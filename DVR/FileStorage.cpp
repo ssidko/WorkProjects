@@ -60,9 +60,18 @@ bool DHFS::FileStorage::SaveFrameSequence(W32Lib::FileEx &dhfs_volume, FrameSequ
 	assert(sequence.camera <= files.size());
 	VideoFile *vfile = files[sequence.camera];
 
-	if (vfile && (vfile->Size() >= MAX_VIDEO_FILE_SIZE)) {
-		delete vfile;
-		vfile = NULL;
+	if (vfile) {
+		if (vfile->Size() >= MAX_VIDEO_FILE_SIZE) {
+			delete vfile;
+			vfile = NULL;
+		} else if (sequence.start_time < vfile->EndTime()) {
+			/*skip this sequence*/
+			return true;
+		} else if ((sequence.start_time - vfile->EndTime()) > (LONGLONG)2*60) {
+			/*save in next file*/
+			delete vfile;
+			vfile = NULL;
+		}
 	}
 
 	if (vfile == NULL) {
