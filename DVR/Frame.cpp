@@ -153,6 +153,5 @@ void DHFS::_FrameSequence::Info( std::string &info_str )
 	stream << "size: " << size ;
 	stream << ".\n";
 
-	info_str = stream.str();
-	
+	info_str = stream.str();	
 }
