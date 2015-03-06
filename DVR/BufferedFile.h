@@ -17,14 +17,14 @@ private:
 	DWORD offset;
 	DWORD readed;
 public:
-	BufferedFile(const std::string &file_name, DWORD buffer_size);
+	BufferedFile(const std::string &file_name, DWORD buffer_size = 0);
 	~BufferedFile(void);
 	bool Open(void);
 
 	LONGLONG Pointer(void);
 	void Pointer(LONGLONG &pointer);
 	bool SetPointer(const LONGLONG &new_pointer);
-	bool Read(void *buff, DWORD count);
+	DWORD Read(void *buff, DWORD count);
 };
 
 #endif /*_BUFFERED_FILE_H*/

@@ -1,9 +1,10 @@
 #include "BufferedFile.h"
 #include <assert.h>
 
-#define DEFAULT_BUFFER_SIZE			((DWORD)1<<12)					// 4096
-#define BUFFER_SIZE_MASK			((DWORD)0xFFFFFE00)
-#define FILE_POINTER_MASK			((LONGLONG)0xFFFFFFFFFFFFFE00)
+#define MEM_PAGE_SIZE					((DWORD)4096)
+#define DEFAULT_BUFFER_SIZE				MEM_PAGE_SIZE
+#define BUFFER_SIZE_MASK				((DWORD)0xFFFFF000)
+#define FILE_POINTER_MASK				((LONGLONG)0xFFFFFFFFFFFFF000)
 
 BufferedFile::BufferedFile(const std::string &file_name, DWORD buffer_size) :
 	name(file_name),
@@ -12,8 +13,8 @@ BufferedFile::BufferedFile(const std::string &file_name, DWORD buffer_size) :
 	readed(0)
 {
 	if (buffer_size) {
-		/*Размер буфера должен быть кратным 512*/
-		assert(buffer_size && BUFFER_SIZE_MASK);
+		/*Размер буфера должен быть кратным MEM_PAGE_SIZE*/
+		assert(!(buffer_size && BUFFER_SIZE_MASK));
 	} else {
 		buffer_size = DEFAULT_BUFFER_SIZE;
 	}
@@ -44,27 +45,40 @@ void BufferedFile::Pointer(LONGLONG &pointer)
 
 bool BufferedFile::SetPointer(const LONGLONG &new_pointer)
 {
-	if (new_pointer < (io_pointer + buffer.size())) {
-		offset = (DWORD)(new_pointer - io_pointer);
-	} else if ((new_pointer < io_pointer) || (new_pointer >= (io_pointer + buffer.size()))) {
+	if ((new_pointer < io_pointer) || (new_pointer >= (io_pointer + buffer.size()))) {
 		io_pointer = new_pointer & FILE_POINTER_MASK;
 		offset = (DWORD)(new_pointer - io_pointer);
 		readed = 0;
 		return io.SetPointer(io_pointer);
-	} 
+	} else {
+		offset = (DWORD)(new_pointer - io_pointer);
+	}
 	return true;
 }
 
-bool BufferedFile::Read(void *buff, DWORD count)
+DWORD BufferedFile::Read(void *buff, DWORD count)
 {
 	if (readed == 0) {
 		readed = io.Read(&buffer[0], buffer.size());
 		if (!readed) {
-			return false;
+			return 0;
 		}
 	}
-	if () {
-
+	if (readed > offset) {
+		if (count <= (readed - offset)) {
+			memcpy(buff, (void *)&buffer[offset], count);
+			offset += count;
+			return count;
+		} else {
+			DWORD rd = (readed - offset);
+			memcpy(buff, (void *)&buffer[offset], rd);
+			offset += rd;
+			if (readed == buffer.size()) {
+				SetPointer(io_pointer + buffer.size());
+				rd += Read(&((BYTE *)buff)[rd], count - rd);
+			}
+			return rd;
+		}
 	}
-	return false;
+	return 0;
 }
