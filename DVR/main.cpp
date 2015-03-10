@@ -44,7 +44,7 @@ int main(int argc, char *argv[])
 	DWORD size = 512;
 	BYTE sign[] = {0x44,0x48,0x41,0x56};
 	std::vector<BYTE> buffer(size);
-	BufferedFile file(file_name, 4096*32);
+	BufferedFile file(file_name/*, 4096*32*/);
 
 	if (file.Open()) {
 		//file.SetPointer(offset);
@@ -53,7 +53,7 @@ int main(int argc, char *argv[])
 		//}
 
 		do {
-			offset = file.Find(sign, sizeof(sign));
+			offset = file.FindEx(sign, sizeof(sign));
 			file.SetPointer(++offset);
 			rw = 0;
 		} while(offset != -1);

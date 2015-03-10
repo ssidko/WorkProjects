@@ -105,7 +105,7 @@ LONGLONG BufferedFile::Find(BYTE *byte_string, DWORD length)
 				if (buff[i] != byte_string[i]) {
 					break;
 				}
-				if (i == (length - 1)) {
+				if (i >= (length - 1)) {
 					SetPointer(pointer);
 					return pointer;
 				}
@@ -115,5 +115,43 @@ LONGLONG BufferedFile::Find(BYTE *byte_string, DWORD length)
 
 	}
 	SetPointer(old_pointer);
+	return ((LONGLONG)-1);
+}
+
+LONGLONG BufferedFile::FindEx(BYTE *byte_string, DWORD length)
+{
+	assert(byte_string);
+	assert(length);
+
+	DWORD rw = 0;
+	LONGLONG old_pointer = Pointer();
+	LONGLONG pointer = old_pointer;
+	BYTE *buff = new BYTE[DEFAULT_BUFFER_SIZE];
+	BYTE *substring = NULL; 
+	if (buff && (length <= DEFAULT_BUFFER_SIZE)) {
+		while (rw = Read(buff, DEFAULT_BUFFER_SIZE)) {
+			if (rw >= length) {
+				for (int i = 0; (i + length) < rw; ++i) {
+					substring = &buff[i];
+					for (int j = 0; j < length; ++j) {
+						if (substring[j] != byte_string[j]) {
+							break;
+						}
+						if (j >= (length - 1)) {
+							pointer += i;
+							SetPointer(pointer);
+							delete[] buff;
+							return (pointer);
+						}
+					}
+				}
+				pointer += (rw - length + 1);
+				SetPointer(pointer);
+			}
+		}
+	}
+
+	SetPointer(old_pointer);
+	delete[] buff;
 	return ((LONGLONG)-1);
 }
