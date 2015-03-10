@@ -5,6 +5,7 @@
 #include "Timestamp.h"
 #include "BufferedFile.h"
 #include <string>
+#include <vector>
 
 namespace DHFS
 {
@@ -78,6 +79,37 @@ namespace DHFS
 		DWORD Size(void) {return header->size;}
 		const Timestamp &Time(void) {return timestamp;}
 		const FRAME_HEADER &Header(void) {return *header;}
+	};
+
+	class FrameEx
+	{
+	private:
+		std::vector<BYTE> buff;
+		LONGLONG offset;
+		Timestamp timestamp;
+	public:
+		FrameEx();
+		~FrameEx() {}
+		void Clear(void);
+	};
+
+	class FrameSequenceEx
+	{
+	private:
+		std::vector<BYTE> buff;
+	public:
+		FrameSequenceEx();
+		~FrameSequenceEx() {}
+	};
+
+	class Volume
+	{
+	private:
+		BufferedFile io;
+	public:
+		Volume(std::string &volume_file_name);
+		bool Open();
+		bool NextFrame(FrameEx &frame);
 	};
 }
 

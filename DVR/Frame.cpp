@@ -155,3 +155,48 @@ void DHFS::_FrameSequence::Info( std::string &info_str )
 
 	info_str = stream.str();	
 }
+
+
+
+DHFS::FrameEx::FrameEx()
+{
+	this->Clear();
+}
+
+void DHFS::FrameEx::Clear(void)
+{
+	buff.clear();
+	offset = 0;
+	timestamp.Clear();
+}
+
+DHFS::FrameSequenceEx::FrameSequenceEx()
+{
+
+}
+
+
+
+DHFS::Volume::Volume(std::string &volume_file_name) : io(volume_file_name)
+{
+
+}
+
+bool DHFS::Volume::Open()
+{
+	return io.Open();
+}
+
+bool DHFS::Volume::NextFrame(FrameEx &frame)
+{
+	LONGLONG offset = 0;
+	FRAME_HEADER *header = NULL;
+	FRAME_FOOTER *footer = NULL;
+	DWORD header_magic = FRAME_HEADER_MAGIC;
+
+	frame.Clear();
+	while ( (offset = io.Find((BYTE *)&header_magic, sizeof(header_magic))) > 0 ) {
+
+	}
+	return false;
+}
