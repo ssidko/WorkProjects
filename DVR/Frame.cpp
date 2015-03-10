@@ -39,7 +39,7 @@ bool DHFS::Frame::IsValidHeader(FRAME_HEADER *hdr)
 	return (hdr->size <= FRAME_MAX_SIZE);
 }
 
-Frame *Frame::NextFrame(W32Lib::FileEx &file)
+Frame *Frame::NextFrame(BufferedFile &file)
 {
 	LONGLONG offset = 0;
 	FRAME_HEADER header = {0};
@@ -82,7 +82,7 @@ bool DHFS::Frame::IsNextFrame( Frame &next_frame )
 	return false;
 }
 
-bool DHFS::Frame::NextFrameSequence(W32Lib::FileEx &file, FrameSequence &sequence)
+bool DHFS::Frame::NextFrameSequence(BufferedFile &file, FrameSequence &sequence)
 {
 	Frame *frame = NULL;
 	Frame *prev_frame = NULL;

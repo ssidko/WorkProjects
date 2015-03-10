@@ -43,7 +43,7 @@ namespace DHFS
 	public:
 		FileStorage(int cam_count, std::string &raw_directory_path, std::string &mkv_directory_path);
 		~FileStorage(void);
-		bool SaveFrameSequence(W32Lib::FileEx &dhfs_volume, FrameSequence &sequence);
+		bool SaveFrameSequence(BufferedFile &dhfs_volume, FrameSequence &sequence);
 		VideoFile *CreateNewFile(FrameSequence &sequence);
 		void GenerateFileName(std::string &new_file_name, FrameSequence &sequence);
 	};

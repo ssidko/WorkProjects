@@ -3,7 +3,7 @@
 
 #include <windows.h>
 #include "Timestamp.h"
-#include "File.h"
+#include "BufferedFile.h"
 #include <string>
 
 namespace DHFS
@@ -70,9 +70,9 @@ namespace DHFS
 	public:
 		~Frame(void);
 		static bool IsValidHeader(FRAME_HEADER *hdr);
-		static Frame *NextFrame(W32Lib::FileEx &file);
+		static Frame *NextFrame(BufferedFile &file);
 		bool IsNextFrame(Frame &next_frame);
-		static bool NextFrameSequence(W32Lib::FileEx &file, FrameSequence &sequence);
+		static bool NextFrameSequence(BufferedFile &file, FrameSequence &sequence);
 		std::string Info(void);
 		LONGLONG Offset(void) {return offset;}
 		DWORD Size(void) {return header->size;}

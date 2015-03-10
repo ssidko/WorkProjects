@@ -51,7 +51,7 @@ DHFS::FileStorage::~FileStorage(void)
 	}
 }
 
-bool DHFS::FileStorage::SaveFrameSequence(W32Lib::FileEx &dhfs_volume, FrameSequence &sequence)
+bool DHFS::FileStorage::SaveFrameSequence(BufferedFile &dhfs_volume, FrameSequence &sequence)
 {
 	if (sequence.size > MAX_SEQUENCE_SIZE) {
 		throw std::exception();

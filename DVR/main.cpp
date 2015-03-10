@@ -14,11 +14,12 @@ int main(int argc, char *argv[])
 	QApplication a(argc, argv);
 	MainWindow w;
 
-	std::string raw_directory_path = "E:\\37025\\h264";
+	std::string raw_directory_path = "E:\\37025\\dav";
 	std::string mkv_directory_path = "E:\\37025\\mkv";
+	std::string volume_name = "H:\\37025-DHFS\\origianl.dsk";
 
 	LONGLONG offset = 0x6252E1D400ll;
-	W32Lib::FileEx dhfs_volume(_T("H:\\37025\\origianl.dsk"));
+	BufferedFile dhfs_volume(volume_name, 10*1024*1024);
 	if (dhfs_volume.Open() && dhfs_volume.SetPointer(offset)) {
 		Timestamp min_time(2014,1,1,0,0,0);
 		Timestamp max_time(2014,12,15,0,0,0);
