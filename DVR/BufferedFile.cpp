@@ -95,34 +95,6 @@ LONGLONG BufferedFile::Find(BYTE *byte_string, DWORD length)
 	assert(byte_string);
 	assert(length);
 
-	LONGLONG old_pointer = Pointer();
-	LONGLONG pointer = old_pointer;
-	BYTE *buff = new BYTE[length];
-	if (buff) {
-
-		while (length == Read(buff, length)) {
-			for (DWORD i = 0; i < length; ++i) {
-				if (buff[i] != byte_string[i]) {
-					break;
-				}
-				if (i >= (length - 1)) {
-					SetPointer(pointer);
-					return pointer;
-				}
-			}
-			SetPointer(++pointer);
-		}
-
-	}
-	SetPointer(old_pointer);
-	return ((LONGLONG)-1);
-}
-
-LONGLONG BufferedFile::FindEx(BYTE *byte_string, DWORD length)
-{
-	assert(byte_string);
-	assert(length);
-
 	DWORD rw = 0;
 	LONGLONG old_pointer = Pointer();
 	LONGLONG pointer = old_pointer;
