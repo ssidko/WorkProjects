@@ -34,7 +34,7 @@ int main(int argc, char *argv[])
 	//}
 
 	std::string file_name = "H:\\37025-DHFS\\origianl.dsk";
-	LONGLONG offset = 13711880LL*512;
+	LONGLONG offset = 13709312LL*512 - 512;
 	LONGLONG ptr = 0;
 	LONGLONG ptr1=offset;
 	LONGLONG ptr2=offset + 512;
@@ -46,37 +46,11 @@ int main(int argc, char *argv[])
 	BufferedFile file(file_name);
 
 	if (file.Open()) {
-		//file.SetPointer(offset);
-		//rw = file.Read(buffer.data(), size); 
-		//	
-		//file.SetPointer(offset - 512);
-		//rw = file.Read(buffer.data(), size); 
+ 		file.SetPointer(offset);
+		while (rw = file.Read(buffer.data(), size)) {
+			rw = 0;
+		}
 
-		//file.SetPointer(offset + 512);
-		//rw = file.Read(buffer.data(), size);
-
-		//file.SetPointer(offset + 512 + 512);
-		//rw = file.Read(buffer.data(), size);
-
-		file.SetPointer(ptr1);
-		file.Pointer(ptr);
-		file.SetPointer(ptr1);
-		file.Pointer(ptr);
-
-		file.SetPointer(ptr2);
-		file.Pointer(ptr);
-		file.SetPointer(ptr2);
-		file.Pointer(ptr);
-
-		file.SetPointer(ptr3);
-		file.Pointer(ptr);
-		file.SetPointer(ptr3);
-		file.Pointer(ptr);
-
-		file.SetPointer(ptr4);
-		file.Pointer(ptr);
-		file.SetPointer(ptr3);
-		file.Pointer(ptr);
 
 		rw = 0;
 	}

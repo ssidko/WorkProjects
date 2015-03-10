@@ -60,25 +60,41 @@ DWORD BufferedFile::Read(void *buff, DWORD count)
 {
 	if (readed == 0) {
 		readed = io.Read(&buffer[0], buffer.size());
-		if (!readed) {
+		if (readed == 0) {
 			return 0;
 		}
 	}
-	if (readed > offset) {
+	if (offset < readed) {
+		DWORD rd = 0;
 		if (count <= (readed - offset)) {
-			memcpy(buff, (void *)&buffer[offset], count);
-			offset += count;
-			return count;
+			rd  = count;
+			memcpy(buff, (void *)&buffer[offset], rd);
+			offset += rd;
 		} else {
-			DWORD rd = (readed - offset);
+			rd = (readed - offset);
 			memcpy(buff, (void *)&buffer[offset], rd);
 			offset += rd;
 			if (readed == buffer.size()) {
 				SetPointer(io_pointer + buffer.size());
 				rd += Read(&((BYTE *)buff)[rd], count - rd);
 			}
-			return rd;
 		}
+		if (offset >= buffer.size()) {
+			SetPointer(io_pointer + buffer.size());
+		}
+		return rd;
+
+	} else if (offset >= buffer.size()) {
+
 	}
 	return 0;
+}
+
+LONGLONG BufferedFile::Find(void *byte_string, DWORD length)
+{
+	assert(byte_string);
+	assert(length);
+
+
+	return ((LONGLONG)-1);
 }
