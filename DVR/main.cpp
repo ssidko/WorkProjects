@@ -42,17 +42,22 @@ int main(int argc, char *argv[])
 	LONGLONG ptr4=offset + 512 + 512;
 	DWORD rw = 0;
 	DWORD size = 512;
+	BYTE sign[] = {0x44,0x48,0x41,0x56};
 	std::vector<BYTE> buffer(size);
-	BufferedFile file(file_name);
+	BufferedFile file(file_name, 4096*32);
 
 	if (file.Open()) {
- 		file.SetPointer(offset);
-		while (rw = file.Read(buffer.data(), size)) {
+		//file.SetPointer(offset);
+		//while (rw = file.Read(buffer.data(), size)) {
+		//	rw = 0;
+		//}
+
+		do {
+			offset = file.Find(sign, sizeof(sign));
+			file.SetPointer(++offset);
 			rw = 0;
-		}
+		} while(offset != -1);
 
-
-		rw = 0;
 	}
 
 	w.show();

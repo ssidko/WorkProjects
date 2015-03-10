@@ -3,8 +3,8 @@
 
 #define MEM_PAGE_SIZE					((DWORD)4096)
 #define DEFAULT_BUFFER_SIZE				MEM_PAGE_SIZE
-#define BUFFER_SIZE_MASK				((DWORD)0xFFFFF000)
-#define FILE_POINTER_MASK				((LONGLONG)0xFFFFFFFFFFFFF000)
+#define BUFFER_SIZE_MASK				((DWORD)0x00000FFF)
+#define FILE_POINTER_MASK				((LONGLONG)0x0000000000000FFF)
 
 BufferedFile::BufferedFile(const std::string &file_name, DWORD buffer_size) :
 	name(file_name),
@@ -14,7 +14,7 @@ BufferedFile::BufferedFile(const std::string &file_name, DWORD buffer_size) :
 {
 	if (buffer_size) {
 		/*Размер буфера должен быть кратным MEM_PAGE_SIZE*/
-		assert(!(buffer_size && BUFFER_SIZE_MASK));
+		assert(!(buffer_size & BUFFER_SIZE_MASK));
 	} else {
 		buffer_size = DEFAULT_BUFFER_SIZE;
 	}
@@ -46,7 +46,7 @@ void BufferedFile::Pointer(LONGLONG &pointer)
 bool BufferedFile::SetPointer(const LONGLONG &new_pointer)
 {
 	if ((new_pointer < io_pointer) || (new_pointer >= (io_pointer + buffer.size()))) {
-		io_pointer = new_pointer & FILE_POINTER_MASK;
+		io_pointer = new_pointer & ~FILE_POINTER_MASK;
 		offset = (DWORD)(new_pointer - io_pointer);
 		readed = 0;
 		return io.SetPointer(io_pointer);
@@ -90,11 +90,30 @@ DWORD BufferedFile::Read(void *buff, DWORD count)
 	return 0;
 }
 
-LONGLONG BufferedFile::Find(void *byte_string, DWORD length)
+LONGLONG BufferedFile::Find(BYTE *byte_string, DWORD length)
 {
 	assert(byte_string);
 	assert(length);
 
+	LONGLONG old_pointer = Pointer();
+	LONGLONG pointer = old_pointer;
+	BYTE *buff = new BYTE[length];
+	if (buff) {
 
+		while (length == Read(buff, length)) {
+			for (DWORD i = 0; i < length; ++i) {
+				if (buff[i] != byte_string[i]) {
+					break;
+				}
+				if (i == (length - 1)) {
+					SetPointer(pointer);
+					return pointer;
+				}
+			}
+			SetPointer(++pointer);
+		}
+
+	}
+	SetPointer(old_pointer);
 	return ((LONGLONG)-1);
 }
