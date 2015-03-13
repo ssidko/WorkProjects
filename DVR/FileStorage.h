@@ -27,7 +27,7 @@ namespace DHFS
 		VideoFile(std::string full_path);
 		~VideoFile(void);
 		bool Create(void);
-		bool SaveFrameSequence(BYTE *buffer, FrameSequence &sequence);
+		bool SaveFrameSequence(std::vector<BYTE> &sequence_buffer, FrameSequenceInfo &sequence_info);
 		Timestamp StartTime(void) {return start_time;}
 		Timestamp EndTime(void) {return end_time;}
 		LONGLONG Size(void) {return file.GetSize();}
@@ -39,13 +39,12 @@ namespace DHFS
 		std::string raw_directory;
 		std::string mkv_directory;
 		std::vector<VideoFile *> files;
-		BYTE *frame_sequence_buffer;
 	public:
 		FileStorage(int cam_count, std::string &raw_directory_path, std::string &mkv_directory_path);
 		~FileStorage(void);
-		bool SaveFrameSequence(BufferedFile &dhfs_volume, FrameSequence &sequence);
-		VideoFile *CreateNewFile(FrameSequence &sequence);
-		void GenerateFileName(std::string &new_file_name, FrameSequence &sequence);
+		bool SaveFrameSequence(std::vector<BYTE> &sequence_buffer, FrameSequenceInfo &sequence_info);
+		VideoFile *CreateNewFile(FrameSequenceInfo &sequence_info);
+		void GenerateFileName(std::string &new_file_name, FrameSequenceInfo &sequence_info);
 	};
 }
 

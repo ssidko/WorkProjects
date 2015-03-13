@@ -19,55 +19,47 @@ bool DHFS::VideoFile::Create(void)
 	return file.Create();
 }
 
-bool DHFS::VideoFile::SaveFrameSequence(BYTE *buffer, FrameSequence &sequence)
+bool DHFS::VideoFile::SaveFrameSequence(std::vector<BYTE> &sequence_buffer, FrameSequenceInfo &sequence_info)
 {
 	if (start_time.Seconds() == 0) {
-		camera = sequence.camera;
-		start_time = sequence.start_time; 
+		start_time = sequence_info.start_frame.timestamp;
 	}
-	assert(camera == sequence.camera);
-	end_time = sequence.end_time;
-	return file.Write(buffer, sequence.size);
+	end_time = sequence_info.end_frame.timestamp;
+	return (file.Write(&sequence_buffer[0], sequence_buffer.size()) == sequence_buffer.size());
 }
 
 DHFS::FileStorage::FileStorage(int cam_count, std::string &raw_directory_path, std::string &mkv_directory_path) :
 	raw_directory(raw_directory_path),
-	mkv_directory(mkv_directory_path),
-	frame_sequence_buffer(NULL)
+	mkv_directory(mkv_directory_path)
 {
 	if (cam_count == 0) {
 		files.resize(64, NULL);
 	} else {
 		files.resize(cam_count, NULL);
 	}
-	frame_sequence_buffer = new BYTE[MAX_SEQUENCE_SIZE];
-	assert(frame_sequence_buffer);
 }
 
 DHFS::FileStorage::~FileStorage(void)
 {
-	if (frame_sequence_buffer) {
-		delete[] frame_sequence_buffer;
-	}
 }
 
-bool DHFS::FileStorage::SaveFrameSequence(BufferedFile &dhfs_volume, FrameSequence &sequence)
+bool DHFS::FileStorage::SaveFrameSequence(std::vector<BYTE> &sequence_buffer, FrameSequenceInfo &sequence_info)
 {
-	if (sequence.size > MAX_SEQUENCE_SIZE) {
+	if (sequence_info.size > MAX_SEQUENCE_SIZE) {
 		throw std::exception();
 	}
 
-	assert(sequence.camera <= files.size());
-	VideoFile *vfile = files[sequence.camera];
+	assert(sequence_info.start_frame.camera <= files.size());
+	VideoFile *vfile = files[sequence_info.start_frame.camera];
 
 	if (vfile) {
 		if (vfile->Size() >= MAX_VIDEO_FILE_SIZE) {
 			delete vfile;
 			vfile = NULL;
-		} else if (sequence.start_time < vfile->EndTime()) {
+		} else if (sequence_info.start_frame.timestamp < vfile->EndTime()) {
 			/*skip this sequence*/
 			return true;
-		} else if ((sequence.start_time - vfile->EndTime()) > (LONGLONG)2*60) {
+		} else if ((sequence_info.start_frame.timestamp - vfile->EndTime()) > (LONGLONG)2*60) {
 			/*save in next file*/
 			delete vfile;
 			vfile = NULL;
@@ -75,27 +67,21 @@ bool DHFS::FileStorage::SaveFrameSequence(BufferedFile &dhfs_volume, FrameSequen
 	}
 
 	if (vfile == NULL) {
-		vfile = CreateNewFile(sequence);
+		vfile = CreateNewFile(sequence_info);
 		if (vfile) {
-			files[sequence.camera] = vfile;
+			files[sequence_info.start_frame.camera] = vfile;
 		} else {
 			return false;
 		}
 	}
 
-	if (dhfs_volume.SetPointer(sequence.offset)) {
-		if (dhfs_volume.Read(frame_sequence_buffer, sequence.size) == sequence.size) {
-			return vfile->SaveFrameSequence(frame_sequence_buffer, sequence);
-		}
-	}
-
-	return false;
+	return vfile->SaveFrameSequence(sequence_buffer, sequence_info);
 }
 
-DHFS::VideoFile *DHFS::FileStorage::CreateNewFile(FrameSequence &sequence)
+DHFS::VideoFile *DHFS::FileStorage::CreateNewFile(FrameSequenceInfo &sequence_info)
 {
 	std::string new_file_name;
-	GenerateFileName(new_file_name, sequence);
+	GenerateFileName(new_file_name, sequence_info);
 	VideoFile *new_file = new VideoFile(new_file_name.c_str());
 	if (new_file) {
 		if (new_file->Create()) {
@@ -107,10 +93,10 @@ DHFS::VideoFile *DHFS::FileStorage::CreateNewFile(FrameSequence &sequence)
 	return NULL;
 }
 
-void DHFS::FileStorage::GenerateFileName(std::string &new_file_name, FrameSequence &sequence)
+void DHFS::FileStorage::GenerateFileName(std::string &new_file_name, FrameSequenceInfo &sequence_info)
 {
 	std::stringstream stream;
-	stream << raw_directory << "\\" << /*sequence.offset << " " <<*/ "[" << sequence.camera << "] ";
-	stream << sequence.start_time.String() << ".264";
+	stream << raw_directory << "\\" << /*sequence.offset << " " <<*/ "[" << sequence_info.start_frame.camera << "] ";
+	stream << sequence_info.start_frame.timestamp.String() << ".264";
 	new_file_name = stream.str();
 }

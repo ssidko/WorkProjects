@@ -23,7 +23,15 @@ namespace DHFS
 		DWORD hours:5;
 		DWORD day:5;
 		DWORD month:4;
-		DWORD year:6;	
+		DWORD year:6;
+		void Timestamp(Timestamp &t) {
+			t.SetYear(2000 + year);
+			t.SetMonth(month);
+			t.SetDay(day);
+			t.SetHours(hours);
+			t.SetMinutes(minutes);
+			t.SetSeconds(seconds);
+		}
 	} TIMESTAMP;
 
 	typedef struct _FRAME_HEADER {
@@ -35,7 +43,6 @@ namespace DHFS
 		TIMESTAMP time;
 		BYTE unk1[8];
 		DWORD unk2;
-		BYTE data[1];
 	} FRAME_HEADER;
 
 	typedef struct _FRAME_FOOTER {
@@ -45,62 +52,24 @@ namespace DHFS
 
 #pragma pack(pop)
 
-	typedef struct _FrameSequence {
+	typedef struct _FrameInfo {
+		LONGLONG offset;
+		Timestamp timestamp;
 		DWORD camera;
-		LONGLONG offset;
-		Timestamp start_time;
-		Timestamp end_time;
-		DWORD frame_count;
-		DWORD start_counter;
-		DWORD end_counter;
+		DWORD counter;
 		DWORD size;
-		void Clear(void) {memset(this, 0x00, sizeof(_FrameSequence));}
+		void Clear(void) {memset(this, 0x00, sizeof(_FrameInfo));}
 		void Info(std::string &info_str);
-	} FrameSequence;
+	} FrameInfo;
 
-	class Frame
-	{
-	private:
-		BYTE *buffer;
-		LONGLONG offset;
-		Timestamp timestamp;
-		FRAME_HEADER *header;
-		FRAME_FOOTER *footer;
-		Frame(FRAME_HEADER &frame_header, LONGLONG &frame_offset);
-		Frame(BYTE *frame_buffer, LONGLONG &frame_offset);
-	public:
-		~Frame(void);
-		static bool IsValidHeader(FRAME_HEADER *hdr);
-		static Frame *NextFrame(BufferedFile &file);
-		bool IsNextFrame(Frame &next_frame);
-		static bool NextFrameSequence(BufferedFile &file, FrameSequence &sequence);
-		std::string Info(void);
-		LONGLONG Offset(void) {return offset;}
-		DWORD Size(void) {return header->size;}
-		const Timestamp &Time(void) {return timestamp;}
-		const FRAME_HEADER &Header(void) {return *header;}
-	};
-
-	class FrameEx
-	{
-	private:
-		std::vector<BYTE> buff;
-		LONGLONG offset;
-		Timestamp timestamp;
-	public:
-		FrameEx();
-		~FrameEx() {}
-		void Clear(void);
-	};
-
-	class FrameSequenceEx
-	{
-	private:
-		std::vector<BYTE> buff;
-	public:
-		FrameSequenceEx();
-		~FrameSequenceEx() {}
-	};
+	typedef struct _FrameSequenceInfo {
+		FrameInfo start_frame;
+		FrameInfo end_frame;
+		DWORD frame_counter;
+		DWORD size;
+		void Clear(void) {memset(this, 0x00, sizeof(_FrameSequenceInfo));}
+		bool IsYourNextFrame(FrameInfo &next_frame);
+	} FrameSequenceInfo;
 
 	class Volume
 	{
@@ -109,7 +78,13 @@ namespace DHFS
 	public:
 		Volume(std::string &volume_file_name);
 		bool Open();
-		bool NextFrame(FrameEx &frame);
+		void SetPointer(LONGLONG &pointer);
+		bool IsValidHeader(FRAME_HEADER &header);
+		bool ReadFrame(std::vector<BYTE> &buffer, FrameInfo &info);
+		bool NextFrame(std::vector<BYTE> &buffer, FrameInfo &info);
+		bool NextFrameSequence(std::vector<BYTE> &sequence_buffer, FrameSequenceInfo &sequnence_info);
+		void Test(void);
+		void SaveFrameInfo(void);
 	};
 }
 
