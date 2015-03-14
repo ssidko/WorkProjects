@@ -16,9 +16,9 @@ int main(int argc, char *argv[])
 
 	std::string raw_directory_path = "E:\\37025\\dav";
 	std::string mkv_directory_path = "E:\\37025\\mkv";
-	std::string volume_name("H:\\37025-DHFS\\origianl.dsk");
+	std::string volume_name("E:\\37025-DHFS\\origianl.dsk");
 
-	LONGLONG offset = (LONGLONG)/*500*1024*1024*1024*/0;
+	LONGLONG offset = (LONGLONG)530*1024*1024*1024;
 	Timestamp min_time(2014,1,1,0,0,0);
 	Timestamp max_time(2014,12,15,0,0,0);
 	FrameSequenceInfo sequence_info;
@@ -27,7 +27,7 @@ int main(int argc, char *argv[])
 	sequence_buffer.reserve(4*1024*1024);
 	Volume volume(volume_name);
 	if (volume.Open()) {
-		//volume.SetPointer(offset);
+		volume.SetPointer(offset);
 		//volume.Test();
 		while (volume.NextFrameSequence(sequence_buffer, sequence_info)) {
 			if ((sequence_info.start_frame.timestamp > min_time) && ((sequence_info.start_frame.timestamp < max_time))) {

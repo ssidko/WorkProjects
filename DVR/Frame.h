@@ -59,7 +59,7 @@ namespace DHFS
 		DWORD counter;
 		DWORD size;
 		void Clear(void) {memset(this, 0x00, sizeof(_FrameInfo));}
-		void Info(std::string &info_str);
+		void ToString(std::string &info_str);
 	} FrameInfo;
 
 	typedef struct _FrameSequenceInfo {
