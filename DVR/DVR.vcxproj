@@ -79,6 +79,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="BufferedFile.cpp" />
+    <ClCompile Include="compression.cpp" />
     <ClCompile Include="dhfs.cpp" />
     <ClCompile Include="File.cpp" />
     <ClCompile Include="FileStorage.cpp" />
@@ -98,6 +99,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="mainwindow.cpp" />
     <ClCompile Include="Timestamp.cpp" />
+    <ClCompile Include="ZPool.cpp" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="mainwindow.h">
@@ -127,12 +129,16 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BufferedFile.h" />
+    <ClInclude Include="compression.h" />
     <ClInclude Include="dhfs.h" />
     <ClInclude Include="File.h" />
     <ClInclude Include="FileStorage.h" />
     <ClInclude Include="Frame.h" />
     <ClInclude Include="GeneratedFiles\ui_mainwindow.h" />
     <ClInclude Include="Timestamp.h" />
+    <ClInclude Include="zfs.h" />
+    <ClInclude Include="zfs_type.h" />
+    <ClInclude Include="ZPool.h" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="mainwindow.qrc">
