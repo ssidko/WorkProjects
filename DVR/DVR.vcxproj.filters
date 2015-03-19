@@ -34,14 +34,14 @@
     <Filter Include="Core\DHFS">
       <UniqueIdentifier>{059e99cd-9b3e-4864-ac6b-49a6ffd9c281}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Core\Utility">
-      <UniqueIdentifier>{046a8a94-bdb5-4e60-a16b-494c178f818e}</UniqueIdentifier>
-    </Filter>
     <Filter Include="zfs">
       <UniqueIdentifier>{19b7121b-906e-4005-a6ed-cd2d40073ba6}</UniqueIdentifier>
     </Filter>
     <Filter Include="zfs\compression">
       <UniqueIdentifier>{c5c09f6c-968b-4d1a-8568-9bd48eedf7b9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Utility">
+      <UniqueIdentifier>{046a8a94-bdb5-4e60-a16b-494c178f818e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -65,7 +65,7 @@
       <Filter>Core\DHFS</Filter>
     </ClCompile>
     <ClCompile Include="File.cpp">
-      <Filter>Core\Utility</Filter>
+      <Filter>Utility</Filter>
     </ClCompile>
     <ClCompile Include="Frame.cpp">
       <Filter>Core\DHFS</Filter>
@@ -74,7 +74,7 @@
       <Filter>Core\DHFS</Filter>
     </ClCompile>
     <ClCompile Include="BufferedFile.cpp">
-      <Filter>Core\Utility</Filter>
+      <Filter>Utility</Filter>
     </ClCompile>
     <ClCompile Include="zfs\ZPool.cpp">
       <Filter>zfs</Filter>
@@ -105,7 +105,7 @@
       <Filter>Core</Filter>
     </ClInclude>
     <ClInclude Include="File.h">
-      <Filter>Core\Utility</Filter>
+      <Filter>Utility</Filter>
     </ClInclude>
     <ClInclude Include="Frame.h">
       <Filter>Core\DHFS</Filter>
@@ -114,7 +114,7 @@
       <Filter>Core\DHFS</Filter>
     </ClInclude>
     <ClInclude Include="BufferedFile.h">
-      <Filter>Core\Utility</Filter>
+      <Filter>Utility</Filter>
     </ClInclude>
     <ClInclude Include="zfs\lzjb.h">
       <Filter>zfs\compression</Filter>

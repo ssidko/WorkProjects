@@ -4,4 +4,3 @@
 #include "zfs_type.h"
 
 #endif
-

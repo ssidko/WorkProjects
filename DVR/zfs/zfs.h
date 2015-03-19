@@ -5,21 +5,53 @@
 
 #pragma pack(push, 1)
 
+enum zio_checksum {
+	ZIO_CHECKSUM_INHERIT = 0,
+	ZIO_CHECKSUM_ON,
+	ZIO_CHECKSUM_OFF,
+	ZIO_CHECKSUM_LABEL,
+	ZIO_CHECKSUM_GANG_HEADER,
+	ZIO_CHECKSUM_ZILOG,
+	ZIO_CHECKSUM_FLETCHER_2,
+	ZIO_CHECKSUM_FLETCHER_4,
+	ZIO_CHECKSUM_SHA256,
+	ZIO_CHECKSUM_ZILOG2,
+	ZIO_CHECKSUM_FUNCTIONS
+};
+
+enum zio_compress {
+	ZIO_COMPRESS_INHERIT = 0,
+	ZIO_COMPRESS_ON,
+	ZIO_COMPRESS_OFF,
+	ZIO_COMPRESS_LZJB,
+	ZIO_COMPRESS_EMPTY,
+	ZIO_COMPRESS_GZIP_1,
+	ZIO_COMPRESS_GZIP_2,
+	ZIO_COMPRESS_GZIP_3,
+	ZIO_COMPRESS_GZIP_4,
+	ZIO_COMPRESS_GZIP_5,
+	ZIO_COMPRESS_GZIP_6,
+	ZIO_COMPRESS_GZIP_7,
+	ZIO_COMPRESS_GZIP_8,
+	ZIO_COMPRESS_GZIP_9,
+	ZIO_COMPRESS_ZLE,
+	ZIO_COMPRESS_LZ4,
+	ZIO_COMPRESS_FUNCTIONS
+};
+
 typedef struct zio_cksum {
 	uint64_t	word[4];
 } zio_cksum_t;
 
-typedef struct _dva {
-	uint64_t	alloc_size:24;				/* allocated size (including RAID-Z parity and gang block headers) */
+typedef struct dva {
+	uint64_t	alloc_size:24;				/* allocated size in sectors (including RAID-Z parity and gang block headers) */
 	uint64_t	grid:8;						/* RAID-Z layout information (reserved for future use) */
 	uint64_t	vdev_id:32;					/* virtual device ID */
 	uint64_t	offset:31;					/* offset in sectors (512 bytes) */
 	uint64_t	gang_flag:1;				/* gang block indicator */
 } dva_t;
 
-#define	SPA_BLKPTRSHIFT		7				/* blkptr_t is 128 bytes	*/
-
-typedef struct _blk_props {
+typedef struct blk_props {
 	uint64_t	logical_size:16;			/* logical size */
 	uint64_t	physical_size:16;			/* physical size (after compression) */
 	uint64_t	compression:7;				/* compression function */
@@ -32,7 +64,7 @@ typedef struct _blk_props {
 	uint64_t	byteorder:1;				/* byteorder (endianness)*/
 } blk_props_t;
 
-typedef struct _blk_props_emb {
+typedef struct blk_props_emb {
 	uint64_t	logical_size:25;			/* logical size */
 	uint64_t	physical_size:7;			/* physical size (after compression) */
 	uint64_t	compression:7;				/* compression function */
@@ -46,6 +78,7 @@ typedef struct _blk_props_emb {
 } blk_props_emb_t;
 
 #define	SPA_DVAS_PER_BP		3				/* Number of DVAs in a bp */
+#define	SPA_BLKPTRSHIFT		7				/* blkptr_t is 128 bytes	*/
 
 typedef struct blkptr {
 	dva_t		dva[SPA_DVAS_PER_BP];		/* Data Virtual Addresses */
@@ -81,7 +114,7 @@ typedef struct dnode_phys {
 	uint8_t		type;						/* dmu_object_type_t */
 	uint8_t		ind_blk_shift;				/* ln2(indirect block size) */
 	uint8_t		nlevels;					/* 1=dn_blkptr->data blocks */
-	uint8_t		nbl_kptr;					/* length of dn_blkptr */
+	uint8_t		nblk_ptr;					/* length of dn_blkptr */
 	uint8_t		bonus_type;					/* type of data in bonus buffer */
 	uint8_t		checksum;					/* ZIO_CHECKSUM type */
 	uint8_t		compress;					/* ZIO_COMPRESS type */

@@ -29,15 +29,21 @@ void ZPool::Test( void )
 {
 	LONGLONG offset = 0;
 	uberblock_t ublock;
+	zio_checksum checksum;
+	zio_compress compress;
 
 	offset = 296*512;
 	if (ReadUberblock(ublock, offset)) {
+		checksum = (zio_checksum)ublock.rootbp.props.checksum;
+		compress = (zio_compress)ublock.rootbp.props.compression;
 		int x = 0;
 	}
 
 	dnode_phys_t dnode;
 	offset = (ublock.rootbp.dva[0].offset << 9) + 0x400000;
 	if (ReadDNode(dnode, offset)) {
+		checksum = (zio_checksum)dnode.blk_ptr[0].props.checksum;
+		compress = (zio_compress)dnode.blk_ptr[0].props.compression;
 		int x = 0;
 	}
 	int x = 0;
