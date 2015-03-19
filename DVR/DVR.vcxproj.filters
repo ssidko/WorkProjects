@@ -113,20 +113,20 @@
     <ClInclude Include="FileStorage.h">
       <Filter>Core\DHFS</Filter>
     </ClInclude>
-    <ClInclude Include="zfs_type.h">
-      <Filter>zfs</Filter>
-    </ClInclude>
-    <ClInclude Include="zfs.h">
-      <Filter>zfs</Filter>
-    </ClInclude>
-    <ClInclude Include="ZPool.h">
-      <Filter>zfs</Filter>
-    </ClInclude>
     <ClInclude Include="BufferedFile.h">
       <Filter>Core\Utility</Filter>
     </ClInclude>
-    <ClInclude Include="lzjb.h">
+    <ClInclude Include="zfs\lzjb.h">
       <Filter>zfs\compression</Filter>
+    </ClInclude>
+    <ClInclude Include="zfs\zfs.h">
+      <Filter>zfs</Filter>
+    </ClInclude>
+    <ClInclude Include="zfs\zfs_type.h">
+      <Filter>zfs</Filter>
+    </ClInclude>
+    <ClInclude Include="zfs\ZPool.h">
+      <Filter>zfs</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -136,11 +136,11 @@
     <ClInclude Include="FileStorage.h" />
     <ClInclude Include="Frame.h" />
     <ClInclude Include="GeneratedFiles\ui_mainwindow.h" />
-    <ClInclude Include="lzjb.h" />
     <ClInclude Include="Timestamp.h" />
-    <ClInclude Include="zfs.h" />
-    <ClInclude Include="zfs_type.h" />
-    <ClInclude Include="ZPool.h" />
+    <ClInclude Include="zfs\lzjb.h" />
+    <ClInclude Include="zfs\zfs.h" />
+    <ClInclude Include="zfs\zfs_type.h" />
+    <ClInclude Include="zfs\ZPool.h" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="mainwindow.qrc">
