@@ -48,7 +48,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <PreprocessorDefinitions>UNICODE;WIN32;WIN64;QT_DLL;QT_CORE_LIB;QT_GUI_LIB;QT_WIDGETS_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>.\GeneratedFiles;.;$(QTDIR)\include;.\GeneratedFiles\$(ConfigurationName);$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtWidgets;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\zfs;.\GeneratedFiles;.;$(QTDIR)\include;.\GeneratedFiles\$(ConfigurationName);$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtWidgets;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Disabled</Optimization>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
@@ -81,7 +81,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="BufferedFile.cpp" />
-    <ClCompile Include="compression.cpp" />
     <ClCompile Include="dhfs.cpp" />
     <ClCompile Include="File.cpp" />
     <ClCompile Include="FileStorage.cpp" />
@@ -101,7 +100,8 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="mainwindow.cpp" />
     <ClCompile Include="Timestamp.cpp" />
-    <ClCompile Include="ZPool.cpp" />
+    <ClCompile Include="zfs\lzjb.cpp" />
+    <ClCompile Include="zfs\ZPool.cpp" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="mainwindow.h">
@@ -131,12 +131,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BufferedFile.h" />
-    <ClInclude Include="compression.h" />
     <ClInclude Include="dhfs.h" />
     <ClInclude Include="File.h" />
     <ClInclude Include="FileStorage.h" />
     <ClInclude Include="Frame.h" />
     <ClInclude Include="GeneratedFiles\ui_mainwindow.h" />
+    <ClInclude Include="lzjb.h" />
     <ClInclude Include="Timestamp.h" />
     <ClInclude Include="zfs.h" />
     <ClInclude Include="zfs_type.h" />

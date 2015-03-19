@@ -23,7 +23,7 @@ bool ZPool::ReadUberblock(uberblock_t &ublock, const LONGLONG &offset)
 	return (io.Read((void *)&ublock, sizeof(uberblock_t)) == sizeof(uberblock_t));
 }
 
-#include "compression.h"
+#include "lzjb.h"
 
 void ZPool::Test( void )
 {
