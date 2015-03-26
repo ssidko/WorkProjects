@@ -3,6 +3,20 @@
 
 #include "zfs_type.h"
 
+#define UBERBLOCK_SIZE						(0x400)
+
+#define VDEV_LABEL_BLANK_SPACE_SIZE			(0x2000)
+#define VDEV_LABEL_BOOT_HEADER_SIZE			(0x2000)
+#define VDEV_LABEL_NV_PAIRS_SIZE			(0x1C000)
+#define VDEV_LABEL_UBERBLOCK_ARRAY_SIZE		(128*UBERBLOCK_SIZE)
+#define VDEV_LABEL_SIZE						(VDEV_LABEL_BLANK_SPACE_SIZE+VDEV_LABEL_BOOT_HEADER_SIZE+VDEV_LABEL_NV_PAIRS_SIZE+VDEV_LABEL_UBERBLOCK_ARRAY_SIZE)
+
+#define VDEV_BOOT_BLOCK_SIZE				(0x380000)
+
+#define VDEV_LABEL_NV_PAIRS_OFFSET			(VDEV_LABEL_BLANK_SPACE_SIZE+VDEV_LABEL_BOOT_HEADER_SIZE)
+#define VDEV_LABEL_UBERBLOCKS_OFFSET		(VDEV_LABEL_NV_PAIRS_OFFSET+VDEV_LABEL_NV_PAIRS_SIZE)	
+#define VDEV_DATA_OFFSET					(2*VDEV_LABEL_SIZE+VDEV_BOOT_BLOCK_SIZE)
+
 #pragma pack(push, 1)
 
 enum zio_checksum {
@@ -108,7 +122,7 @@ typedef struct uberblock {
 #define	DNODE_SHIFT			9				/* 512 bytes */
 #define	DNODE_SIZE			(1 << DNODE_SHIFT)
 #define	DNODE_CORE_SIZE		64				/* 64 bytes for dnode sans blkptrs */
-#define	DN_MAX_BONUSLEN	(DNODE_SIZE - DNODE_CORE_SIZE - (1 << SPA_BLKPTRSHIFT))
+#define	DN_MAX_BONUSLEN		(DNODE_SIZE - DNODE_CORE_SIZE - (1 << SPA_BLKPTRSHIFT))
 
 typedef struct dnode_phys {
 	uint8_t		type;						/* dmu_object_type_t */
@@ -154,7 +168,6 @@ typedef struct dnode_phys {
 		};
 	};
 } dnode_phys_t;
-
 
 #pragma pack(pop)
 

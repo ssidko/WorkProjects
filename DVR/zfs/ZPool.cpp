@@ -1,7 +1,5 @@
 #include "ZPool.h"
 
-
-
 ZPool::ZPool(const std::string &file_name, LONGLONG &volume_offset) :
 	io(file_name),
 	vol_offset(volume_offset)
@@ -40,7 +38,7 @@ void ZPool::Test( void )
 	}
 
 	dnode_phys_t dnode;
-	offset = (ublock.rootbp.dva[0].offset << 9) + 0x400000;
+	offset = (ublock.rootbp.dva[0].offset << 9) + VDEV_DATA_OFFSET;
 	if (ReadDNode(dnode, offset)) {
 		checksum = (zio_checksum)dnode.blk_ptr[0].props.checksum;
 		compress = (zio_compress)dnode.blk_ptr[0].props.compression;
