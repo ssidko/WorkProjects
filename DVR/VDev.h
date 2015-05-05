@@ -1,6 +1,7 @@
-#ifndef _ZFS_H
-#define _ZFS_H
+#ifndef _VDEV_H
+#define _VDEV_H
 
+#include <windows.h>
 #include <string>
 
 /*
@@ -28,6 +29,55 @@
 #define VDEV_LABEL_UBERBLOCKS_OFFSET		(VDEV_LABEL_NV_PAIRS_OFFSET+VDEV_LABEL_NV_PAIRS_SIZE)	
 #define VDEV_DATA_OFFSET					(2*VDEV_LABEL_SIZE+VDEV_BOOT_BLOCK_SIZE)
 
+class IBlockDevice
+{
+public:
+	virtual ~IBlockDevice(void) = 0;
+
+	virtual BOOL SetPointer(const ULONGLONG &starting_block) = 0;
+
+	virtual BOOL ReadBlocks(const BYTE *blocks_buffer, const ULONGLONG &blocks_count) = 0;
+	virtual BOOL WriteBlocks(const BYTE *blocks_buffer, const ULONGLONG &blocks_count) = 0;
+
+	virtual DWORD BlockSize(void) = 0;
+	virtual ULONGLONG BlocksCount(void) = 0;
+};
+
+class BlockDevice : public IBlockDevice
+{
+private:
+	std::string name;
+	DWORD block_size;
+	ULONGLONG blocks_count;
+public:
+	BlockDevice(const std::string &_name, const DWORD &_block_size, const ULONGLONG &_blocks_count);
+	~BlockDevice();
+	
+	BOOL Open(void);
+	BOOL Close(void);
+
+	//
+	// Interface IBlockDevice
+	//
+	virtual BOOL SetPointer(const ULONGLONG &starting_block);
+	virtual BOOL ReadBlocks(const BYTE *blocks_buffer, const ULONGLONG &blocks_count);
+	virtual BOOL WriteBlocks(const BYTE *blocks_buffer, const ULONGLONG &blocks_count);
+	virtual DWORD BlockSize(void);
+	virtual ULONGLONG BlocksCount(void);
+};
+
+//int vdev_test(void)
+//{
+//	std::string dev_name = "D:\\doc\\Зразок заяви на відпустку щорічну (24 к д ).docx";
+//	DWORD block_size = 512;
+//	ULONGLONG blocks_count = 102400;
+//	BlockDevice dev(dev_name, 512, 102400);
+//	if (dev.Open()) {
+//		dev.SetPointer(0);
+//
+//	}
+//	return 0;
+//}
 
 class VDev
 {
@@ -39,4 +89,4 @@ public:
 	~VDev();
 };
 
-#endif // _ZFS_H
+#endif // _VDEV_H

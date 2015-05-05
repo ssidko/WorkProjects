@@ -8,6 +8,7 @@
 #include "BufferedFile.h"
 
 #include "ZPool.h"
+#include "VDev.h"
 
 using namespace DHFS;
 
@@ -42,13 +43,11 @@ int main(int argc, char *argv[])
 
 	LONGLONG offset = 512*4194432LL;
 	//std::string file_name = "J:\\VM\\FreeNAS\\FreeNAS-1-flat.vmdk";
-	std::string file_name = "d:\\VM\\FreeNAS-1\\FreeNAS-1-flat.vmdk";
-	ZPool zpool(file_name, offset);
-	if (zpool.Open()) {
-		zpool.Test();
-	}
-
-
+	//std::string file_name = "d:\\VM\\FreeNAS-1\\FreeNAS-1-flat.vmdk";
+	//ZPool zpool(file_name, offset);
+	//if (zpool.Open()) {
+	//	zpool.Test();
+	//}
 
 	w.show();
 	return a.exec();
