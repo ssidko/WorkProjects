@@ -33,12 +33,9 @@ class IBlockDevice
 {
 public:
 	virtual ~IBlockDevice(void) = 0;
-
 	virtual BOOL SetPointer(const ULONGLONG &starting_block) = 0;
-
 	virtual BOOL ReadBlocks(const BYTE *blocks_buffer, const ULONGLONG &blocks_count) = 0;
 	virtual BOOL WriteBlocks(const BYTE *blocks_buffer, const ULONGLONG &blocks_count) = 0;
-
 	virtual DWORD BlockSize(void) = 0;
 	virtual ULONGLONG BlocksCount(void) = 0;
 };
