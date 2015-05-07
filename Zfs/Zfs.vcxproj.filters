@@ -4,7 +4,7 @@
     <ClInclude Include="MyLib\File.h">
       <Filter>MyLib</Filter>
     </ClInclude>
-    <ClInclude Include="MyLib\String.h">
+    <ClInclude Include="MyLib\MString.h">
       <Filter>MyLib</Filter>
     </ClInclude>
   </ItemGroup>

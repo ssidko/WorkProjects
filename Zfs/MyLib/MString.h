@@ -1,8 +1,8 @@
 #ifndef _STRING_H
 #define _STRING_H
 
-#include <tchar.h>
 #include <string>
+#include <tchar.h>
 
 typedef std::basic_string<TCHAR> String;
 
