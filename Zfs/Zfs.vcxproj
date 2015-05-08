@@ -79,11 +79,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="MyLib\File.h" />
+    <ClInclude Include="MyLib\MException.h" />
     <ClInclude Include="MyLib\MString.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MyLib\File.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="MyLib\MException.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

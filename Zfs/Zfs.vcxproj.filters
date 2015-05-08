@@ -5,7 +5,10 @@
       <Filter>MyLib</Filter>
     </ClInclude>
     <ClInclude Include="MyLib\MString.h">
-      <Filter>MyLib</Filter>
+      <Filter>MyLib\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="MyLib\MException.h">
+      <Filter>MyLib\Utility</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -13,10 +16,16 @@
     <ClCompile Include="MyLib\File.cpp">
       <Filter>MyLib</Filter>
     </ClCompile>
+    <ClCompile Include="MyLib\MException.cpp">
+      <Filter>MyLib\Utility</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="MyLib">
       <UniqueIdentifier>{cc63c333-cbfa-4ca5-9b6b-5419356cdd83}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MyLib\Utility">
+      <UniqueIdentifier>{2a246ccf-79ce-4db4-bb79-5fe7e4a3368c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

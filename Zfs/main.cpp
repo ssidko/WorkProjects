@@ -1,4 +1,5 @@
 #include "File.h"
+#include "MException.h"
 
 void GetErrorString(DWORD error_code, String &string)
 {
@@ -18,11 +19,13 @@ int _tmain(int argc, _TCHAR* argv[])
 	String file_name(_T("D:\\test.bin"));
 	BYTE *buffer = new BYTE[100];
 	try {
-		File file(file_name, FileMode::kReadWrite);
+		File file(file_name, FileMode::kReadOnly);
 		file.Open();
 
 		file.SetPointer(100000ULL);
 		rw = file.Write(buffer, 100);
+
+		WinError error;
 
 		file.SetPointer(0);
 		rw = file.Read(buffer, 100);

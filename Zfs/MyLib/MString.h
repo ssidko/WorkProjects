@@ -1,5 +1,5 @@
-#ifndef _STRING_H
-#define _STRING_H
+#ifndef _MSTRING_H
+#define _MSTRING_H
 
 #include <string>
 #include <tchar.h>
