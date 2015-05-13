@@ -43,6 +43,9 @@
     <Filter Include="Utility">
       <UniqueIdentifier>{046a8a94-bdb5-4e60-a16b-494c178f818e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Core\WFS-h264">
+      <UniqueIdentifier>{b265e5f1-6847-45dd-badb-494390768be8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GeneratedFiles\Debug\moc_mainwindow.cpp">
@@ -84,6 +87,9 @@
     </ClCompile>
     <ClCompile Include="VDev.cpp">
       <Filter>zfs</Filter>
+    </ClCompile>
+    <ClCompile Include="WFS.cpp">
+      <Filter>Core\WFS-h264</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -133,6 +139,12 @@
     </ClInclude>
     <ClInclude Include="VDev.h">
       <Filter>zfs</Filter>
+    </ClInclude>
+    <ClInclude Include="WFS.h">
+      <Filter>Core\WFS-h264</Filter>
+    </ClInclude>
+    <ClInclude Include="WfsOnDisk.h">
+      <Filter>Core\WFS-h264</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
