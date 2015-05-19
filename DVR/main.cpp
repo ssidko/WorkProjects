@@ -12,6 +12,17 @@
 
 using namespace DHFS;
 
+class WfsScanner
+{
+public:
+	WfsScanner(const std::string &file_name, const LONGLONG &offset) {}
+	~WfsScanner(void) {}
+
+	BOOL Open(void) { return FALSE; }
+	BOOL NextFrame(void) { return FALSE; }
+	BOOL NextFrameSequence(void) { return FALSE; }
+};
+
 int main(int argc, char *argv[])
 {
 	QApplication a(argc, argv);
@@ -41,7 +52,7 @@ int main(int argc, char *argv[])
 	//	};
 	//}
 
-	LONGLONG offset = 512*4194432LL;
+	//LONGLONG offset = 512*4194432LL;
 	//std::string file_name = "J:\\VM\\FreeNAS\\FreeNAS-1-flat.vmdk";
 	//std::string file_name = "d:\\VM\\FreeNAS-1\\FreeNAS-1-flat.vmdk";
 	//ZPool zpool(file_name, offset);

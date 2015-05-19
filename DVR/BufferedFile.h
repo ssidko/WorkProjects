@@ -16,17 +16,16 @@ private:
 	LONGLONG io_pointer;
 	DWORD offset;
 	DWORD readed;
+	BOOL SyncBuffer(void);
 public:
 	BufferedFile(const std::string &file_name, DWORD buffer_size = 0);
 	~BufferedFile(void);
 	bool Open(void);
-
 	LONGLONG Pointer(void);
 	void Pointer(LONGLONG &pointer);
 	bool SetPointer(const LONGLONG &new_pointer);
 	DWORD Read(void *buff, DWORD count);
 	LONGLONG Find(BYTE *byte_string, DWORD length);
-	LONGLONG FindEx(BYTE *byte_string, DWORD length);
 };
 
 #endif /*_BUFFERED_FILE_H*/

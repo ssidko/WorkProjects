@@ -25,6 +25,17 @@ BufferedFile::~BufferedFile(void)
 {
 }
 
+BOOL BufferedFile::SyncBuffer(void)
+{
+	if (readed == 0) {
+		readed = io.Read(&buffer[0], buffer.size());
+		if (readed == 0) {
+			return FALSE;
+		}
+	}
+	return TRUE;
+}
+
 bool BufferedFile::Open(void)
 {
 	io_pointer = (0);
@@ -58,6 +69,8 @@ bool BufferedFile::SetPointer(const LONGLONG &new_pointer)
 
 DWORD BufferedFile::Read(void *buff, DWORD count)
 {
+	assert(buff);
+
 	if (readed == 0) {
 		readed = io.Read(&buffer[0], buffer.size());
 		if (readed == 0) {
@@ -83,10 +96,7 @@ DWORD BufferedFile::Read(void *buff, DWORD count)
 			SetPointer(io_pointer + buffer.size());
 		}
 		return rd;
-
-	} else if (offset >= buffer.size()) {
-
-	}
+	} 
 	return 0;
 }
 

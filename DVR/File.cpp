@@ -23,6 +23,7 @@ BOOL File::Open()
 
 BOOL File::Open(const char *file_name)
 {
+	DWORD err = 0;
 	hFile = CreateFileA(file_name,
 						GENERIC_READ|GENERIC_WRITE,
 						FILE_SHARE_READ|FILE_SHARE_WRITE,
@@ -31,8 +32,10 @@ BOOL File::Open(const char *file_name)
 						FILE_ATTRIBUTE_NORMAL|FILE_FLAG_NO_BUFFERING,
 						NULL);
 
-	if (hFile == INVALID_HANDLE_VALUE)
+	if (hFile == INVALID_HANDLE_VALUE) {
+		err = ::GetLastError();
 		return FALSE;
+	}
 	else {
 		_tcscpy_s(name, MAX_PATH, file_name);
 		return TRUE;
