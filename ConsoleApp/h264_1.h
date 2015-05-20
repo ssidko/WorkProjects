@@ -316,7 +316,7 @@ namespace h264_1
 		{
 			std::string t;
 			//std::string convertor_app("C:\\Program Files\\MKVToolNix\\mkvmerge.exe ");
-			std::string convertor_app("C:\\MKVToolNix\\mkvmerge.exe ");
+			std::string convertor_app("D:\\Soft\\#RecoverySoft#\\mkvtoolnix\\mkvmerge.exe ");
 
 			std::stringstream src_file_path;
 			src_file_path << "\"" << file.Name() << "\"";

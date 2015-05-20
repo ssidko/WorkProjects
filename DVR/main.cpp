@@ -12,11 +12,11 @@
 
 using namespace DHFS;
 
-class WfsScanner
+class Wfs_Scanner
 {
 public:
-	WfsScanner(const std::string &file_name, const LONGLONG &offset) {}
-	~WfsScanner(void) {}
+	Wfs_Scanner(const std::string &file_name, const LONGLONG &start_offset) {}
+	~Wfs_Scanner(void) {}
 
 	BOOL Open(void) { return FALSE; }
 	BOOL NextFrame(void) { return FALSE; }

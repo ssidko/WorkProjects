@@ -147,18 +147,17 @@ namespace h264_1
 
 	int main(TCHAR *file_name, LONGLONG offset, TCHAR *out_dir)
 	{
-		FileEx file(_T("G:\\36829\\original.dsk"));
+		FileEx file(_T("F:\\37566\\disk.bin"));
 		
-		Timestamp min_time(2014, 6, 1);
-		Timestamp max_time(2014, 12, 1);
+		Timestamp min_time(2015, 3, 28);
+		Timestamp max_time(2015, 12, 1);
 
 		DWORD d = 0x3B20C61A;
 		TIMESTAMP *t = (TIMESTAMP *)&d;
 
-		VideoStorage storage("G:\\36829\\out", "G:\\36829\\mkv");
+		VideoStorage storage("F:\\37566\\out", "F:\\37566\\mkv");
 		if (file.Open()) {
-			LONGLONG offset = 0x58DAA91C1;
-			//LONGLONG offset = 0x5B5E9FFFD;
+			LONGLONG offset = 0;
 			FRAME_SEQUENCE sequence;
 			while (NextFrameSequence(file, offset, sequence)) {
 				if (sequence.start_time.Seconds() >= min_time.Seconds()) {

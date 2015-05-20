@@ -91,6 +91,9 @@
     <ClCompile Include="WFS.cpp">
       <Filter>Core\WFS-h264</Filter>
     </ClCompile>
+    <ClCompile Include="WfsScanner.cpp">
+      <Filter>Core\WFS-h264</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="mainwindow.ui">
@@ -144,6 +147,9 @@
       <Filter>Core\WFS-h264</Filter>
     </ClInclude>
     <ClInclude Include="WfsOnDisk.h">
+      <Filter>Core\WFS-h264</Filter>
+    </ClInclude>
+    <ClInclude Include="WfsScanner.h">
       <Filter>Core\WFS-h264</Filter>
     </ClInclude>
   </ItemGroup>

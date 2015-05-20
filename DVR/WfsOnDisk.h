@@ -21,14 +21,19 @@ namespace WFS
 		kType_0C = 0x0C,
 	};
 
-#define HDR_MARK_1		((DWORD)0x010000)
-#define HDR_MARK_2		((DWORD)0x0F)
+#define WFS_FRAME_HEADER_MASK		((DWORD)0xF0FFFFFF)	
+#define WFS_FRAME_HEADER_SIGNATURE	((DWORD)0xF0010000)
+
+#define WFS_HDR_MARK_1				((DWORD)0x010000)
+#define WFS_HDR_MARK_2				((DWORD)0x0F)
 
 	typedef struct _FRAME_HEADER {
-		DWORD mark_1 : 24;		// 0x010000	HDR_MARK_1
+		DWORD mark_1 : 24;		// 0x010000	WFS_HDR_MARK_1
 		DWORD type : 4;
-		DWORD mark_2 : 4;		// 0x0F		HDR_MARK_2 
-		bool IsValidSignature(void) { return ((this->mark_1 == HDR_MARK_1) && (this->mark_2 == HDR_MARK_2)); }
+		DWORD mark_2 : 4;		// 0x0F		WFS_HDR_MARK_2 
+		bool IsValidSignature(void) { return ((this->mark_1 == WFS_HDR_MARK_1) && (this->mark_2 == WFS_HDR_MARK_2)); }
+		bool IsValidType(void) { return ((type == kType_0A) || (type == kType_0D) || (type == kType_0C)); }
+		bool IsValid(void) { return (IsValidSignature() && IsValidType()); }
 	} FRAME_HEADER;
 
 	typedef struct  _FRAME_0A {

@@ -102,6 +102,7 @@
     <ClCompile Include="Timestamp.cpp" />
     <ClCompile Include="VDev.cpp" />
     <ClCompile Include="WFS.cpp" />
+    <ClCompile Include="WfsScanner.cpp" />
     <ClCompile Include="zfs\lzjb.cpp" />
     <ClCompile Include="zfs\ZPool.cpp" />
   </ItemGroup>
@@ -142,6 +143,7 @@
     <ClInclude Include="Timestamp.h" />
     <ClInclude Include="VDev.h" />
     <ClInclude Include="WFS.h" />
+    <ClInclude Include="WfsScanner.h" />
     <ClInclude Include="zfs\lzjb.h" />
     <ClInclude Include="zfs\zfs.h" />
     <ClInclude Include="zfs\zfs_type.h" />
