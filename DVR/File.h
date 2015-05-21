@@ -30,7 +30,7 @@ namespace W32Lib
 
 		public :
 			File() : hFile(INVALID_HANDLE_VALUE) {memset(name, 0x00, sizeof(name));}
-			File(const char *file_name) : hFile(INVALID_HANDLE_VALUE) {_tcscpy_s(name, MAX_PATH, file_name);}
+			File(const char *file_name) : hFile(INVALID_HANDLE_VALUE) { strcpy_s(name, MAX_PATH, file_name); }
 
 			~File() {Close();}
 

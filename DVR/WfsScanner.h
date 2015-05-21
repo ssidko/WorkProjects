@@ -17,11 +17,17 @@ namespace WFS
 	class Scanner
 	{
 	private:
+		DWORD buffer_size;
+		BYTE *buffer;
 		BufferedFile io;
 	public:
 		Scanner(const std::string &file_name);
 		~Scanner(void);
-		void NextFrame(const LONGLONG &offset);
+		BOOL Open(void);
+		void Close(void);
+		void SetPointer(const LONGLONG &offset);
+		BOOL NextFrameHeader(LONGLONG &offset);
+		BOOL NextFrame(LONGLONG &offset);
 
 	};
 

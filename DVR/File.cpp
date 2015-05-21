@@ -37,7 +37,7 @@ BOOL File::Open(const char *file_name)
 		return FALSE;
 	}
 	else {
-		_tcscpy_s(name, MAX_PATH, file_name);
+		strcpy_s(name, MAX_PATH, file_name);
 		return TRUE;
 	}
 }
@@ -71,7 +71,7 @@ BOOL File::Create(const char *file_name)
 	if (hFile == INVALID_HANDLE_VALUE)
 		return FALSE;
 	else {
-		_tcscpy_s(name, MAX_PATH, file_name);
+		strcpy_s(name, MAX_PATH, file_name);
 		return TRUE;
 	}
 }
@@ -157,7 +157,7 @@ BOOL FileEx::Open(const char *file_name, DWORD dwDesiredAccess, DWORD dwShareMod
 	if (hFile == INVALID_HANDLE_VALUE)
 		return FALSE;
 	else {
-		_tcscpy_s(name, MAX_PATH, file_name);
+		strcpy_s(name, MAX_PATH, file_name);
 		return TRUE;
 	}
 }
@@ -191,7 +191,7 @@ BOOL FileEx::Create(const char *file_name, DWORD dwDesiredAccess, DWORD dwShareM
 	if (hFile == INVALID_HANDLE_VALUE)
 		return FALSE;
 	else {
-		_tcscpy_s(name, MAX_PATH, file_name);
+		strcpy_s(name, MAX_PATH, file_name);
 		return TRUE;
 	}
 }
@@ -225,7 +225,7 @@ BOOL FileEx::Create(const char *file_name, DWORD dwDesiredAccess, DWORD dwShareM
 	if (hFile == INVALID_HANDLE_VALUE)
 		return FALSE;
 	else {
-		_tcscpy_s(name, MAX_PATH, file_name);
+		strcpy_s(name, MAX_PATH, file_name);
 		return TRUE;
 	}
 }
@@ -270,7 +270,7 @@ BOOL FileEx::Rename(const char *new_name)
 		Close();
 
 	if (MoveFileA(name, new_name)) {
-		_tcscpy_s(name, MAX_PATH, new_name);
+		strcpy_s(name, MAX_PATH, new_name);
 		if (isOpen)
 			Open();
 		return TRUE;
