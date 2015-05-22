@@ -55,6 +55,9 @@ namespace WFS
 		DWORD data_size;
 	} FRAME_0C;
 
+#define	MAX_FRAME_HEADER_SIZE			((DWORD)sizeof(FRAME_0C))
+#define	MAX_FRAME_SIZE					((DWORD)2*1024*1024)
+
 }
 
 #endif // _WFS_ON_DISK_H

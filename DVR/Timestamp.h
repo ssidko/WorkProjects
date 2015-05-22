@@ -1,19 +1,22 @@
 #pragma once
 
-#ifndef _TIMESTAMP
-#define _TIMESTAMP
+#ifndef _TIMESTAMP_H
+#define _TIMESTAMP_H
 
 #include <windows.h>
 
-class Timestamp
-{
-private:
-	DWORD sec;
-	DWORD mins;
+typedef struct _TIMESTAMP {
+	DWORD seconds;
+	DWORD minutes;
 	DWORD hours;
 	DWORD day;
 	DWORD month;
 	DWORD year;
+} TIMESTAMP;
+
+class Timestamp : public TIMESTAMP
+{
+private:
 	char str[32];
 public:
 	Timestamp();
@@ -26,8 +29,8 @@ public:
 	void SetMonth(DWORD m) {month = m;}
 	void SetDay(DWORD d) {day = d;}
 	void SetHours(DWORD h) {hours = h;}
-	void SetMinutes(DWORD m) {mins = m;}
-	void SetSeconds(DWORD s) {sec = s;}
+	void SetMinutes(DWORD m) {minutes = m;}
+	void SetSeconds(DWORD s) {seconds = s;}
 
 	LONGLONG Seconds(void) const;
 	const char *String(void);

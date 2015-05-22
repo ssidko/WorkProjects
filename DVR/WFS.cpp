@@ -5,6 +5,8 @@
 #include <string>
 #include "WinConsole.h"
 
+#include "File.h"
+
 using namespace WFS;
 
 int WFS::Main(void)
@@ -16,14 +18,15 @@ int WFS::Main(void)
 	Scanner wfs(wfs_file_name);
 	
 	if (wfs.Open()) {
-		LONGLONG offset = 0;
+		FrameSequence sequence;
 
 		wfs.SetPointer(0LL);
-		while (wfs.NextFrameHeader(offset)) {
-			offset_str = std::to_wstring(offset) + L"\n";
-			//console.Print(offset_str.c_str());
-			int x = 0;
-			wfs.SetPointer(++offset);
+		while (wfs.NextFrameSequence(sequence)) {
+			W32Lib::File out("1.h264");
+			if (out.Create()) {
+				out.Write(sequence.buffer.data(), sequence.buffer.size());
+			}
+			sequence.Clear();
 		}	
 		
 		return 0;
