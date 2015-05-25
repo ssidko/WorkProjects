@@ -169,9 +169,6 @@ BOOL WFS::Scanner::NextFrameSequence(FrameSequence &sequence)
 	sequence.Clear();
 	while (NextFrameWithTimestamp()) {
 		while (ReadFrame(sequence, frame)) {
-			if (sequence.frame_counter == 190) {
-				int x = 0;
-			}
 			prev_offset = frame.offset;
 		}
 		io.SetPointer(++prev_offset);
