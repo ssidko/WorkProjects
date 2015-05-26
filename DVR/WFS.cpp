@@ -51,12 +51,20 @@ int WFS::Main(void)
 	Scanner wfs(wfs_file_name);
 	W32Lib::FileEx *out_file = nullptr;
 
+	LONGLONG max_offset = 0;
+
 	WinConsole console;
 	
 	if (wfs.Open()) {
 		FrameSequence sequence;
-
+		wfs.SetPointer(/*(1300) * 1024 * 1024 * 1024LL*/1446509740111LL);
 		while (wfs.NextFrameSequence(sequence)) {
+			if (sequence.offset >= max_offset) {
+				max_offset = sequence.offset;
+			} else {
+				int x = 0;
+			}
+
 			if ((sequence.start_time.Seconds() < min_date.Seconds()) || (sequence.start_time.Seconds() > max_date.Seconds())) {
 				continue;
 			}

@@ -81,6 +81,8 @@ BOOL WFS::Scanner::ReadFrame(FrameSequence &seq, FrameInfo &readed_frame)
 						io.SetPointer(readed_frame.offset);
 						return FALSE;
 					}
+				} else {
+					io.SetPointer(readed_frame.offset + readed_frame.size);
 				}
 				seq.frame_counter++;
 				seq.size += readed_frame.size;
@@ -105,9 +107,7 @@ BOOL WFS::Scanner::ReadFrame(FrameSequence &seq, FrameInfo &readed_frame)
 				}
 				return TRUE;
 			}
-
-		}
-		
+		}		
 	}
 
 	seq.buffer.resize(original_size);
@@ -171,8 +171,11 @@ BOOL WFS::Scanner::NextFrameSequence(FrameSequence &sequence)
 		while (ReadFrame(sequence, frame)) {
 			prev_offset = frame.offset;
 		}
-		io.SetPointer(++prev_offset);
-		return TRUE;
+		if (sequence.frame_counter) {
+			return TRUE;
+		}
+		sequence.Clear();
+		io.SetPointer(io.Pointer() + 1);
 	}
 	return FALSE;
 }
