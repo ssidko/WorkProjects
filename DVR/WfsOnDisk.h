@@ -58,6 +58,23 @@ namespace WFS
 #define	MAX_FRAME_HEADER_SIZE			((DWORD)sizeof(FRAME_0C))
 #define	MAX_FRAME_SIZE					((DWORD)2*1024*1024)
 
+	typedef struct _VOLUME_DESCRIPTOR {
+		BYTE unk_1[16];					// Обычно - 0x00
+		TIMESTAMP first_record_time;
+		TIMESTAMP last_record_time;
+		DWORD last_used_block;
+		BYTE unk_3[16];					// Обычно - 0x00
+		DWORD sector_size;
+		DWORD block_size;				// Размер блока в секторах
+		DWORD unk_4;					// 0x00
+		DWORD reserved_blocks;			// Кол-во зарезервированных блоков - обычно 64
+		DWORD cam_table_sector;			//
+		DWORD descriptor_sector;
+		DWORD index_table_sector;
+		DWORD first_block_sector;		// Смещение к первому блоку в секторах
+		DWORD total_blocks_count;		//
+	} VOLUME_DESCRIPTOR;
+
 }
 
 #endif // _WFS_ON_DISK_H

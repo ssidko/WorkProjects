@@ -40,7 +40,8 @@ std::string WFS::SequenceInfoString(FrameSequence &sequence)
 
 int WFS::Main(void)
 {
-	std::string wfs_file_name = "\\\\.\\PhysicalDrive3";
+	//std::string wfs_file_name = "\\\\.\\PhysicalDrive3";
+	std::string wfs_file_name = "F:\\37566\\1.h264";
 	std::string out_dir_path = "F:\\37566\\mkv\\";
 	std::string mkv_file_name;
 	std::string raw_file_name = out_dir_path + "out.dvr";
@@ -48,16 +49,21 @@ int WFS::Main(void)
 	Timestamp min_date(2015, 03, 20, 00, 00, 00);
 	Timestamp max_date(2015, 04, 2, 00, 00, 00);
 
+	
+	DWORD dw = 0x3CF9788B;
+
+	WFS::TIMESTAMP *t = (TIMESTAMP *)&dw;
+
+	
 	Scanner wfs(wfs_file_name);
 	W32Lib::FileEx *out_file = nullptr;
 
 	LONGLONG max_offset = 0;
-
 	WinConsole console;
 	
 	if (wfs.Open()) {
 		FrameSequence sequence;
-		wfs.SetPointer(/*(1300) * 1024 * 1024 * 1024LL*/1446509740111LL);
+		//wfs.SetPointer((1300) * 1024 * 1024 * 1024LL);
 		while (wfs.NextFrameSequence(sequence)) {
 			if (sequence.offset >= max_offset) {
 				max_offset = sequence.offset;
