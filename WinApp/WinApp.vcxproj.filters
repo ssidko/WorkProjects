@@ -86,5 +86,8 @@
     <ClInclude Include="engine.h" />
     <ClInclude Include="main.h" />
     <ClInclude Include="Thread.h" />
+    <ClInclude Include="mdadm.h">
+      <Filter>ex2fs</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

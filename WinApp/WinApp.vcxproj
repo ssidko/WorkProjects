@@ -116,6 +116,7 @@
     <ClInclude Include="Button.h" />
     <ClInclude Include="ListBox.h" />
     <ClInclude Include="MainWnd.h" />
+    <ClInclude Include="mdadm.h" />
     <ClInclude Include="Static.h" />
     <ClInclude Include="Block.h" />
     <ClInclude Include="common.h" />
