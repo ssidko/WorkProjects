@@ -11,6 +11,8 @@
 #include "ZPool.h"
 #include "VDev.h"
 
+#include <QDir>
+
 using namespace DHFS;
 
 int main(int argc, char *argv[])
@@ -18,7 +20,14 @@ int main(int argc, char *argv[])
 	QApplication a(argc, argv);
 	MainWindow w;
 
-	WFS::Main();
+	QString path = "D:\\";
+	QDir base_dir(path);
+
+	QFileInfoList info_list = base_dir.entryInfoList();
+	foreach(QFileInfo file_info, info_list) {
+		QString curr_path = file_info.absoluteFilePath();
+		int x = 0;
+	}
 
 	w.show();
 	return a.exec();

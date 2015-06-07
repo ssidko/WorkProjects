@@ -65,11 +65,6 @@ int WFS::Main(void)
 		FrameSequence sequence;
 		//wfs.SetPointer((1300) * 1024 * 1024 * 1024LL);
 		while (wfs.NextFrameSequence(sequence)) {
-			if (sequence.offset >= max_offset) {
-				max_offset = sequence.offset;
-			} else {
-				int x = 0;
-			}
 
 			if ((sequence.start_time.Seconds() < min_date.Seconds()) || (sequence.start_time.Seconds() > max_date.Seconds())) {
 				continue;
