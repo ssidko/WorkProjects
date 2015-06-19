@@ -18,19 +18,30 @@ enum ConsoleColour {
 class WinConsole
 {
 private:
-	HANDLE output;
-	WORD colour;
+	HANDLE handle;
+	DWORD saved_colour;
+	COORD saved_position;
 	void SaveColour(void);
 	void RestoreColour(void);
 public:
 	WinConsole(void);
 	~WinConsole(void);
+
 	void Print(const TCHAR *str);
-	void Print(const TCHAR *str, WORD text_colour);
-	void Print(const TCHAR *str, WORD text_colour, WORD background_colour);
-	void SetTextColour(WORD text_colour);
-	void SetTextColour(WORD text_colour, WORD background_colour);
-	void SetPosition(short x, short y);
+	void Print(const TCHAR *str, DWORD text_colour);
+	void Print(const TCHAR *str, DWORD text_colour, DWORD background_colour);
+
+	void Print(DWORD x, DWORD y, const TCHAR *str);
+	void Print(DWORD x, DWORD y, const TCHAR *str, DWORD text_colour);
+	void Print(DWORD x, DWORD y, const TCHAR *str, DWORD text_colour, DWORD background_colour);
+
+	void SetColour(DWORD text_colour);
+	void SetColour(DWORD text_colour, DWORD background_colour);
+
+	void SetPosition(DWORD x, DWORD y);
+	void SavePosition(void);
+	void RestorePosition(void);
+
 	void Test();
 };
 

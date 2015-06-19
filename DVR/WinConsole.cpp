@@ -1,12 +1,12 @@
 #include "WinConsole.h"
 
-#define INVALID_COLOUR			(WORD)0xFFFF
+#define INVALID_COLOUR			(DWORD)0xFFFFFFFF
 
-WinConsole::WinConsole(void) : output(NULL), colour(INVALID_COLOUR)
+WinConsole::WinConsole(void) : handle(NULL), saved_colour(INVALID_COLOUR) 
 {
 	::AllocConsole();
 	::SetConsoleCP(DEFAULT_CP);
-	output = ::GetStdHandle(STD_OUTPUT_HANDLE);
+	handle = ::GetStdHandle(STD_OUTPUT_HANDLE);
 }
 
 WinConsole::~WinConsole(void)
@@ -18,58 +18,96 @@ void WinConsole::SaveColour(void)
 {
 	CONSOLE_SCREEN_BUFFER_INFO screen_info;
 	memset(&screen_info, 0x00, sizeof(CONSOLE_SCREEN_BUFFER_INFO));
-	::GetConsoleScreenBufferInfo(output, &screen_info);
-	colour = screen_info.wAttributes;
+	::GetConsoleScreenBufferInfo(handle, &screen_info);
+	saved_colour = screen_info.wAttributes;
 }
 
 void WinConsole::RestoreColour(void)
 {
-	if (colour != INVALID_COLOUR) {
-		::SetConsoleTextAttribute(output, colour);
+	if (saved_colour != INVALID_COLOUR) {
+		::SetConsoleTextAttribute(handle, saved_colour);
 	} else {
-		SetTextColour(kWhite, kBlack);
+		SetColour(kWhite, kBlack);
 	}
 }
 
 void WinConsole::Print(const TCHAR *str)
 {
 	DWORD wr = 0;
-	::WriteConsole(output, str, _tcsclen(str), &wr, NULL);
+	::WriteConsole(handle, str, _tcsclen(str), &wr, NULL);
 }
 
-void WinConsole::Print(const TCHAR *str, WORD text_colour)
+void WinConsole::Print(const TCHAR *str, DWORD text_colour)
 {
 	SaveColour();
-	SetTextColour(text_colour);
+	SetColour(text_colour);
 	Print(str);
 	RestoreColour();
 }
 
-void WinConsole::Print(const TCHAR *str, WORD text_colour, WORD background_colour)
+void WinConsole::Print(const TCHAR *str, DWORD text_colour, DWORD background_colour)
 {
 	SaveColour();
-	SetTextColour(text_colour, background_colour);
+	SetColour(text_colour, background_colour);
 	Print(str);
 	RestoreColour();
 }
 
-void WinConsole::SetTextColour(WORD text_colour)
+void WinConsole::Print(DWORD x, DWORD y, const TCHAR *str)
+{
+	SavePosition();
+	SetPosition(x, y);
+	Print(str);
+	RestorePosition();
+}
+
+void WinConsole::Print(DWORD x, DWORD y, const TCHAR *str, DWORD text_colour)
+{
+	SavePosition();
+	SetPosition(x, y);
+	Print(str, text_colour);
+	RestorePosition();
+}
+
+void WinConsole::Print(DWORD x, DWORD y, const TCHAR *str, DWORD text_colour, DWORD background_colour)
+{
+	SavePosition();
+	SetPosition(x, y);
+	Print(str, text_colour, background_colour);
+	RestorePosition();
+}
+
+void WinConsole::SetColour(DWORD text_colour)
 {
 	CONSOLE_SCREEN_BUFFER_INFO buffer_info;
 	memset(&buffer_info, 0x00, sizeof(CONSOLE_SCREEN_BUFFER_INFO));
-	::GetConsoleScreenBufferInfo(output, &buffer_info);
-	::SetConsoleTextAttribute(output, text_colour|((0x00F0&buffer_info.wAttributes)>>4));
+	::GetConsoleScreenBufferInfo(handle, &buffer_info);
+	::SetConsoleTextAttribute(handle, text_colour|((0x00F0&buffer_info.wAttributes)>>4));
 }
 
-void WinConsole::SetTextColour(WORD text_colour, WORD background_colour)
+void WinConsole::SetColour(DWORD text_colour, DWORD background_colour)
 {
-	::SetConsoleTextAttribute(output, text_colour|(background_colour << 4));
+	::SetConsoleTextAttribute(handle, text_colour|(background_colour << 4));
 }
 
-void WinConsole::SetPosition(short x, short y)
+void WinConsole::SetPosition(DWORD x, DWORD y)
 {
-	COORD pos = {x, y};
-	BOOL res = ::SetConsoleCursorPosition(output, pos);
+	COORD pos = { (short)x, (short)y };
+	BOOL res = ::SetConsoleCursorPosition(handle, pos);
+}
+
+void WinConsole::SavePosition(void)
+{
+	CONSOLE_SCREEN_BUFFER_INFO buffer_info;
+	memset(&buffer_info, 0x00, sizeof(CONSOLE_SCREEN_BUFFER_INFO));
+	if (::GetConsoleScreenBufferInfo(handle, &buffer_info)) {
+		saved_position = buffer_info.dwCursorPosition;	
+	}
+}
+
+void WinConsole::RestorePosition(void)
+{
+	::SetConsoleCursorPosition(handle, saved_position);
 }
 
 void WinConsole::Test()
