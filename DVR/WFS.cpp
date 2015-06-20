@@ -1,7 +1,7 @@
 #include "WFS.h"
 
 #include <iostream>
-#include "WinConsole.h"
+//#include "WinConsole.h"
 
 #include "File.h"
 
@@ -59,7 +59,7 @@ int WFS::Main(void)
 	W32Lib::FileEx *out_file = nullptr;
 
 	LONGLONG max_offset = 0;
-	WinConsole console;
+	//WinConsole<TCHAR> console;
 	
 	if (wfs.Open()) {
 		FrameSequence sequence;

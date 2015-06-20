@@ -47,13 +47,17 @@ int main(int argc, char *argv[])
 
 	//WFS::Main();
 
-	WinConsole con;
-	con.Print(_T("Hello!!!\n"), kRed|kIntensity);
-	con.Print(30, 10, _T("Hello there:)"));
-	con.Print(30, 11, _T("Hello there:)"), kBlue|kIntensity);
-	con.Print(_T("Hello!!!\n"), kGreen | kIntensity);
-	con.Print(30, 11, _T("Hello there:)"), kBlue | kIntensity);
-	con.Print(_T("Testing\n"));
+	WinConsole<TCHAR> con;
+
+	//con.Print(_T("Hello!!!\n"), kRed|kIntensity);
+	//con.Print(30, 10, _T("Hello there:)"));
+	//con.Print(30, 11, _T("Hello there:)"), kBlue|kIntensity);
+	//con.Print(_T("Hello!!!\n"), kGreen | kIntensity);
+	//con.Print(30, 11, _T("Hello there:)"), kBlue | kIntensity);
+	//con.Print(_T("Testing\n"));
+
+	//con << _T("val: ") << 1000000000000ll << _T("\n");
+
 	w.show();
 	return a.exec();
 }
