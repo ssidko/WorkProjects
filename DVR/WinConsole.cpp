@@ -48,7 +48,7 @@ void WinConsole::Print(const TCHAR *str)
 void WinConsole::Print(const TCHAR *str, DWORD text_colour)
 {
 	SaveColour();
-	SetColour(text_colour);
+	SetTextColour(text_colour);
 	Print(str);
 	RestoreColour();
 }
@@ -102,12 +102,40 @@ void WinConsole::Printf(const TCHAR *format, ...)
 	delete[] string;
 }
 
-void WinConsole::SetColour(DWORD text_colour)
+void WinConsole::Printf(DWORD text_colour, const TCHAR *format, ...)
+{
+	int len = 0;
+	TCHAR *string = nullptr;
+	va_list argptr = nullptr;
+
+	SaveColour();
+	SetTextColour(text_colour);
+	va_start(argptr, format);
+	len = (_vsctprintf(format, argptr) + 1);
+	string = new TCHAR[len];
+	_vstprintf_s(string, len, format, argptr);
+	va_end(argptr);
+	Print(string);
+	RestoreColour();
+
+	delete[] string;
+
+}
+
+void WinConsole::SetTextColour(DWORD text_colour)
 {
 	CONSOLE_SCREEN_BUFFER_INFO buffer_info;
 	memset(&buffer_info, 0x00, sizeof(CONSOLE_SCREEN_BUFFER_INFO));
 	::GetConsoleScreenBufferInfo(handle, &buffer_info);
-	::SetConsoleTextAttribute(handle, text_colour | ((0x00F0 & buffer_info.wAttributes) >> 4));
+	::SetConsoleTextAttribute(handle, text_colour | (buffer_info.wAttributes & 0xFFF0));
+}
+
+void WinConsole::SetBackgroundColour(DWORD background_colour)
+{
+	CONSOLE_SCREEN_BUFFER_INFO buffer_info;
+	memset(&buffer_info, 0x00, sizeof(CONSOLE_SCREEN_BUFFER_INFO));
+	::GetConsoleScreenBufferInfo(handle, &buffer_info);
+	::SetConsoleTextAttribute(handle, (background_colour << 4) | (buffer_info.wAttributes & 0xFF0F));
 }
 
 void WinConsole::SetColour(DWORD text_colour, DWORD background_colour)
