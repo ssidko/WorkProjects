@@ -28,6 +28,9 @@ private:
 
 	void SaveColour(void);
 	void RestoreColour(void);
+
+	void SavePosition(void);
+	void RestorePosition(void);
 public:
 	WinConsole(void);
 	~WinConsole(void);
