@@ -51,8 +51,6 @@ public:
 	void SetColour(DWORD text_colour, DWORD background_colour);
 
 	void SetPosition(DWORD x, DWORD y);
-	void SavePosition(void);
-	void RestorePosition(void);
 
 	WinConsole & operator<<(TCHAR *str);
 	WinConsole & operator<<(int value);
