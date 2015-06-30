@@ -49,11 +49,18 @@ int main(int argc, char *argv[])
 
 	WinConsole con;
 
-	con.SaveColour();
 	con.SetBackgroundColour(kBlue);
+
+	con.Print(_T("\u2514 "), kWhite|kIntensity);
 	con.Printf(_T("Test %d, %d\n"), 10000, 10000);
+
+	con.Print(_T("\u2514 "), kWhite | kIntensity);
 	con.Printf(kRed, _T("Test %d, %d\n"), 10000, 10000);
-	con.RestoreColour();
+
+	con.Print(_T("\u2514 "), kWhite | kIntensity);
+	con.Printf(kRed, _T("Test %d, %d\n"), 10000, 10000);
+
+	con.Print(_T("\u2514 "), kWhite | kIntensity);
 	con.Printf(_T("Test %d, %d\n"), 10000, 10000);
 
 	FOREGROUND_BLUE;

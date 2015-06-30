@@ -10,6 +10,8 @@ WinConsole::WinConsole(void) : handle(NULL), saved_colour(INVALID_COLOUR), str_b
 	::SetConsoleCP(DEFAULT_CP);
 	handle = ::GetStdHandle(STD_OUTPUT_HANDLE);
 	str_buffer = new TCHAR[STR_BUFFER_SIZE];
+	saved_position.X = 0;
+	saved_position.Y = 0;
 }
 
 WinConsole::~WinConsole(void)

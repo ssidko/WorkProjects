@@ -25,6 +25,9 @@ private:
 	DWORD saved_colour;
 	COORD saved_position;
 	TCHAR *str_buffer;
+
+	void SaveColour(void);
+	void RestoreColour(void);
 public:
 	WinConsole(void);
 	~WinConsole(void);
@@ -39,9 +42,6 @@ public:
 
 	void Printf(const TCHAR *format, ...);
 	void Printf(DWORD text_colour, const TCHAR *format, ...);
-
-	void SaveColour(void);
-	void RestoreColour(void);
 
 	void SetTextColour(DWORD text_colour);
 	void SetBackgroundColour(DWORD background_colour);
