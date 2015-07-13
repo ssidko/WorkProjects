@@ -26,10 +26,10 @@ typedef struct {
 	WORD sectors_per_fat;				/* zero */
 	WORD sectors_per_track;				/* Required to boot Windows. */
 	WORD heads;							/* Required to boot Windows. */
-	WORD hidden_sectors;				/* Offset to the start of the partition
+	DWORD hidden_sectors;				/* Offset to the start of the partition
 										   relative to the disk in sectors.
 										   Required to boot Windows. */
-	WORD large_sectors;					/* zero 
+	DWORD large_sectors;				/* zero 
 										   sizeof() = 25 (0x19) bytes */
 } BIOS_PARAMETER_BLOCK;	
 
@@ -53,7 +53,7 @@ typedef struct {
 	BYTE clusters_per_index_record;		/* Index block size in clusters. */
 	BYTE reserved1[3];					/* zero */
 	ULONGLONG volume_serial_number;		/* Irrelevant (serial number). */
-	WORD checksum;						/* Boot sector checksum. */
+	DWORD checksum;						/* Boot sector checksum. */
 	BYTE bootstrap[426];				/* Irrelevant (boot up code). */
 	WORD end_of_sector_marker;			/* End of bootsector magic. Always is
 										   0xaa55 in little endian.
@@ -62,33 +62,26 @@ typedef struct {
 
 #pragma pack(pop)
 
-///**
-//* enum NTFS_RECORD_TYPES -
-//*
-//* Magic identifiers present at the beginning of all ntfs record containing
-//* records (like mft records for example).
-//*/
-//typedef enum {
-//	/* Found in $MFT/$DATA. */
-//	magic_FILE = const_cpu_to_le32(0x454c4946), /* Mft entry. */
-//	magic_INDX = const_cpu_to_le32(0x58444e49), /* Index buffer. */
-//	magic_HOLE = const_cpu_to_le32(0x454c4f48), /* ? (NTFS 3.0+?) */
-//
-//	/* Found in $LogFile/$DATA. */
-//	magic_RSTR = const_cpu_to_le32(0x52545352), /* Restart page. */
-//	magic_RCRD = const_cpu_to_le32(0x44524352), /* Log record page. */
-//
-//	/* Found in $LogFile/$DATA.  (May be found in $MFT/$DATA, also?) */
-//	magic_CHKD = const_cpu_to_le32(0x444b4843), /* Modified by chkdsk. */
-//
-//	/* Found in all ntfs record containing records. */
-//	magic_BAAD = const_cpu_to_le32(0x44414142), /* Failed multi sector
-//												transfer was detected. */
-//
-//												/*
-//												* Found in $LogFile/$DATA when a page is full or 0xff bytes and is
-//												* thus not initialized.  User has to initialize the page before using
-//												* it.
-//												*/
-//	magic_empty = const_cpu_to_le32(0xffffffff),/* Record is empty and has to be initialized before it can be used. */
-//} NTFS_RECORD_TYPES;
+typedef enum {
+	/* Found in $MFT/$DATA. */
+	magic_FILE = 0x454c4946,			/* Mft entry. */
+	magic_INDX = 0x58444e49,			/* Index buffer. */
+	magic_HOLE = 0x454c4f48,			/* ? (NTFS 3.0+?) */
+
+	/* Found in $LogFile/$DATA. */
+	magic_RSTR = 0x52545352,			/* Restart page. */
+	magic_RCRD = 0x44524352,			/* Log record page. */
+
+	/* Found in $LogFile/$DATA.  (May be found in $MFT/$DATA, also?) */
+	magic_CHKD = 0x444b4843,			/* Modified by chkdsk. */
+
+	/* Found in all ntfs record containing records. */
+	magic_BAAD = 0x44414142,			/* Failed multi sector transfer was detected. */
+
+	/*
+	* Found in $LogFile/$DATA when a page is full or 0xff bytes and is
+	* thus not initialized.  User has to initialize the page before using
+	* it.
+	*/
+	magic_empty = 0xffffffff,			/* Record is empty and has to be initialized before it can be used. */
+} NTFS_RECORD_TYPES;

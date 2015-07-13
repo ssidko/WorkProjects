@@ -208,6 +208,9 @@
     <ClInclude Include="Mbr.h">
       <Filter>Experimental</Filter>
     </ClInclude>
+    <ClInclude Include="MbrPartitionTypes.h">
+      <Filter>Experimental</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="ConsoleApp.rc" />
