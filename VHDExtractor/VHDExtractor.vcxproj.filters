@@ -37,6 +37,9 @@
     <Filter Include="Utils">
       <UniqueIdentifier>{17ee9bec-3964-42c7-b5c5-ffa5b27cb5ed}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Other">
+      <UniqueIdentifier>{7e9ab791-ff04-4704-ac84-16c01c1edf24}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GeneratedFiles\Debug\moc_MainWindow.cpp">
@@ -80,7 +83,7 @@
       <Filter>Utils</Filter>
     </ClCompile>
     <ClCompile Include="Fat.cpp">
-      <Filter>Generated Files</Filter>
+      <Filter>Other</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -126,7 +129,7 @@
       <Filter>Utils</Filter>
     </ClInclude>
     <ClInclude Include="Fat.h">
-      <Filter>Generated Files</Filter>
+      <Filter>Other</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

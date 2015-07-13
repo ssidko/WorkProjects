@@ -55,6 +55,9 @@
     <Filter Include="console">
       <UniqueIdentifier>{9f61ff89-f24e-48e0-a1e4-ceebd09d6497}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Experimental">
+      <UniqueIdentifier>{cb32b169-7844-4d72-af4e-cfc27d555b2f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Calc.cpp">
@@ -119,6 +122,9 @@
     </ClCompile>
     <ClCompile Include="h264_1.cpp">
       <Filter>dvr-h264</Filter>
+    </ClCompile>
+    <ClCompile Include="Experemental.cpp">
+      <Filter>Experimental</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -192,6 +198,15 @@
     </ClInclude>
     <ClInclude Include="h264_1.h">
       <Filter>dvr-h264</Filter>
+    </ClInclude>
+    <ClInclude Include="Experemental.h">
+      <Filter>Experimental</Filter>
+    </ClInclude>
+    <ClInclude Include="NtfsOnDiskStructures.h">
+      <Filter>Experimental</Filter>
+    </ClInclude>
+    <ClInclude Include="Mbr.h">
+      <Filter>Experimental</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
