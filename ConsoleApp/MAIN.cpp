@@ -4,31 +4,32 @@
 #include "NtfsOnDiskStructures.h"
 #include "W32Lib.h"
 
+#include "h264.h"
+
 int _tmain(int argc, _TCHAR* argv[])
 {
 	
-	FileEx disk(_T("\\\\.\\PhysicalDrive0"));
-	if (disk.Open()) {
-		
-		MBR mbr = {0};
-		size_t size = sizeof(MBR);
-		size = sizeof(BIOS_PARAMETER_BLOCK);
-		disk.SetPointer(0);
-		disk.Read((void *)&mbr, 512);
-		for (int i = 0; i < MBR_MAX_PARTITIONS_COUNT; ++i) {
-			if (mbr.partition[i].type == MBR_NTFS_PARTITION) {
-				NTFS_BOOT_SECTOR bs = { 0 };
-				disk.SetPointer(mbr.partition->offset * 512);
-				size = sizeof(NTFS_BOOT_SECTOR);
-				disk.Read((void *)&bs, 512);
-				int x = 0;
-				
-			}
-		
-		}
+	//FileEx disk(_T("\\\\.\\PhysicalDrive0"));
+	//if (disk.Open()) {
+	//	
+	//	MBR mbr = {0};
+	//	size_t size = sizeof(MBR);
+	//	size = sizeof(BIOS_PARAMETER_BLOCK);
+	//	disk.SetPointer(0);
+	//	disk.Read((void *)&mbr, 512);
+	//	for (int i = 0; i < MBR_MAX_PARTITIONS_COUNT; ++i) {
+	//		if (mbr.partition[i].type == MBR_NTFS_PARTITION) {
+	//			NTFS_BOOT_SECTOR bs = { 0 };
+	//			disk.SetPointer(mbr.partition->offset * 512);
+	//			size = sizeof(NTFS_BOOT_SECTOR);
+	//			disk.Read((void *)&bs, 512);
+	//			int x = 0;				
+	//		}		
+	//	}
+	//	int x = 0;
+	//}
 
-		int x = 0;
-	}
+	h264dvr::main(NULL, 0, NULL);
 
 
 
