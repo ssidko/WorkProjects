@@ -126,6 +126,15 @@
     <ClCompile Include="Experemental.cpp">
       <Filter>Experimental</Filter>
     </ClCompile>
+    <ClCompile Include="DvrExt3.cpp">
+      <Filter>dvr-h264</Filter>
+    </ClCompile>
+    <ClCompile Include="BufferedFile.cpp">
+      <Filter>dvr-h264</Filter>
+    </ClCompile>
+    <ClCompile Include="File.cpp">
+      <Filter>dvr-h264</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Calc.h">
@@ -210,6 +219,15 @@
     </ClInclude>
     <ClInclude Include="MbrPartitionTypes.h">
       <Filter>Experimental</Filter>
+    </ClInclude>
+    <ClInclude Include="DvrExt3.h">
+      <Filter>dvr-h264</Filter>
+    </ClInclude>
+    <ClInclude Include="BufferedFile.h">
+      <Filter>dvr-h264</Filter>
+    </ClInclude>
+    <ClInclude Include="File.h">
+      <Filter>dvr-h264</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

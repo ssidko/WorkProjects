@@ -5,6 +5,7 @@
 #include "W32Lib.h"
 
 #include "h264.h"
+#include "DvrExt3.h"
 
 int _tmain(int argc, _TCHAR* argv[])
 {
@@ -29,7 +30,9 @@ int _tmain(int argc, _TCHAR* argv[])
 	//	int x = 0;
 	//}
 
-	h264dvr::main(NULL, 0, NULL);
+	dvrext::Run();
+
+	//h264dvr::main(NULL, 0, NULL);
 
 
 

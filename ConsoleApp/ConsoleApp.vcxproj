@@ -98,10 +98,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="BufferedFile.cpp" />
     <ClCompile Include="Calc.cpp" />
     <ClCompile Include="dshowtest.cpp" />
+    <ClCompile Include="DvrExt3.cpp" />
     <ClCompile Include="Experemental.cpp" />
     <ClCompile Include="ext_journal.cpp" />
+    <ClCompile Include="File.cpp" />
     <ClCompile Include="h264.cpp" />
     <ClCompile Include="h264_1.cpp" />
     <ClCompile Include="mxf.cpp" />
@@ -124,10 +127,13 @@
     <ClCompile Include="stdafx.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BufferedFile.h" />
     <ClInclude Include="Calc.h" />
     <ClInclude Include="dshowtest.h" />
+    <ClInclude Include="DvrExt3.h" />
     <ClInclude Include="Experemental.h" />
     <ClInclude Include="ext_journal.h" />
+    <ClInclude Include="File.h" />
     <ClInclude Include="h264.h" />
     <ClInclude Include="h264_1.h" />
     <ClInclude Include="Mbr.h" />
