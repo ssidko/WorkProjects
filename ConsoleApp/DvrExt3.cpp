@@ -63,7 +63,7 @@ bool dvrext::IsIndirectBlock(const EXT_BLOCK<EXT_BLOCK_SIZE> &block)
 	return true;
 }
 
-int dvrext::RecoverAllIndirectBlocksToFolder(W32Lib::FileEx ext_volume, LONGLONG volume_offset, std::string out_folder)
+int dvrext::RecoverAllIndirectBlocksToFolder(std::string out_folder, std::string volume_file_name, const LONGLONG &offset, const DWORD &blocks_count, DWORD block_size)
 {
 
 
