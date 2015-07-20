@@ -25,10 +25,9 @@ namespace dvrext
 		inline DWORD DwordsCount(void) const { return (BlockSize / sizeof(DWORD)); }
 	};
 
-	int RecoverAllIndirectBlocksToFolder(std::string out_folder, std::string volume_file_name, const LONGLONG &offset, const DWORD &blocks_count, DWORD block_size);
+	int SaveAllIndirectBlocksToFolder(std::string out_folder, std::string volume_file_name, const LONGLONG &offset, const DWORD &blocks_count, DWORD block_size);
 	bool IsIndirectBlock(const EXT_BLOCK<EXT_BLOCK_SIZE> &block);
 	int Run(void);
-
 }
 
 #endif // _DVR_EXT3_H

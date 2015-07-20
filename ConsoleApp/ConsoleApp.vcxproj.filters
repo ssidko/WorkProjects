@@ -58,6 +58,9 @@
     <Filter Include="Experimental">
       <UniqueIdentifier>{cb32b169-7844-4d72-af4e-cfc27d555b2f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="dvr-h264\Ext">
+      <UniqueIdentifier>{f946d98e-b06c-44e2-85b6-247a271f2c94}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Calc.cpp">
@@ -134,6 +137,9 @@
     </ClCompile>
     <ClCompile Include="File.cpp">
       <Filter>dvr-h264</Filter>
+    </ClCompile>
+    <ClCompile Include="Volume.cpp">
+      <Filter>dvr-h264\Ext</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -228,6 +234,12 @@
     </ClInclude>
     <ClInclude Include="File.h">
       <Filter>dvr-h264</Filter>
+    </ClInclude>
+    <ClInclude Include="BlockDevice.h">
+      <Filter>dvr-h264\Ext</Filter>
+    </ClInclude>
+    <ClInclude Include="Volume.h">
+      <Filter>dvr-h264\Ext</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

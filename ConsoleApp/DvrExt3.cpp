@@ -10,36 +10,10 @@ bool dvrext::IsIndirectBlock(const EXT_BLOCK<EXT_BLOCK_SIZE> &block)
 	// 
 	// ”казатели на блоки не должны указывать за пределы раздела.
 	// ≈сли такие встречаютс€ - блок не €вл€етс€ IndirectBlock-ом
-	//
-	for (DWORD i = 0; i < pointers_per_block; ++i) {
-		if (block.dword[i] <= EXT_MAX_BLOCK_NUMBER) {
-			if (block.dword[i] != 0x00) {
-				max_valid_pointer_index = i;
-			}
-		}
-	}
-	
-	if (max_valid_pointer_index == 0xFFFFFFFF) {
-		return false;
-	}
-
 	// 
 	// ¬нутри IndirectBlcok-а не может быть два одинаковых указател€,
 	// за исключением нулевого указател€.
 	//
-	for (DWORD i = 0; i <= max_valid_pointer_index; ++i) {
-		if (block.dword[i]) {
-			for (DWORD j = 0; j <= max_valid_pointer_index; ++j) {
-				if (block.dword[i] == block.dword[j]) {
-					if (i != j) {
-						return false;
-					} else {
-						continue;
-					}
-				}
-			}
-		}
-	}
 	*/
 
 	std::set<DWORD> set;
@@ -63,12 +37,21 @@ bool dvrext::IsIndirectBlock(const EXT_BLOCK<EXT_BLOCK_SIZE> &block)
 	return true;
 }
 
-int dvrext::RecoverAllIndirectBlocksToFolder(std::string out_folder, std::string volume_file_name, const LONGLONG &offset, const DWORD &blocks_count, DWORD block_size)
+int dvrext::SaveAllIndirectBlocksToFolder(std::string out_folder, std::string volume_file_name, const LONGLONG &offset, const DWORD &blocks_count, DWORD block_size)
 {
 
 
 	return 0;
 }
+
+//
+// volume_offset;
+// min_valid_block_number;
+// max_valid_block_number;
+// start_block;
+// blocks_count;
+//
+ 
 
 int dvrext::Run()
 {
