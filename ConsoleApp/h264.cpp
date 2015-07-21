@@ -35,7 +35,8 @@ int h264dvr::main(TCHAR *file_name, LONGLONG offset, TCHAR *out_dir)
 	h264dvr::max_time = MAX_TIMESTAMP;
 
 	std::time_t t = h264dvr::min_time;
-	char *time_str = ctime(&t);
+	char time_str[32] = { 0 };
+	ctime_s(time_str, sizeof(time_str), &t);
 
 
 	FileEx file(_T("F:\\38023\\20150612_160000_ps.h264"));

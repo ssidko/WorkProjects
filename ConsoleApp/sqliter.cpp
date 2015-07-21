@@ -732,9 +732,10 @@ void testing_recovery(void) {
 		kSendFile = 68
 	};
 
-	static const DWORD max_len = 2048;
-	char line[max_len] = {0};
-	char timestamp_str[max_len] = {0};
+	//static const DWORD max_len = 2048;
+	//char line[max_len] = {0};
+	//char timestamp_str[max_len] = {0};
+	char time_string[32];
 
 	FileEx out_file(_T("J:\\Work\\33116\\out.txt"));
 
@@ -786,7 +787,9 @@ void testing_recovery(void) {
 
 						if (rec[TIMESTAMP_FIELD]->type != kInteger) continue;
 						raw_time = (time_t)((INTEGER_FIELD *)rec[TIMESTAMP_FIELD])->val;
-						time = ctime(&raw_time);
+						memset(time_string, 0x00, sizeof(time_string));
+						ctime_s(time_string, sizeof(time_string), &raw_time);
+						time = time_string;
 
 						time[time.size() - 1] = ' ';
 

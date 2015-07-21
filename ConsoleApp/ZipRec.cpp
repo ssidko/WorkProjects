@@ -182,7 +182,7 @@ int ExtractArchive(FileEx *archive, TCHAR *out_dir)
 
 	TCHAR file_name[1024] = {0};
 	//_stprintf_s(file_name, 1024, _T("%s\\tmp.zip"), out_dir);
-	_stprintf_s(file_name, 1024, _T(".\\tmp.zip"), out_dir);
+	_stprintf_s(file_name, 1024, _T(".\\tmp.zip"));
 
 	if ( (prev_offs = FindNextLocalFile(archive)) != -1 ) 
 	{

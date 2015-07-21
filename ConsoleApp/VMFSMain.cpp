@@ -90,7 +90,7 @@ void SaveFreeChainsToDir(PhysicalDrive &drive, map<LONGLONG, LONGLONG>& free_cha
 	{
 		memset(file_name, 0x00, 1024*sizeof(TCHAR));
 		_stprintf_s(file_name, 1024, _T("%s\\CHAIN%04d.bin"), out_dir, chain_counter);
-		_tprintf(_T("CHAIN #%d, POS=%d, SIZE=%d\n"), chain_counter, (*it).first, (*it).second);
+		_tprintf(_T("CHAIN #%d, POS=%lld, SIZE=%lld\n"), chain_counter, (*it).first, (*it).second);
 		if (SaveChainToFile(drive, *it, file_name))
 		{
 			_tprintf(_T("Save to FILE: %s OK\n\n"), file_name);

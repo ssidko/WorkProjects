@@ -244,6 +244,7 @@
     <ClInclude Include="IFile.h">
       <Filter>dvr-h264\Ext</Filter>
     </ClInclude>
+    <ClInclude Include="afxres.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="ConsoleApp.rc" />

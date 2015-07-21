@@ -5,15 +5,15 @@ namespace W32Lib
 	template <class Type>
 	class List
 	{
-		typedef struct NODE
+		typedef struct _NODE
 		{
-			NODE *prev;
+			_NODE *prev;
 			Type *item;
-			NODE *next;
+			_NODE *next;
 
-			NODE() : prev (0), item(0), next(0) {}
-			NODE(NODE *prev_node, Type *new_item) : prev (prev_node), item(new_item), next(0) {}
-		};
+			_NODE() : prev (0), item(0), next(0) {}
+			_NODE(_NODE *prev_node, Type *new_item) : prev (prev_node), item(new_item), next(0) {}
+		} NODE;
 
 		private:
 
