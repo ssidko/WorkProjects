@@ -1,4 +1,0 @@
-WorkProjects
-============
-
-My work projects
