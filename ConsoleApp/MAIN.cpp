@@ -6,6 +6,7 @@
 
 #include "h264.h"
 #include "DvrExt3.h"
+#include "Error.h"
 
 int _tmain(int argc, _TCHAR* argv[])
 {
@@ -30,12 +31,13 @@ int _tmain(int argc, _TCHAR* argv[])
 	//	int x = 0;
 	//}
 
-	dvrext::Run();
+	//dvrext::Run();
 
 	//h264dvr::main(NULL, 0, NULL);
 
-
-
+	MyLib::Error error(12, _T("Fatal Error"));
+	MyLib::WinError win_error;
+	win_error.Update(0, _T("He"));
 
 	_tprintf(_T("\nPress any key for exit ..."));
 	_getch();

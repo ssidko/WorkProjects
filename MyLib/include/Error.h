@@ -7,19 +7,24 @@ MY_LIB_NAMESPACE_START
 
 class Error
 {
-private:
+protected:
 	DWORD code;
 	std::basic_string<TCHAR> description;
-
 public:
-	Error(void) : code(0), description(_T("")) {}
+	Error(void);
 	Error(Error &error);
-	Error(DWORD error_code, const TCHAR *error_description) : code(error_code), description(error_description) {}
+	Error(DWORD error_code, const TCHAR *error_description);
+	~Error(void);
+	void Update(DWORD error_code, const TCHAR *error_description);
+	virtual DWORD Code(void);
+	virtual const TCHAR *Description(void);
+};
 
-	~Error(void) {}
-
-	virtual DWORD Code(void) { return code; }
-	virtual const TCHAR *Description(void) { return description.data(); }
+class WinError : public Error
+{
+public:
+	WinError(void);
+	void Update(void);
 };
 
 MY_LIB_NAMESPACE_END

@@ -2,16 +2,17 @@
 #define _WIN_FILE_H
 
 #include "MyLib.h"
-#include "IFile.h"
+#include "iFile.h"
 
 MY_LIB_NAMESPACE_START
 
-class WinFile : public IFile
+class WinFile : public iFile
 {
 private:
 	BOOL opened;
 	HANDLE handle;
 	std::basic_string<TCHAR> name;
+	WinError last_error;
 
 public:
 	WinFile(const TCHAR *file_name, DWORD file_mode) : opened(FALSE), handle(INVALID_HANDLE_VALUE), name(file_name) {}
@@ -22,7 +23,7 @@ public:
 	// IFile interface.
 	//
 
-	virtual BOOL IsOpen(void) { return opened; }
+	inline BOOL IsOpen(void) { return opened; }
 	virtual BOOL Open(DWORD file_mode);
 
 	virtual BOOL Create(DWORD file_mode);

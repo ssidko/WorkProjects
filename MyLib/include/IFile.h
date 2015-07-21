@@ -3,17 +3,17 @@
 
 #include <windows.h>
 
-class IFile
+class iFile
 {
 public:
 
-	typedef enum FileMode {
-		kReadOnly = 1 << 1,
-		kWriteOnly = 1 << 2,
-		kReadWrite = kReadOnly | kWriteOnly,
-	};
+	typedef enum {
+		kReadOnly		= 1 << 1,
+		kWriteOnly		= 1 << 2,
+		kReadWrite		= kReadOnly | kWriteOnly,
+	} FileMode;
 
-	virtual ~IFile(void) {}
+	virtual ~iFile(void) {}
 
 	virtual BOOL IsOpen(void) = 0;
 	virtual BOOL Open(DWORD file_mode) = 0;

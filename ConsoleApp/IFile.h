@@ -7,7 +7,7 @@
 #include <string>
 #include <assert.h>
 
-class IFile
+class iFile
 {
 public:
 
@@ -17,7 +17,7 @@ public:
 		kReadWrite			= kReadOnly | kWriteOnly,
 	};
 
-	virtual ~IFile(void) {}
+	virtual ~iFile(void) {}
 
 	virtual BOOL IsOpen(void) = 0;
 	virtual BOOL Open(DWORD file_mode) = 0;
@@ -33,7 +33,7 @@ public:
 	virtual LONGLONG Size(void);
 };
 
-class WinFile : public IFile
+class WinFile : public iFile
 {
 private:
 	BOOL opened;

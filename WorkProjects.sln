@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
+# Visual Studio 14
+VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TBBRecover", "TBBRecover\TBBRecover.vcxproj", "{DDEAD551-1899-46E6-8D77-4624CF22B127}"
 EndProject
@@ -20,6 +20,9 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "keyHook", "keyHook\keyHook.vcxproj", "{94FF9ECA-CAB8-4292-8587-2607331A970D}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ConsoleApp", "ConsoleApp\ConsoleApp.vcxproj", "{7AAB5B64-D881-4E5A-AAB1-9670416446A6}"
+	ProjectSection(ProjectDependencies) = postProject
+		{B5D0A23D-84F4-4930-9BBC-EAFA8C7A3194} = {B5D0A23D-84F4-4930-9BBC-EAFA8C7A3194}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DocRenamer", "DocRenamer\DocRenamer.vcxproj", "{6E5525EC-5426-4196-B907-CF20D799AB6A}"
 EndProject

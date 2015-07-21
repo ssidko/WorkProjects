@@ -18,15 +18,15 @@
     <ClInclude Include="targetver.h">
       <Filter>other</Filter>
     </ClInclude>
-    <ClInclude Include="include\IFile.h">
-      <Filter>IO</Filter>
-    </ClInclude>
     <ClInclude Include="include\WinFile.h">
       <Filter>IO</Filter>
     </ClInclude>
     <ClInclude Include="include\MyLib.h" />
     <ClInclude Include="include\Error.h">
       <Filter>Error</Filter>
+    </ClInclude>
+    <ClInclude Include="include\iFile.h">
+      <Filter>IO</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
