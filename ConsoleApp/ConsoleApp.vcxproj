@@ -138,6 +138,7 @@
     <ClInclude Include="h264.h" />
     <ClInclude Include="h264_1.h" />
     <ClInclude Include="BlockDevice.h" />
+    <ClInclude Include="IFile.h" />
     <ClInclude Include="Mbr.h" />
     <ClInclude Include="MbrPartitionTypes.h" />
     <ClInclude Include="mxf.h" />

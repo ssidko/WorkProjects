@@ -57,6 +57,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Zfs", "Zfs\Zfs.vcxproj", "{
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FreeFolders", "FreeFolders\FreeFolders.vcxproj", "{1EB4A33F-0C1B-411C-8F10-EC51C91AC237}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MyLib", "MyLib\MyLib.vcxproj", "{B5D0A23D-84F4-4930-9BBC-EAFA8C7A3194}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -227,6 +229,12 @@ Global
 		{1EB4A33F-0C1B-411C-8F10-EC51C91AC237}.Release|Win32.ActiveCfg = Release|Win32
 		{1EB4A33F-0C1B-411C-8F10-EC51C91AC237}.Release|Win32.Build.0 = Release|Win32
 		{1EB4A33F-0C1B-411C-8F10-EC51C91AC237}.Release|x64.ActiveCfg = Release|Win32
+		{B5D0A23D-84F4-4930-9BBC-EAFA8C7A3194}.Debug|Win32.ActiveCfg = Debug|Win32
+		{B5D0A23D-84F4-4930-9BBC-EAFA8C7A3194}.Debug|Win32.Build.0 = Debug|Win32
+		{B5D0A23D-84F4-4930-9BBC-EAFA8C7A3194}.Debug|x64.ActiveCfg = Debug|Win32
+		{B5D0A23D-84F4-4930-9BBC-EAFA8C7A3194}.Release|Win32.ActiveCfg = Release|Win32
+		{B5D0A23D-84F4-4930-9BBC-EAFA8C7A3194}.Release|Win32.Build.0 = Release|Win32
+		{B5D0A23D-84F4-4930-9BBC-EAFA8C7A3194}.Release|x64.ActiveCfg = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -241,6 +241,9 @@
     <ClInclude Include="Volume.h">
       <Filter>dvr-h264\Ext</Filter>
     </ClInclude>
+    <ClInclude Include="IFile.h">
+      <Filter>dvr-h264\Ext</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="ConsoleApp.rc" />

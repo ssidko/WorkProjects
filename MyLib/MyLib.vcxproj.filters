@@ -1,0 +1,43 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="IO">
+      <UniqueIdentifier>{c78346de-c745-4c3f-a440-fbe2bb2cd3b7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="other">
+      <UniqueIdentifier>{6ee01522-5f44-451b-a13a-ca898553b057}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Error">
+      <UniqueIdentifier>{a1c5d1d8-5038-475d-9c03-08ffe2c4458e}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="stdafx.h">
+      <Filter>other</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>other</Filter>
+    </ClInclude>
+    <ClInclude Include="include\IFile.h">
+      <Filter>IO</Filter>
+    </ClInclude>
+    <ClInclude Include="include\WinFile.h">
+      <Filter>IO</Filter>
+    </ClInclude>
+    <ClInclude Include="include\MyLib.h" />
+    <ClInclude Include="include\Error.h">
+      <Filter>Error</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>other</Filter>
+    </ClCompile>
+    <ClCompile Include="src\WinFile.cpp">
+      <Filter>IO</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Error.cpp">
+      <Filter>Error</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
