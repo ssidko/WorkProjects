@@ -35,9 +35,9 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	//h264dvr::main(NULL, 0, NULL);
 
-	MyLib::Error error(12, _T("Fatal Error"));
+	MyLib::Error error((DWORD)12, _T("Fatal Error"));
 	MyLib::WinError win_error;
-	win_error.Update(0, _T("He"));
+	win_error.Update();
 
 	_tprintf(_T("\nPress any key for exit ..."));
 	_getch();

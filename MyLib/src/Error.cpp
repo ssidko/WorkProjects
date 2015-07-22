@@ -1,36 +1,34 @@
 #include "stdafx.h"
 #include "Error.h"
 
-inline MyLib::Error::Error(void) : code(0), description(_T(""))
+MyLib::Error::Error(void) : code(0), description(_T(""))
 {
 }
 
-inline MyLib::Error::Error(Error &error)
-{
-	code = error.code;
-	description = error.description;
-}
-
-inline MyLib::Error::Error(DWORD error_code, const TCHAR * error_description) : code(error_code), description(error_description)
+MyLib::Error::Error(Error &error) : code(error.code), description(error.description)
 {
 }
 
-inline MyLib::Error::~Error(void)
+MyLib::Error::Error(DWORD error_code, const TCHAR * error_description) : code(error_code), description(error_description)
 {
 }
 
-inline void MyLib::Error::Update(DWORD error_code, const TCHAR * error_description)
+MyLib::Error::~Error(void)
+{
+}
+
+void MyLib::Error::Update(DWORD error_code, const TCHAR * error_description)
 {
 	code = error_code;
 	description = error_description;
 }
 
-inline DWORD MyLib::Error::Code(void)
+DWORD MyLib::Error::Code(void)
 {
 	return code;
 }
 
-inline const TCHAR *MyLib::Error::Description(void) 
+const TCHAR *MyLib::Error::Description(void) 
 {
 	return description.data();
 }

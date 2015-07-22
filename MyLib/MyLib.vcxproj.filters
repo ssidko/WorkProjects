@@ -39,5 +39,6 @@
     <ClCompile Include="src\Error.cpp">
       <Filter>Error</Filter>
     </ClCompile>
+    <ClCompile Include="main.cpp" />
   </ItemGroup>
 </Project>
