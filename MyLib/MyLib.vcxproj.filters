@@ -7,8 +7,8 @@
     <Filter Include="other">
       <UniqueIdentifier>{6ee01522-5f44-451b-a13a-ca898553b057}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Error">
-      <UniqueIdentifier>{a1c5d1d8-5038-475d-9c03-08ffe2c4458e}</UniqueIdentifier>
+    <Filter Include="Utility">
+      <UniqueIdentifier>{687e1ed5-b640-4be6-94ee-4af843cb95ff}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -22,11 +22,17 @@
       <Filter>IO</Filter>
     </ClInclude>
     <ClInclude Include="include\MyLib.h" />
-    <ClInclude Include="include\Error.h">
-      <Filter>Error</Filter>
-    </ClInclude>
     <ClInclude Include="include\iFile.h">
       <Filter>IO</Filter>
+    </ClInclude>
+    <ClInclude Include="include\MyError.h">
+      <Filter>Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="include\WinConsole.h">
+      <Filter>Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="include\MyString.h">
+      <Filter>Utility</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -36,9 +42,11 @@
     <ClCompile Include="src\WinFile.cpp">
       <Filter>IO</Filter>
     </ClCompile>
-    <ClCompile Include="src\Error.cpp">
-      <Filter>Error</Filter>
+    <ClCompile Include="src\MyError.cpp">
+      <Filter>Utility</Filter>
     </ClCompile>
-    <ClCompile Include="main.cpp" />
+    <ClCompile Include="src\WinConsole.cpp">
+      <Filter>Utility</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

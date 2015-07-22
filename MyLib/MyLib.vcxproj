@@ -82,16 +82,18 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="include\Error.h" />
+    <ClInclude Include="include\MyError.h" />
     <ClInclude Include="include\iFile.h" />
     <ClInclude Include="include\MyLib.h" />
+    <ClInclude Include="include\MyString.h" />
+    <ClInclude Include="include\WinConsole.h" />
     <ClInclude Include="include\WinFile.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp" />
-    <ClCompile Include="src\Error.cpp" />
+    <ClCompile Include="src\MyError.cpp" />
+    <ClCompile Include="src\WinConsole.cpp" />
     <ClCompile Include="src\WinFile.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
