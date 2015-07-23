@@ -2,7 +2,6 @@
 #define _WIN_FILE_H
 
 #include "MyLib.h"
-#include "iFile.h"
 
 MY_LIB_NAMESPACE_START
 
@@ -14,11 +13,12 @@ private:
 	std::basic_string<TCHAR> name;
 	WinError last_error;
 
+	BOOL WinCreateFile(DWORD desired_access, DWORD share_mode, LPSECURITY_ATTRIBUTES security_attributes, DWORD creation_disposition, DWORD flags_and_attributes, HANDLE template_file);
 public:
 	WinFile(const TCHAR *file_name, DWORD file_mode);
 	~WinFile(void);
 
-	 /* IFile interface. */
+	 /*--== IFile interface ==--*/
 	inline BOOL IsOpen(void) { return opened; }
 	virtual BOOL Open(DWORD file_mode);
 	virtual BOOL Create(DWORD file_mode);
@@ -30,7 +30,6 @@ public:
 	virtual LONGLONG Size(void) { return 0; }
 
 	/* Extended functionality. */
-	BOOL WinCreateFile(DWORD desired_access, DWORD share_mode, LPSECURITY_ATTRIBUTES security_attributes, DWORD creation_disposition, DWORD flags_and_attributes, HANDLE template_file);
 };
 
 MY_LIB_NAMESPACE_END

@@ -5,24 +5,24 @@
 
 MY_LIB_NAMESPACE_START
 
-class MyError
+class Error
 {
 protected:
 	DWORD code;
 	std::basic_string<TCHAR> description;
 public:
-	MyError(void);
-	MyError(MyError &error);
-	MyError(DWORD error_code, const TCHAR *error_description);
+	Error(void);
+	Error(Error &error);
+	Error(DWORD error_code, const TCHAR *error_description);
 	
-	~MyError(void);
+	~Error(void);
 
 	void Update(DWORD error_code, const TCHAR *error_description);
 	virtual DWORD Code(void);
 	virtual const TCHAR *Description(void);
 };
 
-class WinError : public MyError
+class WinError : public Error
 {
 public:
 	WinError(void);

@@ -15,7 +15,7 @@ MyLib::WinFile::~WinFile(void)
 
 BOOL MyLib::WinFile::WinCreateFile(DWORD desired_access, DWORD share_mode, LPSECURITY_ATTRIBUTES security_attributes, DWORD creation_disposition, DWORD flags_and_attributes, HANDLE template_file)
 {
-	opened = FALSE;
+	Close();
 	handle = ::CreateFile(name.data(), desired_access, share_mode, security_attributes, creation_disposition, flags_and_attributes, template_file);
 	if (handle != INVALID_HANDLE_VALUE) {
 		opened = TRUE;
@@ -24,4 +24,13 @@ BOOL MyLib::WinFile::WinCreateFile(DWORD desired_access, DWORD share_mode, LPSEC
 		last_error.Update();
 	}
 	return opened;
+}
+
+void MyLib::WinFile::Close(void)
+{
+	if (handle != INVALID_HANDLE_VALUE) {
+		::CloseHandle(handle);
+	}
+	opened = FALSE;
+	handle = INVALID_HANDLE_VALUE;
 }

@@ -1,7 +1,9 @@
 #ifndef _IFILE_H
 #define _IFILE_H
 
-#include <windows.h>
+#include <MyLib.h>
+
+MY_LIB_NAMESPACE_START
 
 class iFile
 {
@@ -28,5 +30,7 @@ public:
 
 	virtual LONGLONG Size(void);
 };
+
+MY_LIB_NAMESPACE_END
 
 #endif // _IFILE_H

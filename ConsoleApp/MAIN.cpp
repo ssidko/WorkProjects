@@ -6,7 +6,7 @@
 
 #include "h264.h"
 #include "DvrExt3.h"
-#include "Error.h"
+#include "MyLib.h"
 
 int _tmain(int argc, _TCHAR* argv[])
 {
@@ -38,6 +38,8 @@ int _tmain(int argc, _TCHAR* argv[])
 	MyLib::Error error((DWORD)12, _T("Fatal Error"));
 	MyLib::WinError win_error;
 	win_error.Update();
+
+	//MyLib::WinFile file(_T("test_file.bin"), MyLib::iFile::kReadWrite);
 
 	_tprintf(_T("\nPress any key for exit ..."));
 	_getch();
