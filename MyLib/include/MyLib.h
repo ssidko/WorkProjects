@@ -4,8 +4,8 @@
 #include <windows.h>
 #include <tchar.h>
 
-#include <string>
 #include <assert.h>
+#include <string>
 
 #define MY_LIB_NAMESPACE_START	namespace MyLib {
 #define MY_LIB_NAMESPACE_END	}

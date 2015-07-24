@@ -39,7 +39,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	MyLib::WinError win_error;
 	win_error.Update();
 
-	//MyLib::WinFile file(_T("test_file.bin"), MyLib::iFile::kReadWrite);
+	MyLib::WinFile file(_T("test_file.bin"), MyLib::iFile::kReadWrite);
 
 	_tprintf(_T("\nPress any key for exit ..."));
 	_getch();
