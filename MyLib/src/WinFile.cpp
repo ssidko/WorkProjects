@@ -91,7 +91,6 @@ inline void MyLib::WinFile::Close(void)
 	if (handle != INVALID_HANDLE_VALUE) {
 		::CloseHandle(handle);
 	}
-	name.clear();
 	opened = FALSE;
 	handle = INVALID_HANDLE_VALUE;
 }
