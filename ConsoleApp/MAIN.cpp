@@ -35,11 +35,11 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	//h264dvr::main(NULL, 0, NULL);
 
-	MyLib::Error error((DWORD)12, _T("Fatal Error"));
-	MyLib::WinError win_error;
-	win_error.Update();
-
-	MyLib::WinFile file(_T("test_file.bin"), MyLib::iFile::kReadWrite);
+	MyLib::WinFile file(_T("test_file.bin"));
+	if (file.Create(MyLib::iFile::kReadWrite)) {
+		int x = 0;
+		int y = 0;
+	}
 
 	_tprintf(_T("\nPress any key for exit ..."));
 	_getch();

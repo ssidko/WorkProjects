@@ -20,10 +20,10 @@ private:
 	BOOL WinCreateFile(DWORD creation_disposition, DWORD desired_access);
 	BOOL WinSetFilePointerEx(LARGE_INTEGER  liDistanceToMove, PLARGE_INTEGER lpNewFilePointer, DWORD dwMoveMethod);
 public:
-	WinFile(const TCHAR *file_name, DWORD file_mode);
+	WinFile(const TCHAR *file_name);
 	~WinFile(void);
 
-	 /*--== IFile interface ==--*/
+	 /*--== iFile interface ==--*/
 	inline BOOL IsOpen(void) { return opened; }
 	virtual BOOL Open(DWORD file_mode);
 	virtual BOOL Create(DWORD file_mode);

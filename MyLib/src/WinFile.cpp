@@ -5,7 +5,7 @@
 #define WINFILE_DEFAULT_VALUE__SHARE_MODE					((DWORD)FILE_SHARE_READ)
 #define WINFILE_DEFAULT_VALUE__FLAGS_AND_ATTRIBUTES			((DWORD)FILE_ATTRIBUTE_NORMAL)
 
-MyLib::WinFile::WinFile(const TCHAR *file_name, DWORD file_mode) : 
+MyLib::WinFile::WinFile(const TCHAR *file_name) : 
 	opened(FALSE),
 	handle(INVALID_HANDLE_VALUE),
 	name(file_name)
@@ -91,6 +91,7 @@ inline void MyLib::WinFile::Close(void)
 	if (handle != INVALID_HANDLE_VALUE) {
 		::CloseHandle(handle);
 	}
+	name.clear();
 	opened = FALSE;
 	handle = INVALID_HANDLE_VALUE;
 }
@@ -115,8 +116,7 @@ BOOL MyLib::WinFile::SetPointer(const LONGLONG &new_pointer)
 	distance.QuadPart = 0;
 	if (WinSetFilePointerEx(distance, NULL, FILE_BEGIN)) {
 		return TRUE;
-	}
-	else {
+	} else {
 		last_error.Update();
 		return FALSE;
 	}
@@ -147,8 +147,7 @@ LONGLONG MyLib::WinFile::Size(void)
 	LARGE_INTEGER size = {0};
 	if (::GetFileSizeEx(handle, &size)) {
 		return size.QuadPart;
-	}
-	else {
+	} else {
 		last_error.Update();
 		return INVALID_FILE_SIZE;
 	}
