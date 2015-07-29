@@ -8,6 +8,7 @@
 #include <assert.h>
 #include <vector>
 #include <ctime>
+#include "BufferedFile.h"
 
 namespace h264dvr
 {
@@ -56,7 +57,8 @@ namespace h264dvr
 
 	PHEADER ReadFrame(FileEx &file, std::vector<BYTE> &frame);
 
-	int main(TCHAR *file_name, LONGLONG offset, TCHAR *out_dir);
+	void SaveAllTimestampsToFile(void);
+	int main(/*TCHAR *file_name, LONGLONG offset, TCHAR *out_dir*/void);
 
 }
 

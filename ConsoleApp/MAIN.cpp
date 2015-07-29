@@ -1,5 +1,4 @@
 #include <conio.h>
-
 #include "Mbr.h"
 #include "NtfsOnDiskStructures.h"
 #include "W32Lib.h"
@@ -7,6 +6,10 @@
 #include "h264.h"
 #include "DvrExt3.h"
 #include "MyLib.h"
+
+//#include <stdio.h>
+//#include <windows.h>
+//#include <TCHAR.H>
 
 int _tmain(int argc, _TCHAR* argv[])
 {
@@ -35,11 +38,7 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	//h264dvr::main(NULL, 0, NULL);
 
-	MyLib::WinFile file(_T("test_file.bin"));
-	if (file.Create(MyLib::iFile::kReadWrite)) {
-		int x = 0;
-		int y = 0;
-	}
+	h264dvr::main();
 
 	_tprintf(_T("\nPress any key for exit ..."));
 	_getch();

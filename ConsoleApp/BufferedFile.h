@@ -23,6 +23,7 @@ public:
 	BOOL Open(void);
 	LONGLONG Pointer(void);
 	void Pointer(LONGLONG &pointer);
+	void GetPointer(LONGLONG &pointer) { Pointer(pointer); }
 	BOOL SetPointer(const LONGLONG &new_pointer);
 	DWORD Read(void *buff, DWORD count);
 	LONGLONG Find(BYTE *byte_string, DWORD length);

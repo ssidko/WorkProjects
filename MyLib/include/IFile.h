@@ -4,7 +4,6 @@
 #include <MyLib.h>
 
 #define	INVALID_FILE_POINTER			((LONGLONG)-1LL)
-#define	INVALID_FILE_SIZE				((LONGLONG)-1LL)
 
 MY_LIB_NAMESPACE_START
 
@@ -30,7 +29,7 @@ public:
 	virtual BOOL Read(void *buffer, DWORD size, DWORD &readed) = 0;
 	virtual BOOL Write(void *buffer, DWORD size, DWORD &written) = 0;
 
-	virtual LONGLONG Size(void);
+	virtual LONGLONG Size(void) = 0;
 };
 
 MY_LIB_NAMESPACE_END
