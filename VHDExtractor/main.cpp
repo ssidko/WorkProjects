@@ -1,5 +1,6 @@
 #include "MainWindow.h"
 #include <QtWidgets/QApplication>
+#include "VHDInfoDialog.h" 
 
 #include "VHDFile.h"
 #include "VDIFile.h"
@@ -50,11 +51,19 @@ typedef struct _DVR_DATE {
 
 int main(int argc, char *argv[])
 {
-	using namespace fat;
-	fat::FindAndRepairDirectories("\\\\.\\PhysicalDrive1", (LONGLONG)953727*512, (DWORD)64*512, 4306432);
-	
+	//VHDFile file(QString::fromLocal8Bit("K:\\testing-ntfs.vhd"));
+	//if (file.Open()) {
+	//
+	//
+	//	int x = 0;
+	//}
+
+
 	QApplication a(argc, argv);
 	MainWindow w;
+	VHDInfoDialog vhd_info;
+
+	vhd_info.show();
 	w.show();
 	return a.exec();
 }

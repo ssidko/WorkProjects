@@ -12,8 +12,12 @@
 
 namespace h264dvr
 {
-#define MIN_TIMESTAMP			(DWORD) 0x52C35A80		// 01.01.2014
-#define MAX_TIMESTAMP			(DWORD)	0x5685C180		// 01.01.2016
+//#define MIN_TIMESTAMP			(DWORD) 0x52C35A80		// 01.01.2014
+//#define MAX_TIMESTAMP			(DWORD)	0x5685C180		// 01.01.2016
+
+#define MIN_TIMESTAMP			(DWORD) 0x54026580		// 31.08.2014
+#define MAX_TIMESTAMP			(DWORD)	0x5405087F		// 01.09.2014
+
 
 	extern DWORD min_time;
 	extern DWORD max_time;
@@ -33,7 +37,7 @@ namespace h264dvr
 		static bool IsValidMarker(const void*  const& marker) { return ((((_MARKER *)marker)->zeroes == 0x00) && (((_MARKER *)marker)->one == 0x01)); }
 	} MARKER, *PMARKER;
 
-	typedef struct {
+	typedef struct _HEADER {
 		BYTE channel_number;
 		MARKER start_marker;
 		BYTE unk2;
@@ -46,9 +50,7 @@ namespace h264dvr
 		DWORD time_stamp;
 		DWORD data_size;
 
-		bool IsValidHeader(void) { return (start_marker.IsValidMarker() && IsValidDataSize() && IsValidTimestamp()); }
-
-
+		bool IsValidHeader(void) { return (data_size && start_marker.IsValidMarker() && IsValidDataSize() && IsValidTimestamp()); }
 		bool IsValidDataSize(void) { return (data_size < h264dvr::kMaxFrameSize); }
 		bool IsValidTimestamp(void) { return ((time_stamp >= min_time) && (time_stamp <= max_time)); }
 	} HEADER, *PHEADER;
@@ -56,7 +58,9 @@ namespace h264dvr
 #pragma pack(pop)
 
 	PHEADER ReadFrame(FileEx &file, std::vector<BYTE> &frame);
+	PHEADER ReadFrame(BufferedFile &file, std::vector<BYTE> &frame);
 
+	int SaveChannel(int ch_num);
 	void SaveAllTimestampsToFile(void);
 	int main(/*TCHAR *file_name, LONGLONG offset, TCHAR *out_dir*/void);
 

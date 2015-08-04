@@ -36,7 +36,7 @@ BOOL BufferedFile::SyncBuffer(void)
 	return TRUE;
 }
 
-bool BufferedFile::Open(void)
+BOOL BufferedFile::Open(void)
 {
 	io_pointer = (0);
 	offset = (0);
@@ -54,7 +54,7 @@ void BufferedFile::Pointer(LONGLONG &pointer)
 	pointer = ((LONGLONG)io_pointer + offset);
 }
 
-bool BufferedFile::SetPointer(const LONGLONG &new_pointer)
+BOOL BufferedFile::SetPointer(const LONGLONG &new_pointer)
 {
 	if ((new_pointer < io_pointer) || (new_pointer >= (io_pointer + buffer.size()))) {
 		io_pointer = new_pointer & ~FILE_POINTER_MASK;

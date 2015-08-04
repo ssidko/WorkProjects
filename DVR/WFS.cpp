@@ -41,9 +41,9 @@ std::string WFS::SequenceInfoString(FrameSequence &sequence)
 
 int WFS::Main(void)
 {
-	std::string wfs_file_name = "\\\\.\\PhysicalDrive2";
+	std::string wfs_file_name = "\\\\.\\PhysicalDrive5";
 	//std::string wfs_file_name = "F:\\37566\\1.h264";
-	std::string out_dir_path = "F:\\37866\\hdd-1\\";
+	std::string out_dir_path = "K:\\38155\\";
 	std::string mkv_file_name;
 	std::string raw_file_name = out_dir_path + "out.dvr";
 

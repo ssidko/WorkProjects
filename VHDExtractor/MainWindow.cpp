@@ -106,6 +106,9 @@ void MainWindow::SelectDiskImageFile(void)
 {
 	QString image_file_name;
 	ui.DiskImageFilePath_LineEdit->setText(image_file_name);
+	
+	image_file_name = QFileDialog::getOpenFileName(this, tr("Open File"), QString(), "(*.vhd *.vdi)");
+	int x = 0;
 }
 
 void MainWindow::SrartExtraction()
