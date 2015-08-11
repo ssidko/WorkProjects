@@ -11,39 +11,17 @@
 //#include <windows.h>
 //#include <TCHAR.H>
 
+#include "Experemental.h"
+
 int _tmain(int argc, _TCHAR* argv[])
 {
-	
-	//FileEx disk(_T("\\\\.\\PhysicalDrive0"));
-	//if (disk.Open()) {
-	//	
-	//	MBR mbr = {0};
-	//	size_t size = sizeof(MBR);
-	//	size = sizeof(BIOS_PARAMETER_BLOCK);
-	//	disk.SetPointer(0);
-	//	disk.Read((void *)&mbr, 512);
-	//	for (int i = 0; i < MBR_MAX_PARTITIONS_COUNT; ++i) {
-	//		if (mbr.partition[i].type == MBR_NTFS_PARTITION) {
-	//			NTFS_BOOT_SECTOR bs = { 0 };
-	//			disk.SetPointer(mbr.partition->offset * 512);
-	//			size = sizeof(NTFS_BOOT_SECTOR);
-	//			disk.Read((void *)&bs, 512);
-	//			int x = 0;				
-	//		}		
-	//	}
-	//	int x = 0;
-	//}
-
-	//dvrext::Run();
-
-	//h264dvr::main(NULL, 0, NULL);
-
-	h264dvr::main();
-
-	_tprintf(_T("\nPress any key for exit ..."));
+	std::cout << std::endl << "---=== Physical Drives ===---" << std::endl;
+	EnumerateDeviceInterface(&GUID_DEVINTERFACE_DISK);
+	std::cout << std::endl << "---=== CD-ROMs ===---" << std::endl;
+	EnumerateDeviceInterface(&GUID_DEVINTERFACE_CDROM);
+	std::cout << "Press any key..." << std::endl;
 	_getch();
-
-	return 0;
+	return true;
 }
 
 

@@ -10,20 +10,13 @@
 #include <iostream>
 
 #include "windows.h"
+#include <tchar.h>
 #include "setupapi.h"
 #include "devguid.h"
 
 #pragma comment(lib, "Setupapi.lib")
 
-class Experemental
-{
-public:
-	Experemental();
-	~Experemental();
-};
-
-
-
+void EnumerateDeviceInterface(const GUID* device_interface_guid);
 
 #endif // _EXPEREMENTAL_H
 

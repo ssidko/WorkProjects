@@ -1,17 +1,7 @@
 #include "Experemental.h"
 
 
-Experemental::Experemental()
-{
-}
-
-
-Experemental::~Experemental()
-{
-}
-
-
-void EnumerateExistingDevices(const GUID* guid)
+void EnumerateDeviceInterface(const GUID* device_interface_guid)
 {
 	BOOL result = false;
 	DWORD error = 0;
@@ -22,14 +12,14 @@ void EnumerateExistingDevices(const GUID* guid)
 	SP_DEVINFO_DATA dev_info = { 0 };
 	dev_info.cbSize = sizeof(SP_DEVINFO_DATA);
 
-	info_set = ::SetupDiGetClassDevs(&GUID_DEVINTERFACE_DISK, NULL, NULL, DIGCF_PRESENT | DIGCF_INTERFACEDEVICE);
+	info_set = ::SetupDiGetClassDevs(device_interface_guid, NULL, NULL, DIGCF_PRESENT | DIGCF_INTERFACEDEVICE);
 	if (info_set != INVALID_HANDLE_VALUE) {
 		while (::SetupDiEnumDeviceInfo(info_set, dev_index, &dev_info)) {
 
 			SP_DEVICE_INTERFACE_DATA dev_iface_data = { 0 };
 			dev_iface_data.cbSize = sizeof(SP_DEVICE_INTERFACE_DATA);
 			iface_index = 0;
-			while (::SetupDiEnumDeviceInterfaces(info_set, &dev_info, &GUID_DEVINTERFACE_DISK, iface_index, &dev_iface_data)) {
+			while (::SetupDiEnumDeviceInterfaces(info_set, &dev_info, device_interface_guid, iface_index, &dev_iface_data)) {
 
 				DWORD required_size = 0;
 				PSP_DEVICE_INTERFACE_DETAIL_DATA dev_iface_detail = NULL;
@@ -46,22 +36,19 @@ void EnumerateExistingDevices(const GUID* guid)
 
 				DWORD reg_data_type = 0;
 				required_size = 0;
-				result = ::SetupDiGetDeviceRegistryProperty(info_set, &dev_info, /*SPDRP_FRIENDLYNAME*/SPDRP_DEVICEDESC, &reg_data_type, NULL, 0, &required_size);
+				result = ::SetupDiGetDeviceRegistryProperty(info_set, &dev_info, SPDRP_FRIENDLYNAME/*SPDRP_DEVICEDESC*/, &reg_data_type, NULL, 0, &required_size);
 				error = ::GetLastError();
 
 				BYTE *property_buff = (BYTE *) new BYTE[required_size];
 				memset(property_buff, 0x00, required_size);
 
-				result = ::SetupDiGetDeviceRegistryProperty(info_set, &dev_info, /*SPDRP_FRIENDLYNAME*/SPDRP_DEVICEDESC, &reg_data_type, property_buff, required_size, NULL);
+				result = ::SetupDiGetDeviceRegistryProperty(info_set, &dev_info, SPDRP_FRIENDLYNAME/*SPDRP_DEVICEDESC*/, &reg_data_type, property_buff, required_size, NULL);
 				error = ::GetLastError();
 
 
 				TCHAR *str = (TCHAR *)property_buff;
 
-				std::cout << str << std::endl;
-
-				int x = 0;
-
+				std::cout << "### - " << (TCHAR *)property_buff << std::endl << " ---> " << dev_iface_detail->DevicePath << std::endl;
 
 				++iface_index;
 				delete[] dev_iface_detail;

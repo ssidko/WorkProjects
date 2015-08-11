@@ -41,7 +41,7 @@ std::string WFS::SequenceInfoString(FrameSequence &sequence)
 
 int WFS::Main(void)
 {
-	std::string wfs_file_name = "\\\\.\\PhysicalDrive5";
+	std::string wfs_file_name = "\\\\.\\PhysicalDrive1";
 	//std::string wfs_file_name = "F:\\37566\\1.h264";
 	std::string out_dir_path = "K:\\38155\\";
 	std::string mkv_file_name;
@@ -71,7 +71,7 @@ int WFS::Main(void)
 			}
 
 			if (out_file == nullptr) {
-				raw_file_name = out_dir_path + SequenceInfoString(sequence) + ".h264";
+				//raw_file_name = out_dir_path + SequenceInfoString(sequence) + ".h264";
 				mkv_file_name = out_dir_path + SequenceInfoString(sequence) + ".mkv";
 				out_file = new W32Lib::FileEx(raw_file_name.data());
 				if (out_file) {

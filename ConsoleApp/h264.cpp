@@ -88,7 +88,7 @@ void h264dvr::SaveAllTimestampsToFile(void)
 	BufferedFile disk("\\\\.\\PhysicalDrive0");
 	if (disk.Open() && out_file.Create()) {
 	
-		char *time_str;
+		//char *time_str;
 		LONGLONG offset = 0;
 		BYTE marker[] = { 0x00, 0x00, 0x00, 0x00, 0x01 };
 		std::vector<BYTE> frame;

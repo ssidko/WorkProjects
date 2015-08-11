@@ -8,7 +8,7 @@
 #include <vector>
 #include "BufferedFile.h"
 
-#include "ZPool.h"
+//#include "ZPool.h"
 #include "VDev.h"
 
 #include <QDir>

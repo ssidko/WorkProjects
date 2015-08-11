@@ -12,6 +12,10 @@ namespace WFS
 		DWORD day : 5;
 		DWORD month : 4;
 		DWORD year : 6;
+		operator Timestamp ()
+		{
+			return Timestamp(year, month, day, hours, minutes, seconds);
+		}
 	} TIMESTAMP;
 
 	enum FrameType {
