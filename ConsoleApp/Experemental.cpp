@@ -75,6 +75,8 @@ void EnumerateDevicesInterfaces(const GUID* device_interface_guid)
 					std::cout << "Device number: " << dev_number.DeviceNumber << std::endl;
 					std::cout << "Device type: " << dev_number.DeviceType << std::endl;
 
+					FILE_DEVICE_BATTERY;
+
 					STORAGE_PROPERTY_QUERY property_query;
 					memset(&property_query, 0x00, sizeof(property_query));
 					property_query.PropertyId = StorageDeviceProperty;
