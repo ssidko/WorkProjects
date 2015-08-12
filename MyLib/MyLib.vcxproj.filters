@@ -51,5 +51,6 @@
     <ClCompile Include="src\MyError.cpp">
       <Filter>Utility</Filter>
     </ClCompile>
+    <ClCompile Include="main.cpp" />
   </ItemGroup>
 </Project>

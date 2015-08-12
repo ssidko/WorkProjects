@@ -16,7 +16,8 @@
 
 #pragma comment(lib, "Setupapi.lib")
 
-void EnumerateDeviceInterface(const GUID* device_interface_guid);
+void EnumerateDevicesInterfaces(const GUID* device_interface_guid);
+void Testing(void);
 
 #endif // _EXPEREMENTAL_H
 

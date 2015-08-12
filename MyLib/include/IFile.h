@@ -1,7 +1,7 @@
 #ifndef _IFILE_H
 #define _IFILE_H
 
-#include <MyLib.h>
+#include "MyLib.h"
 
 #define	INVALID_FILE_POINTER			((LONGLONG)-1LL)
 

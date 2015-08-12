@@ -16,9 +16,9 @@
 int _tmain(int argc, _TCHAR* argv[])
 {
 	std::cout << std::endl << "---=== Physical Drives ===---" << std::endl;
-	EnumerateDeviceInterface(&GUID_DEVINTERFACE_DISK);
+	EnumerateDevicesInterfaces(&GUID_DEVINTERFACE_DISK);
 	std::cout << std::endl << "---=== CD-ROMs ===---" << std::endl;
-	EnumerateDeviceInterface(&GUID_DEVINTERFACE_CDROM);
+	EnumerateDevicesInterfaces(&GUID_DEVINTERFACE_CDROM);
 	std::cout << "Press any key..." << std::endl;
 	_getch();
 	return true;

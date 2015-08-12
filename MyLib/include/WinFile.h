@@ -35,9 +35,11 @@ public:
 	virtual LONGLONG Size(void);
 
 	/*--== Extended functionality ==--*/
+	HANDLE Handle(void) { return handle; }
 	BOOL Open(DWORD file_mode, DWORD flags_and_attributes);
 	BOOL Create(DWORD file_mode, DWORD flags_and_attributes);
 	BOOL SetFileSize(const LONGLONG &new_size);
+
 };
 
 MY_LIB_NAMESPACE_END

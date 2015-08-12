@@ -1,6 +1,8 @@
 #ifndef _MY_LIB_H
 #define _MY_LIB_H
 
+//#define _UNICODE
+
 #include <windows.h>
 #include <tchar.h>
 

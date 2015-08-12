@@ -1,7 +1,9 @@
 #include "Experemental.h"
 
+#include "MyLib.h"
 
-void EnumerateDeviceInterface(const GUID* device_interface_guid)
+
+void EnumerateDevicesInterfaces(const GUID* device_interface_guid)
 {
 	BOOL result = false;
 	DWORD error = 0;
@@ -48,7 +50,83 @@ void EnumerateDeviceInterface(const GUID* device_interface_guid)
 
 				TCHAR *str = (TCHAR *)property_buff;
 
-				std::cout << "### - " << (TCHAR *)property_buff << std::endl << " ---> " << dev_iface_detail->DevicePath << std::endl;
+				std::cout << "Frendly name: " << (TCHAR *)property_buff << std::endl;
+				std::cout << "Device path: " << dev_iface_detail->DevicePath << std::endl;
+
+				MyLib::WinError error;
+				MyLib::WinFile drive(dev_iface_detail->DevicePath);
+				if (drive.Open(MyLib::iFile::kReadOnly)) {
+
+					BOOL result = FALSE;
+					DWORD bytes_ret = 0;
+
+					STORAGE_DEVICE_NUMBER dev_number;
+					memset(&dev_number, 0x00, sizeof(dev_number));
+
+					result = ::DeviceIoControl(drive.Handle(),
+						IOCTL_STORAGE_GET_DEVICE_NUMBER,
+						NULL, 0,
+						&dev_number, sizeof(dev_number),
+						&bytes_ret, NULL);
+					if (!result) {
+						error.Update();
+					}
+
+					std::cout << "Device number: " << dev_number.DeviceNumber << std::endl;
+					std::cout << "Device type: " << dev_number.DeviceType << std::endl;
+
+					STORAGE_PROPERTY_QUERY property_query;
+					memset(&property_query, 0x00, sizeof(property_query));
+					property_query.PropertyId = StorageDeviceProperty;
+					property_query.QueryType = PropertyStandardQuery;
+
+					STORAGE_DESCRIPTOR_HEADER descriptor_header;
+					memset(&descriptor_header, 0x00, sizeof(descriptor_header));
+
+					result = ::DeviceIoControl(drive.Handle(),
+						IOCTL_STORAGE_QUERY_PROPERTY,
+						&property_query, sizeof(property_query),
+						&descriptor_header, sizeof(descriptor_header),
+						&bytes_ret, NULL);
+					if (!result) {
+						error.Update();
+					}
+
+					PSTORAGE_DEVICE_DESCRIPTOR device_descriptor = (PSTORAGE_DEVICE_DESCRIPTOR) new BYTE[descriptor_header.Size];
+					memset(device_descriptor, 0x00, descriptor_header.Size);
+					device_descriptor->Size = sizeof(STORAGE_DEVICE_DESCRIPTOR);
+
+					result = ::DeviceIoControl(drive.Handle(),
+						IOCTL_STORAGE_QUERY_PROPERTY,
+						&property_query, sizeof(property_query),
+						device_descriptor, descriptor_header.Size,
+						&bytes_ret, NULL);
+					if (!result) {
+						error.Update();
+					}
+
+					DWORD rww;
+					MyLib::WinFile file(_T("device_descriptor.bin"));
+					if (file.Create(MyLib::iFile::kReadWrite)) {
+						file.Write(device_descriptor, descriptor_header.Size, rww);
+					}
+
+					if (device_descriptor->VendorIdOffset) {
+						std::cout << "Vendor ID: " << (TCHAR *)&((BYTE *)device_descriptor)[device_descriptor->VendorIdOffset] << std::endl;
+					}
+					if (device_descriptor->ProductIdOffset) {
+						std::cout << "Product ID: " << (TCHAR *)&((BYTE *)device_descriptor)[device_descriptor->ProductIdOffset] << std::endl;
+					}
+					if (device_descriptor->ProductRevisionOffset) {
+						std::cout << "Product revision: " << (TCHAR *)&((BYTE *)device_descriptor)[device_descriptor->ProductRevisionOffset] << std::endl;
+					}
+					if (device_descriptor->SerialNumberOffset) {
+						std::cout << "Serial Number: " << (TCHAR *)&((BYTE *)device_descriptor)[device_descriptor->SerialNumberOffset] << std::endl;
+					}
+					std::cout << std::endl;
+
+					delete[] device_descriptor;
+				}
 
 				++iface_index;
 				delete[] dev_iface_detail;
@@ -64,4 +142,9 @@ void EnumerateDeviceInterface(const GUID* device_interface_guid)
 
 		result = ::SetupDiDestroyDeviceInfoList(info_set);
 	}
+}
+
+void Testing(void)
+{
+
 }
