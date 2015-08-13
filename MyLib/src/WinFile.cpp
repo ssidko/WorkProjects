@@ -1,9 +1,9 @@
 #include "stdafx.h"
 #include "WinFile.h"
 
-#define WINFILE_DEFAULT_VALUE__DESIRED_ACCESS				((DWORD)GENERIC_READ)
-#define WINFILE_DEFAULT_VALUE__SHARE_MODE					((DWORD)FILE_SHARE_READ)
-#define WINFILE_DEFAULT_VALUE__FLAGS_AND_ATTRIBUTES			((DWORD)FILE_ATTRIBUTE_NORMAL)
+#define WINFILE_DEFAULT_DESIRED_ACCESS					((DWORD)GENERIC_READ)
+#define WINFILE_DEFAULT_SHARE_MODE						((DWORD)FILE_SHARE_READ)
+#define WINFILE_DEFAULT_FLAGS_AND_ATTRIBUTES			((DWORD)FILE_ATTRIBUTE_NORMAL)
 
 MyLib::WinFile::WinFile(const TCHAR *file_name) : 
 	opened(FALSE),
@@ -20,10 +20,10 @@ MyLib::WinFile::~WinFile(void)
 DWORD MyLib::WinFile::DesiredAccess(DWORD file_mode)
 {
 	DWORD desired_access = 0;
-	if (file_mode && iFile::kReadOnly) {
+	if (file_mode && FileMode::kReadOnly) {
 		desired_access |= GENERIC_READ;
 	}
-	if (file_mode && iFile::kWriteOnly) {
+	if (file_mode && FileMode::kWriteOnly) {
 		desired_access |= GENERIC_WRITE;
 	}
 	return desired_access;
@@ -48,12 +48,12 @@ inline BOOL MyLib::WinFile::WinCreateFile(DWORD desired_access, DWORD share_mode
 
 inline BOOL MyLib::WinFile::WinCreateFile(DWORD creation_disposition, DWORD desired_access, DWORD flags_and_attributes)
 {
-	return WinCreateFile(desired_access, WINFILE_DEFAULT_VALUE__SHARE_MODE, NULL, creation_disposition, flags_and_attributes, NULL);
+	return WinCreateFile(desired_access, WINFILE_DEFAULT_SHARE_MODE, NULL, creation_disposition, flags_and_attributes, NULL);
 }
 
 inline BOOL MyLib::WinFile::WinCreateFile(DWORD creation_disposition, DWORD desired_access)
 {
-	return WinCreateFile(desired_access, WINFILE_DEFAULT_VALUE__SHARE_MODE, NULL, creation_disposition, WINFILE_DEFAULT_VALUE__FLAGS_AND_ATTRIBUTES, NULL);
+	return WinCreateFile(desired_access, WINFILE_DEFAULT_SHARE_MODE, NULL, creation_disposition, WINFILE_DEFAULT_FLAGS_AND_ATTRIBUTES, NULL);
 }
 
 BOOL MyLib::WinFile::WinSetFilePointerEx(LARGE_INTEGER liDistanceToMove, PLARGE_INTEGER lpNewFilePointer, DWORD dwMoveMethod)
@@ -121,9 +121,10 @@ BOOL MyLib::WinFile::SetPointer(const LONGLONG &new_pointer)
 	}
 }
 
-BOOL MyLib::WinFile::Read(void *buffer, DWORD size, DWORD &readed)
+BOOL MyLib::WinFile::Read(void *buffer, DWORD size, DWORD *readed)
 {
-	if (::ReadFile(handle, buffer, size, &readed, NULL)) {
+	DWORD rd = 0;
+	if (::ReadFile(handle, buffer, size, (readed ? readed : &rd), NULL)) {
 		return TRUE;
 	} else {
 		last_error.Update();
@@ -131,9 +132,10 @@ BOOL MyLib::WinFile::Read(void *buffer, DWORD size, DWORD &readed)
 	}
 }
 
-BOOL MyLib::WinFile::Write(void *buffer, DWORD size, DWORD &written)
+BOOL MyLib::WinFile::Write(void *buffer, DWORD size, DWORD *written)
 {
-	if (::WriteFile(handle, buffer, size, &written, NULL)) {
+	DWORD wr = 0;
+	if (::WriteFile(handle, buffer, size, (written ? written : &wr), NULL)) {
 		return TRUE;
 	} else {
 		last_error.Update();

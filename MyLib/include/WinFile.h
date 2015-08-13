@@ -30,8 +30,8 @@ public:
 	virtual void Close(void);
 	virtual LONGLONG Pointer(void);
 	virtual BOOL SetPointer(const LONGLONG &new_pointer);
-	virtual BOOL Read(void *buffer, DWORD size, DWORD &readed);
-	virtual BOOL Write(void *buffer, DWORD size, DWORD &written);
+	virtual BOOL Read(void *buffer, DWORD size, DWORD *readed = NULL);
+	virtual BOOL Write(void *buffer, DWORD size, DWORD *written = NULL);
 	virtual LONGLONG Size(void);
 
 	/*--== Extended functionality ==--*/
@@ -39,7 +39,7 @@ public:
 	BOOL Open(DWORD file_mode, DWORD flags_and_attributes);
 	BOOL Create(DWORD file_mode, DWORD flags_and_attributes);
 	BOOL SetFileSize(const LONGLONG &new_size);
-
+	const WinError &LastError(void) { return last_error; }
 };
 
 MY_LIB_NAMESPACE_END

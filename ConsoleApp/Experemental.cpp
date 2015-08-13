@@ -107,26 +107,27 @@ void EnumerateDevicesInterfaces(const GUID* device_interface_guid)
 						error.Update();
 					}
 
-					DWORD rww;
-					MyLib::WinFile file(_T("device_descriptor.bin"));
-					if (file.Create(MyLib::iFile::kReadWrite)) {
-						file.Write(device_descriptor, descriptor_header.Size, rww);
-					}
+					if (device_descriptor->Version == sizeof(STORAGE_DEVICE_DESCRIPTOR)) {
+						DWORD rww;
+						MyLib::WinFile file(_T("device_descriptor.bin"));
+						if (file.Create(MyLib::iFile::kReadWrite)) {
+							file.Write(device_descriptor, descriptor_header.Size, rww);
+						}
 
-					if (device_descriptor->VendorIdOffset) {
-						std::cout << "Vendor ID: " << (TCHAR *)&((BYTE *)device_descriptor)[device_descriptor->VendorIdOffset] << std::endl;
+						if (device_descriptor->VendorIdOffset) {
+							std::cout << "Vendor ID: " << (TCHAR *)&((BYTE *)device_descriptor)[device_descriptor->VendorIdOffset] << std::endl;
+						}
+						if (device_descriptor->ProductIdOffset) {
+							std::cout << "Product ID: " << (TCHAR *)&((BYTE *)device_descriptor)[device_descriptor->ProductIdOffset] << std::endl;
+						}
+						if (device_descriptor->ProductRevisionOffset) {
+							std::cout << "Product revision: " << (TCHAR *)&((BYTE *)device_descriptor)[device_descriptor->ProductRevisionOffset] << std::endl;
+						}
+						if (device_descriptor->SerialNumberOffset) {
+							std::cout << "Serial Number: " << (TCHAR *)&((BYTE *)device_descriptor)[device_descriptor->SerialNumberOffset] << std::endl;
+						}
+						std::cout << std::endl;					
 					}
-					if (device_descriptor->ProductIdOffset) {
-						std::cout << "Product ID: " << (TCHAR *)&((BYTE *)device_descriptor)[device_descriptor->ProductIdOffset] << std::endl;
-					}
-					if (device_descriptor->ProductRevisionOffset) {
-						std::cout << "Product revision: " << (TCHAR *)&((BYTE *)device_descriptor)[device_descriptor->ProductRevisionOffset] << std::endl;
-					}
-					if (device_descriptor->SerialNumberOffset) {
-						std::cout << "Serial Number: " << (TCHAR *)&((BYTE *)device_descriptor)[device_descriptor->SerialNumberOffset] << std::endl;
-					}
-					std::cout << std::endl;
-
 					delete[] device_descriptor;
 				}
 

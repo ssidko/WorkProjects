@@ -6,7 +6,7 @@ int _tmain(int argc, _TCHAR* argv[])
 {
 	MyLib::WinFile file(_T("test.bin"));
 
-	file.Create(MyLib::iFile::kReadWrite);
+	file.Create(MyLib::FileMode::kReadWrite);
 
 	return 0;
 }

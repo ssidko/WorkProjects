@@ -7,15 +7,15 @@
 
 MY_LIB_NAMESPACE_START
 
+typedef enum {
+	kReadOnly		= 1 << 1,
+	kWriteOnly		= 1 << 2,
+	kReadWrite		= kReadOnly | kWriteOnly,
+} FileMode;
+
 class iFile
 {
 public:
-	typedef enum {
-		kReadOnly		= 1 << 1,
-		kWriteOnly		= 1 << 2,
-		kReadWrite		= kReadOnly | kWriteOnly,
-	} FileMode;
-
 	virtual ~iFile(void) {}
 
 	virtual BOOL IsOpen(void) = 0;
@@ -26,8 +26,8 @@ public:
 	virtual LONGLONG Pointer(void) = 0;
 	virtual BOOL SetPointer(const LONGLONG &new_pointer) = 0;
 
-	virtual BOOL Read(void *buffer, DWORD size, DWORD &readed) = 0;
-	virtual BOOL Write(void *buffer, DWORD size, DWORD &written) = 0;
+	virtual BOOL Read(void *buffer, DWORD size, DWORD *readed = NULL) = 0;
+	virtual BOOL Write(void *buffer, DWORD size, DWORD *written = NULL) = 0;
 
 	virtual LONGLONG Size(void) = 0;
 };
