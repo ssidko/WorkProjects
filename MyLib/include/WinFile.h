@@ -11,6 +11,7 @@ class WinFile : public iFile
 private:
 	BOOL opened;
 	HANDLE handle;
+	DWORD mode;
 	std::basic_string<TCHAR> name;
 	WinError last_error;
 
@@ -22,11 +23,14 @@ private:
 	BOOL WinSetFilePointerEx(LARGE_INTEGER  liDistanceToMove, PLARGE_INTEGER lpNewFilePointer, DWORD dwMoveMethod);
 public:
 	WinFile(const TCHAR *file_name);
+	WinFile(const TCHAR *file_name, DWORD file_mode);
 	~WinFile(void);
 
 	 /*--== iFile interface ==--*/
-	inline BOOL IsOpen(void) { return opened; }
+	inline BOOL Opened(void) { return opened; }
+	virtual BOOL Open(void);
 	virtual BOOL Open(DWORD file_mode);
+	virtual BOOL Create(void);
 	virtual BOOL Create(DWORD file_mode);
 	virtual void Close(void);
 	virtual LONGLONG Pointer(void);
@@ -37,6 +41,7 @@ public:
 
 	/*--== Extended functionality ==--*/
 	HANDLE Handle(void) { return handle; }
+	DWORD Mode(void) { return mode; }
 	BOOL Open(DWORD file_mode, DWORD flags_and_attributes);
 	BOOL Create(DWORD file_mode, DWORD flags_and_attributes);
 	BOOL SetFileSize(const LONGLONG &new_size);

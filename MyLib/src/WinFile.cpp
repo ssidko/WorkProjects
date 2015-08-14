@@ -8,7 +8,16 @@
 MyLib::WinFile::WinFile(const TCHAR *file_name) : 
 	opened(FALSE),
 	handle(INVALID_HANDLE_VALUE),
-	name(file_name)
+	name(file_name),
+	mode(FileMode::kReadOnly)
+{
+}
+
+MyLib::WinFile::WinFile(const TCHAR *file_name, DWORD file_mode) :
+	opened(FALSE),
+	handle(INVALID_HANDLE_VALUE),
+	name(file_name),
+	mode(file_mode)
 {
 }
 
@@ -29,7 +38,7 @@ DWORD MyLib::WinFile::DesiredAccess(DWORD file_mode)
 	return desired_access;
 }
 
-BOOL MyLib::WinFile::WinCreateFile(DWORD desired_access, DWORD share_mode, LPSECURITY_ATTRIBUTES security_attributes, DWORD creation_disposition, DWORD flags_and_attributes, HANDLE template_file)
+inline BOOL MyLib::WinFile::WinCreateFile(DWORD desired_access, DWORD share_mode, LPSECURITY_ATTRIBUTES security_attributes, DWORD creation_disposition, DWORD flags_and_attributes, HANDLE template_file)
 {
 	Close();
 	handle = ::CreateFile(name.data(), desired_access, share_mode, security_attributes, creation_disposition, flags_and_attributes, template_file);
@@ -66,24 +75,38 @@ BOOL MyLib::WinFile::WinSetFilePointerEx(LARGE_INTEGER liDistanceToMove, PLARGE_
 	}
 }
 
+inline BOOL MyLib::WinFile::Open(void)
+{
+	return WinCreateFile(OPEN_EXISTING, DesiredAccess(mode));
+}
+
 inline BOOL MyLib::WinFile::Open(DWORD file_mode)
 {
-	return WinCreateFile(OPEN_EXISTING, DesiredAccess(file_mode));
+	mode = file_mode;
+	return WinCreateFile(OPEN_EXISTING, DesiredAccess(mode));
 }
 
 inline BOOL MyLib::WinFile::Open(DWORD file_mode, DWORD flags_and_attributes)
 {
-	return WinCreateFile(OPEN_EXISTING, DesiredAccess(file_mode), flags_and_attributes);;
+	mode = file_mode;
+	return WinCreateFile(OPEN_EXISTING, DesiredAccess(mode), flags_and_attributes);;
+}
+
+inline BOOL MyLib::WinFile::Create(void)
+{
+	return WinCreateFile(OPEN_EXISTING, DesiredAccess(mode));
 }
 
 inline BOOL MyLib::WinFile::Create(DWORD file_mode)
 {
-	return WinCreateFile(CREATE_ALWAYS, DesiredAccess(file_mode));
+	mode = file_mode;
+	return WinCreateFile(CREATE_ALWAYS, DesiredAccess(mode));
 }
 
 inline BOOL MyLib::WinFile::Create(DWORD file_mode, DWORD flags_and_attributes)
 {
-	return WinCreateFile(CREATE_ALWAYS, DesiredAccess(file_mode), flags_and_attributes);
+	mode = file_mode;
+	return WinCreateFile(CREATE_ALWAYS, DesiredAccess(mode), flags_and_attributes);
 }
 
 inline void MyLib::WinFile::Close(void)
@@ -93,6 +116,7 @@ inline void MyLib::WinFile::Close(void)
 	}
 	opened = FALSE;
 	handle = INVALID_HANDLE_VALUE;
+	mode = FileMode::kReadOnly;
 }
 
 LONGLONG MyLib::WinFile::Pointer(void)

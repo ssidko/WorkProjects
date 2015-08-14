@@ -89,11 +89,13 @@
     <ClInclude Include="include\MyString.h" />
     <ClInclude Include="include\WinConsole.h" />
     <ClInclude Include="include\WinFile.h" />
+    <ClInclude Include="PhysicalDrive.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="PhysicalDrive.cpp" />
     <ClCompile Include="src\MyError.cpp" />
     <ClCompile Include="src\WinConsole.cpp" />
     <ClCompile Include="src\WinFile.cpp" />

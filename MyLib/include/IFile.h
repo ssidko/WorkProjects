@@ -17,18 +17,16 @@ class iFile
 {
 public:
 	virtual ~iFile(void) {}
-
-	virtual BOOL IsOpen(void) = 0;
+	virtual BOOL Opened(void) = 0;
+	virtual BOOL Open(void) = 0;
 	virtual BOOL Open(DWORD file_mode) = 0;
+	virtual BOOL Create(void) = 0;
 	virtual BOOL Create(DWORD file_mode) = 0;
 	virtual void Close(void) = 0;
-
 	virtual LONGLONG Pointer(void) = 0;
 	virtual BOOL SetPointer(const LONGLONG &new_pointer) = 0;
-
 	virtual BOOL Read(void *buffer, DWORD size, DWORD *readed = NULL) = 0;
 	virtual BOOL Write(void *buffer, DWORD size, DWORD *written = NULL) = 0;
-
 	virtual LONGLONG Size(void) = 0;
 };
 
