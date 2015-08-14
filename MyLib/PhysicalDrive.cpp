@@ -1,11 +1,11 @@
 #include "PhysicalDrive.h"
 
 
-PhysicalDrive::PhysicalDrive()
+MyLib::PhysicalDrive::PhysicalDrive()
 {
 }
 
 
-PhysicalDrive::~PhysicalDrive()
+MyLib::PhysicalDrive::~PhysicalDrive()
 {
 }
