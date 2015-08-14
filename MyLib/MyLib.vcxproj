@@ -82,9 +82,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="iBlockDevice.h" />
     <ClInclude Include="include\MyError.h" />
     <ClInclude Include="include\iFile.h" />
-    <ClInclude Include="include\MyIO.h" />
     <ClInclude Include="include\MyLib.h" />
     <ClInclude Include="include\MyString.h" />
     <ClInclude Include="include\WinConsole.h" />

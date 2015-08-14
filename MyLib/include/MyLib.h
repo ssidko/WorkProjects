@@ -13,6 +13,5 @@
 #define MY_LIB_NAMESPACE_END	}
 
 #include "MyError.h"
-#include "MyIO.h"
 
 #endif // _MY_LIB_H

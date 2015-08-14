@@ -1,7 +1,6 @@
 #include "Experemental.h"
 
-#include "MyLib.h"
-
+#include "WinFile.h"
 
 void EnumerateDevicesInterfaces(const GUID* device_interface_guid)
 {
@@ -55,7 +54,7 @@ void EnumerateDevicesInterfaces(const GUID* device_interface_guid)
 
 				MyLib::WinError error;
 				MyLib::WinFile drive(dev_iface_detail->DevicePath);
-				if (drive.Open(MyLib::iFile::kReadOnly)) {
+				if (drive.Open(MyLib::FileMode::kReadOnly)) {
 
 					BOOL result = FALSE;
 					DWORD bytes_ret = 0;
@@ -108,10 +107,9 @@ void EnumerateDevicesInterfaces(const GUID* device_interface_guid)
 					}
 
 					if (device_descriptor->Version == sizeof(STORAGE_DEVICE_DESCRIPTOR)) {
-						DWORD rww;
 						MyLib::WinFile file(_T("device_descriptor.bin"));
-						if (file.Create(MyLib::iFile::kReadWrite)) {
-							file.Write(device_descriptor, descriptor_header.Size, rww);
+						if (file.Create(MyLib::FileMode::kReadWrite)) {
+							file.Write(device_descriptor, descriptor_header.Size);
 						}
 
 						if (device_descriptor->VendorIdOffset) {

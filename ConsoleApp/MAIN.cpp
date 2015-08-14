@@ -5,7 +5,7 @@
 
 #include "h264.h"
 #include "DvrExt3.h"
-#include "MyLib.h"
+#include "WinFile.h"
 
 //#include <stdio.h>
 //#include <windows.h>

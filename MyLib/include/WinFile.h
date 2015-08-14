@@ -2,6 +2,7 @@
 #define _WIN_FILE_H
 
 #include "MyLib.h"
+#include "iFile.h"
 
 MY_LIB_NAMESPACE_START
 
