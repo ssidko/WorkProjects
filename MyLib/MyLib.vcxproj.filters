@@ -37,7 +37,9 @@
     <ClInclude Include="iBlockDevice.h">
       <Filter>IO</Filter>
     </ClInclude>
-    <ClInclude Include="PhysicalDrive.h" />
+    <ClInclude Include="PhysicalDrive.h">
+      <Filter>IO</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -53,6 +55,8 @@
       <Filter>Utility</Filter>
     </ClCompile>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="PhysicalDrive.cpp" />
+    <ClCompile Include="PhysicalDrive.cpp">
+      <Filter>IO</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
