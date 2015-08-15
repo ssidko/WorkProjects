@@ -103,6 +103,7 @@
     </ClCompile>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="mainwindow.cpp" />
+    <ClCompile Include="TestWidget.cpp" />
     <ClCompile Include="Timestamp.cpp" />
     <ClCompile Include="VDev.cpp" />
     <ClCompile Include="WFS.cpp" />
@@ -144,6 +145,7 @@
     <ClInclude Include="FileStorage.h" />
     <ClInclude Include="Frame.h" />
     <ClInclude Include="GeneratedFiles\ui_mainwindow.h" />
+    <ClInclude Include="TestWidget.h" />
     <ClInclude Include="WfsOnDisk.h" />
     <ClInclude Include="Timestamp.h" />
     <ClInclude Include="VDev.h" />

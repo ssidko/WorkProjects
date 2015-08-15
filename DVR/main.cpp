@@ -15,6 +15,8 @@
 
 #include "WinConsole.h"
 
+#include "TestWidget.h"
+
 using namespace DHFS;
 
 inline void _trace(char *format, ...)
@@ -33,7 +35,7 @@ inline void _trace(char *format, ...)
 int main(int argc, char *argv[])
 {
 	QApplication a(argc, argv);
-	MainWindow w;
+	//MainWindow w;
 
 	//QString path = "D:\\";
 	//QDir base_dir(path);
@@ -45,8 +47,20 @@ int main(int argc, char *argv[])
 	//}
 	
 
-	WFS::Main();
+	//WFS::Main();
+	//w.show();
+
+	TestWidget w;
+
+	w.setWindowTitle(QString("Test Widget"));
+	w.setLineWidth(0);
+	w.setMidLineWidth(0);
+	//w.setFrameStyle(QFrame::StyledPanel | QFrame::Plain);
+	//w.setFrameStyle(QFrame::Box | QFrame::Plain);
+	w.resize(500, 500);
 
 	w.show();
+
+
 	return a.exec();
 }

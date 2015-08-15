@@ -97,6 +97,9 @@
     <ClCompile Include="WinConsole.cpp">
       <Filter>Utility</Filter>
     </ClCompile>
+    <ClCompile Include="TestWidget.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="mainwindow.ui">
@@ -157,6 +160,9 @@
     </ClInclude>
     <ClInclude Include="WinConsole.h">
       <Filter>Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="TestWidget.h">
+      <Filter>Generated Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
