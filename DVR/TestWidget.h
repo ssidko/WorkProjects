@@ -7,9 +7,10 @@
 class TestWidget : public QAbstractScrollArea
 {
 public:
-	TestWidget(QObject *parent = NULL) {}
+	TestWidget(QObject *parent = NULL);
 	~TestWidget() {}
 protected:
+	void Initialize(void);
 	void paintEvent(QPaintEvent * event);
 };
 
