@@ -53,11 +53,8 @@ int main(int argc, char *argv[])
 	TestWidget w;
 
 	w.setWindowTitle(QString("Test Widget"));
-	w.setLineWidth(0);
-	w.setMidLineWidth(0);
 	//w.setFrameStyle(QFrame::StyledPanel | QFrame::Plain);
 	//w.setFrameStyle(QFrame::Box | QFrame::Plain);
-	w.resize(500, 500);
 
 	w.show();
 

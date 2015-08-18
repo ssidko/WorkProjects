@@ -9,7 +9,10 @@ TestWidget::TestWidget(QObject *parent /*= NULL*/)
 
 void TestWidget::Initialize(void)
 {
-	this->verticalScrollBar()->setRange(0, 1000);
+	resize(570, 481);
+	verticalScrollBar()->setRange(0, 1000);
+	verticalScrollBar()->setSingleStep(16);
+	verticalScrollBar()->setPageStep(48);
 }
 
 void TestWidget::paintEvent(QPaintEvent * event)
@@ -17,38 +20,86 @@ void TestWidget::paintEvent(QPaintEvent * event)
 	QPainter painter(viewport());
 	QRect rect = viewport()->geometry();
 
-	painter.fillRect(0, 0, rect.width(), rect.height(), QColor(220, 220, 100));
+	int margin = 10;
+	int margin_2 = 5;
 
-	painter.drawText(10, 10, "Machine " + QString::number(100));
+	QString info_string;
+	info_string.sprintf("Viewport size: width = %d, height = %d. Scorll position: %d.", rect.width(), rect.height(), verticalScrollBar()->sliderPosition());
 
-	int counter = 0;
-	int width = 16;
-	int height = 15;
-	int interval = 2;
+	QRect info_rect(margin, margin, (rect.width() - (2*margin)), 20);
+	painter.fillRect(info_rect, QColor(220, 220, 100));
+	painter.drawRect(info_rect);
+	painter.drawText(info_rect, Qt::AlignCenter, info_string);
+
+	QRect h_offsets_rect(margin, info_rect.y() + info_rect.height() + margin_2, (rect.width() - (2 * margin)), 20);
+	painter.fillRect(h_offsets_rect, QColor(220, 220, 100));
+	painter.drawRect(h_offsets_rect);
+	//painter.drawText(h_offsets_rect, Qt::AlignCenter, QString::fromLocal8Bit("h_offset"));
+
+	QRect v_offsets_rect(margin, h_offsets_rect.y() + h_offsets_rect.height() + margin_2, 120, rect.height() - h_offsets_rect.bottom() - 2*margin);
+	painter.fillRect(v_offsets_rect, QColor(220, 220, 100));
+	painter.drawRect(v_offsets_rect);
+	//painter.drawText(v_offsets_rect, Qt::AlignCenter, QString::fromLocal8Bit("v_offset"));
+
+	QRect hex_rect(v_offsets_rect.x() + v_offsets_rect.width() + margin_2, v_offsets_rect.top(),
+		rect.width() - (v_offsets_rect.right() + 1 + margin + margin_2),
+		rect.height() - h_offsets_rect.bottom() - 2 * margin);
+	painter.fillRect(hex_rect, QColor(220, 220, 100));
+	painter.drawRect(hex_rect);
+	//painter.drawText(hex_rect, Qt::AlignCenter, QString::fromLocal8Bit("hex_rect"));
+
+
+	//painter.drawText(10, 10, "Machine " + QString::number(100));
+
+	int counter = verticalScrollBar()->sliderPosition();
+	int width = 20;
+	int height = 16;
+	int interval = 5;
 	QRect r(0, 0, width, height);
 
 	painter.setPen(Qt::black);
-	r.moveTo(10, 30);
-	//for (int j = 0; j < 50; j++) {
-	while ((r.height() + r.y() + 5) <= rect.height()) {
-		//for (int i = 0; i < 100; i++) {
-		while ((r.width() + r.x() + 5) <= rect.width()) {
+	painter.setFont(QFont("Courier", 12));
+	//painter.setFont(QFont("Courier", 12, QFont::Bold));
+
+	int column_counter = 0;
+	r.moveTo(hex_rect.x() + margin_2, h_offsets_rect.y()+2);
+	while ((r.width() + r.x() + margin_2) <= h_offsets_rect.right()) {
+		QString s;
+		s.sprintf("%02X", (column_counter % 256));
+		//painter.fillRect(r, Qt::white);
+		painter.drawText(r, Qt::AlignCenter, s);
+		//painter.drawRect(r);
+		r.moveTo(r.x() + r.width() + interval, r.y());
+		++column_counter;
+	}
+
+	painter.setFont(QFont("Courier", 12, QFont::Bold));
+	r.moveTo(hex_rect.x() + margin_2, hex_rect.y() + margin_2);
+	while ((r.height() + r.y() /*+ margin_2*/) <= hex_rect.bottom()) {
+		while ((r.width() + r.x() + margin_2) <= hex_rect.right()) {
 			//if (counter % 2) {
 			//	painter.fillRect(r, Qt::green);
 			//} else {
 			//	painter.fillRect(r, Qt::red);
 			//}
 
+			QString s;
+			s.sprintf("%02X", (counter % 256));
 			//painter.fillRect(r, Qt::white);
+			/*painter.drawText(r, Qt::AlignCenter, QString::number(counter % 256, 16).toUpper());*/
+			painter.drawText(r, Qt::AlignCenter, s);
+			//painter.drawRect(r);
 
-			painter.drawText(r, Qt::AlignCenter, QString::number(counter % 256, 16).toUpper());
-
-			painter.drawRect(r);
 			r.moveTo(r.x() + r.width() + interval, r.y());
 			++counter;
 		}
-		r.moveTo(10, r.y() + r.height() + interval);
+		r.moveTo(hex_rect.x() + margin_2, r.y() + r.height() + interval);
 	}
 
+
+}
+
+void TestWidget::resizeEvent(QResizeEvent *event)
+{
 
 }

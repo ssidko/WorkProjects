@@ -11,7 +11,8 @@ public:
 	~TestWidget() {}
 protected:
 	void Initialize(void);
-	void paintEvent(QPaintEvent * event);
+	void paintEvent(QPaintEvent *event);
+	void resizeEvent(QResizeEvent *event);
 };
 
 #endif // _TEST_WIDGET_H
