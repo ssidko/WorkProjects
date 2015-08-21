@@ -16,6 +16,7 @@
 #include "WinConsole.h"
 
 #include "TestWidget.h"
+#include "Raid5.h"
 
 using namespace DHFS;
 
@@ -50,14 +51,22 @@ int main(int argc, char *argv[])
 	//WFS::Main();
 	//w.show();
 
-	TestWidget w;
+	//TestWidget w;
+	//w.setWindowTitle(QString("Test Widget"));
+	//w.show();
 
-	w.setWindowTitle(QString("Test Widget"));
-	//w.setFrameStyle(QFrame::StyledPanel | QFrame::Plain);
-	//w.setFrameStyle(QFrame::Box | QFrame::Plain);
+	std::vector< std::basic_string<TCHAR> > disk_names;
+	disk_names.resize(6);
+	disk_names[0] = _T("\\\\.\\PhysicalDrive0");
+	disk_names[1] = _T("\\\\.\\PhysicalDrive1");
+	disk_names[2] = _T("\\\\.\\PhysicalDrive2");
+	disk_names[3] = _T("\\\\.\\PhysicalDrive3");
+	disk_names[4] = _T("\\\\.\\PhysicalDrive4");
+	disk_names[5] = _T("\\\\.\\PhysicalDrive5");
 
-	w.show();
-
+	Raid5 raid(disk_names, 64 * 4096, kLeftAasymmetric);
+	raid.Open();
+	raid.Close();
 
 	return a.exec();
 }

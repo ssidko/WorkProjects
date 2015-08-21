@@ -2,7 +2,7 @@
 #include <QPainter>
 #include <QScrollBar>
 
-TestWidget::TestWidget(QObject *parent /*= NULL*/)
+TestWidget::TestWidget(QObject *parent /*= NULL*/) : file(nullptr), rows(0), columns(0)
 {
 	Initialize();
 }
@@ -10,9 +10,14 @@ TestWidget::TestWidget(QObject *parent /*= NULL*/)
 void TestWidget::Initialize(void)
 {
 	resize(570, 481);
-	verticalScrollBar()->setRange(0, 1000);
+	file = new QFile(QString::fromLocal8Bit("D:\\Work\\37601\\37601.pst"));
+	if (file) {
+		qint64 size = file->size();
+		verticalScrollBar()->setRange(0, (int)file->size());		
+	}
+
 	verticalScrollBar()->setSingleStep(16);
-	verticalScrollBar()->setPageStep(48);
+	verticalScrollBar()->setPageStep(3*16);
 }
 
 void TestWidget::paintEvent(QPaintEvent * event)
@@ -34,26 +39,23 @@ void TestWidget::paintEvent(QPaintEvent * event)
 	QRect h_offsets_rect(margin, info_rect.y() + info_rect.height() + margin_2, (rect.width() - (2 * margin)), 20);
 	painter.fillRect(h_offsets_rect, QColor(220, 220, 100));
 	painter.drawRect(h_offsets_rect);
-	//painter.drawText(h_offsets_rect, Qt::AlignCenter, QString::fromLocal8Bit("h_offset"));
 
 	QRect v_offsets_rect(margin, h_offsets_rect.y() + h_offsets_rect.height() + margin_2, 120, rect.height() - h_offsets_rect.bottom() - 2*margin);
 	painter.fillRect(v_offsets_rect, QColor(220, 220, 100));
 	painter.drawRect(v_offsets_rect);
-	//painter.drawText(v_offsets_rect, Qt::AlignCenter, QString::fromLocal8Bit("v_offset"));
 
 	QRect hex_rect(v_offsets_rect.x() + v_offsets_rect.width() + margin_2, v_offsets_rect.top(),
 		rect.width() - (v_offsets_rect.right() + 1 + margin + margin_2),
 		rect.height() - h_offsets_rect.bottom() - 2 * margin);
-	painter.fillRect(hex_rect, QColor(220, 220, 100));
+	//painter.fillRect(hex_rect, QColor(220, 220, 100));
 	painter.drawRect(hex_rect);
-	//painter.drawText(hex_rect, Qt::AlignCenter, QString::fromLocal8Bit("hex_rect"));
 
 
 	//painter.drawText(10, 10, "Machine " + QString::number(100));
 
 	int counter = verticalScrollBar()->sliderPosition();
 	int width = 20;
-	int height = 16;
+	int height = 15;
 	int interval = 5;
 	QRect r(0, 0, width, height);
 
@@ -73,9 +75,11 @@ void TestWidget::paintEvent(QPaintEvent * event)
 		++column_counter;
 	}
 
-	painter.setFont(QFont("Courier", 12, QFont::Bold));
+	//painter.setFont(QFont("Courier", 12, QFont::Bold));
 	r.moveTo(hex_rect.x() + margin_2, hex_rect.y() + margin_2);
+	rows = 0;
 	while ((r.height() + r.y() /*+ margin_2*/) <= hex_rect.bottom()) {
+		columns = 0;
 		while ((r.width() + r.x() + margin_2) <= hex_rect.right()) {
 			//if (counter % 2) {
 			//	painter.fillRect(r, Qt::green);
@@ -92,10 +96,13 @@ void TestWidget::paintEvent(QPaintEvent * event)
 
 			r.moveTo(r.x() + r.width() + interval, r.y());
 			++counter;
+			++columns;
 		}
 		r.moveTo(hex_rect.x() + margin_2, r.y() + r.height() + interval);
+		++rows;
 	}
 
+	int x = 0;
 
 }
 

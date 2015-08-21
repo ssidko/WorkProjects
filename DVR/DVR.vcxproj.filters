@@ -98,6 +98,9 @@
       <Filter>Utility</Filter>
     </ClCompile>
     <ClCompile Include="TestWidget.cpp">
+      <Filter>GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Raid5.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -162,6 +165,9 @@
       <Filter>Utility</Filter>
     </ClInclude>
     <ClInclude Include="TestWidget.h">
+      <Filter>GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Raid5.h">
       <Filter>Generated Files</Filter>
     </ClInclude>
   </ItemGroup>
