@@ -61,18 +61,16 @@ int main(int argc, char *argv[])
 	disk_names.push_back(_T("e:\\02.bin "));
 	disk_names.push_back(_T("e:\\03.bin "));
 
-	BYTE block[512];
+	BYTE block[2*512];
 	BOOL result = false;
 	Raid5 raid(disk_names, MyLib::FileMode::kReadWrite, sizeof(block), kLeftAsymmetric);
 	if (raid.Open()) {
 		for (int i = 0; i < 1000; i++) {
 			memset(block, 0x00, sizeof(block));
-			sprintf((char *)block, "block: %08d", i);
+			sprintf((char *)block, "block:  %08d", i);
 			result = raid.WriteBlock(i, block);
 			result = false;
-		}
-
-	
+		}	
 		raid.Close();
 	}
 
