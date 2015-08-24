@@ -56,11 +56,11 @@ int main(int argc, char *argv[])
 	//w.show();
 
 	std::vector<std::basic_string<TCHAR>> disk_names;
-	disk_names.push_back(_T("e:\\00.bin "));
-	disk_names.push_back(_T("e:\\01.bin "));
-	disk_names.push_back(_T("e:\\02.bin "));
-	disk_names.push_back(_T("e:\\03.bin "));
-
+	disk_names.push_back(_T("e:\\01.bin"));
+	disk_names.push_back(_T("e:\\02.bin"));
+	disk_names.push_back(_T("e:\\03.bin"));
+	disk_names.push_back(_T("e:\\00.bin"));
+										  
 	BYTE block[2*512];
 	BOOL result = false;
 	Raid5 raid(disk_names, MyLib::FileMode::kReadWrite, sizeof(block), kLeftAsymmetric);

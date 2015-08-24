@@ -36,8 +36,7 @@ void Layout::InitLeftAsymmetricLayout(void)
 				continue;
 			}
 			else {
-				table[block] = column;
-				block++;
+				table[block++] = column;
 			}
 		}
 	}
