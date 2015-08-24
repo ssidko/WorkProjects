@@ -101,7 +101,7 @@
       <Filter>GUI</Filter>
     </ClCompile>
     <ClCompile Include="Raid5.cpp">
-      <Filter>Generated Files</Filter>
+      <Filter>Utility</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -168,7 +168,7 @@
       <Filter>GUI</Filter>
     </ClInclude>
     <ClInclude Include="Raid5.h">
-      <Filter>Generated Files</Filter>
+      <Filter>Utility</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -55,18 +55,26 @@ int main(int argc, char *argv[])
 	//w.setWindowTitle(QString("Test Widget"));
 	//w.show();
 
-	std::vector< std::basic_string<TCHAR> > disk_names;
-	disk_names.resize(6);
-	disk_names[0] = _T("\\\\.\\PhysicalDrive0");
-	disk_names[1] = _T("\\\\.\\PhysicalDrive1");
-	disk_names[2] = _T("\\\\.\\PhysicalDrive2");
-	disk_names[3] = _T("\\\\.\\PhysicalDrive3");
-	disk_names[4] = _T("\\\\.\\PhysicalDrive4");
-	disk_names[5] = _T("\\\\.\\PhysicalDrive5");
+	std::vector<std::basic_string<TCHAR>> disk_names;
+	disk_names.push_back(_T("e:\\00.bin "));
+	disk_names.push_back(_T("e:\\01.bin "));
+	disk_names.push_back(_T("e:\\02.bin "));
+	disk_names.push_back(_T("e:\\03.bin "));
 
-	Raid5 raid(disk_names, 64 * 4096, kLeftAasymmetric);
-	raid.Open();
-	raid.Close();
+	BYTE block[512];
+	BOOL result = false;
+	Raid5 raid(disk_names, MyLib::FileMode::kReadWrite, sizeof(block), kLeftAsymmetric);
+	if (raid.Open()) {
+		for (int i = 0; i < 1000; i++) {
+			memset(block, 0x00, sizeof(block));
+			sprintf((char *)block, "block: %08d", i);
+			result = raid.WriteBlock(i, block);
+			result = false;
+		}
+
+	
+		raid.Close();
+	}
 
 	return a.exec();
 }
