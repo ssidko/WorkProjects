@@ -136,7 +136,7 @@ LONGLONG MyLib::WinFile::Pointer(void)
 BOOL MyLib::WinFile::SetPointer(const LONGLONG &new_pointer)
 {
 	LARGE_INTEGER distance;
-	distance.QuadPart = 0;
+	distance.QuadPart = new_pointer;
 	if (WinSetFilePointerEx(distance, NULL, FILE_BEGIN)) {
 		return TRUE;
 	} else {
