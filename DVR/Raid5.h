@@ -55,7 +55,7 @@ public:
 	BOOL Open(void);
 	void Close(void);
 	size_t DeviceCount(void) { return dev_names.size(); }
-	BOOL ReadBlock(LONGLONG block_number, BYTE *buffer);
-	BOOL WriteBlock(LONGLONG block_number, BYTE *buffer);
+	BOOL ReadBlock(const LONGLONG &block_number, BYTE *buffer);
+	BOOL WriteBlock(const LONGLONG &block_number, BYTE *buffer);
 };
 

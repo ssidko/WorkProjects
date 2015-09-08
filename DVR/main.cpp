@@ -48,31 +48,54 @@ int main(int argc, char *argv[])
 	//}
 	
 
-	//WFS::Main();
+	WFS::Main();
 	//w.show();
 
 	//TestWidget w;
 	//w.setWindowTitle(QString("Test Widget"));
 	//w.show();
 
-	std::vector<std::basic_string<TCHAR>> disk_names;
-	disk_names.push_back(_T("e:\\01.bin"));
-	disk_names.push_back(_T("e:\\02.bin"));
-	disk_names.push_back(_T("e:\\03.bin"));
-	disk_names.push_back(_T("e:\\00.bin"));
-										  
-	BYTE block[2*512];
-	BOOL result = false;
-	Raid5 raid(disk_names, MyLib::FileMode::kReadWrite, sizeof(block), kLeftAsymmetric);
-	if (raid.Open()) {
-		for (int i = 0; i < 1000; i++) {
-			memset(block, 0x00, sizeof(block));
-			sprintf((char *)block, "block:  %08d", i);
-			result = raid.WriteBlock(i, block);
-			result = false;
-		}	
-		raid.Close();
-	}
+	//int block_size = 64 * 4096;
+	//BYTE *block = new BYTE[block_size];
+	//LONGLONG start_block = 0;
+	//LONGLONG blocks_count = 3146388LL;
+
+	//std::vector<std::basic_string<TCHAR>> file_names;
+	//file_names.push_back(_T("K:\\38270\\#06.img"));
+	//file_names.push_back(_T("K:\\38270\\#00.img"));
+	//file_names.push_back(_T("K:\\38270\\#01.img"));
+	//file_names.push_back(_T("K:\\38270\\#02.img"));
+	//file_names.push_back(_T("K:\\38270\\#03.img"));
+	//file_names.push_back(_T("K:\\38270\\#04.img"));
+	//file_names.push_back(_T("K:\\38270\\#05.img"));
+	//Raid5 file_raid(file_names, MyLib::FileMode::kReadOnly, block_size, kLeftAsymmetric);
+
+	//std::vector<std::basic_string<TCHAR>> disk_names;
+	//disk_names.push_back(_T("\\\\.\\PhysicalDrive5"));
+	//disk_names.push_back(_T("\\\\.\\PhysicalDrive0"));
+	//disk_names.push_back(_T("\\\\.\\PhysicalDrive1"));
+	//disk_names.push_back(_T("\\\\.\\PhysicalDrive2"));
+	//disk_names.push_back(_T("\\\\.\\PhysicalDrive3"));
+	//disk_names.push_back(_T("\\\\.\\PhysicalDrive4"));
+	//Raid5 disk_raid(disk_names, MyLib::FileMode::kReadWrite, block_size, kLeftAsymmetric);
+
+	//if (file_raid.Open() && disk_raid.Open()) {
+	//	for (LONGLONG block_number = start_block; block_number <= blocks_count; ++block_number) {
+	//		if (file_raid.ReadBlock(block_number, block)) {
+	//			disk_raid.WriteBlock(block_number, block);
+	//		}		
+	//	}
+	//}
+
+	//MyLib::WinFile out_file(_T("K:\\38270\\test.bin"));
+	//start_block = 109366825LL;
+	//if (disk_raid.Open() && out_file.Create(MyLib::FileMode::kReadWrite)) {
+	//	for (LONGLONG block_number = start_block; block_number <= (start_block + 1000); ++block_number) {
+	//		if (disk_raid.ReadBlock(block_number, block)) {
+	//			out_file.Write(block, block_size);
+	//		}		
+	//	}
+	//}
 
 	return a.exec();
 }

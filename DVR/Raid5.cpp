@@ -111,7 +111,7 @@ void Raid5::Close(void)
 	devs.clear();
 }
 
-BOOL Raid5::ReadBlock(LONGLONG block_number, BYTE *buffer)
+BOOL Raid5::ReadBlock(const LONGLONG &block_number, BYTE *buffer)
 {
 	MyLib::WinFile *device = devs[ layout[block_number % layout.Size()] ];
 	assert(device);
@@ -122,9 +122,9 @@ BOOL Raid5::ReadBlock(LONGLONG block_number, BYTE *buffer)
 	return FALSE;
 }
 
-BOOL Raid5::WriteBlock(LONGLONG block_number, BYTE *buffer)
+BOOL Raid5::WriteBlock(const LONGLONG &block_number, BYTE *buffer)
 {
-	MyLib::WinFile *device = devs[layout[block_number % layout.Size()]];
+	MyLib::WinFile *device = devs[ layout[block_number % layout.Size()] ];
 	assert(device);
 	LONGLONG offset = (block_number / (DeviceCount() - 1)) * block_size;
 	if (device->SetPointer(offset)) {

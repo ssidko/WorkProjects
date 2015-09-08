@@ -41,14 +41,16 @@ std::string WFS::SequenceInfoString(FrameSequence &sequence)
 
 int WFS::Main(void)
 {
-	std::string wfs_file_name = "\\\\.\\PhysicalDrive4";
+	std::string wfs_file_name = "\\\\.\\PhysicalDrive10";
 	//std::string wfs_file_name = "F:\\37566\\1.h264";
-	std::string out_dir_path = "K:\\videoregistrator\\out\\";
+	std::string out_dir_path = "K:\\38236\\3\\";
 	std::string mkv_file_name;
 	std::string raw_file_name = out_dir_path + "out.dvr";
 
-	Timestamp min_date(2015, 01, 01, 00, 00, 00);
-	Timestamp max_date(2015, 12, 31, 00, 00, 00);
+	//Timestamp min_date(2015, 01, 01, 00, 00, 00);
+	Timestamp min_date(2015, 02, 25, 00, 00, 00);
+	Timestamp max_date(2015, 02, 29, 00, 00, 00);
+	//Timestamp max_date(2015, 12, 31, 00, 00, 00);
 
 	
 	DWORD dw = 0x3CF9788B;
