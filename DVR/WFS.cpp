@@ -49,7 +49,6 @@ int WFS::Main(void)
 
 	Timestamp min_date(2015, 07, 01, 00, 00, 00);
 	Timestamp max_date(2015, 12, 31, 00, 00, 00);
-
 	
 	DWORD dw = 0x0e8e2cb9;
 	WFS::TIMESTAMP *t = (TIMESTAMP *)&dw;
