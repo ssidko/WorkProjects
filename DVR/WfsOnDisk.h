@@ -26,10 +26,10 @@ namespace WFS
 	};
 
 #define WFS_FRAME_HEADER_SIGNATURE_MASK			((DWORD)0xF0FFFFFF)	
-#define WFS_FRAME_HEADER_SIGNATURE		((DWORD)0xF0010000)
+#define WFS_FRAME_HEADER_SIGNATURE				((DWORD)0xF0010000)
 
-#define WFS_HDR_MARK_1					((DWORD)0x010000)
-#define WFS_HDR_MARK_2					((DWORD)0x0F)
+#define WFS_HDR_MARK_1							((DWORD)0x010000)
+#define WFS_HDR_MARK_2							((DWORD)0x0F)
 
 	typedef struct _FRAME_HEADER {
 		DWORD mark_1 : 24;		// 0x010000	WFS_HDR_MARK_1
@@ -59,8 +59,8 @@ namespace WFS
 		DWORD data_size;
 	} FRAME_0C;
 
-#define	MAX_FRAME_HEADER_SIZE			((DWORD)sizeof(FRAME_0C))
-#define	MAX_FRAME_SIZE					((DWORD)2*1024*1024)
+#define	MAX_FRAME_HEADER_SIZE					((DWORD)sizeof(FRAME_0C))
+#define	MAX_FRAME_SIZE							((DWORD)2*1024*1024)
 
 	typedef struct _VOLUME_DESCRIPTOR {
 		BYTE unk_1[16];					// Обычно - 0x00

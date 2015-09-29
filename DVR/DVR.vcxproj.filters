@@ -70,9 +70,6 @@
     <ClCompile Include="File.cpp">
       <Filter>Utility</Filter>
     </ClCompile>
-    <ClCompile Include="Frame.cpp">
-      <Filter>Core\DHFS</Filter>
-    </ClCompile>
     <ClCompile Include="FileStorage.cpp">
       <Filter>Core\DHFS</Filter>
     </ClCompile>
@@ -103,6 +100,9 @@
     <ClCompile Include="Raid5.cpp">
       <Filter>Utility</Filter>
     </ClCompile>
+    <ClCompile Include="DhfsOnDisk.cpp">
+      <Filter>Core\DHFS</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="mainwindow.ui">
@@ -127,9 +127,6 @@
     </ClInclude>
     <ClInclude Include="File.h">
       <Filter>Utility</Filter>
-    </ClInclude>
-    <ClInclude Include="Frame.h">
-      <Filter>Core\DHFS</Filter>
     </ClInclude>
     <ClInclude Include="FileStorage.h">
       <Filter>Core\DHFS</Filter>
@@ -169,6 +166,9 @@
     </ClInclude>
     <ClInclude Include="Raid5.h">
       <Filter>Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="DhfsOnDisk.h">
+      <Filter>Core\DHFS</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

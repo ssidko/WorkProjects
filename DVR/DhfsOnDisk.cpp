@@ -1,9 +1,8 @@
 #include <assert.h>
-#include "Frame.h"
+#include "DhfsOnDisk.h"
 #include <sstream>
 
 using namespace DHFS;
-
 
 void DHFS::_FrameInfo::ToString( std::string &info_str )
 {
@@ -29,7 +28,7 @@ bool DHFS::_FrameSequenceInfo::IsYourNextFrame(FrameInfo &next_frame)
 	return false;
 }
 
-DHFS::Volume::Volume(std::string &volume_file_name) : io(volume_file_name, 4096*1024)
+DHFS::Volume::Volume(const std::string &volume_file_name) : io(volume_file_name, 4096*1024)
 {
 }
 

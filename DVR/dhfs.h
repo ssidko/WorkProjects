@@ -2,7 +2,7 @@
 #define _DHFS_H
 
 #include "Timestamp.h"
-#include "Frame.h"
+#include "DhfsOnDisk.h"
 #include "FileStorage.h"
 
 namespace DHFS

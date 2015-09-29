@@ -48,7 +48,8 @@ int main(int argc, char *argv[])
 	//}
 	
 
-	WFS::Main();
+	//WFS::Main();
+	DHFS::StartRecovering();
 	//w.show();
 
 	//TestWidget w;

@@ -76,7 +76,7 @@ namespace DHFS
 	private:
 		BufferedFile io;
 	public:
-		Volume(std::string &volume_file_name);
+		Volume(const std::string &volume_file_name);
 		bool Open();
 		void SetPointer(LONGLONG &pointer);
 		bool IsValidHeader(FRAME_HEADER &header);
