@@ -1,3 +1,4 @@
+#define LED_PIN    13
 
 #define SENSOR_1_PIN    2
 //#define SENSOR_2_PIN    11
