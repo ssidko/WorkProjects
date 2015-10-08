@@ -17,7 +17,8 @@
 Messenger messenger(&Serial);
 
 void setup() {
-  Serial.begin(9600);
+  messenger.Begin();
+  
   pinMode(GUARD_SENSOR_1_PIN, INPUT);
   pinMode(KEY_1_PIN, INPUT);
   pinMode(GSM_LINE_1_PIN, INPUT);

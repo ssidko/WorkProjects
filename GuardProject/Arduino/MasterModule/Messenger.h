@@ -16,10 +16,11 @@ typedef struct _Message {
 class Messenger
 {
 private:
-  Stream *serial;
+  Serial_ *serial;
 public:
-  Messenger(Stream *serial_io) : serial(serial_io) {}
+  Messenger(Serial_ *serial_port) : serial(serial_port) {}
   ~Messenger(void) {}
+  void Begin();
   bool ReciveMessage(Message &msg);
   bool SendMessage(Message &msg);   
 };
