@@ -7,7 +7,7 @@
 #include <string>
 #include <windows.h>
 #include "File.h"
-#include "Frame.h"
+#include "DhfsOnDisk.h"
 #include "Timestamp.h"
 
 namespace DHFS

@@ -33,33 +33,23 @@ inline void _trace(char *format, ...)
 	::WriteConsoleA(::GetStdHandle(STD_OUTPUT_HANDLE), buffer, strlen(buffer), &rw, NULL);
 }
 
+#include "ExtentRecovery.h"
+
 int main(int argc, char *argv[])
 {
 	QApplication a(argc, argv);
 	//MainWindow w;
 
-	//QString path = "D:\\";
-	//QDir base_dir(path);
-
-	//QFileInfoList info_list = base_dir.entryInfoList();
-	//foreach(QFileInfo file_info, info_list) {
-	//	QString curr_path = file_info.absoluteFilePath();
-	//	int x = 0;
-	//}
+	ext4::ExtentSaver saver("E:\\OUT", "K:\\38505\\sda.img", (LONGLONG)503808LL * 512, 4096);
+	if (saver.Open()) {
+		LONGLONG block_num = 0;
+		while (saver.NextExtentBlock(block_num)) {
+		
+			int x = 0;
+		}
 	
-
-	//WFS::Main();
-	DHFS::StartRecovering();
-	//w.show();
-
-	//TestWidget w;
-	//w.setWindowTitle(QString("Test Widget"));
-	//w.show();
-
-	//int block_size = 64 * 4096;
-	//BYTE *block = new BYTE[block_size];
-	//LONGLONG start_block = 0;
-	//LONGLONG blocks_count = 3146388LL;
+		int x = 0;
+	}
 
 	return a.exec();
 }

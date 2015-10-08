@@ -46,6 +46,9 @@
     <Filter Include="Core\WFS-h264">
       <UniqueIdentifier>{b265e5f1-6847-45dd-badb-494390768be8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Ext4ExtentRecovery">
+      <UniqueIdentifier>{8022cb13-cfed-4022-97f3-cfc3cca7c529}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GeneratedFiles\Debug\moc_mainwindow.cpp">
@@ -102,6 +105,9 @@
     </ClCompile>
     <ClCompile Include="DhfsOnDisk.cpp">
       <Filter>Core\DHFS</Filter>
+    </ClCompile>
+    <ClCompile Include="ExtentRecovery.cpp">
+      <Filter>Generated Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -169,6 +175,9 @@
     </ClInclude>
     <ClInclude Include="DhfsOnDisk.h">
       <Filter>Core\DHFS</Filter>
+    </ClInclude>
+    <ClInclude Include="ExtentRecovery.h">
+      <Filter>Generated Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
