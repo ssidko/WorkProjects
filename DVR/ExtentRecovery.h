@@ -54,6 +54,7 @@ namespace ext4
 		LONGLONG volume_offset;
 		DWORD block_size;
 		std::string out_dir;
+		std::string volume_name;
 		LONGLONG current_block;
 		WORD max_extents_in_block;
 	public:
@@ -62,9 +63,9 @@ namespace ext4
 		bool Open(void);
 		bool SetPointer(const LONGLONG &offset);
 		bool NextExtentBlock(LONGLONG &block_num);
+		bool SaveToFile(const LONGLONG &block_num, W32Lib::FileEx *out_file);
+		int Run();
 	};
-
-	int StartExtentRecovery(std::string ext_volume, const LONGLONG &start_offset, DWORD block_size, std::string out_dir);
 }
 
 #endif //_EXTENT_RECOVERY_H

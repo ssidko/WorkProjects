@@ -43,12 +43,7 @@ int main(int argc, char *argv[])
 	ext4::ExtentSaver saver("E:\\OUT", "K:\\38505\\sda.img", (LONGLONG)503808LL * 512, 4096);
 	if (saver.Open()) {
 		LONGLONG block_num = 0;
-		while (saver.NextExtentBlock(block_num)) {
-		
-			int x = 0;
-		}
-	
-		int x = 0;
+		saver.Run();
 	}
 
 	return a.exec();
