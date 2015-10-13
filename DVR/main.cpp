@@ -40,7 +40,7 @@ int main(int argc, char *argv[])
 	QApplication a(argc, argv);
 	//MainWindow w;
 
-	ext4::ExtentSaver saver("E:\\OUT", "K:\\38505\\sda.img", (LONGLONG)503808LL * 512, 4096);
+	ext4::ExtentSaver saver("F:\\OUT", "K:\\38505\\sda.img", (LONGLONG)503808LL * 512, 4096);
 	if (saver.Open()) {
 		LONGLONG block_num = 0;
 		saver.Run();

@@ -76,17 +76,25 @@ bool ext4::ExtentSaver::SaveToFile(const LONGLONG &block_num, W32Lib::FileEx *ou
 	if (extent_block->header.depth == 0) {
 		for (int i = 0; i < extent_block->header.entries; i++) {
 			offset = volume_offset + extent_block->extent[i].PysicalBlock() * block_size;
-			size = (extent_block->extent[i].length & (WORD)0X7FFF) * block_size;
+
+			size = (extent_block->extent[i].length <= 0x8000) ? (extent_block->extent[i].length * block_size) : ((extent_block->extent[i].length - 0x8000) * block_size);
+
 			if (data_buff.size() < size) {
 				data_buff.resize(size);
 			}
-			if (!io.SetPointer(offset)) {
-				break;
+
+			if (extent_block->extent[i].length <= 0x8000) {
+				if (!io.SetPointer(offset)) {
+					break;
+				}
+				if (!io.Read(data_buff.data(), size)) {
+					break;
+				}
+			} else {
+				memset(data_buff.data(), 0x00, size);			
 			}
-			if (!io.Read(data_buff.data(), size)) {
-				break;
-			}
-			if (!out_file->SetPointer(extent_block->extent[i].block * block_size)) {
+
+			if (!out_file->SetPointer((LONGLONG)extent_block->extent[i].block * block_size)) {
 				break;
 			}
 			out_file->Write(data_buff.data(), size);
@@ -94,6 +102,7 @@ bool ext4::ExtentSaver::SaveToFile(const LONGLONG &block_num, W32Lib::FileEx *ou
 	} else {
 		for (int i = 0; i < extent_block->header.entries; i++) {
 			SaveToFile(extent_block->extent_index[i].PysicalBlock(), out_file);
+			int x = 0;
 		}	
 	}
 	return true;
@@ -103,10 +112,10 @@ int ext4::ExtentSaver::Run()
 {
 	int file_counter = 0;
 	LONGLONG block_num = 0;
-	SetPointer(6143202ll);
+	SetPointer(/*6143202ll*/75530359ll);
 	while (NextExtentBlock(block_num)) {
 		std::stringstream sstr;
-		sstr << out_dir << "\\" << file_counter;
+		sstr << out_dir << "\\" << block_num;
 		W32Lib::FileEx *out_file = new W32Lib::FileEx(sstr.str().c_str());
 		if (out_file->Create()) {
 			SaveToFile(block_num, out_file);
