@@ -110,18 +110,28 @@ bool ext4::ExtentSaver::SaveToFile(const LONGLONG &block_num, W32Lib::FileEx *ou
 
 int ext4::ExtentSaver::Run()
 {
-	int file_counter = 0;
-	LONGLONG block_num = 0;
-	SetPointer(/*6143202ll*/75530359ll);
-	while (NextExtentBlock(block_num)) {
+	//int file_counter = 0;
+	//LONGLONG block_num = 0;
+	//SetPointer(6143202ll/*75530359ll*/);
+	//while (NextExtentBlock(block_num)) {
+	//	std::stringstream sstr;
+	//	sstr << out_dir << "\\" << block_num;
+	//	W32Lib::FileEx *out_file = new W32Lib::FileEx(sstr.str().c_str());
+	//	if (out_file->Create()) {
+	//		SaveToFile(block_num, out_file);
+	//		file_counter++;
+	//	}
+	//	delete out_file;
+	//}
+
 		std::stringstream sstr;
-		sstr << out_dir << "\\" << block_num;
+		sstr << "F:\\vdi\\75530333.vdi";
 		W32Lib::FileEx *out_file = new W32Lib::FileEx(sstr.str().c_str());
 		if (out_file->Create()) {
-			SaveToFile(block_num, out_file);
-			file_counter++;
+			SaveToFile(75530333ll, out_file);
+			SaveToFile(78448583ll, out_file);
+			SaveToFile(90310656ll, out_file);
 		}
 		delete out_file;
-	}
 	return 0;
 }
