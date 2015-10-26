@@ -1,9 +1,7 @@
 #include "stdafx.h"
 #include <windows.h>
 #include <iostream>
-
-#define SERVICE_NAME			_T("GuardSystem")
-#define SERVICE_DISPLAY_NAME	_T("Loging service for GuardSystem")
+#include "SvcGeneral.h"
 
 bool InstallService(const TCHAR *svc_name)
 {
