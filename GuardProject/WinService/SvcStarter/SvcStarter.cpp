@@ -28,7 +28,7 @@ bool InstallService(const TCHAR *svc_name)
 	SC_HANDLE svc_handle = CreateService(scm_handle,
 		SERVICE_NAME, SERVICE_DISPLAY_NAME,
 		GENERIC_READ | GENERIC_WRITE,
-		SERVICE_WIN32_OWN_PROCESS | SERVICE_INTERACTIVE_PROCESS,
+		SERVICE_WIN32_OWN_PROCESS /*| SERVICE_INTERACTIVE_PROCESS*/,
 		SERVICE_AUTO_START,
 		SERVICE_ERROR_NORMAL,
 		svc_name,
@@ -84,12 +84,22 @@ bool DeleteService(const TCHAR *svc_name)
 	return true;
 }
 
+#include <fstream>
+
+std::fstream log_file;
+
 int _tmain(int argc, _TCHAR* argv[])
 {
 	bool result = false;
 
+	log_file.open("Guard.log", std::fstream::in | std::fstream::out | std::fstream::app);
+	if (log_file.is_open()) {
+		log_file << "Log file opened.\n";
+	}
+	log_file.close();
+
 	//result = DeleteService(SERVICE_NAME);
-	result = InstallService(_T("WinService.exe"));
+	//result = InstallService(_T("D:\\GitHub\\WorkProjects\\GuardProject\\WinService\\Debug\\WinService.exe"));
 
 	return 0;
 }

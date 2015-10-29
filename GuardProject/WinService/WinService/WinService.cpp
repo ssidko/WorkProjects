@@ -5,12 +5,12 @@
 
 int _tmain(int argc, _TCHAR* argv[])
 {
-	SERVICE_TABLE_ENTRY svc_entry;
-	memset(&svc_entry, 0x00, sizeof(SERVICE_TABLE_ENTRY));
-	svc_entry.lpServiceName = SERVICE_NAME;
-	svc_entry.lpServiceProc = ServiceMain;
+	SERVICE_TABLE_ENTRY dispatch_table[] = {
+		{SERVICE_NAME, ServiceMain},
+		{NULL, NULL}
+	};
 
-	StartServiceCtrlDispatcher(&svc_entry);
+	StartServiceCtrlDispatcher(dispatch_table);
 
 	return 0;
 }
