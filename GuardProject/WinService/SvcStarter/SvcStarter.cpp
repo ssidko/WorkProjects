@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include <windows.h>
 #include <iostream>
+#include <string>
 #include "SvcGeneral.h"
 
 bool InstallService(const TCHAR *svc_name)
@@ -92,14 +93,11 @@ int _tmain(int argc, _TCHAR* argv[])
 {
 	bool result = false;
 
-	log_file.open("Guard.log", std::fstream::in | std::fstream::out | std::fstream::app);
-	if (log_file.is_open()) {
-		log_file << "Log file opened.\n";
-	}
-	log_file.close();
+	std::wstring service_module_path = _T("D:\\GitHub\\WorkProjects\\GuardProject\\WinService\\Debug\\WinService.exe");
+	std::wstring cmd_line = service_module_path;
 
+	result = InstallService(cmd_line.c_str());
 	//result = DeleteService(SERVICE_NAME);
-	//result = InstallService(_T("D:\\GitHub\\WorkProjects\\GuardProject\\WinService\\Debug\\WinService.exe"));
 
 	return 0;
 }

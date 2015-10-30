@@ -19,6 +19,9 @@ int _tmain(int argc, _TCHAR* argv[])
 	EnumerateDevicesInterfaces(&GUID_DEVINTERFACE_DISK);
 	std::cout << std::endl << "---=== CD-ROMs ===---" << std::endl;
 	EnumerateDevicesInterfaces(&GUID_DEVINTERFACE_CDROM);
+	std::cout << std::endl << "---=== COM Ports ===---" << std::endl;
+	EnumerateDevicesInterfaces(&GUID_DEVINTERFACE_COMPORT);
+
 	std::cout << "Press any key..." << std::endl;
 	_getch();
 	return true;

@@ -5,7 +5,7 @@
 void EnumerateDevicesInterfaces(const GUID* device_interface_guid)
 {
 	BOOL result = false;
-	DWORD error = 0;
+	DWORD last_error = 0;
 	DWORD dev_index = 0;
 	DWORD iface_index = 0;
 	HDEVINFO info_set = NULL;
@@ -26,25 +26,25 @@ void EnumerateDevicesInterfaces(const GUID* device_interface_guid)
 				PSP_DEVICE_INTERFACE_DETAIL_DATA dev_iface_detail = NULL;
 
 				result = SetupDiGetDeviceInterfaceDetail(info_set, &dev_iface_data, NULL, 0, &required_size, NULL);
-				error = ::GetLastError();
+				last_error = ::GetLastError();
 
 				dev_iface_detail = (PSP_DEVICE_INTERFACE_DETAIL_DATA) new BYTE[required_size];
 				memset(dev_iface_detail, 0x00, required_size);
 				dev_iface_detail->cbSize = sizeof(SP_DEVICE_INTERFACE_DETAIL_DATA);
 
 				result = SetupDiGetDeviceInterfaceDetail(info_set, &dev_iface_data, dev_iface_detail, required_size, NULL, NULL);
-				error = ::GetLastError();
+				last_error = ::GetLastError();
 
 				DWORD reg_data_type = 0;
 				required_size = 0;
 				result = ::SetupDiGetDeviceRegistryProperty(info_set, &dev_info, SPDRP_FRIENDLYNAME/*SPDRP_DEVICEDESC*/, &reg_data_type, NULL, 0, &required_size);
-				error = ::GetLastError();
+				last_error = ::GetLastError();
 
 				BYTE *property_buff = (BYTE *) new BYTE[required_size];
 				memset(property_buff, 0x00, required_size);
 
 				result = ::SetupDiGetDeviceRegistryProperty(info_set, &dev_info, SPDRP_FRIENDLYNAME/*SPDRP_DEVICEDESC*/, &reg_data_type, property_buff, required_size, NULL);
-				error = ::GetLastError();
+				last_error = ::GetLastError();
 
 
 				TCHAR *str = (TCHAR *)property_buff;
@@ -137,7 +137,7 @@ void EnumerateDevicesInterfaces(const GUID* device_interface_guid)
 			++dev_index;
 		}
 
-		if (error = ::GetLastError()) {
+		if (last_error = ::GetLastError()) {
 			int x = 0;
 		}
 

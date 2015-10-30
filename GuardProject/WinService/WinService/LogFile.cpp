@@ -30,7 +30,11 @@ void LogFile::PrintTimestamp(void)
 	int res = sprintf_s(time_string, sizeof(time_string), "%04d/%02d/%02d %02d:%02d:%02d   ",
 						time.tm_year + 1900, time.tm_mon + 1, time.tm_mday, time.tm_hour, time.tm_min, time.tm_sec);
 	if (res > 0) {
-		this->operator<<(time_string);
+		std::fstream file(file_name.c_str(), std::fstream::in | std::fstream::out | std::fstream::app);
+		if (file.is_open()) {
+			file << time_string;
+		}
+		file.close();
 	}
 }
 
@@ -47,9 +51,9 @@ void LogFile::PrintLine(const char *format, ...)
 		if (string) {
 			memset(string, 0x00, len);
 			if (vsprintf_s(string, len, format, argptr) > 0) {
-				PrintTimestamp();
+				string[len - 2] = '\n';
+				string[len - 1] = 0x00;
 				this->operator<<(string);
-				this->operator<<("\n");
 			}
 			delete[] string;
 		}
@@ -61,6 +65,7 @@ LogFile &LogFile::operator << (const char *text)
 {
 	std::fstream file(file_name.c_str(), std::fstream::in | std::fstream::out | std::fstream::app);
 	if (file.is_open()) {
+		PrintTimestamp();
 		file << text;
 	}
 	file.close();
@@ -71,6 +76,7 @@ LogFile &LogFile::operator << (const DWORD value)
 {
 	std::fstream file(file_name.c_str(), std::fstream::in | std::fstream::out | std::fstream::app);
 	if (file.is_open()) {
+		PrintTimestamp();
 		file << std::to_string(value).c_str();
 	}
 	file.close();

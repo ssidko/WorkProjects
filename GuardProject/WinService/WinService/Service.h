@@ -1,9 +1,12 @@
 #ifndef _SERVICE_H
 #define _SERVICE_H
 
+#include "tchar.h"
 #include "windows.h"
 #include "SvcGeneral.h"
 
+bool ServiceInitialize(DWORD args_count, LPWSTR *args);
+void ServiceDeinitialize(void);
 void ServiceRun(void);
 void WINAPI ServiceMain(DWORD args_count, LPWSTR  *args);
 DWORD WINAPI ServiceControlHandlerEx(DWORD  control_code, DWORD  event_type, LPVOID event_data, LPVOID context);
