@@ -2,7 +2,9 @@
 #include "Service.h"
 #include <Dbt.h>
 #include <fstream>
+#include <vector>
 #include "LogFile.h"
+#include "ComPort.h"
 
 #define LOG_FILE_NAME			"GuardSystem.log"
 
@@ -10,11 +12,16 @@ LogFile log_file;
 SERVICE_STATUS svc_status;
 SERVICE_STATUS_HANDLE svc_status_handle;
 HDEVNOTIFY notify_handle = NULL;
+std::vector<HANDLE> events;
+
+#define EVENT_DEVICE_ARRIVAL	0
+#define EVENT_DEVICE_REMOVE		1
 
 DEFINE_GUID(GUID_DEVINTERFACE_COMPORT, 0x86e0d1e0L, 0x8089, 0x11d0, 0x9c, 0xe4, 0x08, 0x00, 0x3e, 0x30, 0x1f, 0x73);
 
 bool ServiceInitialize(DWORD args_count, LPWSTR *args)
 {
+	DWORD error_code = 0;
 
 	std::string service_file_path;
 	service_file_path.resize(MAX_PATH);
@@ -52,11 +59,23 @@ bool ServiceInitialize(DWORD args_count, LPWSTR *args)
 		log_file << "Notification filter registered\n";
 	}
 	else {
-		DWORD error_code = ::GetLastError();
-		log_file.PrintLine("Notification filter registration fail. Error code: %d", error_code);
+		error_code = ::GetLastError();
+		log_file.PrintLine("Notification filter registration fail.  WinError code: %d", error_code);
 		return false;
 	}
-	
+
+	events.resize(2);
+
+	for (int i = 0; i < events.size(); i++) {
+		events[i] = ::CreateEvent(NULL, TRUE, FALSE, NULL);
+		if (events[i] == NULL) {
+			error_code = ::GetLastError();
+			log_file.PrintLine("CreateEvent error. Event ID: %d. WinError code: %d.", i,  error_code);
+		}
+	}
+
+	log_file << "Device events created.\n";
+
 	return true;
 }
 
@@ -72,6 +91,43 @@ void ServiceRun(void)
 	ReportSvcStatus(SERVICE_RUNNING, NO_ERROR, 0);
 	log_file << "*** Service started ***\n";
 
+	std::list<std::string> com_ports;
+	ComPort::AvailableComPorts(com_ports);
+
+	log_file.PrintLine("Avaliable COM ports: %d", com_ports.size());
+	auto it = com_ports.begin();
+	while (it != com_ports.end()) {
+		log_file.PrintLine("%s", (*it).c_str());
+		it++;
+	}
+
+	//
+	// После старта необходимо проверить подключено ли уже устройство.
+	// Если подключено - ждать сообщения.
+	// Иначе - ждать подключения устройства.
+	//
+
+	DWORD ret = 0;
+
+	while (true) {
+		ret = ::WaitForMultipleObjects(2, events.data(), FALSE, INFINITE);
+		switch (ret) {
+			case WAIT_OBJECT_0 + EVENT_DEVICE_ARRIVAL:
+				log_file << "Device arrival.\n";
+				::ResetEvent(events[EVENT_DEVICE_ARRIVAL]);
+				break;
+
+			case WAIT_OBJECT_0 + EVENT_DEVICE_REMOVE:
+				log_file << "Device remove.\n";
+				::ResetEvent(events[EVENT_DEVICE_REMOVE]);
+				break;
+
+			default:
+				break;
+		
+		}
+	}
+	log_file << "Exit from ServiceRun().\n";
 }
 
 void WINAPI ServiceMain(DWORD args_count, LPTSTR *args)
@@ -128,9 +184,11 @@ DWORD WINAPI ServiceControlHandlerEx(DWORD  control_code, DWORD  event_type, LPV
 			switch (event_type) {
 				case DBT_DEVICEARRIVAL:
 					log_file << "DBT_DEVICEARRIVAL\n";
+					::SetEvent(events[EVENT_DEVICE_ARRIVAL]);
 					break;
 				case DBT_DEVICEREMOVECOMPLETE:
 					log_file << "DBT_DEVICEREMOVECOMPLETE\n";
+					::SetEvent(events[EVENT_DEVICE_REMOVE]);
 					break;
 				default:
 					break;

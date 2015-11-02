@@ -32,6 +32,9 @@
     <ClInclude Include="LogFile.h">
       <Filter>Utility</Filter>
     </ClInclude>
+    <ClInclude Include="ComPort.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -45,6 +48,9 @@
     </ClCompile>
     <ClCompile Include="LogFile.cpp">
       <Filter>Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="ComPort.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

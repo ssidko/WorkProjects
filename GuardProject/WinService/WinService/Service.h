@@ -13,4 +13,3 @@ DWORD WINAPI ServiceControlHandlerEx(DWORD  control_code, DWORD  event_type, LPV
 void ReportSvcStatus(DWORD current_state, DWORD win32_exit_code, DWORD wait_hint);
 
 #endif // _SERVICE_H
-

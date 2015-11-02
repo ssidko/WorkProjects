@@ -206,8 +206,7 @@ QStringList ControlUnit::AvailableComPorts(void)
 					break;
 				}
 			}
-			::RegCloseKey(key);
-						
+			::RegCloseKey(key);						
 		}
 	}
 	return com_list;

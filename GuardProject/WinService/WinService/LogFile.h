@@ -20,4 +20,3 @@ public:
 };
 
 #endif // _LOG_FILE_H
-
