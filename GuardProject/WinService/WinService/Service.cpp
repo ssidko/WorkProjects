@@ -65,12 +65,12 @@ bool ServiceInitialize(DWORD args_count, LPWSTR *args)
 	}
 
 	events.resize(2);
-
-	for (int i = 0; i < events.size(); i++) {
+	for (DWORD i = 0; i < events.size(); i++) {
 		events[i] = ::CreateEvent(NULL, TRUE, FALSE, NULL);
 		if (events[i] == NULL) {
 			error_code = ::GetLastError();
 			log_file.PrintLine("CreateEvent error. Event ID: %d. WinError code: %d.", i,  error_code);
+			return false;
 		}
 	}
 
@@ -110,7 +110,7 @@ void ServiceRun(void)
 	DWORD ret = 0;
 
 	while (true) {
-		ret = ::WaitForMultipleObjects(2, events.data(), FALSE, INFINITE);
+		ret = ::WaitForMultipleObjects(events.size(), events.data(), FALSE, INFINITE);
 		switch (ret) {
 			case WAIT_OBJECT_0 + EVENT_DEVICE_ARRIVAL:
 				log_file << "Device arrival.\n";
@@ -123,8 +123,7 @@ void ServiceRun(void)
 				break;
 
 			default:
-				break;
-		
+				break;		
 		}
 	}
 	log_file << "Exit from ServiceRun().\n";

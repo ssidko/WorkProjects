@@ -33,7 +33,7 @@
       <Filter>Utility</Filter>
     </ClInclude>
     <ClInclude Include="ComPort.h">
-      <Filter>Header Files</Filter>
+      <Filter>Core</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -50,7 +50,7 @@
       <Filter>Utility</Filter>
     </ClCompile>
     <ClCompile Include="ComPort.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Core</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
