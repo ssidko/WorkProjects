@@ -18,6 +18,8 @@
 #include "TestWidget.h"
 #include "Raid5.h"
 
+#include "Orbita.h"
+
 using namespace DHFS;
 
 inline void _trace(char *format, ...)
@@ -40,11 +42,7 @@ int main(int argc, char *argv[])
 	QApplication a(argc, argv);
 	//MainWindow w;
 
-	ext4::ExtentSaver saver("F:\\OUT", "K:\\38505\\sda.img", (LONGLONG)503808LL * 512, 4096);
-	if (saver.Open()) {
-		LONGLONG block_num = 0;
-		saver.Run();
-	}
+	Orbita::Main("\\\\.\\PhysicalDrive0", "K:\\38702\\out");
 
 	return a.exec();
 }

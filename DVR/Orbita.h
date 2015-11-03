@@ -1,0 +1,104 @@
+#ifndef _ORBITA_H
+#define _ORBITA_H
+
+#include <windows.h>
+#include <string>
+#include <BufferedFile.h>
+
+namespace Orbita
+{
+	#pragma pack(push)
+	#pragma pack(1)
+
+	typedef struct _TIMESTAMP {
+		BYTE year;
+		BYTE month;
+		BYTE day;
+		BYTE hours;
+		BYTE minutes;
+		BYTE seconds;
+	} TIMESTAMP;
+
+	typedef struct _HEADER {
+		BYTE channel : 4;		// 1-16
+		BYTE mask_1 : 4;		// 0x3
+		BYTE sub_type : 4;		// 0,1,5 ...	
+		BYTE mask_2 : 4;		// 0x3
+		WORD frame_type;		// "dc", "wb"
+		bool IsValid(void)
+		{
+			if ((mask_1 == 3) && (mask_2 == 3)) {
+				if ((frame_type == 'cd') || (frame_type == 'bw')) {
+					return true;
+				}
+			}	
+			return false;
+		}
+	} HEADER;
+
+	typedef struct _HEADER_dc{
+		HEADER header;
+		DWORD sign_2;			// "H264"
+		DWORD size;
+		DWORD unk_1;
+		DWORD unk_2;
+		DWORD unk_3;
+		bool IsValid(void)
+		{
+			if (header.IsValid() && (header.frame_type == 'cd') && (sign_2 == '462H')) {
+				return true;
+			}
+			return false;
+		}
+	} HEADER_dc;
+
+	typedef struct _HEADER_0dc : public HEADER_dc {
+		TIMESTAMP timestamp;
+		BYTE unk_4[10];
+	} HEADER_0dc;
+
+	typedef struct _HEADER_wb{
+		HEADER header;
+		WORD size_1;
+		WORD size_2;
+		bool IsValid(void)
+		{
+			if (header.IsValid() && (header.frame_type == 'bw') && (size_1 == size_2)) {
+				return true;
+			}
+			return false;
+		}
+	} HEADER_wb;
+
+	#pragma pack(pop)
+
+	typedef struct _FRAME_DESCRIPTOR {
+		LONGLONG offset;
+		DWORD channel;
+		DWORD frame_type;
+		DWORD sub_type;
+		TIMESTAMP timestamp;
+		DWORD size;
+		void Clean(void) { memset(this, 0x00, sizeof(FRAME_DESCRIPTOR)); }
+	} FRAME_DESCRIPTOR;
+
+	int Main(const std::string &io_name, const std::string &out_dir);
+
+	class Scanner
+	{
+	private:
+		BufferedFile io;
+	public:
+		Scanner(const std::string &io_name);
+		~Scanner();
+		bool Open() { return io.Open(); }
+		void AlignIoPointer(void);
+		void SetPointer(LONGLONG &frame_offset) {io.SetPointer(frame_offset);}
+		bool NextFrame(LONGLONG &frame_offset);
+		bool ReadFrame(std::vector<BYTE> &buffer, FRAME_DESCRIPTOR &frame);
+	};
+}
+
+#endif // _ORBITA_H
+
+

@@ -104,6 +104,7 @@
     </ClCompile>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="mainwindow.cpp" />
+    <ClCompile Include="Orbita.cpp" />
     <ClCompile Include="Raid5.cpp" />
     <ClCompile Include="TestWidget.cpp" />
     <ClCompile Include="Timestamp.cpp" />
@@ -148,6 +149,7 @@
     <ClInclude Include="FileStorage.h" />
     <ClInclude Include="DhfsOnDisk.h" />
     <ClInclude Include="GeneratedFiles\ui_mainwindow.h" />
+    <ClInclude Include="Orbita.h" />
     <ClInclude Include="Raid5.h" />
     <ClInclude Include="TestWidget.h" />
     <ClInclude Include="WfsOnDisk.h" />

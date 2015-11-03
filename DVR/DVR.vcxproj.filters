@@ -49,6 +49,9 @@
     <Filter Include="Ext4ExtentRecovery">
       <UniqueIdentifier>{8022cb13-cfed-4022-97f3-cfc3cca7c529}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Core\Orbita">
+      <UniqueIdentifier>{274a6ae0-20a0-4f5a-b83e-fca4688680d5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GeneratedFiles\Debug\moc_mainwindow.cpp">
@@ -107,7 +110,10 @@
       <Filter>Core\DHFS</Filter>
     </ClCompile>
     <ClCompile Include="ExtentRecovery.cpp">
-      <Filter>Generated Files</Filter>
+      <Filter>Ext4ExtentRecovery</Filter>
+    </ClCompile>
+    <ClCompile Include="Orbita.cpp">
+      <Filter>Core\Orbita</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -177,7 +183,10 @@
       <Filter>Core\DHFS</Filter>
     </ClInclude>
     <ClInclude Include="ExtentRecovery.h">
-      <Filter>Generated Files</Filter>
+      <Filter>Ext4ExtentRecovery</Filter>
+    </ClInclude>
+    <ClInclude Include="Orbita.h">
+      <Filter>Core\Orbita</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

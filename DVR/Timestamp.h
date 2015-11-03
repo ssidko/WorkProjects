@@ -5,14 +5,14 @@
 
 #include <windows.h>
 
-struct TIMESTAMP {
+typedef struct _TIMESTAMP {
 	DWORD seconds;
 	DWORD minutes;
 	DWORD hours;
 	DWORD day;
 	DWORD month;
 	DWORD year;
-};
+} TIMESTAMP;
 
 class Timestamp : public TIMESTAMP
 {
