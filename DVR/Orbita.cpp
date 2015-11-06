@@ -9,12 +9,14 @@ int Orbita::Main(const std::string &io_name, const std::string &out_dir)
 		LONGLONG offset;
 		FRAME_DESCRIPTOR frame;
 		std::vector<BYTE> frame_sequence;
-		while (scanner.NextFrame(offset)) {
+		while (scanner.NextFrameHeader(offset)) {
 			frame_sequence.clear();
 			scanner.SetPointer(offset);
-			while (scanner.ReadFrame(frame_sequence, frame)) {
-				
+			while (scanner.ReadFrame(frame_sequence, frame)) {				
 
+				if (frame.frame_type == 'cd' && (frame.sub_type == 0x00)) {
+					int x = 0;
+				}
 				
 				scanner.AlignIoPointer();
 			}		
@@ -42,7 +44,52 @@ void Orbita::Scanner::AlignIoPointer(void)
 	io.SetPointer(offset);
 }
 
-bool Orbita::Scanner::NextFrame(LONGLONG &frame_offset)
+DWORD Orbita::Scanner::HeaderExtraSize(HEADER *header)
+{
+	switch (header->frame_type) {
+	case 'cd':
+		if (header->sub_type == 0x00) {
+			return (sizeof(HEADER_0dc) - sizeof(HEADER));
+		}
+		else {
+			return (sizeof(HEADER_dc) - sizeof(HEADER));
+		}
+	case 'bw':
+		return (sizeof(HEADER_wb) - sizeof(HEADER));
+	default:
+		return 0;
+	}
+}
+
+DWORD Orbita::Scanner::FrameDataSize(HEADER *header)
+{
+	switch (header->frame_type) {
+	case 'cd':
+		if (header->sub_type == 0x00) {
+			return (((HEADER_0dc *)header)->size);
+		}
+		else {
+			return (((HEADER_dc *)header)->size);
+		}
+	case 'bw':
+		return (((HEADER_wb *)header)->size_1);
+	default:
+		return 0;
+	}
+}
+
+TIMESTAMP Orbita::Scanner::FrameTimestamp(HEADER *header)
+{
+	TIMESTAMP t = {0};
+	if (header->frame_type == 'cd') {
+		if (header->sub_type == 0x00) {
+			t = (((HEADER_0dc *)header)->timestamp);
+		}	
+	}
+	return t;
+}
+
+bool Orbita::Scanner::NextFrameHeader(LONGLONG &frame_offset)
 {
 	LONGLONG o = io.Pointer();
 	AlignIoPointer();
@@ -57,7 +104,8 @@ bool Orbita::Scanner::NextFrame(LONGLONG &frame_offset)
 			if (header->IsValid()) {
 				if (((HEADER_dc *)header)->IsValid() || ((HEADER_wb *)header)->IsValid()) {
 					frame_offset = current_offset;
-					return true;
+					io.SetPointer(frame_offset);
+					return (io.SetPointer(frame_offset));
 				}			
 			}
 			current_offset += 8;
@@ -74,86 +122,65 @@ bool Orbita::Scanner::ReadFrame(std::vector<BYTE> &buffer, FRAME_DESCRIPTOR &fra
 	HEADER_wb *header_wb;
 
 	DWORD data_size = 0;
-	DWORD header_tail_size = 0;
+	DWORD header_extra_size = 0;
 	DWORD frame_start = buffer.size();
-	buffer.resize(buffer.size() + sizeof(HEADER));
 
-	frame.Clean();
-
+	frame.Clear();
 	frame.offset = io.Pointer();
 
+	buffer.resize(buffer.size() + sizeof(HEADER));
 	if (io.Read(&buffer[frame_start], sizeof(HEADER)) == sizeof(HEADER)) {
 
 		header = (HEADER *)&buffer[frame_start];
-		if (!header->IsValid()) {
-			buffer.resize(frame_start);
-			return false;
+		if (header->IsValid()) {
+			frame.channel = header->channel;
+			frame.frame_type = header->frame_type;
+			frame.sub_type = header->sub_type;
+
+			header_extra_size = HeaderExtraSize(header);
+			if (header_extra_size) {
+			
+				buffer.resize(buffer.size() + header_extra_size);
+				if (io.Read(&buffer[frame_start + sizeof(HEADER)], header_extra_size) == header_extra_size) {
+
+					header = (HEADER *)&buffer[frame_start];
+
+					data_size = FrameDataSize(header);
+					if (data_size) {
+
+						frame.size = sizeof(HEADER) + header_extra_size + data_size;
+						frame.timestamp = FrameTimestamp(header);
+
+						buffer.resize(buffer.size() + data_size);
+						if (io.Read(&buffer[frame_start + sizeof(HEADER) + header_extra_size], data_size) == data_size) {
+							return true;
+						}
+					}
+				}			
+			}
 		}
-
-		frame.channel = header->channel;
-		frame.frame_type = header->frame_type;
-		frame.sub_type = header->sub_type;
-		
-		switch (header->frame_type) {
-			case 'cd':
-				if (header->sub_type == 0x00) {
-					header_tail_size = sizeof(HEADER_0dc) - sizeof(HEADER);
-				} else {
-					header_tail_size = sizeof(HEADER_dc) - sizeof(HEADER);
-				}
-				break;
-
-			case 'bw':
-				header_tail_size = sizeof(HEADER_wb) - sizeof(HEADER);
-				break;
-
-			default:
-				buffer.resize(frame_start);
-				return false;
-				break;
-		}
-
-		buffer.resize(buffer.size() + header_tail_size);
-
-		if (io.Read(&buffer[frame_start + sizeof(HEADER)], header_tail_size) != header_tail_size) {
-			buffer.resize(frame_start);
-			return false;
-		}
-
-		header = (HEADER *)&buffer[frame_start];
-
-		switch (header->frame_type) {
-			case 'cd':
-				if (header->sub_type == 0x00) {
-					data_size = ((HEADER_0dc *)header)->size;
-					frame.timestamp = ((HEADER_0dc *)header)->timestamp;
-				}
-				else {
-					data_size = ((HEADER_dc *)header)->size;
-				}
-				break;
-
-			case 'bw':
-				data_size = ((HEADER_wb *)header)->size_1;
-				break;
-
-			default:
-				buffer.resize(frame_start);
-				return false;
-				break;
-		}
-
-		frame.size = sizeof(HEADER) + header_tail_size + data_size;
-
-		buffer.resize(buffer.size() + data_size);
-
-		if (io.Read(&buffer[frame_start + sizeof(HEADER) + header_tail_size], data_size) != data_size) {
-			buffer.resize(frame_start);
-			return false;
-		}
-
-		return true;
-	
 	}
+	buffer.resize(frame_start);
 	return false;
+}
+
+bool Orbita::Scanner::ReadFrameSequence(FRAME_SEQUENCE &sequence)
+{
+	FRAME_DESCRIPTOR current_frame;
+	FRAME_DESCRIPTOR prev_frame;
+	sequence.Clear();
+
+	while (ReadFrame(sequence.buffer, current_frame)) {
+		if (sequence.frames_count == 0x00) {
+			sequence.first_frame = current_frame;
+			sequence.last_frame = current_frame;
+		} else {
+		
+		
+		}
+
+		sequence.frames_count++;
+	}
+
+	return sequence.frames_count ? true : false;
 }

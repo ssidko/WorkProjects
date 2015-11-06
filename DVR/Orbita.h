@@ -79,10 +79,21 @@ namespace Orbita
 		DWORD sub_type;
 		TIMESTAMP timestamp;
 		DWORD size;
-		void Clean(void) { memset(this, 0x00, sizeof(FRAME_DESCRIPTOR)); }
+		void Clear(void) { memset(this, 0x00, sizeof(FRAME_DESCRIPTOR)); }
 	} FRAME_DESCRIPTOR;
 
-	int Main(const std::string &io_name, const std::string &out_dir);
+	typedef struct _FRAME_SEQUENCE {
+		FRAME_DESCRIPTOR first_frame;
+		FRAME_DESCRIPTOR last_frame;
+		std::vector<BYTE> buffer;
+		DWORD frames_count;
+		void Clear(void) {
+			first_frame.Clear();
+			last_frame.Clear();
+			buffer.clear();
+			frames_count = 0;
+		}
+	} FRAME_SEQUENCE;
 
 	class Scanner
 	{
@@ -94,9 +105,16 @@ namespace Orbita
 		bool Open() { return io.Open(); }
 		void AlignIoPointer(void);
 		void SetPointer(LONGLONG &frame_offset) {io.SetPointer(frame_offset);}
-		bool NextFrame(LONGLONG &frame_offset);
+		DWORD HeaderExtraSize(HEADER *header);
+		DWORD FrameDataSize(HEADER *header);
+		TIMESTAMP FrameTimestamp(HEADER *header);
+		bool NextFrameHeader(LONGLONG &frame_offset);
 		bool ReadFrame(std::vector<BYTE> &buffer, FRAME_DESCRIPTOR &frame);
+		bool ReadFrameSequence(FRAME_SEQUENCE &sequence);
 	};
+
+	int Main(const std::string &io_name, const std::string &out_dir);
+
 }
 
 #endif // _ORBITA_H
