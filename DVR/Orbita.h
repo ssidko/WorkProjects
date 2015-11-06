@@ -105,6 +105,7 @@ namespace Orbita
 		bool Open() { return io.Open(); }
 		void AlignIoPointer(void);
 		void SetPointer(LONGLONG &frame_offset) {io.SetPointer(frame_offset);}
+		bool IsValidFrameHeader(HEADER *header);
 		DWORD HeaderExtraSize(HEADER *header);
 		DWORD FrameDataSize(HEADER *header);
 		TIMESTAMP FrameTimestamp(HEADER *header);

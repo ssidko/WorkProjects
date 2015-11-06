@@ -44,6 +44,23 @@ void Orbita::Scanner::AlignIoPointer(void)
 	io.SetPointer(offset);
 }
 
+bool Orbita::Scanner::IsValidFrameHeader(HEADER *header)
+{
+	switch (header->frame_type) {
+	case 'cd':
+		if (header->sub_type == 0x00) {
+			return (((HEADER_0dc *)header)->IsValid());
+		}
+		else {
+			return (((HEADER_dc *)header)->IsValid());
+		}
+	case 'bw':
+		return (((HEADER_wb *)header)->IsValid());
+	default:
+		return false;
+	}
+}
+
 DWORD Orbita::Scanner::HeaderExtraSize(HEADER *header)
 {
 	switch (header->frame_type) {
@@ -142,20 +159,23 @@ bool Orbita::Scanner::ReadFrame(std::vector<BYTE> &buffer, FRAME_DESCRIPTOR &fra
 			
 				buffer.resize(buffer.size() + header_extra_size);
 				if (io.Read(&buffer[frame_start + sizeof(HEADER)], header_extra_size) == header_extra_size) {
-
+					
 					header = (HEADER *)&buffer[frame_start];
+					if (IsValidFrameHeader(header)) {
 
-					data_size = FrameDataSize(header);
-					if (data_size) {
+						data_size = FrameDataSize(header);
+						if (data_size) {
 
-						frame.size = sizeof(HEADER) + header_extra_size + data_size;
-						frame.timestamp = FrameTimestamp(header);
+							frame.size = sizeof(HEADER) + header_extra_size + data_size;
+							frame.timestamp = FrameTimestamp(header);
 
-						buffer.resize(buffer.size() + data_size);
-						if (io.Read(&buffer[frame_start + sizeof(HEADER) + header_extra_size], data_size) == data_size) {
-							return true;
+							buffer.resize(buffer.size() + data_size);
+							if (io.Read(&buffer[frame_start + sizeof(HEADER) + header_extra_size], data_size) == data_size) {
+								return true;
+							}
 						}
 					}
+
 				}			
 			}
 		}
