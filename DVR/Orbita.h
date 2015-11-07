@@ -4,20 +4,22 @@
 #include <windows.h>
 #include <string>
 #include <BufferedFile.h>
+#include "Timestamp.h"
 
 namespace Orbita
 {
 	#pragma pack(push)
 	#pragma pack(1)
 
-	typedef struct _TIMESTAMP {
+	typedef struct _TIME_STAMP {
 		BYTE year;
 		BYTE month;
 		BYTE day;
 		BYTE hours;
 		BYTE minutes;
 		BYTE seconds;
-	} TIMESTAMP;
+		Timestamp Timestamp(void) { return ::Timestamp(2000 + year, month, day, hours, minutes, seconds); }
+	} TIME_STAMP;
 
 	typedef struct _HEADER {
 		BYTE channel : 4;		// 1-16
@@ -53,7 +55,7 @@ namespace Orbita
 	} HEADER_dc;
 
 	typedef struct _HEADER_0dc : public HEADER_dc {
-		TIMESTAMP timestamp;
+		TIME_STAMP timestamp;
 		BYTE unk_4[10];
 	} HEADER_0dc;
 
@@ -77,17 +79,19 @@ namespace Orbita
 		DWORD channel;
 		DWORD frame_type;
 		DWORD sub_type;
-		TIMESTAMP timestamp;
+		Timestamp timestamp;
 		DWORD size;
 		void Clear(void) { memset(this, 0x00, sizeof(FRAME_DESCRIPTOR)); }
 	} FRAME_DESCRIPTOR;
 
 	typedef struct _FRAME_SEQUENCE {
+		Timestamp last_timestamp;
 		FRAME_DESCRIPTOR first_frame;
 		FRAME_DESCRIPTOR last_frame;
 		std::vector<BYTE> buffer;
 		DWORD frames_count;
 		void Clear(void) {
+			last_timestamp.Clear();
 			first_frame.Clear();
 			last_frame.Clear();
 			buffer.clear();
@@ -108,7 +112,7 @@ namespace Orbita
 		bool IsValidFrameHeader(HEADER *header);
 		DWORD HeaderExtraSize(HEADER *header);
 		DWORD FrameDataSize(HEADER *header);
-		TIMESTAMP FrameTimestamp(HEADER *header);
+		Timestamp FrameTimestamp(HEADER *header);
 		bool NextFrameHeader(LONGLONG &frame_offset);
 		bool ReadFrame(std::vector<BYTE> &buffer, FRAME_DESCRIPTOR &frame);
 		bool ReadFrameSequence(FRAME_SEQUENCE &sequence);
