@@ -1,25 +1,21 @@
 #include "Orbita.h"
+#include <assert.h>
 
 using namespace Orbita;
 
 int Orbita::Main(const std::string &io_name, const std::string &out_dir)
 {
 	Orbita::Scanner scanner(io_name);
+	FRAME_SEQUENCE sequence;
 	if (scanner.Open()) {
-		LONGLONG offset;
-		FRAME_DESCRIPTOR frame;
-		std::vector<BYTE> frame_sequence;
-		while (scanner.NextFrameHeader(offset)) {
-			frame_sequence.clear();
-			while (scanner.ReadFrame(frame_sequence, frame)) {				
+		sequence.Clear();
+		while (scanner.NextFrameSequence(sequence)) {
+			
+			
 
-				if (frame.frame_type == 'cd' && (frame.sub_type == 0x00)) {
-					int x = 0;
-				}
 
-			}		
-			int x = 0;
-		}	
+			sequence.Clear();
+		}
 	}
 
 	return 0;
@@ -127,6 +123,26 @@ bool Orbita::Scanner::NextFrameHeader(LONGLONG &frame_offset)
 	return false;
 }
 
+bool Orbita::Scanner::NextFrameHeaderWithTimestamp(void)
+{
+	AlignIoPointer();
+
+	DWORD size_buff = 64;
+	LONGLONG *buff = new LONGLONG[size_buff];
+	LONGLONG current_offset = io.Pointer();
+
+	while (io.Read((void *)buff, 64 * sizeof(LONGLONG)) == (64 * sizeof(LONGLONG))) {
+		for (DWORD i = 0; i < size_buff; i++) {
+			HEADER *header = (HEADER *)&buff[i];
+			if (((HEADER_dc *)header)->IsValid() && (header->sub_type == 0x00)) {
+				return (io.SetPointer(current_offset));
+			}
+			current_offset += 8;
+		}
+	}
+	return false;
+}
+
 bool Orbita::Scanner::ReadFrame(std::vector<BYTE> &buffer, FRAME_DESCRIPTOR &frame)
 {
 	HEADER *header;
@@ -184,36 +200,36 @@ bool Orbita::Scanner::ReadFrame(std::vector<BYTE> &buffer, FRAME_DESCRIPTOR &fra
 	return false;
 }
 
-bool Orbita::Scanner::ReadFrameSequence(FRAME_SEQUENCE &sequence)
+bool Orbita::Scanner::NextFrameSequence(FRAME_SEQUENCE &sequence)
 {
 	FRAME_DESCRIPTOR current_frame;
 
-	sequence.Clear();
+	while (NextFrameHeaderWithTimestamp()) {
+		
+		sequence.Clear();
+		while (ReadFrame(sequence.buffer, current_frame)) {
 
-	while (ReadFrame(sequence.buffer, current_frame)) {
-
-		if (sequence.frames_count == 0x00) {
-			sequence.first_frame = current_frame;
-			sequence.last_frame = current_frame;
-			sequence.frames_count++;
-		} 
-
-		if (current_frame.channel == sequence.last_frame.channel) {
-
-			if (current_frame.timestamp.Seconds())
-				
-				
-			sequence.last_frame = current_frame;
-			sequence.frames_count++;
-
-			continue;			
-		} 
-
-		sequence.buffer.resize(sequence.buffer.size() - current_frame.size);
-		io.Pointer(sequence.last_frame.offset);
-		break;
-
+			if (sequence.frames_count == 0x00) {
+				assert(current_frame.timestamp.Seconds());
+				sequence.last_timestamp = current_frame.timestamp;
+				sequence.first_frame = current_frame;
+				sequence.last_frame = current_frame;
+				sequence.frames_count++;
+			} else {
+				if (sequence.IsNextFrame(current_frame)) {								
+					sequence.frames_count++;
+					if (current_frame.timestamp.Seconds()) {
+						sequence.last_timestamp = current_frame.timestamp;					
+					}					
+				} else {
+					sequence.buffer.resize(sequence.buffer.size() - current_frame.size);
+					io.Pointer(sequence.last_frame.offset);
+					break;
+				}
+			}
+		}	
+		if (sequence.frames_count)
+			return true;
 	}
-
-	return sequence.frames_count ? true : false;
+	return false;
 }

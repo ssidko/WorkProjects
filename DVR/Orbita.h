@@ -90,12 +90,27 @@ namespace Orbita
 		FRAME_DESCRIPTOR last_frame;
 		std::vector<BYTE> buffer;
 		DWORD frames_count;
+
 		void Clear(void) {
 			last_timestamp.Clear();
 			first_frame.Clear();
 			last_frame.Clear();
 			buffer.clear();
 			frames_count = 0;
+		}
+
+		bool IsNextFrame(FRAME_DESCRIPTOR &frame) {
+			if (last_frame.channel == frame.channel) {
+				if (frame.timestamp.Seconds() && last_timestamp.Seconds()) {
+					if (frame.timestamp.Seconds() >= last_timestamp.Seconds()) {
+						if ((frame.timestamp.Seconds() - last_timestamp.Seconds()) <= 1) {
+							return true;
+						}
+					}
+					return false;
+				}			
+			}
+			return false;
 		}
 	} FRAME_SEQUENCE;
 
@@ -114,8 +129,9 @@ namespace Orbita
 		DWORD FrameDataSize(HEADER *header);
 		Timestamp FrameTimestamp(HEADER *header);
 		bool NextFrameHeader(LONGLONG &frame_offset);
+		bool NextFrameHeaderWithTimestamp(void);
 		bool ReadFrame(std::vector<BYTE> &buffer, FRAME_DESCRIPTOR &frame);
-		bool ReadFrameSequence(FRAME_SEQUENCE &sequence);
+		bool NextFrameSequence(FRAME_SEQUENCE &sequence);
 	};
 
 	int Main(const std::string &io_name, const std::string &out_dir);

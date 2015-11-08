@@ -32,7 +32,7 @@ public:
 	void SetMinutes(DWORD m) {minutes = m;}
 	void SetSeconds(DWORD s) {seconds = s;}
 
-	LONGLONG Seconds(void) const;
+	ULONGLONG Seconds(void) const;
 	const char *String(void);
 
 	bool operator>(const Timestamp &t);
@@ -40,7 +40,7 @@ public:
 	bool operator<(const Timestamp &t);
 	bool operator<=(const Timestamp &t);
 	bool operator==(const Timestamp &t);
-	LONGLONG operator-(const Timestamp &t);
+	ULONGLONG operator-(const Timestamp &t);
 };
 
 #endif

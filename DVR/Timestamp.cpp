@@ -32,7 +32,7 @@ void Timestamp::Clear( void )
 	memset(this, 0x00, sizeof(*this));
 }
 
-LONGLONG Timestamp::Seconds( void ) const
+ULONGLONG Timestamp::Seconds( void ) const
 {
 	return (LONGLONG)(((year*365 + month*31 + day)*24 + hours)*60 + minutes)*60 + seconds;
 }
@@ -69,7 +69,7 @@ bool Timestamp::operator==( const Timestamp &t )
 	return (this->Seconds() == t.Seconds());
 }
 
-LONGLONG Timestamp::operator-( const Timestamp &t )
+ULONGLONG Timestamp::operator-( const Timestamp &t )
 {
 	return (this->Seconds() - t.Seconds());
 }
