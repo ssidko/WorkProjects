@@ -1,7 +1,23 @@
 #include "Orbita.h"
 #include <assert.h>
+#include <sstream>
 
 using namespace Orbita;
+
+int max_size = 0;
+
+void ToMkv(std::string &raw_file_name, std::string &mkv_file_name)
+{
+	std::string t;
+	//std::string convertor_app("C:\\Program Files\\MKVToolNix\\mkvmerge.exe ");
+	std::string convertor_app("D:\\Soft\\#RecoverySoft#\\mkvtoolnix\\mkvmerge.exe ");
+
+	std::stringstream cmd_line;
+	cmd_line << convertor_app << "-o " << mkv_file_name << " " << raw_file_name;
+	t = cmd_line.str();
+	const char *zzz = t.data();
+	system(cmd_line.str().data());
+}
 
 int Orbita::Main(const std::string &io_name, const std::string &out_dir)
 {
@@ -9,12 +25,30 @@ int Orbita::Main(const std::string &io_name, const std::string &out_dir)
 	FRAME_SEQUENCE sequence;
 	if (scanner.Open()) {
 		sequence.Clear();
-		while (scanner.NextFrameSequence(sequence)) {
-			
-			
+		scanner.SetPointer(17898025*512LL);
 
+		std::string out_file_name = "D:\\Work\\38702\\test\\sequence.h264";
+		std::string mkv_file_name = out_file_name + ".mkv";
+		W32Lib::FileEx out_file(out_file_name.c_str());
 
-			sequence.Clear();
+		if (out_file.Create()) {
+
+			while (scanner.NextFrameSequence(sequence)) {
+				
+
+				if (sequence.first_frame.channel == 5) {
+					if (out_file.GetSize() <= 500 * 1024*1024LL) {
+						out_file.Write(sequence.buffer.data(), sequence.buffer.size());
+					} else {
+						out_file.Close();
+						ToMkv(out_file_name, mkv_file_name);
+						int x = 0;
+					}
+
+				}
+
+				sequence.Clear();
+			}
 		}
 	}
 
@@ -74,19 +108,28 @@ DWORD Orbita::Scanner::HeaderExtraSize(HEADER *header)
 
 DWORD Orbita::Scanner::FrameDataSize(HEADER *header)
 {
+	DWORD size = 0;
 	switch (header->frame_type) {
 	case 'cd':
 		if (header->sub_type == 0x00) {
-			return (((HEADER_0dc *)header)->size);
+			size = (((HEADER_0dc *)header)->size);
 		}
 		else {
-			return (((HEADER_dc *)header)->size);
+			size = (((HEADER_dc *)header)->size);
 		}
+		break;
 	case 'bw':
-		return (((HEADER_wb *)header)->size_1);
+		size = (((HEADER_wb *)header)->size_1);
+		break;
 	default:
-		return 0;
+		size = 0;
+		break;
 	}
+	if (size > 0xF000) {
+		size = 0;
+	}
+	return size;
+
 }
 
 Timestamp Orbita::Scanner::FrameTimestamp(HEADER *header)
@@ -135,11 +178,13 @@ bool Orbita::Scanner::NextFrameHeaderWithTimestamp(void)
 		for (DWORD i = 0; i < size_buff; i++) {
 			HEADER *header = (HEADER *)&buff[i];
 			if (((HEADER_dc *)header)->IsValid() && (header->sub_type == 0x00)) {
+				delete[] buff;
 				return (io.SetPointer(current_offset));
 			}
 			current_offset += 8;
 		}
 	}
+	delete[] buff;
 	return false;
 }
 
@@ -216,16 +261,26 @@ bool Orbita::Scanner::NextFrameSequence(FRAME_SEQUENCE &sequence)
 				sequence.last_frame = current_frame;
 				sequence.frames_count++;
 			} else {
-				if (sequence.IsNextFrame(current_frame)) {								
+				if (sequence.IsNextFrame(current_frame)) {
+
+					if (current_frame.frame_type == 'bw') {
+						sequence.buffer.resize(sequence.buffer.size() - current_frame.size);
+						continue;
+					}
+
 					sequence.frames_count++;
+					sequence.last_frame = current_frame;
 					if (current_frame.timestamp.Seconds()) {
 						sequence.last_timestamp = current_frame.timestamp;					
 					}					
 				} else {
 					sequence.buffer.resize(sequence.buffer.size() - current_frame.size);
-					io.Pointer(sequence.last_frame.offset);
+					io.SetPointer(current_frame.offset);
 					break;
 				}
+			}
+			if (sequence.frames_count == 42) {
+				int x = 0;
 			}
 		}	
 		if (sequence.frames_count)

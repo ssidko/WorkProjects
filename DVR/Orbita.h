@@ -5,6 +5,7 @@
 #include <string>
 #include <BufferedFile.h>
 #include "Timestamp.h"
+#include "File.h"
 
 namespace Orbita
 {
@@ -103,12 +104,13 @@ namespace Orbita
 			if (last_frame.channel == frame.channel) {
 				if (frame.timestamp.Seconds() && last_timestamp.Seconds()) {
 					if (frame.timestamp.Seconds() >= last_timestamp.Seconds()) {
-						if ((frame.timestamp.Seconds() - last_timestamp.Seconds()) <= 1) {
+						if ((frame.timestamp.Seconds() - last_timestamp.Seconds()) <= 5) {
 							return true;
 						}
 					}
 					return false;
-				}			
+				}	
+				return true;
 			}
 			return false;
 		}
@@ -123,7 +125,7 @@ namespace Orbita
 		~Scanner();
 		bool Open() { return io.Open(); }
 		void AlignIoPointer(void);
-		void SetPointer(LONGLONG &frame_offset) {io.SetPointer(frame_offset);}
+		void SetPointer(const LONGLONG &frame_offset) {io.SetPointer(frame_offset);}
 		bool IsValidFrameHeader(HEADER *header);
 		DWORD HeaderExtraSize(HEADER *header);
 		DWORD FrameDataSize(HEADER *header);
