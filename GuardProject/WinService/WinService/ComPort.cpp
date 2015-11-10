@@ -111,7 +111,7 @@ bool ComPort::Open()
 		}
 		::PurgeComm(handle, PURGE_RXCLEAR | PURGE_TXABORT);
 		::CancelIo(handle);
-		::Sleep(2000); // Без этого не работает. Скорее всего что ардуина не увспевает сконфигурироваться.
+		::Sleep(2000); // Ардуине нужно время чтобы загрузиться.
 		return true;
 	}
 	return false;

@@ -20,7 +20,7 @@ public:
 	static void AvailableComPorts(std::list<std::string> &com_list);
 	bool Open();
 	bool Write(const void *buff, DWORD size);
-	bool Read();
+	bool Read(void *buff, DWORD size);
 };
 
 #endif // _COM_PORT_H
