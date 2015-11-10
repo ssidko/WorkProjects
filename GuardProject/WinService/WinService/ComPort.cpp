@@ -155,3 +155,39 @@ bool ComPort::Write(const void *buff, DWORD size)
 
 	return ret;
 }
+
+bool ComPort::Read(void *buff, DWORD size)
+{
+	DWORD rw = 0;
+	OVERLAPPED o = {0};
+	DWORD wait_result;
+	bool ret = false;
+
+	o.hEvent = ::CreateEventA(NULL, TRUE, FALSE, NULL);
+	if (!o.hEvent) {
+		return false;
+	}
+
+	if (!::ReadFile(handle, buff, size, &rw, &o)) {
+		if (ERROR_IO_PENDING == ::GetLastError()) {
+			wait_result = WaitForSingleObject(o.hEvent, 1000);
+			switch (wait_result) {
+			case WAIT_OBJECT_0:
+				if (::GetOverlappedResult(handle, &o, &rw, TRUE)) {
+					ret = true;
+					break;
+				}
+			default:
+				::CancelIo(handle);
+				ret = false;
+				break;
+			}
+		} else {
+			ret = false;
+		}
+	} else {
+		ret = true;
+	}
+	::CloseHandle(o.hEvent);
+	return ret;
+}
