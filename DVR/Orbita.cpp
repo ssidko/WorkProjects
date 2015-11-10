@@ -21,34 +21,20 @@ void ToMkv(std::string &raw_file_name, std::string &mkv_file_name)
 
 int Orbita::Main(const std::string &io_name, const std::string &out_dir)
 {
+	Storage stor(out_dir);
 	Orbita::Scanner scanner(io_name);
+	
 	FRAME_SEQUENCE sequence;
+	sequence.Clear();
+
 	if (scanner.Open()) {
-		sequence.Clear();
-		scanner.SetPointer(17898025*512LL);
 
-		std::string out_file_name = "D:\\Work\\38702\\test\\sequence.h264";
-		std::string mkv_file_name = out_file_name + ".mkv";
-		W32Lib::FileEx out_file(out_file_name.c_str());
+		scanner.SetPointer(17904529*512LL);
 
-		if (out_file.Create()) {
+		while (scanner.NextFrameSequenceTest(sequence)) {
 
-			while (scanner.NextFrameSequence(sequence)) {
-				
-
-				if (sequence.first_frame.channel == 5) {
-					if (out_file.GetSize() <= 500 * 1024*1024LL) {
-						out_file.Write(sequence.buffer.data(), sequence.buffer.size());
-					} else {
-						out_file.Close();
-						ToMkv(out_file_name, mkv_file_name);
-						int x = 0;
-					}
-
-				}
-
-				sequence.Clear();
-			}
+			stor.Save(sequence);
+			sequence.Clear();
 		}
 	}
 
@@ -223,11 +209,20 @@ bool Orbita::Scanner::ReadFrame(std::vector<BYTE> &buffer, FRAME_DESCRIPTOR &fra
 						data_size = FrameDataSize(header);
 						if (data_size) {
 
-							frame.size = sizeof(HEADER) + header_extra_size + data_size;
+							//frame.size = sizeof(HEADER) + header_extra_size + data_size;
+							//frame.timestamp = FrameTimestamp(header);
+
+							//buffer.resize(buffer.size() + data_size);
+							//if (io.Read(&buffer[frame_start + sizeof(HEADER) + header_extra_size], data_size) == data_size) {
+							//	AlignIoPointer();
+							//	return true;
+							//}
+
+							frame.size = data_size;
 							frame.timestamp = FrameTimestamp(header);
 
 							buffer.resize(buffer.size() + data_size);
-							if (io.Read(&buffer[frame_start + sizeof(HEADER) + header_extra_size], data_size) == data_size) {
+							if (io.Read(&buffer[frame_start], data_size) == data_size) {
 								AlignIoPointer();
 								return true;
 							}
@@ -272,19 +267,134 @@ bool Orbita::Scanner::NextFrameSequence(FRAME_SEQUENCE &sequence)
 					sequence.last_frame = current_frame;
 					if (current_frame.timestamp.Seconds()) {
 						sequence.last_timestamp = current_frame.timestamp;					
-					}					
+					}
+
 				} else {
 					sequence.buffer.resize(sequence.buffer.size() - current_frame.size);
 					io.SetPointer(current_frame.offset);
 					break;
 				}
 			}
-			if (sequence.frames_count == 42) {
-				int x = 0;
-			}
+
 		}	
 		if (sequence.frames_count)
 			return true;
 	}
 	return false;
+}
+
+bool Orbita::Scanner::NextFrameSequenceTest(FRAME_SEQUENCE &sequence)
+{
+	FRAME_DESCRIPTOR current_frame;
+	while (NextFrameHeaderWithTimestamp()) {
+		
+		sequence.Clear();
+		if (ReadFrame(sequence.buffer, current_frame)) {
+
+			sequence.last_timestamp = current_frame.timestamp;
+			sequence.first_frame = current_frame;
+			sequence.last_frame = current_frame;
+
+			while (ReadFrame(sequence.buffer, current_frame)) {
+
+				if (sequence.first_frame.channel == current_frame.channel) {					
+					if ((current_frame.frame_type == 'cd') && (current_frame.sub_type != 0x00)) {
+						sequence.last_frame = current_frame;
+						sequence.frames_count++;
+						continue;
+					} 				
+				}
+
+				sequence.buffer.resize(sequence.buffer.size() - current_frame.size);
+				if (current_frame.frame_type == 'bw') {
+					continue;
+				} else {
+					io.SetPointer(current_frame.offset);
+					break;
+				}
+
+			}		
+			return true;
+		}
+	}
+	return false;
+}
+
+Orbita::Storage::Storage(const std::string &out_directory) : directory(out_directory)
+{
+	max_file_size = 100 * 1024 * 1024;
+	mkvmerge_app_path = "D:\\Soft\\#RecoverySoft#\\mkvtoolnix\\mkvmerge.exe ";
+	files.resize(16, nullptr);
+}
+
+void Orbita::Storage::CloseAll(void)
+{
+	for (DWORD i = 0; i < files.size(); i++) {
+		CloseFile(i);
+	}
+}
+
+void Orbita::Storage::CloseFile(DWORD index)
+{
+	assert(index < files.size());
+
+	ToMkv(index);
+	files[index]->Close();
+	delete files[index];
+	files[index] = nullptr;
+}
+
+void Orbita::Storage::ToMkv(DWORD index)
+{
+	W32Lib::FileEx *file = files[index];
+
+	assert(file);
+
+	std::string raw_file_name = file->GetName();
+	std::string mkv_file_name = raw_file_name + ".mkv";
+	std::string cmd_line = "\"" + mkvmerge_app_path + "-o " + mkv_file_name + " " + raw_file_name + "\"";
+	system(cmd_line.c_str());
+}
+
+bool Orbita::Storage::CreateNewFile(FRAME_SEQUENCE &sequence)
+{
+	std::string file_name;
+	file_name = directory + "\\" + std::to_string(sequence.first_frame.channel+1) + "--" + sequence.first_frame.timestamp.String() + "--" + std::to_string(sequence.first_frame.offset) + ".h264";
+
+	if (files[sequence.first_frame.channel]) {
+		CloseFile(sequence.first_frame.channel);
+	}
+
+	files[sequence.first_frame.channel] = new W32Lib::FileEx(file_name.c_str());
+	if (files[sequence.first_frame.channel]) {
+		if (files[sequence.first_frame.channel]->Create()) {
+			return true;
+		}
+		else {
+			delete files[sequence.first_frame.channel];
+			files[sequence.first_frame.channel] = nullptr;
+		}	
+	}
+	return false;
+}
+
+bool Orbita::Storage::Save(FRAME_SEQUENCE &sequence)
+{
+	DWORD channel = sequence.first_frame.channel;
+
+	if (files[channel] == nullptr) {
+		if (!CreateNewFile(sequence)) {
+			assert(false);
+			return false;
+		}
+	}
+
+	if (files[channel]->GetSize() >= max_file_size) {
+		if (!CreateNewFile(sequence)) {
+			assert(false);
+			return false;
+		}
+	}
+
+	return files[channel]->Write(sequence.buffer.data(), sequence.buffer.size());
 }

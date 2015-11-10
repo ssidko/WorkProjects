@@ -40,7 +40,7 @@ ULONGLONG Timestamp::Seconds( void ) const
 const char * Timestamp::String( void )
 {
 	memset(str, 0x00, sizeof(str));
-	sprintf_s(str, sizeof(str), "%04d-%02d-%02d_%02d-%02d-%02d",year,month,day,hours,minutes,seconds);
+	sprintf_s(str, sizeof(str), "%04d-%02d-%02d=%02d-%02d-%02d",year,month,day,hours,minutes,seconds);
 	return str;
 }
 

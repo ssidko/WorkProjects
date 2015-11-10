@@ -43,9 +43,8 @@ namespace Orbita
 		HEADER header;
 		DWORD sign_2;			// "H264"
 		DWORD size;
-		DWORD unk_1;
-		DWORD unk_2;
-		DWORD unk_3;
+		BYTE subframes_count;
+		BYTE unk_1[11];
 		bool IsValid(void)
 		{
 			if (header.IsValid() && (header.frame_type == 'cd') && (sign_2 == '462H')) {
@@ -134,6 +133,25 @@ namespace Orbita
 		bool NextFrameHeaderWithTimestamp(void);
 		bool ReadFrame(std::vector<BYTE> &buffer, FRAME_DESCRIPTOR &frame);
 		bool NextFrameSequence(FRAME_SEQUENCE &sequence);
+		bool NextFrameSequenceTest(FRAME_SEQUENCE &sequence);
+	};
+
+	class Storage
+	{
+	private:
+		DWORD max_file_size;
+		std::string directory;
+		std::string mkvmerge_app_path;
+		std::vector<W32Lib::FileEx *> files;
+	public:
+		Storage(const std::string &out_directory);
+		~Storage() { CloseAll(); }
+		void CloseAll(void);
+		void CloseFile(DWORD index);
+		void ToMkv(DWORD index);
+		bool CreateNewFile(FRAME_SEQUENCE &sequence);
+		bool Save(FRAME_SEQUENCE &sequence);
+
 	};
 
 	int Main(const std::string &io_name, const std::string &out_dir);
