@@ -42,7 +42,7 @@ int main(int argc, char *argv[])
 	QApplication a(argc, argv);
 	//MainWindow w;
 
-	Orbita::Main("\\\\.\\PhysicalDrive0", "E:\\38702\\out");
+	Orbita::Main("\\\\.\\PhysicalDrive0", "K:\\38702\\out");
 
 	return a.exec();
 }

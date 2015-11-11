@@ -28,11 +28,8 @@ int Orbita::Main(const std::string &io_name, const std::string &out_dir)
 	sequence.Clear();
 
 	if (scanner.Open()) {
-
-		scanner.SetPointer(17904529*512LL);
-
-		while (scanner.NextFrameSequenceTest(sequence)) {
-
+		//scanner.SetPointer(17904529*512LL);
+		while (scanner.NextFrameSequence(sequence)) {
 			stor.Save(sequence);
 			sequence.Clear();
 		}
@@ -283,7 +280,7 @@ bool Orbita::Scanner::NextFrameSequence(FRAME_SEQUENCE &sequence)
 	return false;
 }
 
-bool Orbita::Scanner::NextFrameSequenceTest(FRAME_SEQUENCE &sequence)
+bool Orbita::Scanner::NextOneSecondsSequence(FRAME_SEQUENCE &sequence)
 {
 	FRAME_DESCRIPTOR current_frame;
 	while (NextFrameHeaderWithTimestamp()) {
@@ -302,17 +299,16 @@ bool Orbita::Scanner::NextFrameSequenceTest(FRAME_SEQUENCE &sequence)
 						sequence.last_frame = current_frame;
 						sequence.frames_count++;
 						continue;
-					} 				
+					}
+					if (current_frame.frame_type == 'bw') {
+						sequence.buffer.resize(sequence.buffer.size() - current_frame.size);
+						continue;
+					}
 				}
 
 				sequence.buffer.resize(sequence.buffer.size() - current_frame.size);
-				if (current_frame.frame_type == 'bw') {
-					continue;
-				} else {
-					io.SetPointer(current_frame.offset);
-					break;
-				}
-
+				io.SetPointer(current_frame.offset);
+				break;
 			}		
 			return true;
 		}
@@ -338,10 +334,12 @@ void Orbita::Storage::CloseFile(DWORD index)
 {
 	assert(index < files.size());
 
-	ToMkv(index);
-	files[index]->Close();
-	delete files[index];
-	files[index] = nullptr;
+	if (files[index]) {
+		ToMkv(index);
+		files[index]->Close();
+		delete files[index];
+		files[index] = nullptr;
+	}
 }
 
 void Orbita::Storage::ToMkv(DWORD index)
@@ -352,27 +350,28 @@ void Orbita::Storage::ToMkv(DWORD index)
 
 	std::string raw_file_name = file->GetName();
 	std::string mkv_file_name = raw_file_name + ".mkv";
-	std::string cmd_line = "\"" + mkvmerge_app_path + "-o " + mkv_file_name + " " + raw_file_name + "\"";
+	std::string cmd_line = mkvmerge_app_path + "-o " + mkv_file_name + " " + raw_file_name;
 	system(cmd_line.c_str());
 }
 
 bool Orbita::Storage::CreateNewFile(FRAME_SEQUENCE &sequence)
 {
+	DWORD channel = sequence.first_frame.channel;
 	std::string file_name;
 	file_name = directory + "\\" + std::to_string(sequence.first_frame.channel+1) + "--" + sequence.first_frame.timestamp.String() + "--" + std::to_string(sequence.first_frame.offset) + ".h264";
 
-	if (files[sequence.first_frame.channel]) {
-		CloseFile(sequence.first_frame.channel);
+	if (files[channel]) {
+		CloseFile(channel);
 	}
 
-	files[sequence.first_frame.channel] = new W32Lib::FileEx(file_name.c_str());
-	if (files[sequence.first_frame.channel]) {
-		if (files[sequence.first_frame.channel]->Create()) {
+	files[channel] = new W32Lib::FileEx(file_name.c_str());
+	if (files[channel]) {
+		if (files[channel]->Create()) {
 			return true;
 		}
 		else {
-			delete files[sequence.first_frame.channel];
-			files[sequence.first_frame.channel] = nullptr;
+			delete files[channel];
+			files[channel] = nullptr;
 		}	
 	}
 	return false;

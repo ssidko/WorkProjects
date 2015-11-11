@@ -133,7 +133,7 @@ namespace Orbita
 		bool NextFrameHeaderWithTimestamp(void);
 		bool ReadFrame(std::vector<BYTE> &buffer, FRAME_DESCRIPTOR &frame);
 		bool NextFrameSequence(FRAME_SEQUENCE &sequence);
-		bool NextFrameSequenceTest(FRAME_SEQUENCE &sequence);
+		bool NextOneSecondsSequence(FRAME_SEQUENCE &sequence);
 	};
 
 	class Storage
