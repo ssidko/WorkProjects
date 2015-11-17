@@ -2,33 +2,30 @@
 #define _MESSENGER_H
 
 #include "Arduino.h"
+#include "Stream.h"
 
 #define MESSAGE_HEADER      (word)0x55AA
 #define MESSAGE_FOOTER      (word)0xAA55
 
 typedef struct _Message {
   word header;
-  byte msg_type;
-  byte sub_type;
+  byte type;
+  byte code;
   word footer;
 } Message;
-
-// Message type
-typedef enum {
-  kUnknown,
-  kIdentification,
-  kNotification,
-  kCommand  
-} MessageType;
 
 class Messenger
 {
 private:
-  Serial_ *serial;
+  Stream *com_port;
+  Message message;
+  byte recived_bytes;
+  void ClearMessage(Message &msg);
 public:
-  Messenger(Serial_ &serial_port) : serial(&serial_port) {}
+  Messenger(void);
   ~Messenger(void) {}
-  void Begin(long speed);
+  void Init(Stream &serial);
+  bool IsValidMessage(Message &msg);
   bool ReciveMessage(Message &msg);
   bool SendMessage(Message &msg);   
 };

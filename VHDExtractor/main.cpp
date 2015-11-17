@@ -60,10 +60,12 @@ int main(int argc, char *argv[])
 
 
 	QApplication a(argc, argv);
-	MainWindow w;
-	VHDInfoDialog vhd_info;
+	//MainWindow w;
+	//VHDInfoDialog vhd_info;
 
-	vhd_info.show();
-	w.show();
+	RepairAllDbf(QString::fromLocal8Bit("D:\\Work\\38790\\2010"));
+
+	//vhd_info.show();
+	//w.show();
 	return a.exec();
 }

@@ -1,3 +1,7 @@
+//
+// MasterModule
+//
+
 #include "Messenger.h"
 
 #define LED_PIN                      13
@@ -9,14 +13,16 @@
 #define GSM_LINE_5_PIN               A4     // Инициация удаления по каналу-5.
 #define GSM_ERASE_ALL_PIN            A5     // Инициация удаления по всем каналам.
 
-#define GUARD_SENSOR_1_PIN           12     // Датчик перемещения корпуса блока. Инициация удаления по всем каналам.
-#define KEY_ERASE_ALL_PIN            11     // Ключь на блоке (Блок 1). Инициация удаления по всем каналам.
-#define LINK_TO_SLAVE                9      // Сигнал свячи с другим модулем.   
+#define GUARD_ENABLED_PIN            12     // Активация режима охраны. 
+#define GUARD_SENSOR_1_PIN           11     // Датчик перемещения корпуса блока. Инициация удаления по всем каналам.
+#define KEY_ERASE_ALL_PIN            10     // Ключь на блоке (Блок 1). Инициация удаления по всем каналам.
+#define LINK_TO_SLAVE_MODULE         9      // Сигнал связи с SlaveModule.   
               
-#define CONTROL_LINE_1_PIN           2      // Линия управления 1.
-#define CONTROL_LINE_2_PIN           3      // Линия управления 2.
+#define CONTROL_LINE_1_PIN           4      // Линия управления 1.
+#define CONTROL_LINE_2_PIN           5      // Линия управления 2.
 
-Messenger messenger(Serial);
+Messenger host;
+Messenger slave;
 
 void Blink(int msec, int times)
 {
@@ -37,11 +43,15 @@ void MakeLowImpulse(int pin)
 }
 
 void setup() {
-  messenger.Begin(9600);
+  Serial.begin(9600);
+  host.Init(Serial);
+  Serial1.begin(9600);
+  slave.Init(Serial1);
 
   pinMode(LED_PIN, OUTPUT);
   digitalWrite(LED_PIN, LOW);
-  
+
+  pinMode(GUARD_ENABLED_PIN, INPUT);
   pinMode(GUARD_SENSOR_1_PIN, INPUT);
   pinMode(KEY_ERASE_ALL_PIN, INPUT);
   pinMode(GSM_LINE_1_PIN, INPUT);
@@ -56,6 +66,15 @@ void setup() {
   digitalWrite(CONTROL_LINE_2_PIN, HIGH);
 
   Blink(200, 5);
+}
+
+bool IsGuardEnabled(void)
+{
+  if (digitalRead(GUARD_ENABLED_PIN) == LOW) {
+    return true;  
+  } else {
+    return false;
+  }   
 }
 
 void CheckGsmLines(void)
@@ -78,15 +97,14 @@ void CheckGsmLines(void)
 }
 
 void loop() {
-
   Message msg;
-  messenger.SendMessage(msg);
+  host.SendMessage(msg);
  
   Blink(100, 2);
 
   CheckGsmLines();
 
-  messenger.ReciveMessage(msg);
+  host.ReciveMessage(msg);
 }
 
 
