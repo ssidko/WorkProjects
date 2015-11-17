@@ -1,6 +1,6 @@
 #define LED_PIN                 13
 
-#define GUARD_SENSOR_1_PIN      12
+#define GUARD_SENSOR_1_PIN      12    // Датчик перемещения блока
 
 #define CONTROL_LINE_3_PIN      2
 #define CONTROL_LINE_4_PIN      3

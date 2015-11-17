@@ -8,19 +8,27 @@
 
 typedef struct _Message {
   word header;
-  byte code;
-  byte subcode;
+  byte msg_type;
+  byte sub_type;
   word footer;
 } Message;
+
+// Message type
+typedef enum {
+  kUnknown,
+  kIdentification,
+  kNotification,
+  kCommand  
+} MessageType;
 
 class Messenger
 {
 private:
   Serial_ *serial;
 public:
-  Messenger(Serial_ *serial_port) : serial(serial_port) {}
+  Messenger(Serial_ &serial_port) : serial(&serial_port) {}
   ~Messenger(void) {}
-  void Begin();
+  void Begin(long speed);
   bool ReciveMessage(Message &msg);
   bool SendMessage(Message &msg);   
 };
