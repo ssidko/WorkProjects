@@ -41,6 +41,7 @@ public:
   Messenger(void) {}
   ~Messenger(void) {}
   void Init(Stream &serial);
+  bool IsValidMessage(Message &msg);
   bool ReciveMessage(Message &msg);
   bool SendMessage(Message &msg);   
 };

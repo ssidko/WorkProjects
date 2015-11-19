@@ -1,0 +1,31 @@
+#######################################
+# Syntax Coloring Map For Messenger
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
+Message	KEYWORD1
+Messenger	KEYWORD1
+MessageType	KEYWORD1
+IdentificationType	KEYWORD1
+NotificationType	KEYWORD1
+CommandType	KEYWORD1
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+
+Init	KEYWORD2
+ReciveMessage	KEYWORD2
+SendMessage	KEYWORD2
+
+#######################################
+# Instances (KEYWORD2)
+#######################################
+
+#######################################
+# Constants (LITERAL1)
+#######################################
+

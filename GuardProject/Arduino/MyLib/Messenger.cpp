@@ -5,6 +5,11 @@ void Messenger::Init(Stream &serial)
   com_port = &serial;
 }
 
+bool Messenger::IsValidMessage(Message &msg)
+{
+  return ((msg.header == MESSAGE_HEADER) && (msg.footer == MESSAGE_FOOTER));  
+}
+
 bool Messenger::ReciveMessage(Message &msg)
 {
   msg.Clear();
