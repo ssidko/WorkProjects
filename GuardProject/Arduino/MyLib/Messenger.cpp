@@ -5,16 +5,11 @@ void Messenger::Init(Stream &serial)
   com_port = &serial;
 }
 
-bool Messenger::IsValidMessage(Message &msg)
-{
-  return ((msg.header == MESSAGE_HEADER) && (msg.footer == MESSAGE_FOOTER));  
-}
-
 bool Messenger::ReciveMessage(Message &msg)
 {
   msg.Clear();
   if (com_port) {
-    if (Serial.available()) {
+    if (com_port->available()) {
       int readed_bytes = com_port->readBytes((char *)&msg, sizeof(Message));
       if (sizeof(Message) == readed_bytes) {
         return msg.IsValidMessage();  

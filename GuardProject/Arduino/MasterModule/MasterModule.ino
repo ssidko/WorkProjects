@@ -28,6 +28,8 @@ Messenger host;
 Messenger slave;
 
 volatile bool guard_enabled = false;
+volatile bool line_1_activated = false;
+volatile bool line_2_activated = false;
 
 void Blink(int msec, int times)
 {
@@ -77,56 +79,83 @@ void setup() {
   Blink(200, 5);
 }
 
+void ActivateAllLines(void)
+{
+  if (!line_1_activated) {
+    digitalWrite(CONTROL_LINE_1_PIN, LOW);
+    line_1_activated = true;
+  }
+  if (!line_2_activated) {
+    digitalWrite(CONTROL_LINE_2_PIN, LOW);
+    line_2_activated = true;
+  }
+  // НЕ ТРОГАТЬ!!!!! Так все и должно быть.
+  Message msg;    
+  msg.type = MessageType::kCommand;  
+  msg.code = CommandType::kActivateAllLines;
+  slave.SendMessage(msg);
+  
+  delay(IMPULSE_DURATION);
+
+  digitalWrite(CONTROL_LINE_1_PIN, HIGH);
+  digitalWrite(CONTROL_LINE_2_PIN, HIGH);
+}
+
+void InitGuardMode(void)
+{
+  line_1_activated = false;
+  line_2_activated = false;
+}
+
 bool IsGuardEnabled(void)
 {
   return (digitalRead(GUARD_MODE_ENABLE_PIN) == HIGH);
 }
 
-void ActivateAllLocalLines(void)
+void CheckGuardEnabled(void)
 {
-  digitalWrite(CONTROL_LINE_1_PIN, LOW);
-  digitalWrite(CONTROL_LINE_2_PIN, LOW);
-  delay(IMPULSE_DURATION);
-  digitalWrite(CONTROL_LINE_1_PIN, HIGH);
-  digitalWrite(CONTROL_LINE_2_PIN, HIGH);
-}
-
-void ActivateAllLines(void)
-{
-  digitalWrite(CONTROL_LINE_1_PIN, LOW);
-  digitalWrite(CONTROL_LINE_2_PIN, LOW);
-  
-  Message msg;    
-  msg.type = MessageType::kCommand;  
-  msg.code = CommandType::kActivateAllLines;
-  slave.SendMessage(msg);
-
-  delay(IMPULSE_DURATION);
-
-  digitalWrite(CONTROL_LINE_1_PIN, HIGH);
-  digitalWrite(CONTROL_LINE_2_PIN, HIGH);
-
-  msg.type = MessageType::kNotification;  
-  msg.code = NotificationType::kAllLinesActivated;
-  slave.SendMessage(msg);
+  Message msg(MessageType::kCommand, 0);
+  Message notification(MessageType::kNotification, 0);
+  msg.type = MessageType::kCommand;
+  if (guard_enabled != IsGuardEnabled()) {
+    if (guard_enabled) {
+      msg.code = CommandType::kDisableGuardMode;
+      notification.code = NotificationType::kGuardModeDisabled;
+      guard_enabled = false;
+      InitGuardMode();
+    } else {
+      msg.code = CommandType::kEnableGuardMode;
+      notification.code = NotificationType::kGuardModeEnabled;
+      guard_enabled = true;
+      InitGuardMode();
+    }
+    slave.SendMessage(msg);
+    host.SendMessage(notification);
+  }
 }
 
 void CheckGsmLines(void)
 {
   Message msg;
   if (digitalRead(GSM_LINE_1_PIN) == LOW) {
-    MakeLowImpulse(CONTROL_LINE_1_PIN, IMPULSE_DURATION);
-    msg.type = MessageType::kNotification;
-    msg.code = NotificationType::kLine1Activated;
-    host.SendMessage(msg);
-    WaitForEndLowImpulse(GSM_LINE_1_PIN);
+    if (!line_1_activated) {
+      MakeLowImpulse(CONTROL_LINE_1_PIN, IMPULSE_DURATION);
+      msg.type = MessageType::kNotification;
+      msg.code = NotificationType::kLine1Activated;
+      host.SendMessage(msg);
+      WaitForEndLowImpulse(GSM_LINE_1_PIN);
+      line_1_activated = true;
+    }
   }
   if (digitalRead(GSM_LINE_2_PIN) == LOW) {
-    MakeLowImpulse(CONTROL_LINE_2_PIN, IMPULSE_DURATION);
-    msg.type = MessageType::kNotification;
-    msg.code = NotificationType::kLine2Activated;
-    host.SendMessage(msg);
-    WaitForEndLowImpulse(GSM_LINE_2_PIN);
+    if (!line_2_activated) {
+      MakeLowImpulse(CONTROL_LINE_2_PIN, IMPULSE_DURATION);
+      msg.type = MessageType::kNotification;
+      msg.code = NotificationType::kLine2Activated;
+      host.SendMessage(msg);
+      WaitForEndLowImpulse(GSM_LINE_2_PIN);
+      line_2_activated = true;
+    }
   }
   if (digitalRead(GSM_LINE_3_PIN) == LOW) {
     msg.type = MessageType::kCommand;
@@ -165,7 +194,6 @@ void CheckGuardSensor1(void)
     msg.type = MessageType::kNotification;
     msg.code = NotificationType::kMasterGuardSensor1Activated;
     host.SendMessage(msg);
-    WaitForEndLowImpulse(GUARD_SENSOR_1_PIN);
   }
 }
 
@@ -189,7 +217,6 @@ void CheckKeyEraseAll(void)
     msg.type = MessageType::kNotification;
     msg.code = NotificationType::kKeyEraseAllActivated;
     host.SendMessage(msg);
-    WaitForEndLowImpulse(KEY_ERASE_ALL_PIN);
   }
 }
 
@@ -201,12 +228,23 @@ void CheckLinkToSlave()
     msg.type = MessageType::kNotification;
     msg.code = NotificationType::kLinkToSlaveLosted;
     host.SendMessage(msg);
-    WaitForEndLowImpulse(LINK_TO_SLAVE_IN);
   }
+}
+
+void PrintMessage(Message &msg)
+{
+    Serial.println("---==== Message info ====---");
+    Serial.print("header: "); Serial.println(msg.header);
+    Serial.print("type: "); Serial.println(msg.type);
+    Serial.print("code: "); Serial.println(msg.code);
+    Serial.print("footer: "); Serial.println(msg.footer);
+    Serial.print("valid: "); Serial.println(msg.IsValidMessage());
+    Serial.println("=============================");
 }
 
 void loop()
 {
+
   Message msg;  
   if (host.ReciveMessage(msg)) {
     if (msg.type == MessageType::kNotification) {
@@ -215,17 +253,31 @@ void loop()
     }  
   }
   if (slave.ReciveMessage(msg)) {
+    PrintMessage(msg);
     if (msg.type == MessageType::kNotification) {
-      if (msg.code == NotificationType::kSlaveGuardSensor1Activated) {
-        host.SendMessage(msg);
-        ActivateAllLines();
-        msg.code = NotificationType::kAllLinesActivated;
-        host.SendMessage(msg);
+      switch (msg.code) {
+        case NotificationType::kSlaveGuardSensor1Activated:
+          host.SendMessage(msg);
+          ActivateAllLines();
+          msg.code = NotificationType::kAllLinesActivated;
+          host.SendMessage(msg);
+          break;
+        case NotificationType::kLinkToMasterLosted:
+          host.SendMessage(msg);
+          ActivateAllLines();
+          msg.code = NotificationType::kAllLinesActivated;
+          host.SendMessage(msg);
+          break;
+        default:
+          Blink(100,20);
+          break;        
       }
     }  
   }
+
+  CheckGuardEnabled();  
   
-  if (IsGuardEnabled()) {
+  if (guard_enabled) {
     digitalWrite(LED_PIN, HIGH);
     CheckGsmEraseAll();
     CheckGsmLines();
@@ -235,6 +287,16 @@ void loop()
   } else {
     digitalWrite(LED_PIN, LOW); 
   }
+
+/*
+//========================================================================
+  Message msg1;
+  msg1.Clear();
+  if (sizeof(Message) == Serial1.readBytes((char *)&msg1, sizeof(Message))) {
+    PrintMessage(msg1);
+  }
+//========================================================================
+*/
 }
 
 

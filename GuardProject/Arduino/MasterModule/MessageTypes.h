@@ -16,6 +16,8 @@ typedef enum {
 
 typedef enum {
   kUnknownNotification,
+  kGuardModeEnabled,
+  kGuardModeDisabled, 
   kLine1Activated,
   kLine2Activated,
   kLine3Activated,
@@ -27,6 +29,7 @@ typedef enum {
   kMasterGuardSensor1Activated,
   kSlaveGuardSensor1Activated,
   kLinkToSlaveLosted,
+  kLinkToMasterLosted,
 } NotificationType;
 
 typedef enum {
