@@ -9,6 +9,10 @@
 #pragma comment(lib, "Setupapi.lib")
 #pragma comment(lib, "Advapi32.lib")
 
+ComPort::ComPort() : name(""), handle(INVALID_HANDLE_VALUE)
+{
+}
+
 ComPort::ComPort(const char *com_port_name) : name(com_port_name), handle(INVALID_HANDLE_VALUE)
 {
 }
@@ -115,6 +119,12 @@ bool ComPort::Open()
 		return true;
 	}
 	return false;
+}
+
+bool ComPort::Open(const char *com_port_name)
+{
+	name = com_port_name;
+	return Open();
 }
 
 void ComPort::Close()

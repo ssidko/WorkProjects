@@ -31,6 +31,11 @@ void Terminal::UpdateComPortsCombobox()
 
 void Terminal::OnOpenButton(void)
 {
+	ComPort port;
 	QString com_name = ui.com_ports_combobox->currentText();
 	ui.text_edit->insertPlainText(com_name + "\n");
+	if (port.Open(com_name.toLocal8Bit())) {
+	
+	
+	}
 }
