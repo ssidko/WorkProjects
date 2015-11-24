@@ -123,7 +123,7 @@ void ServiceRun(void)
 				break;
 
 			default:
-				break;		
+				break;
 		}
 	}
 	log_file << "Exit from ServiceRun().\n";

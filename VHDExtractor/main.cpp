@@ -58,12 +58,16 @@ int main(int argc, char *argv[])
 	//	int x = 0;
 	//}
 
+	DWORD raw = 0x3e8879ed;
+	//DWORD raw = 0x3e000000;
+	DVR_DATE *date = (DVR_DATE *)&raw;
+
 
 	QApplication a(argc, argv);
 	//MainWindow w;
 	//VHDInfoDialog vhd_info;
 
-	RepairAllDbf(QString::fromLocal8Bit("D:\\Work\\38790\\2010"));
+	//RepairAllDbf(QString::fromLocal8Bit("D:\\Work\\38790\\2010"));
 
 	//vhd_info.show();
 	//w.show();
