@@ -1,6 +1,6 @@
 #include "terminal.h"
 
-Terminal::Terminal(QWidget *parent) : QMainWindow(parent), msg_reciver(nullptr)
+Terminal::Terminal(QWidget *parent) : QMainWindow(parent)
 {
 	ui.setupUi(this);
 	Initialize();
@@ -8,7 +8,6 @@ Terminal::Terminal(QWidget *parent) : QMainWindow(parent), msg_reciver(nullptr)
 
 Terminal::~Terminal()
 {
-
 }
 
 bool Terminal::Initialize(void)
@@ -31,11 +30,31 @@ void Terminal::UpdateComPortsCombobox()
 
 void Terminal::OnOpenButton(void)
 {
-	ComPort port;
-	QString com_name = ui.com_ports_combobox->currentText();
-	ui.text_edit->insertPlainText(com_name + "\n");
-	if (port.Open(com_name.toLocal8Bit())) {
-	
-	
-	}
+	//ComPort com_port;
+	//QString com_name = ui.com_ports_combobox->currentText();
+	//ui.text_edit->insertPlainText(com_name + "\n");
+	//if (com_port.Open(com_name.toLocal8Bit())) {
+	//	msg_reciver.WaitForMessage(com_port);
+	//}
+
+	Message msg;
+	OnMessageRecived(msg);
+
+}
+
+void Terminal::OnMessageRecived(Message msg)
+{
+	QColor def_color = ui.text_edit->textColor();
+	ui.text_edit->insertPlainText(QString::fromLocal8Bit("----"));
+	ui.text_edit->setTextColor(QColor(Qt::darkGreen));
+	ui.text_edit->insertPlainText(QString::fromLocal8Bit(" Message info "));
+	ui.text_edit->setTextColor(def_color);
+	ui.text_edit->insertPlainText(QString::fromLocal8Bit("----") + "\n");
+
+	ui.text_edit->insertPlainText(QString("# Header:\t%1").arg(QString::number(msg.header, 16)) + "\n");
+	ui.text_edit->insertPlainText(QString("# Type:\t%1").arg(QString::number(msg.type)) + "\n");
+	ui.text_edit->insertPlainText(QString("# Code:\t%1").arg(QString::number(msg.code)) + "\n");
+	ui.text_edit->insertPlainText(QString("# Footer:\t%1").arg(QString::number(msg.footer, 16)) + "\n");
+	//ui.text_edit->insertPlainText(QString::fromLocal8Bit("--------------------------") + "\n");
+	ui.text_edit->insertPlainText(QString::fromLocal8Bit("\n"));
 }

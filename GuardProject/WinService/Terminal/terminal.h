@@ -10,7 +10,7 @@ class Terminal : public QMainWindow
 	Q_OBJECT
 private:
 	Ui::TerminalClass ui;
-	MessageReciver *msg_reciver;
+	MessageReciver msg_reciver;
 public:
 	Terminal(QWidget *parent = 0);
 	~Terminal();
@@ -18,6 +18,7 @@ public:
 	void UpdateComPortsCombobox();
 public slots:
 	void OnOpenButton(void);
+	void OnMessageRecived(Message msg);
 };
 
 #endif // TERMINAL_H

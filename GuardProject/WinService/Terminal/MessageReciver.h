@@ -45,11 +45,11 @@ class MessageReciver : public QThread
 	Q_OBJECT
 private:
 	QThread thread;
-	ComPort com_port;
+	ComPort *com;
 protected:
 	virtual void run();
 public:
-	MessageReciver(const char *com_name) : com_port(com_name) {}
+	MessageReciver(void) : com(nullptr) {}
 	~MessageReciver();
 
 	void WaitForMessage(ComPort &com_port);
