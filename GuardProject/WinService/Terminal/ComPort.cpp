@@ -83,7 +83,7 @@ bool ComPort::Open()
 		COMMTIMEOUTS com_time_outs;
 		com_time_outs.ReadIntervalTimeout = 0xFFFFFFFF;
 		com_time_outs.ReadTotalTimeoutMultiplier = 0;
-		com_time_outs.ReadTotalTimeoutConstant = 1000;
+		com_time_outs.ReadTotalTimeoutConstant = 0;
 		com_time_outs.WriteTotalTimeoutMultiplier = 0;
 		com_time_outs.WriteTotalTimeoutConstant = 1000;
 		if (!SetCommTimeouts(handle, &com_time_outs)) {
