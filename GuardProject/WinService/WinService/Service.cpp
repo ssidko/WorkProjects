@@ -109,16 +109,20 @@ void ServiceRun(void)
 
 	DWORD ret = 0;
 
+	std::string bat_file = "cmd.exe /C D:\\arrival.bat";
+
 	while (true) {
 		ret = ::WaitForMultipleObjects(events.size(), events.data(), FALSE, INFINITE);
 		switch (ret) {
 			case WAIT_OBJECT_0 + EVENT_DEVICE_ARRIVAL:
 				log_file << "Device arrival.\n";
+				RunBatFile(&bat_file[0]);
 				::ResetEvent(events[EVENT_DEVICE_ARRIVAL]);
 				break;
 
 			case WAIT_OBJECT_0 + EVENT_DEVICE_REMOVE:
 				log_file << "Device remove.\n";
+				RunBatFile(&bat_file[0]);
 				::ResetEvent(events[EVENT_DEVICE_REMOVE]);
 				break;
 
@@ -230,4 +234,39 @@ void ReportSvcStatus(DWORD current_state, DWORD win32_exit_code, DWORD wait_hint
 
 	// Report the status of the service to the SCM.
 	SetServiceStatus(svc_status_handle, &svc_status);
+}
+
+DWORD RunBatFile(char *bat_file)
+{
+	DWORD error_code = 0;
+	STARTUPINFOA si;
+	PROCESS_INFORMATION pi;
+
+	ZeroMemory(&si, sizeof(si));
+	si.cb = sizeof(si);
+	ZeroMemory(&pi, sizeof(pi));
+
+	si.dwFlags = STARTF_USESHOWWINDOW;
+	si.wShowWindow = SW_SHOW;
+	si.lpTitle = "GuardSystem console";
+
+	log_file.PrintLine("command line arguments: %s.", bat_file);
+
+	if (!CreateProcessA("cmd.exe",   // No module name (use command line)
+		bat_file,        // Command line
+		NULL,           // Process handle not inheritable
+		NULL,           // Thread handle not inheritable
+		FALSE,          // Set handle inheritance to FALSE
+		0,              // No creation flags
+		NULL,           // Use parent's environment block
+		NULL,           // Use parent's starting directory 
+		&si, &pi)
+		) {
+
+		error_code = ::GetLastError();
+		log_file.PrintLine("CreateProcessA error. WinError code: %d.", error_code);
+		return -1;		
+	}
+
+	return 0;
 }
