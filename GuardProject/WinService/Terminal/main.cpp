@@ -2,6 +2,7 @@
 #include <QtWidgets/QApplication>
 
 #include "ComPort.h"
+#include "MessageReciver.h"
 
 int main(int argc, char *argv[])
 {

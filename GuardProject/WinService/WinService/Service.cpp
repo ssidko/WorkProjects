@@ -13,6 +13,7 @@ SERVICE_STATUS svc_status;
 SERVICE_STATUS_HANDLE svc_status_handle;
 HDEVNOTIFY notify_handle = NULL;
 std::vector<HANDLE> events;
+std::vector<std::string> scripts;
 
 #define EVENT_DEVICE_ARRIVAL	0
 #define EVENT_DEVICE_REMOVE		1
@@ -23,15 +24,15 @@ bool ServiceInitialize(DWORD args_count, LPWSTR *args)
 {
 	DWORD error_code = 0;
 
-	std::string service_file_path;
-	service_file_path.resize(MAX_PATH);
-	if (::GetModuleFileNameA(NULL, &service_file_path[0], service_file_path.length()) == 0x00) {
+	std::string service_directory;
+	service_directory.resize(MAX_PATH);
+	if (::GetModuleFileNameA(NULL, &service_directory[0], service_directory.length()) == 0x00) {
 		return false;
 	}
 
-	int pos = (service_file_path.length() - 1);
+	int pos = (service_directory.length() - 1);
 	while (pos-- >= 0) {
-		if (service_file_path[pos] == '\\') {
+		if (service_directory[pos] == '\\') {
 			break;
 		}	
 	}
@@ -39,7 +40,7 @@ bool ServiceInitialize(DWORD args_count, LPWSTR *args)
 		return false;
 	}
 
-	std::string log_file_name(service_file_path, 0, pos + 1);
+	std::string log_file_name(service_directory, 0, pos + 1);
 	log_file_name += LOG_FILE_NAME;
 
 	log_file.SetOutFile(log_file_name.c_str());
@@ -109,20 +110,20 @@ void ServiceRun(void)
 
 	DWORD ret = 0;
 
-	std::string bat_file = "cmd.exe /C D:\\arrival.bat";
+	std::string script_file = "D:\\arrival.bat";
 
 	while (true) {
 		ret = ::WaitForMultipleObjects(events.size(), events.data(), FALSE, INFINITE);
 		switch (ret) {
 			case WAIT_OBJECT_0 + EVENT_DEVICE_ARRIVAL:
 				log_file << "Device arrival.\n";
-				RunBatFile(&bat_file[0]);
+				ExecuteScript(script_file);
 				::ResetEvent(events[EVENT_DEVICE_ARRIVAL]);
 				break;
 
 			case WAIT_OBJECT_0 + EVENT_DEVICE_REMOVE:
 				log_file << "Device remove.\n";
-				RunBatFile(&bat_file[0]);
+				ExecuteScript(script_file);
 				::ResetEvent(events[EVENT_DEVICE_REMOVE]);
 				break;
 
@@ -236,37 +237,23 @@ void ReportSvcStatus(DWORD current_state, DWORD win32_exit_code, DWORD wait_hint
 	SetServiceStatus(svc_status_handle, &svc_status);
 }
 
-DWORD RunBatFile(char *bat_file)
+bool ExecuteScript(std::string &script_file)
 {
-	DWORD error_code = 0;
-	STARTUPINFOA si;
-	PROCESS_INFORMATION pi;
+	STARTUPINFOA si = {0};
+	PROCESS_INFORMATION pi = {0};
 
-	ZeroMemory(&si, sizeof(si));
 	si.cb = sizeof(si);
-	ZeroMemory(&pi, sizeof(pi));
 
 	si.dwFlags = STARTF_USESHOWWINDOW;
 	si.wShowWindow = SW_SHOW;
 	si.lpTitle = "GuardSystem console";
 
-	log_file.PrintLine("command line arguments: %s.", bat_file);
-
-	if (!CreateProcessA("cmd.exe",   // No module name (use command line)
-		bat_file,        // Command line
-		NULL,           // Process handle not inheritable
-		NULL,           // Thread handle not inheritable
-		FALSE,          // Set handle inheritance to FALSE
-		0,              // No creation flags
-		NULL,           // Use parent's environment block
-		NULL,           // Use parent's starting directory 
-		&si, &pi)
-		) {
-
-		error_code = ::GetLastError();
-		log_file.PrintLine("CreateProcessA error. WinError code: %d.", error_code);
-		return -1;		
+	std::string cmd_line = "/C " + script_file;
+	if (!CreateProcessA("cmd.exe", &cmd_line[0], NULL, NULL, FALSE, 0, NULL, NULL, &si, &pi)) {
+		log_file.PrintLine("Error when executing the script (%s). WinError code: %d.", script_file.c_str(), ::GetLastError());
+		return false;		
+	} else {
+		log_file.PrintLine("Script executed successful (%s).", script_file.c_str());
+		return true;
 	}
-
-	return 0;
 }

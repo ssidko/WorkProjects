@@ -12,7 +12,7 @@
 #pragma pack (push)
 #pragma pack (1)
 
-typedef struct _Message {
+struct Message {
 	BYTE header;
 	BYTE type;
 	BYTE code;
@@ -22,25 +22,29 @@ typedef struct _Message {
 		return ((header == MESSAGE_HEADER) && (footer == MESSAGE_FOOTER));
 	}
 	void Clear(void) {
-		memset(this, 0x00, sizeof(_Message));
+		memset(this, 0x00, sizeof(Message));
 		header = MESSAGE_HEADER;
 		footer = MESSAGE_FOOTER;
 	}
-	_Message() {
+	Message() {
 		header = MESSAGE_HEADER;
 		footer = MESSAGE_FOOTER;
 		type = 0;
 		code = 0;
 	}
-	_Message(byte msg_type, byte msg_code) {
+	Message(byte msg_type, byte msg_code) {
 		header = MESSAGE_HEADER;
 		footer = MESSAGE_FOOTER;
 		type = msg_type;
 		code = msg_code;
 	};
-} Message;
+};
 
 #pragma pack(pop)
+
+Q_DECLARE_METATYPE(Message);
+
+
 
 class MessageReciver : public QThread
 {
@@ -51,13 +55,12 @@ private:
 protected:
 	virtual void run();
 public:
-	MessageReciver(void) : com_port(nullptr) {}
+	MessageReciver(void) : com_port(nullptr) { qRegisterMetaType<Message>("Message"); }
 	~MessageReciver();
 
 	bool WaitForMessage(const char *com_name);
 
 signals:
 	void MessageRecived(Message);
-
 };
 
