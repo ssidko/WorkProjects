@@ -97,6 +97,9 @@ void ActivateAllLines(void)
   msg.type = MessageType::kCommand;  
   msg.code = CommandType::kActivateAllLines;
   slave.SendMessage(msg);
+  line_3_activated = true;
+  line_4_activated = true;
+  line_5_activated = true;
   
   delay(IMPULSE_DURATION);
 
