@@ -1,7 +1,7 @@
-#include "stdafx.h"
+//#include "stdafx.h"
 #include "MasterModule.h"
 
-MasterModule::MasterModule() : last_error(0), opened(false)
+MasterModule::MasterModule() : last_error(0)
 {
 }
 
@@ -11,11 +11,11 @@ MasterModule::~MasterModule()
 
 bool MasterModule::Identify(void)
 {
-	Message id_cmd(MessageType::kIdentification, 0);
+	Message id_cmd(1, 0);
 	Message answer;
 	if (com.Write(&id_cmd, sizeof(Message))) {
 		if (WaitForMessage(answer, 500)) {
-			if ((answer.type == MessageType::kIdentification) && (answer.code == IdentificationType::kMasterID)) {
+			if (answer.type == 1 && (answer.code == 111)) {
 				return true;
 			}
 		}	
@@ -25,16 +25,12 @@ bool MasterModule::Identify(void)
 
 bool MasterModule::Open(const std::string &com_name)
 {
-	if (opened) {
-		this->Close();
-	}
 	if (com.Open(com_name.c_str())) {
-		if (Identify()) {
-			opened = true;
-			return true;
-		} else {
-			this->Close();
-		}
+		
+		
+		return true;	
+	} else {
+		
 	}
 	return false;
 }
@@ -43,7 +39,6 @@ void MasterModule::Close()
 {
 	com.Close();
 	last_error = 0;
-	opened = false;
 }
 
 bool MasterModule::WaitForMessage(Message &msg)

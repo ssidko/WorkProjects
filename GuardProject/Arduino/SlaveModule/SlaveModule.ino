@@ -74,7 +74,7 @@ void ActivateAllLocalLines(void)
   if (!line_4_activated) {
     digitalWrite(CONTROL_LINE_4_PIN, LOW);
   }
-  if (!line_4_activated) {
+  if (!line_5_activated) {
     digitalWrite(CONTROL_LINE_5_PIN, LOW);
   }
   delay(IMPULSE_DURATION);

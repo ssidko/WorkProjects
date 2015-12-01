@@ -1,11 +1,5 @@
 #include "MessageReciver.h"
 
-
-//MessageReciver::MessageReciver()
-//{
-//}
-
-
 MessageReciver::~MessageReciver()
 {
 	if (com_port) {
@@ -53,6 +47,5 @@ void MessageReciver::run()
 				}		
 			}
 		}
-		int x = 0;
 	}
 }

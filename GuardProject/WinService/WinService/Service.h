@@ -10,6 +10,7 @@
 bool ServiceInitialize(DWORD args_count, LPWSTR *args);
 void ServiceDeinitialize(void);
 void ServiceRun(void);
+void ProcessMessage(Message &msg);
 void WINAPI ServiceMain(DWORD args_count, LPWSTR  *args);
 DWORD WINAPI ServiceControlHandlerEx(DWORD  control_code, DWORD  event_type, LPVOID event_data, LPVOID context);
 void ReportSvcStatus(DWORD current_state, DWORD win32_exit_code, DWORD wait_hint);

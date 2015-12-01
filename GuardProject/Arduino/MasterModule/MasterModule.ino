@@ -30,6 +30,9 @@ Messenger slave;
 volatile bool guard_enabled = false;
 volatile bool line_1_activated = false;
 volatile bool line_2_activated = false;
+volatile bool line_3_activated = false;
+volatile bool line_4_activated = false;
+volatile bool line_5_activated = false;
 
 void Blink(int msec, int times)
 {
@@ -105,6 +108,9 @@ void InitGuardMode(void)
 {
   line_1_activated = false;
   line_2_activated = false;
+  line_3_activated = false;
+  line_4_activated = false;
+  line_5_activated = false;
 }
 
 bool IsGuardEnabled(void)
@@ -159,31 +165,40 @@ void CheckGsmLines(void)
     }
   }
   if (digitalRead(GSM_LINE_3_PIN) == LOW) {
-    msg.type = MessageType::kCommand;
-    msg.code = CommandType::kActivateLine3;
-    slave.SendMessage(msg);
-    msg.type = MessageType::kNotification;
-    msg.code = NotificationType::kLine3Activated;
-    host.SendMessage(msg);
-    WaitForEndLowImpulse(GSM_LINE_3_PIN);
+    if (!line_3_activated) {
+      msg.type = MessageType::kCommand;
+      msg.code = CommandType::kActivateLine3;
+      slave.SendMessage(msg);
+      msg.type = MessageType::kNotification;
+      msg.code = NotificationType::kLine3Activated;
+      host.SendMessage(msg);
+      WaitForEndLowImpulse(GSM_LINE_3_PIN);
+      line_3_activated = true;
+    }
   }
   if (digitalRead(GSM_LINE_4_PIN) == LOW) {
-    msg.type = MessageType::kCommand;
-    msg.code = CommandType::kActivateLine4;
-    slave.SendMessage(msg);
-    msg.type = MessageType::kNotification;
-    msg.code = NotificationType::kLine4Activated;
-    host.SendMessage(msg);
-    WaitForEndLowImpulse(GSM_LINE_4_PIN);
+    if (!line_4_activated) {
+      msg.type = MessageType::kCommand;
+      msg.code = CommandType::kActivateLine4;
+      slave.SendMessage(msg);
+      msg.type = MessageType::kNotification;
+      msg.code = NotificationType::kLine4Activated;
+      host.SendMessage(msg);
+      WaitForEndLowImpulse(GSM_LINE_4_PIN);
+      line_4_activated = true;
+    }
   }
-  if (digitalRead(GSM_LINE_5_PIN) == LOW) {    
-    msg.type = MessageType::kCommand;
-    msg.code = CommandType::kActivateLine5;
-    slave.SendMessage(msg);
-    msg.type = MessageType::kNotification;
-    msg.code = NotificationType::kLine5Activated;
-    host.SendMessage(msg);
-    WaitForEndLowImpulse(GSM_LINE_5_PIN);
+  if (digitalRead(GSM_LINE_5_PIN) == LOW) {
+    if (!line_5_activated) {    
+      msg.type = MessageType::kCommand;
+      msg.code = CommandType::kActivateLine5;
+      slave.SendMessage(msg);
+      msg.type = MessageType::kNotification;
+      msg.code = NotificationType::kLine5Activated;
+      host.SendMessage(msg);
+      WaitForEndLowImpulse(GSM_LINE_5_PIN);
+      line_5_activated = true;
+    }
   }
 }
 
@@ -245,10 +260,9 @@ void PrintMessage(Message &msg)
 
 void loop()
 {
-
   Message msg;  
   if (host.ReciveMessage(msg)) {
-    if (msg.type == MessageType::kNotification) {
+    if (msg.type == MessageType::kIdentification) {
       msg.code = IdentificationType::kMasterID;
       host.SendMessage(msg);
     }  

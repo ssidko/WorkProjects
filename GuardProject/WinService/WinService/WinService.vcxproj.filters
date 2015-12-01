@@ -49,9 +49,6 @@
     <ClCompile Include="stdafx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="WinService.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Service.cpp">
       <Filter>Core</Filter>
     </ClCompile>
@@ -64,5 +61,6 @@
     <ClCompile Include="MasterModule.cpp">
       <Filter>Core</Filter>
     </ClCompile>
+    <ClCompile Include="WinService.cpp" />
   </ItemGroup>
 </Project>

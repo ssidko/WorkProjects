@@ -1,3 +1,4 @@
+//#include "stdafx.h"
 #include "ComPort.h"
 
 #include <windows.h>
@@ -101,7 +102,6 @@ bool ComPort::Open(DWORD baud_rate)
 				com_param.ByteSize = 8;
 				com_param.StopBits = ONESTOPBIT;
 				com_param.Parity = NOPARITY;
-
 				if (SetCommState(handle, &com_param)) {
 					if (SetCommMask(handle, EV_RXCHAR)) {
 						::Sleep(2000); // Ардуине нужно время чтобы загрузиться.
@@ -172,6 +172,46 @@ bool ComPort::Write(const void *buff, DWORD size)
 	return ret;
 }
 
+bool ComPort::Read(void *buff, DWORD size, DWORD timeout)
+{
+	DWORD rw = 0;
+	OVERLAPPED o = { 0 };
+	DWORD wait_result;
+	bool ret = false;
+
+	o.hEvent = ::CreateEventA(NULL, TRUE, FALSE, NULL);
+	if (!o.hEvent) {
+		return false;
+	}
+
+	if (!::ReadFile(handle, buff, size, &rw, &o)) {
+		if (ERROR_IO_PENDING == ::GetLastError()) {
+			wait_result = WaitForSingleObject(o.hEvent, timeout);
+			switch (wait_result) {
+			case WAIT_OBJECT_0:
+				if (::GetOverlappedResult(handle, &o, &rw, TRUE)) {
+					if (rw) {
+						ret = true;
+					}
+					break;
+				}
+			default:
+				::CancelIo(handle);
+				ret = false;
+				break;
+			}
+		}
+		else {
+			ret = false;
+		}
+	}
+	else {
+		ret = true;
+	}
+	::CloseHandle(o.hEvent);
+	return ret;
+}
+
 bool ComPort::Read(void *buff, DWORD size)
 {
 	DWORD rw = 0;
@@ -210,7 +250,7 @@ bool ComPort::Read(void *buff, DWORD size)
 	return ret;
 }
 
-bool ComPort::WaitForInputData(void)
+bool ComPort::WaitForInputData(DWORD timeout)
 {
 	bool ret = false;
 	DWORD result = 0;
@@ -232,7 +272,7 @@ bool ComPort::WaitForInputData(void)
 
 		err = ::GetLastError();
 		if ((ret == false) && (ERROR_IO_PENDING == err)) {
-			result = ::WaitForSingleObject(sync.hEvent, INFINITE);
+			result = ::WaitForSingleObject(sync.hEvent, timeout);
 			switch (result) {
 			case WAIT_OBJECT_0:
 				ret = true;
@@ -247,6 +287,11 @@ bool ComPort::WaitForInputData(void)
 	}
 	last_error = ::GetLastError();
 	return ret;
+}
+
+bool ComPort::WaitForInputData(void)
+{
+	return WaitForInputData(INFINITE);
 }
 
 void ComPort::Test(void)

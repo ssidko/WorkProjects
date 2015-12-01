@@ -3,7 +3,6 @@
 #include <QObject>
 #include <qthread.h>
 #include "ComPort.h"
-
 #include "MessageTypes.h"
 
 #define MESSAGE_HEADER      (BYTE)0x55
@@ -43,8 +42,6 @@ struct Message {
 #pragma pack(pop)
 
 Q_DECLARE_METATYPE(Message);
-
-
 
 class MessageReciver : public QThread
 {

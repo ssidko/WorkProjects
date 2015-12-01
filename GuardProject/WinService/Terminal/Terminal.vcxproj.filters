@@ -46,6 +46,7 @@
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
     <ClCompile Include="MessageReciver.cpp" />
+    <ClCompile Include="MasterModule.cpp" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="terminal.ui">
@@ -62,5 +63,6 @@
       <Filter>Generated Files</Filter>
     </ClInclude>
     <ClInclude Include="ComPort.h" />
+    <ClInclude Include="MasterModule.h" />
   </ItemGroup>
 </Project>

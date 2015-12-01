@@ -35,12 +35,7 @@ void Terminal::OnOpenButton(void)
 	ComPort com_port;
 	QString com_name = ui.com_ports_combobox->currentText();
 	ui.text_edit->insertPlainText("Com port opened.\n");
-
 	msg_reciver.WaitForMessage(com_name.toLocal8Bit());
-
-	//Message msg;
-	//OnMessageRecived(msg);
-
 }
 
 void Terminal::OnMessageRecived(Message msg)

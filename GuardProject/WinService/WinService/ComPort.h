@@ -22,7 +22,9 @@ public:
 	bool Open(const char *com_port_name);
 	void Close();
 	bool Write(const void *buff, DWORD size);
+	bool Read(void *buff, DWORD size, DWORD timeout);
 	bool Read(void *buff, DWORD size);
+	bool WaitForInputData(DWORD timeout);
 	bool WaitForInputData(void);
 	void Test(void);
 };

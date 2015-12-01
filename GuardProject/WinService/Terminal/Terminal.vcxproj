@@ -96,6 +96,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="MasterModule.cpp" />
     <ClCompile Include="MessageReciver.cpp" />
     <ClCompile Include="terminal.cpp" />
   </ItemGroup>
@@ -126,6 +127,7 @@
   <ItemGroup>
     <ClInclude Include="ComPort.h" />
     <ClInclude Include="GeneratedFiles\ui_terminal.h" />
+    <ClInclude Include="MasterModule.h" />
     <CustomBuild Include="MessageReciver.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing MessageReciver.h...</Message>
@@ -154,7 +156,7 @@
   </ImportGroup>
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties MocDir=".\GeneratedFiles\$(ConfigurationName)" UicDir=".\GeneratedFiles" RccDir=".\GeneratedFiles" lupdateOptions="" lupdateOnBuild="0" lreleaseOptions="" Qt5Version_x0020_Win32="5.5.0" MocOptions="" />
+      <UserProperties MocDir=".\GeneratedFiles\$(ConfigurationName)" UicDir=".\GeneratedFiles" RccDir=".\GeneratedFiles" lupdateOptions="" lupdateOnBuild="0" lreleaseOptions="" Qt5Version_x0020_Win32="5.4.2" MocOptions="" />
     </VisualStudio>
   </ProjectExtensions>
 </Project>

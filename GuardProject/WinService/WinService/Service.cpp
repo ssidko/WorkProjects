@@ -57,7 +57,10 @@ bool ServiceInitialize(DWORD args_count, LPWSTR *args)
 	log_file_name = service_directory + LOG_FILE_NAME;
 	log_file.SetOutFile(log_file_name.c_str());
 
-	log_file << "\n" << "*** Service initialization *** \n";
+	log_file << "\n";
+	log_file << "****************************** \n";
+	log_file << "*** Service initialization *** \n";
+	log_file << "****************************** \n";
 	log_file.PrintLine("Log file name: %s", log_file_name.c_str());
 
 	//
@@ -87,8 +90,7 @@ bool ServiceInitialize(DWORD args_count, LPWSTR *args)
 	log_file.PrintLine("Script for control line 3: %s", scripts[2].c_str());
 	log_file.PrintLine("Script for control line 4: %s", scripts[3].c_str());
 	log_file.PrintLine("Script for control line 5: %s", scripts[4].c_str());
-
-
+	
 	//
 	// Notification initialization
 	//
@@ -136,29 +138,31 @@ void ServiceRun(void)
 	ReportSvcStatus(SERVICE_RUNNING, NO_ERROR, 0);
 	log_file << "*** Service started ***\n";
 
+	MasterModule master;
+
 	std::list<std::string> com_ports;
 	ComPort::AvailableComPorts(com_ports);
 
-	log_file.PrintLine("Avaliable COM ports: %d", com_ports.size());
 	auto it = com_ports.begin();
 	while (it != com_ports.end()) {
-		log_file.PrintLine("%s", (*it).c_str());
+		if (master.Open((*it))) {
+			log_file << "Master module connected.\n";
+			break;
+		}
 		it++;
 	}
 
-	//
-	// После старта необходимо проверить подключено ли уже устройство.
-	// Если подключено - ждать сообщения.
-	// Иначе - ждать подключения устройства.
-	//
-
-	DWORD ret = 0;
-
-	std::string script = "D:\\arrival.bat";
-
 	while (true) {
-		ret = ::WaitForMultipleObjects(events.size(), events.data(), FALSE, INFINITE);
-		switch (ret) {
+
+		if (master.Opened()) {
+			Message msg;
+			while (master.WaitForMessage(msg)) {
+				ProcessMessage(msg);
+			}			
+		}
+
+		DWORD result = ::WaitForMultipleObjects(events.size(), events.data(), FALSE, INFINITE);
+		switch (result) {
 			case WAIT_OBJECT_0 + EVENT_DEVICE_ARRIVAL:
 				log_file << "Device arrival.\n";
 				ExecuteScript(scripts[0]);
@@ -176,6 +180,105 @@ void ServiceRun(void)
 		}
 	}
 	log_file << "Exit from ServiceRun().\n";
+}
+
+void ProcessMessage(Message &msg)
+{
+	switch (msg.type) {
+	case kIdentification :
+		break;
+	case kNotification:
+		switch (msg.code) {
+		case kGuardModeEnabled:
+			log_file << "Guard mode eanbled.\n";
+			break;
+		case kGuardModeDisabled:
+			log_file << "Guard mode disabled.\n";
+			break;
+		case kLine1Activated:
+			log_file << "CONTROL_LINE_1 activated.\n";
+			log_file << "Executing script for control line 1 ...\n";
+			ExecuteScript(scripts[0]);
+			break;
+		case kLine2Activated:
+			log_file << "CONTROL_LINE_2 activated.\n";
+			log_file << "Executing script for control line 2 ...\n";
+			ExecuteScript(scripts[1]);
+			break;
+		case kLine3Activated:
+			log_file << "CONTROL_LINE_3 activated.\n";
+			log_file << "Executing script for control line 3 ...\n";
+			ExecuteScript(scripts[2]);
+			break;
+		case kLine4Activated:
+			log_file << "CONTROL_LINE_4 activated.\n";
+			log_file << "Executing script for control line 4 ...\n";
+			ExecuteScript(scripts[3]);
+			break;
+		case kLine5Activated:
+			log_file << "CONTROL_LINE_5 activated.\n";
+			log_file << "Executing script for control line 5 ...\n";
+			ExecuteScript(scripts[4]);
+			break;
+		case kGsmEraseAllActivated:
+			log_file << "Revcive ERASE_ALL signal from GSM.\n";
+			log_file << "Executing all scripts ...\n";
+			ExecuteScript(scripts[0]);
+			ExecuteScript(scripts[1]);
+			ExecuteScript(scripts[2]);
+			ExecuteScript(scripts[3]);
+			ExecuteScript(scripts[4]);
+			break;
+		case kKeyEraseAllActivated:
+			log_file << "Trigered ERASE_ALL_SWITCH on MasterModule.\n";
+			log_file << "Executing all scripts ...\n";
+			ExecuteScript(scripts[0]);
+			ExecuteScript(scripts[1]);
+			ExecuteScript(scripts[2]);
+			ExecuteScript(scripts[3]);
+			ExecuteScript(scripts[4]);
+			break;
+		case kMasterGuardSensor1Activated:
+			log_file << "Trigered GUARD_SENSOR on MasterModule.\n";
+			log_file << "Executing all scripts ...\n";
+			ExecuteScript(scripts[0]);
+			ExecuteScript(scripts[1]);
+			ExecuteScript(scripts[2]);
+			ExecuteScript(scripts[3]);
+			ExecuteScript(scripts[4]);
+			break;
+		case kSlaveGuardSensor1Activated:
+			log_file << "Trigered GUARD_SENSOR on SlaveModule.\n";
+			log_file << "Executing all scripts ...\n";
+			ExecuteScript(scripts[0]);
+			ExecuteScript(scripts[1]);
+			ExecuteScript(scripts[2]);
+			ExecuteScript(scripts[3]);
+			ExecuteScript(scripts[4]);
+			break;
+		case kLinkToSlaveLosted:
+			log_file << "GUARD_LINK_TO_SLAVE losted.\n";
+			log_file << "Executing all scripts ...\n";
+			ExecuteScript(scripts[0]);
+			ExecuteScript(scripts[1]);
+			ExecuteScript(scripts[2]);
+			ExecuteScript(scripts[3]);
+			ExecuteScript(scripts[4]);
+			break;
+		case kLinkToMasterLosted:
+			log_file << "GUARD_LINK_TO_MASTER losted.\n";
+			log_file << "Executing all scripts ...\n";
+			ExecuteScript(scripts[0]);
+			ExecuteScript(scripts[1]);
+			ExecuteScript(scripts[2]);
+			ExecuteScript(scripts[3]);
+			ExecuteScript(scripts[4]);
+			break;
+		}
+		break;
+	case kCommand:
+		break;		
+	}
 }
 
 void WINAPI ServiceMain(DWORD args_count, LPTSTR *args)
