@@ -33,6 +33,7 @@ void LogFile::PrintTimestamp(void)
 		std::fstream file(file_name.c_str(), std::fstream::in | std::fstream::out | std::fstream::app);
 		if (file.is_open()) {
 			file << time_string;
+			file.flush();
 		}
 		file.close();
 	}
@@ -68,6 +69,7 @@ LogFile &LogFile::operator << (const char *text)
 		PrintTimestamp();
 		file << text;
 	}
+	file.flush();
 	file.close();
 	return *this;
 }
@@ -79,6 +81,7 @@ LogFile &LogFile::operator << (const DWORD value)
 		PrintTimestamp();
 		file << std::to_string(value).c_str();
 	}
+	file.flush();
 	file.close();
 	return *this;
 }

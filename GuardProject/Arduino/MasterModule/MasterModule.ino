@@ -135,9 +135,9 @@ void CheckGuardEnabled(void)
       guard_enabled = true;
       InitGuardMode();
     }
-    slave.SendMessage(msg);
     host.SendMessage(notification);
-    delay(1);
+    slave.SendMessage(msg);
+    delay(100);
   }
 }
 
@@ -150,6 +150,7 @@ void CheckGsmLines(void)
       msg.type = MessageType::kNotification;
       msg.code = NotificationType::kLine1Activated;
       host.SendMessage(msg);
+      delay(100);
       WaitForEndLowImpulse(GSM_LINE_1_PIN);
       line_1_activated = true;
     }
@@ -160,6 +161,7 @@ void CheckGsmLines(void)
       msg.type = MessageType::kNotification;
       msg.code = NotificationType::kLine2Activated;
       host.SendMessage(msg);
+      delay(100);
       WaitForEndLowImpulse(GSM_LINE_2_PIN);
       line_2_activated = true;
     }
@@ -172,6 +174,7 @@ void CheckGsmLines(void)
       msg.type = MessageType::kNotification;
       msg.code = NotificationType::kLine3Activated;
       host.SendMessage(msg);
+      delay(100);
       WaitForEndLowImpulse(GSM_LINE_3_PIN);
       line_3_activated = true;
     }
@@ -184,6 +187,7 @@ void CheckGsmLines(void)
       msg.type = MessageType::kNotification;
       msg.code = NotificationType::kLine4Activated;
       host.SendMessage(msg);
+      delay(100);
       WaitForEndLowImpulse(GSM_LINE_4_PIN);
       line_4_activated = true;
     }
@@ -196,6 +200,7 @@ void CheckGsmLines(void)
       msg.type = MessageType::kNotification;
       msg.code = NotificationType::kLine5Activated;
       host.SendMessage(msg);
+      delay(100);
       WaitForEndLowImpulse(GSM_LINE_5_PIN);
       line_5_activated = true;
     }
@@ -210,6 +215,7 @@ void CheckGuardSensor1(void)
     msg.type = MessageType::kNotification;
     msg.code = NotificationType::kMasterGuardSensor1Activated;
     host.SendMessage(msg);
+    delay(100);
   }
 }
 
@@ -221,6 +227,7 @@ void CheckGsmEraseAll(void)
     msg.type = MessageType::kNotification;
     msg.code = NotificationType::kGsmEraseAllActivated;
     host.SendMessage(msg);
+    delay(100);
     WaitForEndLowImpulse(GSM_ERASE_ALL_PIN);
   }
 }
@@ -233,6 +240,8 @@ void CheckKeyEraseAll(void)
     msg.type = MessageType::kNotification;
     msg.code = NotificationType::kKeyEraseAllActivated;
     host.SendMessage(msg);
+    delay(100);
+    WaitForEndLowImpulse(KEY_ERASE_ALL_PIN);
   }
 }
 
@@ -244,6 +253,7 @@ void CheckLinkToSlave()
     msg.type = MessageType::kNotification;
     msg.code = NotificationType::kLinkToSlaveLosted;
     host.SendMessage(msg);
+    delay(100);
   }
 }
 
@@ -273,15 +283,13 @@ void loop()
       switch (msg.code) {
         case NotificationType::kSlaveGuardSensor1Activated:
           host.SendMessage(msg);
+          delay(1);
           ActivateAllLines();
-          msg.code = NotificationType::kAllLinesActivated;
-          host.SendMessage(msg);
           break;
         case NotificationType::kLinkToMasterLosted:
           host.SendMessage(msg);
+          delay(1);
           ActivateAllLines();
-          msg.code = NotificationType::kAllLinesActivated;
-          host.SendMessage(msg);
           break;
         default:
           Blink(100,20);

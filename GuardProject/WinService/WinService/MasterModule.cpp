@@ -54,6 +54,7 @@ bool MasterModule::WaitForMessage(Message &msg)
 
 	GetTickCount();
 
+	msg.Clear();
 	while (com.WaitForInputData()) {
 		while (com.Read(&byte, 1)) {
 
