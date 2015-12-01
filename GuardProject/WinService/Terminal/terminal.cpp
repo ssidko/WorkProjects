@@ -14,7 +14,7 @@ bool Terminal::Initialize(void)
 {
 	UpdateComPortsCombobox();
 	connect(ui.open_button, SIGNAL(clicked()), this, SLOT(OnOpenButton()));
-	connect(&msg_reciver, SIGNAL(MessageRecived(Message)), this, SLOT(OnMessageRecived(Message)), Qt::DirectConnection);
+	connect(&msg_reciver, SIGNAL(MessageRecived(Message)), this, SLOT(OnMessageRecived(Message)), Qt::QueuedConnection);
 	return true;
 }
 
