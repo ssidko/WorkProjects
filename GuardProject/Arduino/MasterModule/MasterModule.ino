@@ -131,6 +131,7 @@ void CheckGuardEnabled(void)
     }
     slave.SendMessage(msg);
     host.SendMessage(notification);
+    delay(1);
   }
 }
 

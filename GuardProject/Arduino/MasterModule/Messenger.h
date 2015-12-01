@@ -27,9 +27,11 @@ typedef struct _Message {
     type = 0;
     code = 0;
   }
-  _Message(byte msg_type, byte code) {
+  _Message(byte msg_type, byte msg_code) {
     header = MESSAGE_HEADER;
     footer = MESSAGE_FOOTER;
+    type = msg_type;
+    code = msg_code;
   };
 } Message;
 

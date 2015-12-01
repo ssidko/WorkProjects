@@ -9,6 +9,7 @@
 class ComPort
 {
 private:
+	DWORD last_error;
 	HANDLE handle;
 	std::string name;
 public:
@@ -17,11 +18,13 @@ public:
 	~ComPort();
 
 	static void AvailableComPorts(std::list<std::string> &com_list);
-	bool Open();
+	bool Open(DWORD baud_rate = CBR_9600);
 	bool Open(const char *com_port_name);
 	void Close();
 	bool Write(const void *buff, DWORD size);
 	bool Read(void *buff, DWORD size);
+	bool WaitForInputData(void);
+	void Test(void);
 };
 
 #endif // _COM_PORT_H

@@ -6,17 +6,17 @@
 
 #include "MessageTypes.h"
 
-#define MESSAGE_HEADER      (byte)0x55
-#define MESSAGE_FOOTER      (byte)0xAA
+#define MESSAGE_HEADER      (BYTE)0x55
+#define MESSAGE_FOOTER      (BYTE)0xAA
 
 #pragma pack (push)
 #pragma pack (1)
 
 typedef struct _Message {
-	byte header;
-	byte type;
-	byte code;
-	byte footer;
+	BYTE header;
+	BYTE type;
+	BYTE code;
+	BYTE footer;
 
 	bool IsValidMessage(void) {
 		return ((header == MESSAGE_HEADER) && (footer == MESSAGE_FOOTER));
@@ -32,9 +32,11 @@ typedef struct _Message {
 		type = 0;
 		code = 0;
 	}
-	_Message(byte msg_type, byte code) {
+	_Message(byte msg_type, byte msg_code) {
 		header = MESSAGE_HEADER;
 		footer = MESSAGE_FOOTER;
+		type = msg_type;
+		code = msg_code;
 	};
 } Message;
 
@@ -45,14 +47,14 @@ class MessageReciver : public QThread
 	Q_OBJECT
 private:
 	QThread thread;
-	ComPort *com;
+	ComPort *com_port;
 protected:
 	virtual void run();
 public:
-	MessageReciver(void) : com(nullptr) {}
+	MessageReciver(void) : com_port(nullptr) {}
 	~MessageReciver();
 
-	void WaitForMessage(ComPort &com_port);
+	bool WaitForMessage(const char *com_name);
 
 signals:
 	void MessageRecived(Message);

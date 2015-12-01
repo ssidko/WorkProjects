@@ -14,6 +14,7 @@ bool Terminal::Initialize(void)
 {
 	UpdateComPortsCombobox();
 	connect(ui.open_button, SIGNAL(clicked()), this, SLOT(OnOpenButton()));
+	connect(&msg_reciver, SIGNAL(MessageRecived(Message)), this, SLOT(OnMessageRecived(Message)), Qt::DirectConnection);
 	return true;
 }
 
@@ -30,15 +31,14 @@ void Terminal::UpdateComPortsCombobox()
 
 void Terminal::OnOpenButton(void)
 {
-	//ComPort com_port;
-	//QString com_name = ui.com_ports_combobox->currentText();
-	//ui.text_edit->insertPlainText(com_name + "\n");
-	//if (com_port.Open(com_name.toLocal8Bit())) {
-	//	msg_reciver.WaitForMessage(com_port);
-	//}
+	ComPort com_port;
+	QString com_name = ui.com_ports_combobox->currentText();
+	ui.text_edit->insertPlainText("Com port opened.\n");
 
-	Message msg;
-	OnMessageRecived(msg);
+	msg_reciver.WaitForMessage(com_name.toLocal8Bit());
+
+	//Message msg;
+	//OnMessageRecived(msg);
 
 }
 
