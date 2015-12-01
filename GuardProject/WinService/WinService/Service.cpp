@@ -55,7 +55,7 @@ bool ServiceInitialize(DWORD args_count, LPWSTR *args)
 	filter.dbcc_devicetype = DBT_DEVTYP_DEVICEINTERFACE;
 	filter.dbcc_classguid = GUID_DEVINTERFACE_COMPORT;
 
-	notify_handle = ::RegisterDeviceNotification(svc_status_handle, &filter, DEVICE_NOTIFY_SERVICE_HANDLE /*| DEVICE_NOTIFY_ALL_INTERFACE_CLASSES*/);
+	notify_handle = ::RegisterDeviceNotification(svc_status_handle, &filter, DEVICE_NOTIFY_SERVICE_HANDLE | DEVICE_NOTIFY_ALL_INTERFACE_CLASSES);
 	if (notify_handle) {
 		log_file << "Notification filter registered\n";
 	}
@@ -187,11 +187,11 @@ DWORD WINAPI ServiceControlHandlerEx(DWORD  control_code, DWORD  event_type, LPV
 		case SERVICE_CONTROL_DEVICEEVENT:
 			switch (event_type) {
 				case DBT_DEVICEARRIVAL:
-					log_file << "DBT_DEVICEARRIVAL\n";
+					//log_file << "DBT_DEVICEARRIVAL\n";
 					::SetEvent(events[EVENT_DEVICE_ARRIVAL]);
 					break;
 				case DBT_DEVICEREMOVECOMPLETE:
-					log_file << "DBT_DEVICEREMOVECOMPLETE\n";
+					//log_file << "DBT_DEVICEREMOVECOMPLETE\n";
 					::SetEvent(events[EVENT_DEVICE_REMOVE]);
 					break;
 				default:

@@ -10,19 +10,26 @@
 #pragma comment(lib, "Setupapi.lib")
 #pragma comment(lib, "Advapi32.lib")
 
-ComPort::ComPort(const char *com_port_name) : name(com_port_name)
+#define EV_LEONARDO_RXCHAR					(DWORD)1025		
+
+ComPort::ComPort() : name(""), handle(INVALID_HANDLE_VALUE)
+{
+}
+
+ComPort::ComPort(const char *com_port_name) : name(com_port_name), handle(INVALID_HANDLE_VALUE), last_error(0)
 {
 }
 
 ComPort::~ComPort()
 {
+	Close();
 }
 
 void ComPort::AvailableComPorts(std::list<std::string> &com_list)
 {
 	com_list.clear();
 	std::string dev_name_prefix = "\\\\.\\";
-	HDEVINFO dev_info_set = ::SetupDiGetClassDevs(&GUID_DEVINTERFACE_COMPORT, NULL, NULL, DIGCF_PRESENT | DIGCF_DEVICEINTERFACE);
+	HDEVINFO dev_info_set = ::SetupDiGetClassDevs(&GUID_DEVINTERFACE_COMPORT, NULL, NULL, DIGCF_PRESENT | /*DIGCF_DEVICEINTERFACE*/DIGCF_ALLCLASSES);
 	if (dev_info_set != INVALID_HANDLE_VALUE) {
 		DWORD index = 0;
 		SP_DEVINFO_DATA dev_info;
@@ -55,11 +62,15 @@ void ComPort::AvailableComPorts(std::list<std::string> &com_list)
 					else if (ret == ERROR_SUCCESS) {
 						if (dataType == REG_SZ) {
 							portName = dev_name_prefix + (const char *)out_buff.data();
-							com_list.push_back(portName);
+							if (portName.find("COM") != std::string::npos) {
+								com_list.push_back(portName);
+							}
 						}
 						else if (dataType == REG_DWORD) {
 							portName = dev_name_prefix + "COM" + std::to_string(*((PDWORD)out_buff.data()));
-							com_list.push_back(portName);
+							if (portName.find("COM") != std::string::npos) {
+								com_list.push_back(portName);
+							}
 						}
 					}
 					break;
@@ -70,51 +81,57 @@ void ComPort::AvailableComPorts(std::list<std::string> &com_list)
 	}
 }
 
-bool ComPort::Open()
+bool ComPort::Open(DWORD baud_rate)
 {
+	last_error = 0;
 	handle = ::CreateFileA(name.c_str(), GENERIC_READ | GENERIC_WRITE, 0/*exclusive access*/, NULL, OPEN_EXISTING, FILE_FLAG_OVERLAPPED, NULL);
 	if (handle != INVALID_HANDLE_VALUE) {
 		SetupComm(handle, 2048, 2048);
-
 		COMMTIMEOUTS com_time_outs;
 		com_time_outs.ReadIntervalTimeout = 0xFFFFFFFF;
 		com_time_outs.ReadTotalTimeoutMultiplier = 0;
 		com_time_outs.ReadTotalTimeoutConstant = 1000;
 		com_time_outs.WriteTotalTimeoutMultiplier = 0;
 		com_time_outs.WriteTotalTimeoutConstant = 1000;
-		if (!SetCommTimeouts(handle, &com_time_outs)) {
-			::CloseHandle(handle);
-			return false;
+		if (SetCommTimeouts(handle, &com_time_outs)) {
+			DCB com_param;
+			memset(&com_param, 0x00, sizeof(com_param));
+			com_param.DCBlength = sizeof(DCB);
+			if (GetCommState(handle, &com_param)) {
+				com_param.BaudRate = baud_rate;
+				com_param.ByteSize = 8;
+				com_param.StopBits = ONESTOPBIT;
+				com_param.Parity = NOPARITY;
+
+				if (SetCommState(handle, &com_param)) {
+					if (SetCommMask(handle, EV_RXCHAR)) {
+						::Sleep(2000); // Ардуине нужно время чтобы загрузиться.
+						return true;
+					}
+				}
+			}
 		}
-		DCB com_param;
-		memset(&com_param, 0x00, sizeof(com_param));
-		com_param.DCBlength = sizeof(DCB);
-		if (!GetCommState(handle, &com_param)) {
-			::CloseHandle(handle);
-			return false;
-		}
-		com_param.BaudRate = CBR_9600;
-		com_param.ByteSize = 8;
-		com_param.StopBits = ONESTOPBIT;
-		com_param.Parity = NOPARITY;
-		com_param.fAbortOnError = TRUE;
-		com_param.fDtrControl = DTR_CONTROL_DISABLE;
-		com_param.fRtsControl = RTS_CONTROL_DISABLE;
-		com_param.fInX = FALSE;
-		com_param.fOutX = FALSE;
-		com_param.XonLim = 128;
-		com_param.XoffLim = 128;
-		com_param.fNull = FALSE;
-		if (!SetCommState(handle, &com_param)) {
-			::CloseHandle(handle);
-			return false;
-		}
-		::PurgeComm(handle, PURGE_RXCLEAR | PURGE_TXABORT);
-		::CancelIo(handle);
-		::Sleep(2000); // Ардуине нужно время чтобы загрузиться.
-		return true;
+		::CloseHandle(handle);
 	}
+	last_error = ::GetLastError();
 	return false;
+}
+
+bool ComPort::Open(const char *com_port_name)
+{
+	name = com_port_name;
+	return Open();
+}
+
+void ComPort::Close()
+{
+	//::PurgeComm(handle, PURGE_RXCLEAR | PURGE_TXABORT);
+	::CancelIo(handle);
+	if (handle != INVALID_HANDLE_VALUE) {
+		::CloseHandle(handle);
+		handle = INVALID_HANDLE_VALUE;
+	}
+	last_error = 0;
 }
 
 bool ComPort::Write(const void *buff, DWORD size)
@@ -174,7 +191,9 @@ bool ComPort::Read(void *buff, DWORD size)
 			switch (wait_result) {
 			case WAIT_OBJECT_0:
 				if (::GetOverlappedResult(handle, &o, &rw, TRUE)) {
-					ret = true;
+					if (rw) {
+						ret = true;
+					}
 					break;
 				}
 			default:
@@ -190,4 +209,80 @@ bool ComPort::Read(void *buff, DWORD size)
 	}
 	::CloseHandle(o.hEvent);
 	return ret;
+}
+
+bool ComPort::WaitForInputData(void)
+{
+	bool ret = false;
+	DWORD result = 0;
+	DWORD event_type = 0;
+	DWORD err = 0;
+	OVERLAPPED sync = { 0 };
+
+	last_error = 0;
+	sync.hEvent = ::CreateEvent(NULL, TRUE, FALSE, NULL);
+	if (sync.hEvent) {
+
+		if (::WaitCommEvent(handle, &event_type, &sync)) {
+			if (event_type == EV_RXCHAR || event_type == EV_LEONARDO_RXCHAR) {
+				ret = true;
+			} else {
+				ret = false;
+			}
+		}
+
+		err = ::GetLastError();
+		if ((ret == false) && (ERROR_IO_PENDING == err)) {
+			result = ::WaitForSingleObject(sync.hEvent, INFINITE);
+			switch (result) {
+			case WAIT_OBJECT_0:
+				ret = true;
+				break;
+			default:
+				ret = false;
+				break;
+			}
+		}		
+
+		::CloseHandle(sync.hEvent);
+	}
+	last_error = ::GetLastError();
+	return ret;
+}
+
+void ComPort::Test(void)
+{
+	if (this->Open()) {
+		//Message msg;
+		//BYTE *ptr = (BYTE *)&msg;
+		//int bytes_count = 0;
+		//BYTE byte;
+
+		//while (com_port->WaitForInputData()) {
+		//	while (com_port->Read(&byte, 1)) {
+
+		//		if (bytes_count == 0x00) {
+		//			ptr = (BYTE *)&msg;
+		//			if (byte == MESSAGE_HEADER) {
+		//				ptr[bytes_count] = byte;
+		//				bytes_count++;
+		//			}
+		//		}
+		//		else {
+		//			ptr[bytes_count] = byte;
+		//			bytes_count++;
+		//			if (bytes_count == sizeof(Message)) {
+		//				if (msg.IsValidMessage()) {
+		//					//
+		//					// Message recived.
+		//					//
+		//					//emit(MessageRecived(msg));
+		//				}
+		//				bytes_count = 0;
+		//			}
+		//		}
+		//	}
+		//	int x = 0;
+		//}
+	}
 }
