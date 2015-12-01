@@ -38,6 +38,8 @@ bool InstallService(const TCHAR *svc_name)
 		last_error = ::GetLastError();
 		std::cout << "Error code: " << last_error << "\n";
 		return false;
+	} else {
+		std::cout << "Service installed.\n";
 	}
 
 	::CloseServiceHandle(svc_handle);
@@ -93,11 +95,19 @@ int _tmain(int argc, _TCHAR* argv[])
 {
 	bool result = false;
 
-	std::wstring service_module_path = _T("D:\\GitHub\\WorkProjects\\GuardProject\\WinService\\Debug\\WinService.exe");
+	std::wstring service_module_path = _T("GuardSystemSvc.exe");
 	std::wstring cmd_line = service_module_path;
 
-	result = InstallService(cmd_line.c_str());
+	if (argc >= 2) {
+		cmd_line = argv[1];
+		result = InstallService(cmd_line.c_str());
+	}
+
+	//result = InstallService(cmd_line.c_str());
 	//result = DeleteService(SERVICE_NAME);
+
+	int x = 0;
+	std::cin >> x;
 
 	return 0;
 }
