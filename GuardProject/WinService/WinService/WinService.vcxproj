@@ -78,6 +78,9 @@
   <ItemGroup>
     <ClInclude Include="ComPort.h" />
     <ClInclude Include="LogFile.h" />
+    <ClInclude Include="MasterModule.h" />
+    <ClInclude Include="Message.h" />
+    <ClInclude Include="MessageTypes.h" />
     <ClInclude Include="Service.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="SvcGeneral.h" />
@@ -86,6 +89,7 @@
   <ItemGroup>
     <ClCompile Include="ComPort.cpp" />
     <ClCompile Include="LogFile.cpp" />
+    <ClCompile Include="MasterModule.cpp" />
     <ClCompile Include="Service.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

@@ -35,6 +35,15 @@
     <ClInclude Include="ComPort.h">
       <Filter>Core</Filter>
     </ClInclude>
+    <ClInclude Include="MasterModule.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Message.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="MessageTypes.h">
+      <Filter>Core</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -50,6 +59,9 @@
       <Filter>Utility</Filter>
     </ClCompile>
     <ClCompile Include="ComPort.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="MasterModule.cpp">
       <Filter>Core</Filter>
     </ClCompile>
   </ItemGroup>

@@ -5,6 +5,7 @@
 #include "windows.h"
 #include "SvcGeneral.h"
 #include <string>
+#include "MasterModule.h"
 
 bool ServiceInitialize(DWORD args_count, LPWSTR *args);
 void ServiceDeinitialize(void);

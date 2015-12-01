@@ -7,6 +7,13 @@
 #include "ComPort.h"
 
 #define LOG_FILE_NAME			"GuardSystem.log"
+#define SCRIPT_LINE_1			"script1.bat"
+#define SCRIPT_LINE_2			"script2.bat"
+#define SCRIPT_LINE_3			"script3.bat"
+#define SCRIPT_LINE_4			"script4.bat"
+#define SCRIPT_LINE_5			"script5.bat"
+#define SCRIPTS_COUNT			5
+
 
 LogFile log_file;
 SERVICE_STATUS svc_status;
@@ -24,6 +31,11 @@ bool ServiceInitialize(DWORD args_count, LPWSTR *args)
 {
 	DWORD error_code = 0;
 
+	//
+	// Log file initialization
+	//
+
+	std::string log_file_name;
 	std::string service_directory;
 	service_directory.resize(MAX_PATH);
 	if (::GetModuleFileNameA(NULL, &service_directory[0], service_directory.length()) == 0x00) {
@@ -40,14 +52,46 @@ bool ServiceInitialize(DWORD args_count, LPWSTR *args)
 		return false;
 	}
 
-	std::string log_file_name(service_directory, 0, pos + 1);
-	log_file_name += LOG_FILE_NAME;
+	service_directory.resize(pos + 1);
 
+	log_file_name = service_directory + LOG_FILE_NAME;
 	log_file.SetOutFile(log_file_name.c_str());
 
 	log_file << "\n" << "*** Service initialization *** \n";
-
 	log_file.PrintLine("Log file name: %s", log_file_name.c_str());
+
+	//
+	// Set work directory
+	//
+
+	//log_file.PrintLine("Work directory: %s", service_directory.c_str());
+	//if (::SetCurrentDirectoryA(service_directory.c_str())) {
+	//	log_file << "Set work directory seccessful. \n";
+	//} else {
+	//	log_file.PrintLine("Set work directory error. WinError code: %d", ::GetLastError());
+	//}
+
+	//
+	// Scripts initialization
+	//
+
+	scripts.resize(SCRIPTS_COUNT);
+	scripts[0] = service_directory + SCRIPT_LINE_1;
+	scripts[1] = service_directory + SCRIPT_LINE_2;
+	scripts[2] = service_directory + SCRIPT_LINE_3;
+	scripts[3] = service_directory + SCRIPT_LINE_4;
+	scripts[4] = service_directory + SCRIPT_LINE_5;
+
+	log_file.PrintLine("Script for control line 1: %s", scripts[0].c_str());
+	log_file.PrintLine("Script for control line 2: %s", scripts[1].c_str());
+	log_file.PrintLine("Script for control line 3: %s", scripts[2].c_str());
+	log_file.PrintLine("Script for control line 4: %s", scripts[3].c_str());
+	log_file.PrintLine("Script for control line 5: %s", scripts[4].c_str());
+
+
+	//
+	// Notification initialization
+	//
 
 	DEV_BROADCAST_DEVICEINTERFACE filter;
 	memset(&filter, 0x00, sizeof(filter));
@@ -110,20 +154,20 @@ void ServiceRun(void)
 
 	DWORD ret = 0;
 
-	std::string script_file = "D:\\arrival.bat";
+	std::string script = "D:\\arrival.bat";
 
 	while (true) {
 		ret = ::WaitForMultipleObjects(events.size(), events.data(), FALSE, INFINITE);
 		switch (ret) {
 			case WAIT_OBJECT_0 + EVENT_DEVICE_ARRIVAL:
 				log_file << "Device arrival.\n";
-				ExecuteScript(script_file);
+				ExecuteScript(scripts[0]);
 				::ResetEvent(events[EVENT_DEVICE_ARRIVAL]);
 				break;
 
 			case WAIT_OBJECT_0 + EVENT_DEVICE_REMOVE:
 				log_file << "Device remove.\n";
-				ExecuteScript(script_file);
+				ExecuteScript(scripts[1]);
 				::ResetEvent(events[EVENT_DEVICE_REMOVE]);
 				break;
 
@@ -187,11 +231,9 @@ DWORD WINAPI ServiceControlHandlerEx(DWORD  control_code, DWORD  event_type, LPV
 		case SERVICE_CONTROL_DEVICEEVENT:
 			switch (event_type) {
 				case DBT_DEVICEARRIVAL:
-					//log_file << "DBT_DEVICEARRIVAL\n";
 					::SetEvent(events[EVENT_DEVICE_ARRIVAL]);
 					break;
 				case DBT_DEVICEREMOVECOMPLETE:
-					//log_file << "DBT_DEVICEREMOVECOMPLETE\n";
 					::SetEvent(events[EVENT_DEVICE_REMOVE]);
 					break;
 				default:
