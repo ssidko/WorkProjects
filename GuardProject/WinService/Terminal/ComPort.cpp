@@ -9,6 +9,8 @@
 #pragma comment(lib, "Setupapi.lib")
 #pragma comment(lib, "Advapi32.lib")
 
+#define EV_LEONARDO_RXCHAR					(DWORD)1025		
+
 ComPort::ComPort() : name(""), handle(INVALID_HANDLE_VALUE)
 {
 }
@@ -26,7 +28,7 @@ void ComPort::AvailableComPorts(std::list<std::string> &com_list)
 {
 	com_list.clear();
 	std::string dev_name_prefix = "\\\\.\\";
-	HDEVINFO dev_info_set = ::SetupDiGetClassDevs(&GUID_DEVINTERFACE_COMPORT, NULL, NULL, DIGCF_PRESENT | DIGCF_DEVICEINTERFACE);
+	HDEVINFO dev_info_set = ::SetupDiGetClassDevs(&GUID_DEVINTERFACE_COMPORT, NULL, NULL, DIGCF_PRESENT | /*DIGCF_DEVICEINTERFACE*/DIGCF_ALLCLASSES);
 	if (dev_info_set != INVALID_HANDLE_VALUE) {
 		DWORD index = 0;
 		SP_DEVINFO_DATA dev_info;
@@ -59,11 +61,15 @@ void ComPort::AvailableComPorts(std::list<std::string> &com_list)
 					else if (ret == ERROR_SUCCESS) {
 						if (dataType == REG_SZ) {
 							portName = dev_name_prefix + (const char *)out_buff.data();
-							com_list.push_back(portName);
+							if (portName.find("COM") != std::string::npos) {
+								com_list.push_back(portName);
+							}
 						}
 						else if (dataType == REG_DWORD) {
 							portName = dev_name_prefix + "COM" + std::to_string(*((PDWORD)out_buff.data()));
-							com_list.push_back(portName);
+							if (portName.find("COM") != std::string::npos) {
+								com_list.push_back(portName);
+							}
 						}
 					}
 					break;
@@ -95,14 +101,7 @@ bool ComPort::Open(DWORD baud_rate)
 				com_param.ByteSize = 8;
 				com_param.StopBits = ONESTOPBIT;
 				com_param.Parity = NOPARITY;
-				//com_param.fAbortOnError = TRUE;
-				//com_param.fDtrControl = DTR_CONTROL_DISABLE;
-				//com_param.fRtsControl = RTS_CONTROL_DISABLE;
-				//com_param.fInX = FALSE;
-				//com_param.fOutX = FALSE;
-				//com_param.XonLim = 128;
-				//com_param.XoffLim = 128;
-				//com_param.fNull = FALSE;
+
 				if (SetCommState(handle, &com_param)) {
 					if (SetCommMask(handle, EV_RXCHAR)) {
 						::Sleep(2000); // Ардуине нужно время чтобы загрузиться.
@@ -216,6 +215,7 @@ bool ComPort::WaitForInputData(void)
 	bool ret = false;
 	DWORD result = 0;
 	DWORD event_type = 0;
+	DWORD err = 0;
 	OVERLAPPED sync = { 0 };
 
 	last_error = 0;
@@ -223,14 +223,15 @@ bool ComPort::WaitForInputData(void)
 	if (sync.hEvent) {
 
 		if (::WaitCommEvent(handle, &event_type, &sync)) {
-			if (event_type == EV_RXCHAR) {
+			if (event_type == EV_RXCHAR || event_type == EV_LEONARDO_RXCHAR) {
 				ret = true;
 			} else {
 				ret = false;
 			}
 		}
 
-		if ((ret == false) && (ERROR_IO_PENDING == ::GetLastError())) {
+		err = ::GetLastError();
+		if ((ret == false) && (ERROR_IO_PENDING == err)) {
 			result = ::WaitForSingleObject(sync.hEvent, INFINITE);
 			switch (result) {
 			case WAIT_OBJECT_0:
