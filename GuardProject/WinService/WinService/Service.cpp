@@ -158,7 +158,8 @@ void ServiceRun(void)
 			Message msg;
 			while (master.WaitForMessage(msg)) {
 				ProcessMessage(msg);
-			}			
+			}
+			master.Close();
 		}
 
 		DWORD result = ::WaitForMultipleObjects(events.size(), events.data(), FALSE, INFINITE);

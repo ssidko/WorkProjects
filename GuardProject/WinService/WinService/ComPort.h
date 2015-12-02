@@ -21,6 +21,7 @@ public:
 	bool Open(DWORD baud_rate = CBR_9600);
 	bool Open(const char *com_port_name);
 	void Close();
+	std::string Name(void) { return name; }
 	bool Write(const void *buff, DWORD size);
 	bool Read(void *buff, DWORD size, DWORD timeout);
 	bool Read(void *buff, DWORD size);

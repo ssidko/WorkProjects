@@ -98,11 +98,19 @@ int _tmain(int argc, _TCHAR* argv[])
 	std::wstring service_module_path = _T("GuardSystemSvc.exe");
 	std::wstring cmd_line = service_module_path;
 
-	if (argc >= 2) {
+	if (argc == 2) {
 		cmd_line = argv[1];
 		result = InstallService(cmd_line.c_str());
+	} else if (argc == 3) {
+		std::wstring argument = argv[2];
+		if (argument == _T("install")) {
+			InstallService(argv[1]);
+		} else if (argument == _T("uninstall")) {
+			std::wstring svc_name = argv[1];
+			DeleteService(SERVICE_NAME);
+		}
 	}
-
+		 
 	//result = InstallService(cmd_line.c_str());
 	//result = DeleteService(SERVICE_NAME);
 

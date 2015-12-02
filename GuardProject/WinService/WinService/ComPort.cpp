@@ -125,8 +125,8 @@ bool ComPort::Open(const char *com_port_name)
 void ComPort::Close()
 {
 	//::PurgeComm(handle, PURGE_RXCLEAR | PURGE_TXABORT);
-	::CancelIo(handle);
 	if (handle != INVALID_HANDLE_VALUE) {
+		::CancelIo(handle);
 		::CloseHandle(handle);
 		handle = INVALID_HANDLE_VALUE;
 	}
