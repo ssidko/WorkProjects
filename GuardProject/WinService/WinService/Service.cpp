@@ -390,10 +390,6 @@ bool ExecuteScript(std::string &script_file)
 
 	si.cb = sizeof(si);
 
-	si.dwFlags = STARTF_USESHOWWINDOW;
-	si.wShowWindow = SW_SHOW;
-	si.lpTitle = "GuardSystem console";
-
 	std::string cmd_line = "/C " + script_file;
 	if (!CreateProcessA("cmd.exe", &cmd_line[0], NULL, NULL, FALSE, 0, NULL, NULL, &si, &pi)) {
 		log_file.PrintLine("Error when executing the script (%s). WinError code: %d.", script_file.c_str(), ::GetLastError());
