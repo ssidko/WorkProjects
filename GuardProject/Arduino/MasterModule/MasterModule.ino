@@ -118,7 +118,7 @@ void InitGuardMode(void)
 
 bool IsGuardEnabled(void)
 {
-  return (digitalRead(GUARD_MODE_ENABLE_PIN) == HIGH);
+  return (digitalRead(GUARD_MODE_ENABLE_PIN) == LOW);
 }
 
 void CheckGuardEnabled(void)
