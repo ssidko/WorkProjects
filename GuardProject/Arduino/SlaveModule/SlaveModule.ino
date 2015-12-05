@@ -47,8 +47,8 @@ void MakeLowImpulse(int pin, int duration)
 }
 
 void setup() {
-  Serial.begin(9600);
-  master.Init(Serial);
+  Serial1.begin(9600);
+  master.Init(Serial1);
   pinMode(LED_PIN, OUTPUT);
   pinMode(GUARD_SENSOR_1_PIN, INPUT);
   pinMode(CONTROL_LINE_3_PIN, OUTPUT);
