@@ -96,7 +96,7 @@ void ActivateAllLocalLines(void)
 inline bool GuardSensor1Activated(void)
 {
   if (digitalRead(GUARD_SENSOR_1_PIN) == LOW) {
-    delay(IN_OUT_IMPULSE_DURATION);
+    delay(IN_IMPULSE_DURATION);
     return (digitalRead(GUARD_SENSOR_1_PIN) == LOW);    
   }
   return false;  
@@ -118,7 +118,7 @@ void CheckGuardSensor1(void)
 
 inline bool LinkToMasterLosted(void)
 {
-  return (digitalRead(LINK_TO_SLAVE_IN) == LOW);
+  return (digitalRead(LINK_TO_MASTER_IN) == LOW);
 }
 
 void CheckLinkToMaster()
