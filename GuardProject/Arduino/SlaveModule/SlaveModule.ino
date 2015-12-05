@@ -15,7 +15,9 @@
 #define CONTROL_LINE_4_PIN            5       // Линия управления 4.
 #define CONTROL_LINE_5_PIN            6       // Линия управления 5.
 
-#define IMPULSE_DURATION  500
+#define OUT_IMPULSE_DURATION          500
+#define IN_IMPULSE_DURATION           50      // Минимальная длительность входных импусьсов.
+                                              // Импульсы меньшей длительности не воспринимаются.
 
 Messenger master;
 
@@ -23,6 +25,8 @@ volatile bool guard_enabled = false;
 volatile bool line_3_activated = false;
 volatile bool line_4_activated = false;
 volatile bool line_5_activated = false;
+volatile bool guard_sensor_1_activated = false;
+volatile bool link_to_master_losted = false;
 
 void Blink(int msec, int times)
 {
@@ -64,6 +68,8 @@ void InitGuardMode(void)
   line_3_activated = false;
   line_4_activated = false;
   line_5_activated = false;
+  guard_sensor_1_activated = false;
+  link_to_master_losted = false;
 }
 
 void ActivateAllLocalLines(void)
@@ -77,7 +83,7 @@ void ActivateAllLocalLines(void)
   if (!line_5_activated) {
     digitalWrite(CONTROL_LINE_5_PIN, LOW);
   }
-  delay(IMPULSE_DURATION);
+  delay(OUT_IMPULSE_DURATION);
   digitalWrite(CONTROL_LINE_3_PIN, HIGH);
   digitalWrite(CONTROL_LINE_4_PIN, HIGH);
   digitalWrite(CONTROL_LINE_5_PIN, HIGH);
@@ -87,25 +93,45 @@ void ActivateAllLocalLines(void)
   line_5_activated = true;
 }
 
+inline bool GuardSensor1Activated(void)
+{
+  if (digitalRead(GUARD_SENSOR_1_PIN) == LOW) {
+    delay(IN_OUT_IMPULSE_DURATION);
+    return (digitalRead(GUARD_SENSOR_1_PIN) == LOW);    
+  }
+  return false;  
+}
+
 void CheckGuardSensor1(void)
 {
   Message msg;
-  if (digitalRead(GUARD_SENSOR_1_PIN) == LOW) {
-    msg.type = MessageType::kNotification;
-    msg.code = NotificationType::kSlaveGuardSensor1Activated;
-    master.SendMessage(msg);
-    ActivateAllLocalLines();
+  if (GuardSensor1Activated()) {
+    if (guard_sensor_1_activated == false) {
+      guard_sensor_1_activated = true;
+      msg.type = MessageType::kNotification;
+      msg.code = NotificationType::kSlaveGuardSensor1Activated;
+      master.SendMessage(msg);
+      ActivateAllLocalLines();      
+    }
   }
+}
+
+inline bool LinkToMasterLosted(void)
+{
+  return (digitalRead(LINK_TO_SLAVE_IN) == LOW);
 }
 
 void CheckLinkToMaster()
 {
   Message msg;
-  if (digitalRead(LINK_TO_MASTER_IN) == LOW) {
-    msg.type = MessageType::kNotification;
-    msg.code = NotificationType::kLinkToMasterLosted;
-    master.SendMessage(msg);
-    ActivateAllLocalLines();
+  if (LinkToMasterLosted()) {
+    if (link_to_master_losted == false) {
+      link_to_master_losted = true;
+      msg.type = MessageType::kNotification;
+      msg.code = NotificationType::kLinkToMasterLosted;
+      master.SendMessage(msg);
+      ActivateAllLocalLines();      
+    }
   }
 }
 
@@ -123,19 +149,19 @@ void MasterMessageHandling(void)
         switch (msg.code) {
           case CommandType::kActivateLine3:
             if (!line_3_activated) {
-              MakeLowImpulse(CONTROL_LINE_3_PIN, IMPULSE_DURATION);
+              MakeLowImpulse(CONTROL_LINE_3_PIN, OUT_IMPULSE_DURATION);
               line_3_activated = true;
             }
             break; 
           case CommandType::kActivateLine4:
             if (!line_4_activated) {
-              MakeLowImpulse(CONTROL_LINE_4_PIN, IMPULSE_DURATION);
+              MakeLowImpulse(CONTROL_LINE_4_PIN, OUT_IMPULSE_DURATION);
               line_4_activated = true;
             }
             break;
           case CommandType::kActivateLine5:
             if (!line_5_activated) {
-              MakeLowImpulse(CONTROL_LINE_5_PIN, IMPULSE_DURATION);
+              MakeLowImpulse(CONTROL_LINE_5_PIN, OUT_IMPULSE_DURATION);
               line_5_activated = true;
             }
             break;

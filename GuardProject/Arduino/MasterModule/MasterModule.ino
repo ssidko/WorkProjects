@@ -22,8 +22,9 @@
 #define CONTROL_LINE_1_PIN           4      // Линия управления 1.
 #define CONTROL_LINE_2_PIN           5      // Линия управления 2.
 
-#define IMPULSE_DURATION             500
-
+#define OUT_IMPULSE_DURATION         500
+#define IN_IMPULSE_DURATION          50     // Минимальная длительность входных импусьсов.
+                                            // Импульсы меньшей длительности не воспринимаются.
 Messenger host;
 Messenger slave;
 
@@ -33,6 +34,10 @@ volatile bool line_2_activated = false;
 volatile bool line_3_activated = false;
 volatile bool line_4_activated = false;
 volatile bool line_5_activated = false;
+volatile bool gsm_erase_all_activated = false;
+volatile bool guard_sensor_1_activated = false;
+volatile bool key_erase_all_activated = false;
+volatile bool link_to_slave_losted = false;
 
 void Blink(int msec, int times)
 {
@@ -101,7 +106,7 @@ void ActivateAllLines(void)
   line_4_activated = true;
   line_5_activated = true;
   
-  delay(IMPULSE_DURATION);
+  delay(OUT_IMPULSE_DURATION);
 
   digitalWrite(CONTROL_LINE_1_PIN, HIGH);
   digitalWrite(CONTROL_LINE_2_PIN, HIGH);
@@ -114,9 +119,13 @@ void InitGuardMode(void)
   line_3_activated = false;
   line_4_activated = false;
   line_5_activated = false;
+  gsm_erase_all_activated = false;
+  guard_sensor_1_activated = false;
+  key_erase_all_activated = false;
+  link_to_slave_losted = false;
 }
 
-bool IsGuardEnabled(void)
+bool GuardEnabled(void)
 {
   return (digitalRead(GUARD_MODE_ENABLE_PIN) == LOW);
 }
@@ -126,7 +135,7 @@ void CheckGuardEnabled(void)
   Message msg(MessageType::kCommand, 0);
   Message notification(MessageType::kNotification, 0);
   msg.type = MessageType::kCommand;
-  if (guard_enabled != IsGuardEnabled()) {
+  if (guard_enabled != GuardEnabled()) {
     if (guard_enabled) {
       msg.code = CommandType::kDisableGuardMode;
       notification.code = NotificationType::kGuardModeDisabled;
@@ -149,7 +158,7 @@ void CheckGsmLines(void)
   Message msg;
   if (digitalRead(GSM_LINE_1_PIN) == LOW) {
     if (!line_1_activated) {
-      MakeLowImpulse(CONTROL_LINE_1_PIN, IMPULSE_DURATION);
+      MakeLowImpulse(CONTROL_LINE_1_PIN, OUT_IMPULSE_DURATION);
       msg.type = MessageType::kNotification;
       msg.code = NotificationType::kLine1Activated;
       host.SendMessage(msg);
@@ -160,7 +169,7 @@ void CheckGsmLines(void)
   }
   if (digitalRead(GSM_LINE_2_PIN) == LOW) {
     if (!line_2_activated) {
-      MakeLowImpulse(CONTROL_LINE_2_PIN, IMPULSE_DURATION);
+      MakeLowImpulse(CONTROL_LINE_2_PIN, OUT_IMPULSE_DURATION);
       msg.type = MessageType::kNotification;
       msg.code = NotificationType::kLine2Activated;
       host.SendMessage(msg);
@@ -210,53 +219,95 @@ void CheckGsmLines(void)
   }
 }
 
+inline bool GuardSensor1Activated(void)
+{
+  if (digitalRead(GUARD_SENSOR_1_PIN) == LOW) {
+    delay(IN_IMPULSE_DURATION);
+    return (digitalRead(GUARD_SENSOR_1_PIN) == LOW);    
+  }
+  return false;  
+}
+
 void CheckGuardSensor1(void)
 {
   Message msg;
-  if (digitalRead(GUARD_SENSOR_1_PIN) == LOW) {
-    ActivateAllLines();
-    msg.type = MessageType::kNotification;
-    msg.code = NotificationType::kMasterGuardSensor1Activated;
-    host.SendMessage(msg);
-    delay(100);
+  if (GuardSensor1Activated()) {
+    if (guard_sensor_1_activated == false) {
+      guard_sensor_1_activated = true;
+      ActivateAllLines();
+      msg.type = MessageType::kNotification;
+      msg.code = NotificationType::kMasterGuardSensor1Activated;
+      host.SendMessage(msg);
+      delay(100);      
+    }
   }
+}
+
+inline bool GsmEraseAllActivated(void)
+{
+  if (digitalRead(GSM_ERASE_ALL_PIN) == LOW) {
+    delay(IN_IMPULSE_DURATION);
+    return (digitalRead(GSM_ERASE_ALL_PIN) == LOW);    
+  }
+  return false;
 }
 
 void CheckGsmEraseAll(void)
 {
   Message msg;
-  if (digitalRead(GSM_ERASE_ALL_PIN) == LOW) {
-    ActivateAllLines();
-    msg.type = MessageType::kNotification;
-    msg.code = NotificationType::kGsmEraseAllActivated;
-    host.SendMessage(msg);
-    delay(100);
-    WaitForEndLowImpulse(GSM_ERASE_ALL_PIN);
+  if (GsmEraseAllActivated()) {
+    if (gsm_erase_all_activated == false) {
+      gsm_erase_all_activated  = true;
+      ActivateAllLines();
+      msg.type = MessageType::kNotification;
+      msg.code = NotificationType::kGsmEraseAllActivated;
+      host.SendMessage(msg);
+      delay(100);
+    }
   }
+}
+
+inline bool KeyEraseAllActivated(void)
+{
+  if (digitalRead(KEY_ERASE_ALL_PIN) == LOW) {
+    delay(IN_IMPULSE_DURATION);
+    return (digitalRead(KEY_ERASE_ALL_PIN) == LOW);    
+  }
+  return false;
 }
 
 void CheckKeyEraseAll(void)
 {
   Message msg;
-  if (digitalRead(KEY_ERASE_ALL_PIN) == LOW) {
-    ActivateAllLines();
-    msg.type = MessageType::kNotification;
-    msg.code = NotificationType::kKeyEraseAllActivated;
-    host.SendMessage(msg);
-    delay(100);
-    WaitForEndLowImpulse(KEY_ERASE_ALL_PIN);
+  if (KeyEraseAllActivated()) {
+    if (key_erase_all_activated == false) {
+      key_erase_all_activated = true;
+      ActivateAllLines();
+      msg.type = MessageType::kNotification;
+      msg.code = NotificationType::kKeyEraseAllActivated;
+      host.SendMessage(msg);
+      delay(100);
+    }
   }
+}
+
+inline bool LinkToSlaveLosted(void)
+{
+  return (digitalRead(LINK_TO_SLAVE_IN) == LOW);
 }
 
 void CheckLinkToSlave()
 {
   Message msg;
-  if (digitalRead(LINK_TO_SLAVE_IN) == LOW) {
-    ActivateAllLines();
-    msg.type = MessageType::kNotification;
-    msg.code = NotificationType::kLinkToSlaveLosted;
-    host.SendMessage(msg);
-    delay(100);
+  if (LinkToSlaveLosted()) {
+    if (link_to_slave_losted == false) {
+      link_to_slave_losted = true;
+      ActivateAllLines();
+      msg.type = MessageType::kNotification;
+      msg.code = NotificationType::kLinkToSlaveLosted;
+      host.SendMessage(msg);
+      delay(100);
+    }
   }
 }
 
@@ -278,6 +329,7 @@ void loop()
     if (msg.type == MessageType::kIdentification) {
       msg.code = IdentificationType::kMasterID;
       host.SendMessage(msg);
+      delay(100);
     }  
   }
   if (slave.ReciveMessage(msg)) {
@@ -286,16 +338,16 @@ void loop()
       switch (msg.code) {
         case NotificationType::kSlaveGuardSensor1Activated:
           host.SendMessage(msg);
-          delay(1);
+          delay(100);
           ActivateAllLines();
           break;
         case NotificationType::kLinkToMasterLosted:
           host.SendMessage(msg);
-          delay(1);
+          delay(100);
           ActivateAllLines();
           break;
         default:
-          Blink(100,20);
+          //Blink(100,20);
           break;        
       }
     }  
