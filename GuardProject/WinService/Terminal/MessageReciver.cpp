@@ -49,3 +49,29 @@ void MessageReciver::run()
 		}
 	}
 }
+
+std::string Message::ToString(void)
+{
+	//std::string str;
+	//str += "header:";
+	//if (header == MESSAGE_HEADER) {
+	//	str += " 0x55";
+	//} else {
+	//	str += " wrong header";
+	//}
+
+	//str += ", type:";
+	//switch (type) {
+	//case MessageType::kIdentification:
+	//	switch () {
+	//	
+	//	}
+	//	break;
+	//case MessageType::kNotification:
+	//	break;
+	//case MessageType::kCommand:
+	//	break;
+	//default:
+	//	break;
+	//}
+}
