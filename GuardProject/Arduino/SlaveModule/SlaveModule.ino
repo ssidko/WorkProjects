@@ -182,7 +182,7 @@ void MasterMessageHandling(void)
       default:
         break;  
     }
-   }    
+  }    
 }
 
 void loop()
