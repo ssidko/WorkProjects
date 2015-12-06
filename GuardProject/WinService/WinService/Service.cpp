@@ -165,17 +165,11 @@ void ServiceRun(void)
 		DWORD result = ::WaitForMultipleObjects(events.size(), events.data(), FALSE, INFINITE);
 		switch (result) {
 			case WAIT_OBJECT_0 + EVENT_DEVICE_ARRIVAL:
-				log_file << "Device arrival.\n";
-				ExecuteScript(scripts[0]);
 				::ResetEvent(events[EVENT_DEVICE_ARRIVAL]);
 				break;
-
 			case WAIT_OBJECT_0 + EVENT_DEVICE_REMOVE:
-				log_file << "Device remove.\n";
-				ExecuteScript(scripts[1]);
 				::ResetEvent(events[EVENT_DEVICE_REMOVE]);
 				break;
-
 			default:
 				break;
 		}

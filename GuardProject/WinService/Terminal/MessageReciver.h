@@ -37,6 +37,8 @@ struct Message {
 		type = msg_type;
 		code = msg_code;
 	};
+	std::string TypeToString(void);
+	std::string CodeToString(void);
 	std::string ToString(void);
 };
 

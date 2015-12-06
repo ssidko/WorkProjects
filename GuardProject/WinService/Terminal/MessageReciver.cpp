@@ -1,5 +1,16 @@
 #include "MessageReciver.h"
 
+#include <vector>
+
+char *msg_types[] = { "kUnknownMessage", "kIdentification", "kNotification", "kCommand" };
+
+char *notifications[] = { "kUnknownNotification", "kGuardModeEnabled", "kGuardModeDisabled", "kLine1Activated", "kLine2Activated",
+	"kLine3Activated", "kLine4Activated", "kLine5Activated", "kAllLinesActivated", "kGsmEraseAllActivated", "kKeyEraseAllActivated",
+	"kMasterGuardSensor1Activated", "kSlaveGuardSensor1Activated", "kLinkToSlaveLosted", "kLinkToMasterLosted" };
+
+char *commands[] = { "kUnknownCommand", "kEnableGuardMode", "kDisableGuardMode", "kActivateLine1",
+	"kActivateLine2", "kActivateLine3", "kActivateLine4", "kActivateLine5", "kActivateAllLines" };
+
 MessageReciver::~MessageReciver()
 {
 	if (com_port) {
@@ -50,28 +61,46 @@ void MessageReciver::run()
 	}
 }
 
+std::string Message::TypeToString(void)
+{
+	std::string str = "Unknown";
+
+	if (type < sizeof(msg_types)) {
+		str = msg_types[type];
+	}
+
+	return str;
+}
+
+std::string Message::CodeToString(void)
+{
+	std::string str = "Unknown";
+	switch (type) {
+	case MessageType::kIdentification:
+		str = std::to_string(code);
+		break;
+	case MessageType::kNotification:
+		if (code < sizeof(notifications)) {
+			str = notifications[code];
+		}
+		break;
+	case MessageType::kCommand:
+		if (code < sizeof(commands)) {
+			str = commands[code];
+		}
+		break;
+	default:
+		break;	
+	}
+
+	return str;
+}
+
 std::string Message::ToString(void)
 {
-	//std::string str;
-	//str += "header:";
-	//if (header == MESSAGE_HEADER) {
-	//	str += " 0x55";
-	//} else {
-	//	str += " wrong header";
-	//}
-
-	//str += ", type:";
-	//switch (type) {
-	//case MessageType::kIdentification:
-	//	switch () {
-	//	
-	//	}
-	//	break;
-	//case MessageType::kNotification:
-	//	break;
-	//case MessageType::kCommand:
-	//	break;
-	//default:
-	//	break;
-	//}
+	std::string str = "MSG {";
+	str += TypeToString() + ", ";
+	str += CodeToString();
+	str += "};";
+	return str;
 }
