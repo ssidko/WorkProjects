@@ -3,7 +3,7 @@
 
 inline WORD Be2Le(WORD *be)
 {
-	WORD le;
+	WORD le = 0;
 	((BYTE *)&le)[0] = ((BYTE *)be)[1];
 	((BYTE *)&le)[1] = ((BYTE *)be)[0];
 	return le;
@@ -11,7 +11,7 @@ inline WORD Be2Le(WORD *be)
 
 inline DWORD Be2Le(DWORD *be)
 {
-	DWORD le;
+	DWORD le = 0;
 	((BYTE *)&le)[0] = ((BYTE *)be)[3];
 	((BYTE *)&le)[1] = ((BYTE *)be)[2];
 	((BYTE *)&le)[2] = ((BYTE *)be)[1];

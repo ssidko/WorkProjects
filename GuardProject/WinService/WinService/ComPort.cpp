@@ -45,7 +45,7 @@ void ComPort::AvailableComPorts(std::list<std::string> &com_list)
 			registry_key_list.push_back("PortName");
 			registry_key_list.push_back("PortNumber");
 
-			std::string portName;
+			std::string port_name;
 			auto it = registry_key_list.begin();
 			while (it != registry_key_list.end()) {
 				DWORD dataType = 0;
@@ -61,15 +61,15 @@ void ComPort::AvailableComPorts(std::list<std::string> &com_list)
 					}
 					else if (ret == ERROR_SUCCESS) {
 						if (dataType == REG_SZ) {
-							portName = dev_name_prefix + (const char *)out_buff.data();
-							if (portName.find("COM") != std::string::npos) {
-								com_list.push_back(portName);
+							port_name = dev_name_prefix + (const char *)out_buff.data();
+							if (port_name.find("COM") != std::string::npos) {
+								com_list.push_back(port_name);
 							}
 						}
 						else if (dataType == REG_DWORD) {
-							portName = dev_name_prefix + "COM" + std::to_string(*((PDWORD)out_buff.data()));
-							if (portName.find("COM") != std::string::npos) {
-								com_list.push_back(portName);
+							port_name = dev_name_prefix + "COM" + std::to_string(*((PDWORD)out_buff.data()));
+							if (port_name.find("COM") != std::string::npos) {
+								com_list.push_back(port_name);
 							}
 						}
 					}
@@ -262,30 +262,40 @@ bool ComPort::WaitForInputData(DWORD timeout)
 	sync.hEvent = ::CreateEvent(NULL, TRUE, FALSE, NULL);
 	if (sync.hEvent) {
 
-		if (::WaitCommEvent(handle, &event_type, &sync)) {
-			if (event_type == EV_RXCHAR || event_type == EV_LEONARDO_RXCHAR) {
-				ret = true;
-			} else {
-				ret = false;
+		while (true) {
+			if (::WaitCommEvent(handle, &event_type, &sync)) {
+				if (event_type == EV_RXCHAR || event_type == EV_LEONARDO_RXCHAR) {
+					ret = true;
+					break;
+				} else {
+					continue;
+				}
 			}
 		}
 
-		err = ::GetLastError();
+		last_error = ::GetLastError();
 		if ((ret == false) && (ERROR_IO_PENDING == err)) {
 			result = ::WaitForSingleObject(sync.hEvent, timeout);
 			switch (result) {
 			case WAIT_OBJECT_0:
 				ret = true;
 				break;
+			case WAIT_TIMEOUT:
+				break;
+			case WAIT_FAILED:
+				last_error = ::GetLastError();
+				break;
 			default:
 				ret = false;
 				break;
 			}
-		}		
+		}
 
 		::CloseHandle(sync.hEvent);
+
+	} else {
+		last_error = ::GetLastError();
 	}
-	last_error = ::GetLastError();
 	return ret;
 }
 

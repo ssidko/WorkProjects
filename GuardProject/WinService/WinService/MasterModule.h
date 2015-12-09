@@ -8,6 +8,10 @@
 class MasterModule
 {
 private:
+	enum {
+		kIdentificationAnswerTimeout = 1000,
+	};
+private:
 	ComPort com;
 	DWORD last_error;
 	bool opened;
@@ -16,6 +20,7 @@ public:
 	~MasterModule();
 
 	bool Identify(void);
+	DWORD LastError(void) { return last_error; }
 	bool Open(const std::string &com_name);
 	void Close(void);
 	bool Opened(void) { return opened; }

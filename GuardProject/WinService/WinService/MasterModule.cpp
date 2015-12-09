@@ -14,7 +14,7 @@ bool MasterModule::Identify(void)
 	Message id_cmd(MessageType::kIdentification, 0);
 	Message answer;
 	if (com.Write(&id_cmd, sizeof(Message))) {
-		if (WaitForMessage(answer, 500)) {
+		if (WaitForMessage(answer, kIdentificationAnswerTimeout)) {
 			if ((answer.type == MessageType::kIdentification) && (answer.code == IdentificationType::kMasterID)) {
 				return true;
 			}
@@ -116,6 +116,7 @@ bool MasterModule::WaitForMessage(Message &msg, DWORD timeout)
 					bytes_count = 0;
 				}
 			}
+
 		}
 		remain_time = ::GetTickCount() - start_time;
 		if (remain_time > timeout) {
@@ -124,5 +125,4 @@ bool MasterModule::WaitForMessage(Message &msg, DWORD timeout)
 	}
 	msg.Clear();
 	return false;
-
 }

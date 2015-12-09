@@ -18,6 +18,7 @@ public:
 	~ComPort();
 
 	static void AvailableComPorts(std::list<std::string> &com_list);
+	DWORD LastError(void) { return last_error; }
 	bool Open(DWORD baud_rate = CBR_9600);
 	bool Open(const char *com_port_name);
 	void Close();

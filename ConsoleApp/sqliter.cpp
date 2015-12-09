@@ -10,6 +10,7 @@ int Sqliter_main()
 
 BYTE ReadInteger(BYTE *buff, DWORD serial_type, LONGLONG &int_value)
 {
+	assert(buff);
 	assert((serial_type >= k8BitInteger) && (serial_type <= k64BitInteger));
 
 	switch (serial_type) {
@@ -333,6 +334,7 @@ BOOL SQLiter::ReadDbHeader(DB_HEADER *header)
 			return TRUE;
 		}
 	}
+	DWORD err = ::GetLastError();
 	return FALSE;
 }
 

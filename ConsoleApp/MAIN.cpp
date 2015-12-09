@@ -13,14 +13,118 @@
 
 #include "Experemental.h"
 
+#include "sqliter.h"
+
+void recovery_38615()
+{
+	using namespace sqliter;
+
+	Record rec;
+	//const FIELD *field = NULL;
+	//const STRING_FIELD *str_field = NULL;
+	//const INTEGER_FIELD *int_field = NULL;
+
+	//multimap<time_t, string> messages;
+
+	SQLiter db(_T("D:\\Work\\38615\\contacts2.db"));
+	FileEx out_file(_T("D:\\Work\\38615\\out.txt"));
+	if (db.Open() && out_file.Create()) {
+
+		for (DWORD i = 1; i <= db.PagesCount(); i++) {
+			Page *page = db.GetPage(i);
+
+			if (page && (page->Type() == kLeafTablePage)) {
+				DWORD records_count = page->RecordsCount();
+				for (DWORD r = 0; r < records_count; r++) {
+					if (page->GetRecord(r, &rec)) {
+
+						//string out_line = "";
+						//string chat_name = "";
+						//string message_text = "";
+						//string author = "";
+						//string dialog_partner;
+						//string time = "";
+						//time_t raw_time = 0;
+
+						if (i == 88 && r == 12) {
+							int x = 0;
+						}
+
+						if (rec.FieldsCount() == 5) {
+							if ((rec[0]->type == kInteger) && (rec[1]->type == kInteger) && (rec[2]->type == kString) && (rec[3]->type == kString) && (rec[2]->type == kString)) {
+								int x = 0;
+							}
+						} else continue;
+
+						//if (rec[CHAT_NAME_FIELD]->type != kString) continue;
+						//chat_name = ((STRING_FIELD *)rec[CHAT_NAME_FIELD])->val;
+
+						//if ((chat_name.find("oleg_anshlag") == string::npos) || (chat_name.find("babay.andr") == string::npos)) continue;
+
+						//if (((INTEGER_FIELD *)rec[MESSAGE_TYPE_FIELD])->val != kText) continue;
+
+						//if (rec[MESSAGE_TEXT_FIELD]->type != kString) continue;
+						//message_text = ((STRING_FIELD *)rec[MESSAGE_TEXT_FIELD])->val;
+
+						//if (rec[AUTHOR_FIELD]->type != kString) continue;
+						//author = ((STRING_FIELD *)rec[AUTHOR_FIELD])->val;
+
+						//if (rec[DIALOG_PARTNER_FIELD]->type != kString) continue;
+						//dialog_partner = ((STRING_FIELD *)rec[DIALOG_PARTNER_FIELD])->val;
+
+						//if (rec[TIMESTAMP_FIELD]->type != kInteger) continue;
+						//raw_time = (time_t)((INTEGER_FIELD *)rec[TIMESTAMP_FIELD])->val;
+						//memset(time_string, 0x00, sizeof(time_string));
+						//ctime_s(time_string, sizeof(time_string), &raw_time);
+						//time = time_string;
+
+						//time[time.size() - 1] = ' ';
+
+						//out_line += time;
+						//out_line += "- ";
+						//out_line += author;
+
+						//out_line += "(";
+						//if (author.find(dialog_partner) == string::npos) {
+						//	out_line += dialog_partner;
+						//} else {
+						//	out_line += "oleg_anshlag";
+						//}
+						//out_line += ")";
+
+						//out_line += ": ";
+						//out_line += message_text;
+						//out_line += "\r\n";
+
+						//messages.insert(pair<time_t, string>(raw_time, out_line));
+
+						//out_file.Write((void *)out_line.c_str(), out_line.size());
+						int x = 0;
+					}
+				}
+			}
+			delete page;
+			page = NULL;
+		}
+	}
+
+	//multimap<time_t, string>::iterator it;
+	//for (it = messages.begin(); it != messages.end(); ++it) {
+	//	out_file.Write((void *)((*it).second.c_str()), (*it).second.size());
+	//}
+	
+}
+
 int _tmain(int argc, _TCHAR* argv[])
 {
-	std::cout << std::endl << "---=== Physical Drives ===---" << std::endl;
-	EnumerateDevicesInterfaces(&GUID_DEVINTERFACE_DISK);
-	std::cout << std::endl << "---=== CD-ROMs ===---" << std::endl;
-	EnumerateDevicesInterfaces(&GUID_DEVINTERFACE_CDROM);
-	std::cout << std::endl << "---=== COM Ports ===---" << std::endl;
-	EnumerateDevicesInterfaces(&GUID_DEVINTERFACE_COMPORT);
+	//std::cout << std::endl << "---=== Physical Drives ===---" << std::endl;
+	//EnumerateDevicesInterfaces(&GUID_DEVINTERFACE_DISK);
+	//std::cout << std::endl << "---=== CD-ROMs ===---" << std::endl;
+	//EnumerateDevicesInterfaces(&GUID_DEVINTERFACE_CDROM);
+	//std::cout << std::endl << "---=== COM Ports ===---" << std::endl;
+	//EnumerateDevicesInterfaces(&GUID_DEVINTERFACE_COMPORT);
+
+	recovery_38615();
 
 	std::cout << "Press any key..." << std::endl;
 	_getch();
