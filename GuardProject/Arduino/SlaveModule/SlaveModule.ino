@@ -95,9 +95,8 @@ void ActivateAllLocalLines(void)
 
 inline bool GuardSensor1Activated(void)
 {
-  if (digitalRead(GUARD_SENSOR_1_PIN) == LOW) {
-    delay(IN_IMPULSE_DURATION);
-    return (digitalRead(GUARD_SENSOR_1_PIN) == LOW);    
+  if (digitalRead(GUARD_SENSOR_1_PIN) == HIGH) {
+    return true;    
   }
   return false;  
 }
