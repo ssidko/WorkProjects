@@ -6,6 +6,8 @@
 #include "h264.h"
 #include "DvrExt3.h"
 #include "WinFile.h"
+#include <map>
+#include <fstream>
 
 //#include <stdio.h>
 //#include <windows.h>
@@ -25,6 +27,8 @@ void recovery_38615()
 	//const INTEGER_FIELD *int_field = NULL;
 
 	//multimap<time_t, string> messages;
+
+	std::map<ULONGLONG, std::pair<string, string>> map;
 
 	SQLiter db(_T("D:\\Work\\38615\\contacts2.db"));
 	FileEx out_file(_T("D:\\Work\\38615\\out.txt"));
@@ -47,17 +51,46 @@ void recovery_38615()
 						//string time = "";
 						//time_t raw_time = 0;
 
-						unsigned long long contact_id = 0;
+						ULONGLONG contact_id = 0;
 						string phone_number = "";
+						string name = "";
 
 						if (rec.FieldsCount() == 5) {
 							if ((rec[0]->type == kInteger) && (rec[1]->type == kInteger) && (rec[2]->type == kString) && (rec[3]->type == kString) && (rec[2]->type == kString)) {
-								contact_id = ((INTEGER_FIELD *)rec[1])->val;;
+								contact_id = ((INTEGER_FIELD *)rec[1])->val;
 								phone_number = ((STRING_FIELD *)rec[2])->val;
-								int x = 0;
-								count++;
+
+								auto it = map.find(contact_id);
+								if (it == map.end()) {
+									map.insert(std::make_pair(contact_id, std::make_pair("NoName", phone_number)));
+								}
+								else {
+									if (!it->second.second.empty()) {
+										it->second.second += ",";
+									}
+									it->second.second += phone_number;
+								}
+								 
+	
+								//count++;
 							}
 						} else if (rec.FieldsCount() == 36) {
+
+							if ((rec[7]->type == kInteger) && (rec[16]->type == kString) && (rec[17]->type == kString) && (rec[18]->type == kInteger)) {
+
+								contact_id = ((INTEGER_FIELD *)rec[7])->val;
+								name = ((STRING_FIELD *)rec[16])->val;
+
+								auto it = map.find(contact_id);
+								if (it == map.end()) {
+									map.insert(std::make_pair(contact_id, std::make_pair(name, "")));
+								}
+								else {
+									it->second.first = name;
+								}
+
+								//count++;
+							}
 							int x = 0;
 							//count++;
 						} 
@@ -117,7 +150,20 @@ void recovery_38615()
 	}
 
 
-	int z = 0;
+	std::string file_name = "D:\\Work\\38615\\out.txt";
+	std::fstream file(file_name.c_str(), std::fstream::in | std::fstream::out | std::fstream::app);
+	if (file.is_open()) {
+
+		auto it = map.begin();
+		while (it != map.end()) {
+			if (!it->second.second.empty()) {
+				file << it->second.first << "," << it->second.second << "\n";
+			}
+			it++;
+		}
+		file.flush();
+	}
+	file.close();
 
 	//multimap<time_t, string>::iterator it;
 	//for (it = messages.begin(); it != messages.end(); ++it) {
