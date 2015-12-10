@@ -139,35 +139,38 @@ void ServiceRun(void)
 	log_file << "*** Service started ***\n";
 
 	MasterModule master;
-
 	std::list<std::string> com_ports;
-	ComPort::AvailableComPorts(com_ports);
-
-	auto it = com_ports.begin();
-	while (it != com_ports.end()) {
-		if (master.Open((*it))) {
-			log_file << "Master module connected.\n";
-			break;
-		}
-		it++;
-	}
 
 	while (true) {
+
+		ComPort::AvailableComPorts(com_ports);
+		auto it = com_ports.begin();
+		while (it != com_ports.end()) {
+			log_file.PrintLine("%s", (*it).c_str()) ;
+			if (master.Open((*it))) {
+				log_file << "Master module connected.\n";
+				break;
+			}
+			it++;
+		}
 
 		if (master.Opened()) {
 			Message msg;
 			while (master.WaitForMessage(msg)) {
 				ProcessMessage(msg);
 			}
+			log_file << "Master module disconnected.\n";
 			master.Close();
 		}
 
-		DWORD result = ::WaitForMultipleObjects(events.size(), events.data(), FALSE, INFINITE);
+		DWORD result = ::WaitForMultipleObjects(events.size(), events.data(), FALSE, /*INFINITE*/1000);
 		switch (result) {
 			case WAIT_OBJECT_0 + EVENT_DEVICE_ARRIVAL:
+				log_file << "Device arrival.\n";
 				::ResetEvent(events[EVENT_DEVICE_ARRIVAL]);
 				break;
 			case WAIT_OBJECT_0 + EVENT_DEVICE_REMOVE:
+				log_file << "Device remove.\n";
 				::ResetEvent(events[EVENT_DEVICE_REMOVE]);
 				break;
 			default:

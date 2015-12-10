@@ -262,16 +262,22 @@ bool ComPort::WaitForInputData(DWORD timeout)
 	sync.hEvent = ::CreateEvent(NULL, TRUE, FALSE, NULL);
 	if (sync.hEvent) {
 
-		while (true) {
-			if (::WaitCommEvent(handle, &event_type, &sync)) {
-				if (event_type == EV_RXCHAR || event_type == EV_LEONARDO_RXCHAR) {
-					ret = true;
-					break;
-				} else {
-					continue;
-				}
+		if (::WaitCommEvent(handle, &event_type, &sync)) {
+			if (event_type == EV_RXCHAR || event_type == EV_LEONARDO_RXCHAR) {
+				ret = true;
 			}
 		}
+
+		//while (true) {
+		//	if (::WaitCommEvent(handle, &event_type, &sync)) {
+		//		if (event_type == EV_RXCHAR || event_type == EV_LEONARDO_RXCHAR) {
+		//			ret = true;
+		//			break;
+		//		} else {
+		//			continue;
+		//		}
+		//	}
+		//}
 
 		last_error = ::GetLastError();
 		if ((ret == false) && (ERROR_IO_PENDING == err)) {
