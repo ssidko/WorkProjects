@@ -146,7 +146,7 @@ void ServiceRun(void)
 		ComPort::AvailableComPorts(com_ports);
 		auto it = com_ports.begin();
 		while (it != com_ports.end()) {
-			log_file.PrintLine("%s", (*it).c_str()) ;
+			//log_file.PrintLine("%s", (*it).c_str()) ;
 			if (master.Open((*it))) {
 				log_file << "Master module connected.\n";
 				break;
@@ -166,11 +166,9 @@ void ServiceRun(void)
 		DWORD result = ::WaitForMultipleObjects(events.size(), events.data(), FALSE, /*INFINITE*/1000);
 		switch (result) {
 			case WAIT_OBJECT_0 + EVENT_DEVICE_ARRIVAL:
-				log_file << "Device arrival.\n";
 				::ResetEvent(events[EVENT_DEVICE_ARRIVAL]);
 				break;
 			case WAIT_OBJECT_0 + EVENT_DEVICE_REMOVE:
-				log_file << "Device remove.\n";
 				::ResetEvent(events[EVENT_DEVICE_REMOVE]);
 				break;
 			default:

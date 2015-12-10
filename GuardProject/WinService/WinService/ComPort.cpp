@@ -78,6 +78,7 @@ void ComPort::AvailableComPorts(std::list<std::string> &com_list)
 			}
 			::RegCloseKey(key);
 		}
+		::SetupDiDestroyDeviceInfoList(dev_info_set);
 	}
 }
 
@@ -104,7 +105,7 @@ bool ComPort::Open(DWORD baud_rate)
 				com_param.Parity = NOPARITY;
 				if (SetCommState(handle, &com_param)) {
 					if (SetCommMask(handle, EV_RXCHAR)) {
-						::Sleep(2000); // Ардуине нужно время чтобы загрузиться.
+						//::Sleep(2000); // Ардуине нужно время чтобы загрузиться.
 						return true;
 					}
 				}
@@ -280,7 +281,7 @@ bool ComPort::WaitForInputData(DWORD timeout)
 		//}
 
 		last_error = ::GetLastError();
-		if ((ret == false) && (ERROR_IO_PENDING == err)) {
+		if ((ret == false) && (ERROR_IO_PENDING == last_error)) {
 			result = ::WaitForSingleObject(sync.hEvent, timeout);
 			switch (result) {
 			case WAIT_OBJECT_0:
