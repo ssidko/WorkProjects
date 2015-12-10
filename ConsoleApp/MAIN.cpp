@@ -28,6 +28,7 @@ void recovery_38615()
 
 	SQLiter db(_T("D:\\Work\\38615\\contacts2.db"));
 	FileEx out_file(_T("D:\\Work\\38615\\out.txt"));
+	int count = 0;
 	if (db.Open() && out_file.Create()) {
 
 		for (DWORD i = 1; i <= db.PagesCount(); i++) {
@@ -46,15 +47,20 @@ void recovery_38615()
 						//string time = "";
 						//time_t raw_time = 0;
 
-						if (i == 88 && r == 12) {
-							int x = 0;
-						}
+						unsigned long long contact_id = 0;
+						string phone_number = "";
 
 						if (rec.FieldsCount() == 5) {
 							if ((rec[0]->type == kInteger) && (rec[1]->type == kInteger) && (rec[2]->type == kString) && (rec[3]->type == kString) && (rec[2]->type == kString)) {
+								contact_id = ((INTEGER_FIELD *)rec[1])->val;;
+								phone_number = ((STRING_FIELD *)rec[2])->val;
 								int x = 0;
+								count++;
 							}
-						} else continue;
+						} else if (rec.FieldsCount() == 36) {
+							int x = 0;
+							//count++;
+						} 
 
 						//if (rec[CHAT_NAME_FIELD]->type != kString) continue;
 						//chat_name = ((STRING_FIELD *)rec[CHAT_NAME_FIELD])->val;
@@ -103,10 +109,15 @@ void recovery_38615()
 					}
 				}
 			}
-			delete page;
-			page = NULL;
+			if (page) {
+				delete page;
+				page = NULL;
+			}
 		}
 	}
+
+
+	int z = 0;
 
 	//multimap<time_t, string>::iterator it;
 	//for (it = messages.begin(); it != messages.end(); ++it) {

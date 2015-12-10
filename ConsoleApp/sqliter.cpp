@@ -8,17 +8,17 @@ int Sqliter_main()
 	return 0;
 }
 
-BYTE ReadInteger(BYTE *buff, DWORD serial_type, LONGLONG &int_value)
+BYTE ReadInteger(BYTE *buff, DWORD serial_type, ULONGLONG &int_value)
 {
 	assert(buff);
 	assert((serial_type >= k8BitInteger) && (serial_type <= k64BitInteger));
 
 	switch (serial_type) {
 	case k8BitInteger:
-		int_value = *((char *)buff);
+		int_value = *((BYTE *)buff);
 		return 1;
 	case k16BitInteger:
-		int_value = (LONGLONG)*((short *)buff);
+		int_value = (ULONGLONG)*((unsigned short *)buff);
 		return 2;
 	case k24BitInteger:
 		if (*buff && (1 << 7)) {
@@ -35,7 +35,7 @@ BYTE ReadInteger(BYTE *buff, DWORD serial_type, LONGLONG &int_value)
 		}
 		return 3;
 	case k32BitInteger:
-		int_value = (LONGLONG)(int)Be2Le((DWORD *)buff);
+		int_value = (ULONGLONG)(DWORD)Be2Le((DWORD *)buff);
 		return 4;
 	case k48BitInteger:
 		if (*buff && (1 << 7)) {
@@ -83,17 +83,22 @@ BOOL Record::Initialize(BYTE *raw_record, DWORD record_size)
 	Clean();
 
 	DWORD len = 0;
-
 	BYTE *next_field = raw_record;
 	BYTE *next_value = 0;
 	LONGLONG header_size = 0;
+
 	next_field += GetVarint(raw_record, &header_size);
+
+	if (header_size > record_size) {
+		return false;
+	}
+
 	next_value = &raw_record[header_size];
 
 	FIELD *field = NULL;
 	LONGLONG serial_type = 0;
 
-	while ((next_field - raw_record) < header_size) {
+	while ( ((DWORD)(next_field - raw_record) < header_size) && (next_value < (raw_record + record_size)) ) {
 		next_field += GetVarint(next_field, &serial_type);	
 
 		if (serial_type == kNull) {
@@ -113,22 +118,22 @@ BOOL Record::Initialize(BYTE *raw_record, DWORD record_size)
 		} else if (serial_type == k1Constant) {
 			field = new INTEGER_FIELD((LONGLONG)1);
 			fields.push_back(field);
-		} else if ((serial_type >= kBlobMin) && ((serial_type % 2) == 0x00)) {
+		} else if ( (serial_type >= kBlobMin) && ((serial_type % 2) == 0x00) ) {
 			len = (DWORD)((serial_type - kBlobMin) / 2);
 			field = new BLOB_FIELD();
-			if (len) {
+			if ( len && ((next_value + len) <= (raw_record + record_size)) ) {
 				((BLOB_FIELD *)field)->val.Initialize(next_value, len);
+				next_value += len;
 			}
 			fields.push_back(field);
-			next_value += len;
-		} else if ( (serial_type >= kStringMin) && ((serial_type % 2) == 0x01)) {
+		} else if ( (serial_type >= kStringMin) && ((serial_type % 2) == 0x01) ) {
 			len = (DWORD)((serial_type - kStringMin) / 2);
 			field = new STRING_FIELD();
-			if (len) {
+			if ( len && ((next_value + len) <= (raw_record + record_size)) ) {
 				UTF8ToCP1251((const char *)next_value, len, &((STRING_FIELD *)field)->val);
+				next_value += len;
 			}
 			fields.push_back(field);
-			next_value += len;
 		} else {
 			return FALSE;
 		}
@@ -179,6 +184,7 @@ void Page::InitializeHeader(void)
 	if (number == 0x01) {
 		header = (PAGE_HEADER *)&buff[100];
 	}
+	memset(&hdr, 0x00, sizeof(PAGE_HEADER));
 	if (IsValidPageType(header->type)) {
 		hdr.type = header->type;
 		hdr.first_freeblock = Be2Le(&header->first_freeblock);
@@ -191,6 +197,9 @@ void Page::InitializeHeader(void)
 		else {
 			hdr.offsets = (WORD *)&header->right_ptr;
 		}
+		if (!IsValidPage()) {
+			memset(&hdr, 0x00, sizeof(PAGE_HEADER));
+		}
 	}
 }
 
@@ -200,6 +209,9 @@ void Page::InitializeCellPointerArray()
 		WORD *idx = hdr.offsets;
 		for (DWORD i = 0; i < hdr.cells_count; i++) {
 			idx[i] = Be2Le(&idx[i]);
+			if (idx[i] >= size) {
+				idx[i] = 0;
+			}
 		}
 	}
 }
@@ -216,6 +228,20 @@ BOOL Page::IsValidPageType(const BYTE &page_type)
 		return TRUE;
 	}
 	return FALSE;
+}
+
+BOOL Page::IsValidPage(void)
+{
+	if (IsValidPageType(hdr.type)) {
+		if (hdr.first_freeblock < size) {
+			if (hdr.cells_area < size) {
+				if (hdr.cells_count < size) {
+					return true;
+				}
+			}			
+		}	
+	}
+	return false;
 }
 
 void Page::Cleanup(void)
@@ -243,7 +269,7 @@ BYTE *Page::GetCell(DWORD cell_num, DWORD *max_size)
 	assert(hdr.cells_count && (cell_num < hdr.cells_count));
 
 	WORD *idx = hdr.offsets;
-	if (idx[cell_num] < this->size) {
+	if ((idx[cell_num] > 0) && (idx[cell_num] < this->size)) {
 		if (max_size) {
 			*max_size = GetAvaliableBytesForCell(cell_num);
 		}
@@ -294,7 +320,7 @@ BOOL Page::GetRecord(DWORD record_num, Record *record)
 					rw += GetVarint(&raw_cell[0], &payload_size);
 					rw += GetVarint(&raw_cell[rw], &row_id);
 					payload = &raw_cell[rw];
-					if ((payload_size + rw) <= (LONGLONG)max_cell_size) {
+					if ( payload_size && ((payload_size + rw) <= (LONGLONG)max_cell_size) ) {
 						return record->Initialize(payload, (DWORD)payload_size);
 					}
 					break;

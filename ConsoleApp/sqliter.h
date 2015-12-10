@@ -134,7 +134,7 @@ namespace sqliter
 		TEMPLATED_FIELD (T init_val) : FIELD(field_type), val(init_val) {}
 	};
 
-	typedef TEMPLATED_FIELD<kInteger, LONGLONG> INTEGER_FIELD;
+	typedef TEMPLATED_FIELD<kInteger, ULONGLONG> INTEGER_FIELD;
 	typedef TEMPLATED_FIELD<kFloat, double> FLOAT_FIELD;
 	typedef TEMPLATED_FIELD<kBlob, Blob> BLOB_FIELD;
 	typedef TEMPLATED_FIELD<kString, string> STRING_FIELD;
@@ -177,6 +177,7 @@ namespace sqliter
 		void InitializeHeader(void);
 		void InitializeCellPointerArray(void);
 		BOOL IsValidPageType(const BYTE &page_type);
+		BOOL IsValidPage(void);
 		void Cleanup(void);
 	public:
 		Page(BYTE *page_buff, DWORD page_size, DWORD page_number);
