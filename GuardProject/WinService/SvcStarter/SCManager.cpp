@@ -12,7 +12,7 @@ SCManager::~SCManager()
 
 bool SCManager::Open(void)
 {
-
+	return false;
 }
 
 void SCManager::Close(void)

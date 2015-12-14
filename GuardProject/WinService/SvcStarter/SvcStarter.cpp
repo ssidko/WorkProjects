@@ -87,35 +87,42 @@ bool DeleteService(const TCHAR *svc_name)
 	return true;
 }
 
-#include <fstream>
-
-std::fstream log_file;
+bool CurrentDirectory(std::wstring &current_directory)
+{
+	DWORD ret = ::GetCurrentDirectoryW(0, NULL);
+	if (ret) {
+		current_directory.resize((ret + 1)*sizeof(wchar_t));
+		if (::GetCurrentDirectoryW(current_directory.size(), &current_directory[0])) {
+			return true;
+		}	
+	}
+	return false;	
+}
 
 int _tmain(int argc, _TCHAR* argv[])
 {
 	bool result = false;
 
-	std::wstring service_module_path = _T("GuardSystemSvc.exe");
-	std::wstring cmd_line = service_module_path;
-
-	if (argc == 2) {
-		cmd_line = argv[1];
-		result = InstallService(cmd_line.c_str());
-	} else if (argc == 3) {
-		std::wstring argument = argv[2];
-		if (argument == _T("install")) {
-			InstallService(argv[1]);
-		} else if (argument == _T("uninstall")) {
-			std::wstring svc_name = argv[1];
-			DeleteService(SERVICE_NAME);
+	std::wstring service_module_path;
+	std::wstring current_directory;
+	if (CurrentDirectory(current_directory)) {
+		service_module_path += current_directory;
+		service_module_path += L"\\";
+		service_module_path += L"GuardSystemSvc.exe";
+		if (argc == 1) {
+			result = InstallService(service_module_path.c_str());
+		} else if (argc == 2) {
+			std::wstring argument = argv[1];
+			if (argument == _T("install")) {
+				InstallService(service_module_path.c_str());
+			} else if (argument == _T("uninstall")) {
+				std::wstring svc_name = argv[1];
+				DeleteService(SERVICE_NAME);
+			}			
 		}
 	}
-		 
-	//result = InstallService(cmd_line.c_str());
-	//result = DeleteService(SERVICE_NAME);
 
-	int x = 0;
-	std::cin >> x;
+	::system("pause");
 
 	return 0;
 }
