@@ -111,14 +111,17 @@ int _tmain(int argc, _TCHAR* argv[])
 		service_module_path += L"GuardSystemSvc.exe";
 		if (argc == 1) {
 			result = InstallService(service_module_path.c_str());
-		} else if (argc == 2) {
+		} else if (argc >= 2) {
 			std::wstring argument = argv[1];
 			if (argument == _T("install")) {
 				InstallService(service_module_path.c_str());
 			} else if (argument == _T("uninstall")) {
 				std::wstring svc_name = argv[1];
 				DeleteService(SERVICE_NAME);
-			}			
+			}
+			else {
+				std::cout << "Wrong 1st parameter. Must be [install] or [uninstall]\n";
+			}
 		}
 	}
 

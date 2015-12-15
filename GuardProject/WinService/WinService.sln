@@ -9,7 +9,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SvcStarter", "SvcStarter\Sv
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Terminal", "Terminal\Terminal.vcxproj", "{B12702AD-ABFB-343A-A199-8E24837244A3}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GeneralLib", "GeneralLib\GeneralLib.vcxproj", "{385F8FEE-F3ED-4B6D-B7B1-EC887BC7BB5E}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GeneraLib", "GeneralLib\GeneralLib.vcxproj", "{385F8FEE-F3ED-4B6D-B7B1-EC887BC7BB5E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

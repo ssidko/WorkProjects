@@ -35,11 +35,9 @@
     <ClCompile Include="stdafx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="SvcStarter.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="SCManager.cpp">
       <Filter>Utility</Filter>
     </ClCompile>
+    <ClCompile Include="SvcStarter.cpp" />
   </ItemGroup>
 </Project>

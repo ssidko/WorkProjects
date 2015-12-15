@@ -11,7 +11,7 @@ SCManager::~SCManager()
 
 SC_HANDLE SCManager::OpenService(const TCHAR *service_name)
 {
-
+	return NULL;
 }
 
 bool SCManager::Open(DWORD desired_access)
