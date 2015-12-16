@@ -86,6 +86,7 @@
   <ItemGroup>
     <ClCompile Include="BufferedFile.cpp" />
     <ClCompile Include="dhfs.cpp" />
+    <ClCompile Include="dvr1.cpp" />
     <ClCompile Include="ExtentRecovery.cpp" />
     <ClCompile Include="File.cpp" />
     <ClCompile Include="FileStorage.cpp" />
@@ -144,6 +145,7 @@
   <ItemGroup>
     <ClInclude Include="BufferedFile.h" />
     <ClInclude Include="dhfs.h" />
+    <ClInclude Include="dvr1.h" />
     <ClInclude Include="ExtentRecovery.h" />
     <ClInclude Include="File.h" />
     <ClInclude Include="FileStorage.h" />
@@ -184,7 +186,7 @@
   </ImportGroup>
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties MocDir=".\GeneratedFiles\$(ConfigurationName)" UicDir=".\GeneratedFiles" RccDir=".\GeneratedFiles" lupdateOptions="" lupdateOnBuild="0" lreleaseOptions="" Qt5Version_x0020_Win32="5.5.0" MocOptions="" />
+      <UserProperties MocDir=".\GeneratedFiles\$(ConfigurationName)" UicDir=".\GeneratedFiles" RccDir=".\GeneratedFiles" lupdateOptions="" lupdateOnBuild="0" lreleaseOptions="" Qt5Version_x0020_Win32="5.4.0" MocOptions="" />
     </VisualStudio>
   </ProjectExtensions>
 </Project>

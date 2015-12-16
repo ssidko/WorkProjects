@@ -52,6 +52,9 @@
     <Filter Include="Core\Orbita">
       <UniqueIdentifier>{274a6ae0-20a0-4f5a-b83e-fca4688680d5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Core\Other">
+      <UniqueIdentifier>{590a3e8a-4fe0-488f-a429-2bfb249084fd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GeneratedFiles\Debug\moc_mainwindow.cpp">
@@ -114,6 +117,9 @@
     </ClCompile>
     <ClCompile Include="Orbita.cpp">
       <Filter>Core\Orbita</Filter>
+    </ClCompile>
+    <ClCompile Include="dvr1.cpp">
+      <Filter>Core\Other</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -187,6 +193,9 @@
     </ClInclude>
     <ClInclude Include="Orbita.h">
       <Filter>Core\Orbita</Filter>
+    </ClInclude>
+    <ClInclude Include="dvr1.h">
+      <Filter>Core\Other</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

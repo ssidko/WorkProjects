@@ -14,10 +14,8 @@
 #include <QDir>
 
 #include "WinConsole.h"
-
 #include "TestWidget.h"
 #include "Raid5.h"
-
 #include "Orbita.h"
 
 using namespace DHFS;
@@ -42,7 +40,8 @@ int main(int argc, char *argv[])
 	QApplication a(argc, argv);
 	//MainWindow w;
 
-	Orbita::Main("\\\\.\\PhysicalDrive0", "K:\\38702\\out");
+	//Orbita::Main("\\\\.\\PhysicalDrive0", "K:\\38702\\out");
+	WFS::Main();
 
 	return a.exec();
 }
