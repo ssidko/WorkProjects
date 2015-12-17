@@ -20,6 +20,16 @@ void ConvertToMkv(std::string &raw_file_name, std::string &mkv_file_name)
 	system(cmd_line.str().data());
 }
 
+void Convert2Avi(std::string &raw_file_name, std::string &avi_file_name)
+{
+	std::string cmd_line = "ffmpeg -f h264 -i ";
+	cmd_line += raw_file_name;
+	cmd_line += " -an -vcodec copy ";
+	cmd_line += avi_file_name;
+
+	system(cmd_line.data());
+}
+
 void NextFileName(FrameSequence &sequence)
 {
 
@@ -43,13 +53,13 @@ int WFS::Main(void)
 {
 	std::string wfs_file_name = "\\\\.\\PhysicalDrive0";
 	//std::string wfs_file_name = "F:\\37566\\1.h264";
-	std::string out_dir_path = "d:\\work\\38914\\";
+	std::string out_dir_path = "f:\\38914\\";
 	std::string mkv_file_name;
 	std::string raw_file_name = out_dir_path + "out.dvr";
 
-	Timestamp min_date(2015, 10, 9, 0, 0, 0);
-	Timestamp max_date(2015, 10, 12, 0, 0, 0);
-	
+	Timestamp min_date(2015, 10, 1, 0, 0, 0);
+	Timestamp max_date(2015, 10, 16, 0, 0, 0);
+
 	//DWORD dw = 0x0e8e2cb9;
 	//WFS::TIMESTAMP *t = (TIMESTAMP *)&dw;
 	
@@ -70,7 +80,7 @@ int WFS::Main(void)
 
 			if (out_file == nullptr) {
 				//raw_file_name = out_dir_path + SequenceInfoString(sequence) + ".h264";
-				mkv_file_name = out_dir_path + SequenceInfoString(sequence) + ".mkv";
+				mkv_file_name = out_dir_path + SequenceInfoString(sequence) + ".avi";
 				out_file = new W32Lib::FileEx(raw_file_name.data());
 				if (out_file) {
 					if (!out_file->Create()) {
@@ -85,9 +95,18 @@ int WFS::Main(void)
 				out_file->Close();
 				delete out_file;
 				out_file = nullptr;
-				ConvertToMkv(raw_file_name, mkv_file_name);
+				//ConvertToMkv(raw_file_name, mkv_file_name);
+				Convert2Avi(raw_file_name, mkv_file_name);
+
 			}
-		}	
+		}
+		if (out_file && out_file->GetSize()) {
+			out_file->Close();
+			delete out_file;
+			out_file = nullptr;
+			//ConvertToMkv(raw_file_name, mkv_file_name);
+			Convert2Avi(raw_file_name, mkv_file_name);
+		}
 	}
 
 	return 0;

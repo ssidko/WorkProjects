@@ -34,13 +34,13 @@ void Timestamp::Clear( void )
 
 ULONGLONG Timestamp::Seconds( void ) const
 {
-	return (LONGLONG)(((year*365 + month*31 + day)*24 + hours)*60 + minutes)*60 + seconds;
+	return (LONGLONG)((((year*12LL + month)*31LL + day)*24LL + hours)*60LL + minutes)*60LL + seconds;
 }
 
 const char * Timestamp::String( void )
 {
 	memset(str, 0x00, sizeof(str));
-	sprintf_s(str, sizeof(str), "%04d-%02d-%02d=%02d-%02d-%02d",year,month,day,hours,minutes,seconds);
+	sprintf_s(str, sizeof(str), "%04d-%02d-%02d--%02d-%02d-%02d",year,month,day,hours,minutes,seconds);
 	return str;
 }
 
