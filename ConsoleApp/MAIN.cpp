@@ -16,6 +16,7 @@
 #include "Experemental.h"
 
 #include "sqliter.h"
+#include "mover.h"
 
 void recovery_38615()
 {
@@ -181,7 +182,14 @@ int _tmain(int argc, _TCHAR* argv[])
 	//std::cout << std::endl << "---=== COM Ports ===---" << std::endl;
 	//EnumerateDevicesInterfaces(&GUID_DEVINTERFACE_COMPORT);
 
-	recovery_38615();
+	//recovery_38615();
+
+	if (argc >= 3) {
+		mover_main(argv[1], argv[2]);		 
+	}
+	else {
+		mover::PrintUsage();
+	}
 
 	std::cout << "Press any key..." << std::endl;
 	_getch();

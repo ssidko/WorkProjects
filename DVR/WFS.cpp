@@ -53,7 +53,7 @@ int WFS::Main(void)
 {
 	std::string wfs_file_name = "\\\\.\\PhysicalDrive0";
 	//std::string wfs_file_name = "F:\\37566\\1.h264";
-	std::string out_dir_path = "f:\\38914\\";
+	std::string out_dir_path = "d:\\work\\38914\\";
 	std::string mkv_file_name;
 	std::string raw_file_name = out_dir_path + "out.dvr";
 

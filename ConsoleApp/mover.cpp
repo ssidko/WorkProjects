@@ -180,6 +180,7 @@ namespace mover
 			case 'wide':
 			case 'trak':
 			case 'tkhd':
+			case 'uuid':
 				return TRUE;
 			default :
 				return FALSE;
@@ -258,6 +259,14 @@ namespace mover
 			if (!file.SetPointer(hdr_offset + SECTOR_SIZE)) break;
 		}
 		return 0;
+	}
+
+	void PrintUsage(void)
+	{
+		std::cout << "mover v. 0.0.2\n";
+		std::cout << "Usage: <source file> <output directory>\n";
+		std::cout << "       <source file> - simple fiele or Physical Drive (ex. \\\\.\\PhysicalDriveX)\n";
+		std::cout << "       <output directory> - output directory for save result\n";
 	}
 
 }
