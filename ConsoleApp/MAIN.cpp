@@ -149,8 +149,7 @@ void recovery_38615()
 			}
 		}
 	}
-
-
+	
 	std::string file_name = "D:\\Work\\38615\\out.txt";
 	std::fstream file(file_name.c_str(), std::fstream::in | std::fstream::out | std::fstream::app);
 	if (file.is_open()) {
@@ -184,15 +183,18 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	//recovery_38615();
 
-	if (argc >= 3) {
-		mover_main(argv[1], argv[2]);		 
-	}
-	else {
-		mover::PrintUsage();
-	}
+	double result = 2 + 6 * -5 / 3 * 5;
 
-	std::cout << "Press any key..." << std::endl;
-	_getch();
+	//if (argc >= 3) {
+	//	mover_main(argv[1], argv[2]);		 
+	//}
+	//else {
+	//	mover::PrintUsage();
+	//}
+
+	
+	::system("pause");
+
 	return true;
 }
 

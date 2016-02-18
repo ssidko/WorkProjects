@@ -59,7 +59,7 @@ public:
 	{
 		DWORD i = 0;
 		LONGLONG ptr = 0; 
-		BYTE r_buff[MAX_LINE_LENGTH+1] = {0};
+		BYTE r_buff[MAX_LINE_LENGTH + 1] = {0};
 		DWORD rw = 0;
 
 		while (rw = file.Read(r_buff, MAX_LINE_LENGTH))

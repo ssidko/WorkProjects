@@ -38,10 +38,13 @@ inline void _trace(char *format, ...)
 int main(int argc, char *argv[])
 {
 	QApplication a(argc, argv);
-	//MainWindow w;
+	MainWindow w;
 
 	//Orbita::Main("\\\\.\\PhysicalDrive0", "K:\\38702\\out");
-	WFS::Main();
+	//WFS::Main();
 
+	double res =  (double)7 / 3 * 2;
+
+	w.show();
 	return a.exec();
 }

@@ -1,7 +1,7 @@
 #ifndef _ZFS_TYPE_H
 #define _ZFS_TYPE_H
 
-typedef char					int8_t;
+//typedef char					int8_t;
 typedef unsigned char			uint8_t;
 
 typedef short					int16_t;
