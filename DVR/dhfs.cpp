@@ -2,7 +2,7 @@
 
 int DHFS::StartRecovering( void )
 {
-	Volume dhfs("\\\\.\\PhysicalDrive0");
+	Volume dhfs("\\\\.\\PhysicalDrive1");
 	if (dhfs.Open()) {
 		std::vector<BYTE> sequence;
 		FrameSequenceInfo sequnence_info;
