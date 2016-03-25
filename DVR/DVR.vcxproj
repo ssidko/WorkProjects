@@ -91,6 +91,7 @@
     <ClCompile Include="dvr1.cpp" />
     <ClCompile Include="ExtentRecovery.cpp" />
     <ClCompile Include="File.cpp" />
+    <ClCompile Include="FileRecordRecovery.cpp" />
     <ClCompile Include="FileStorage.cpp" />
     <ClCompile Include="DhfsOnDisk.cpp" />
     <ClCompile Include="GeneratedFiles\Debug\moc_mainwindow.cpp">
@@ -150,9 +151,11 @@
     <ClInclude Include="dvr1.h" />
     <ClInclude Include="ExtentRecovery.h" />
     <ClInclude Include="File.h" />
+    <ClInclude Include="FileRecordRecovery.h" />
     <ClInclude Include="FileStorage.h" />
     <ClInclude Include="DhfsOnDisk.h" />
     <ClInclude Include="GeneratedFiles\ui_mainwindow.h" />
+    <ClInclude Include="Ntfs.h" />
     <ClInclude Include="Orbita.h" />
     <ClInclude Include="Raid5.h" />
     <ClInclude Include="TestWidget.h" />

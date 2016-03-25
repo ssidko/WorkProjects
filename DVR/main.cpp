@@ -34,6 +34,7 @@ inline void _trace(char *format, ...)
 }
 
 #include "ExtentRecovery.h"
+#include "FileRecordRecovery.h"
 
 int main(int argc, char *argv[])
 {
@@ -43,7 +44,9 @@ int main(int argc, char *argv[])
 	//Orbita::Main("\\\\.\\PhysicalDrive0", "K:\\38702\\out");
 	//WFS::Main();
 
-	DHFS::StartRecovering();
+	//DHFS::StartRecovering();
+
+	FileRecordRecoveryStart();
 
 	w.show();
 	return a.exec();

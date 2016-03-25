@@ -55,6 +55,9 @@
     <Filter Include="Core\Other">
       <UniqueIdentifier>{590a3e8a-4fe0-488f-a429-2bfb249084fd}</UniqueIdentifier>
     </Filter>
+    <Filter Include="NTFS">
+      <UniqueIdentifier>{b34018a3-5fcd-4181-9cc5-8a5ee862b5da}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GeneratedFiles\Debug\moc_mainwindow.cpp">
@@ -120,6 +123,9 @@
     </ClCompile>
     <ClCompile Include="dvr1.cpp">
       <Filter>Core\Other</Filter>
+    </ClCompile>
+    <ClCompile Include="FileRecordRecovery.cpp">
+      <Filter>NTFS</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -196,6 +202,12 @@
     </ClInclude>
     <ClInclude Include="dvr1.h">
       <Filter>Core\Other</Filter>
+    </ClInclude>
+    <ClInclude Include="Ntfs.h">
+      <Filter>NTFS</Filter>
+    </ClInclude>
+    <ClInclude Include="FileRecordRecovery.h">
+      <Filter>NTFS</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
