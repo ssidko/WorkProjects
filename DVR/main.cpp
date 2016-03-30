@@ -44,9 +44,9 @@ int main(int argc, char *argv[])
 	//Orbita::Main("\\\\.\\PhysicalDrive0", "K:\\38702\\out");
 	//WFS::Main();
 
-	//DHFS::StartRecovering();
+	DHFS::StartRecovering();
 
-	FileRecordRecoveryStart();
+	//FileRecordRecoveryStart();
 
 	w.show();
 	return a.exec();

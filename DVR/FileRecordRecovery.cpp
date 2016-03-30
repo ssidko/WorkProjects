@@ -16,19 +16,6 @@ int FileRecordRecoveryStart(void)
 	MFT_RECORD *record = nullptr;
 	ATTR_RECORD *attribute = nullptr;
 
-
-	struct alignas (8) test1 {
-		char a;
-		char b;
-	};
-
-	char *ptr;
-	test1 c = {0, 1};
-	ptr = &c.a;
-	ptr = &c.b;
-	int y = sizeof(c);
-
-
 	while (file.Read(buff, NTFS_MFT_FILE_RECORD_SIZE) == NTFS_MFT_FILE_RECORD_SIZE) {
 		record = (MFT_RECORD *)buff;
 
@@ -44,9 +31,7 @@ int FileRecordRecoveryStart(void)
 			}
 
 
-			int x = 0;
-		
-		
+			int x = 0;		
 		}
 	
 		record = (MFT_RECORD *)buff;

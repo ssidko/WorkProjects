@@ -40,7 +40,7 @@ namespace DHFS
 		std::string mkv_directory;
 		std::vector<VideoFile *> files;
 	public:
-		FileStorage(int cam_count, std::string &raw_directory_path, std::string &mkv_directory_path);
+		FileStorage(int cam_count, const std::string &raw_directory_path, const std::string &mkv_directory_path);
 		~FileStorage(void);
 		bool SaveFrameSequence(std::vector<BYTE> &sequence_buffer, FrameSequenceInfo &sequence_info);
 		VideoFile *CreateNewFile(FrameSequenceInfo &sequence_info);

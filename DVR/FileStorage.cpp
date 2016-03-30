@@ -28,7 +28,7 @@ bool DHFS::VideoFile::SaveFrameSequence(std::vector<BYTE> &sequence_buffer, Fram
 	return (file.Write(&sequence_buffer[0], sequence_buffer.size()) == sequence_buffer.size());
 }
 
-DHFS::FileStorage::FileStorage(int cam_count, std::string &raw_directory_path, std::string &mkv_directory_path) :
+DHFS::FileStorage::FileStorage(int cam_count, const std::string &raw_directory_path, const std::string &mkv_directory_path) :
 	raw_directory(raw_directory_path),
 	mkv_directory(mkv_directory_path)
 {
@@ -97,6 +97,6 @@ void DHFS::FileStorage::GenerateFileName(std::string &new_file_name, FrameSequen
 {
 	std::stringstream stream;
 	stream << raw_directory << "\\" << /*sequence.offset << " " <<*/ "[" << sequence_info.start_frame.camera << "] ";
-	stream << sequence_info.start_frame.timestamp.String() << ".264";
+	stream << sequence_info.start_frame.timestamp.String() << ".h264";
 	new_file_name = stream.str();
 }
