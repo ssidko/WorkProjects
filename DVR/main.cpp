@@ -44,17 +44,17 @@ int main(int argc, char *argv[])
 	//Orbita::Main("\\\\.\\PhysicalDrive0", "K:\\38702\\out");
 	//WFS::Main();
 
-	typedef struct _STMP {
-		DWORD seconds : 5;
-		DWORD minutes : 6;
-		DWORD hours : 4;
-		DWORD day : 5;
-		DWORD month : 4;
-		DWORD year : 8;
-	} STMP;
+	//typedef struct _STMP {
+	//	DWORD seconds : 5;
+	//	DWORD minutes : 6;
+	//	DWORD hours : 4;
+	//	DWORD day : 5;
+	//	DWORD month : 4;
+	//	DWORD year : 8;
+	//} STMP;
 
-	DWORD raw = 0x103C5CF5;
-	STMP *t = (STMP *)&raw;
+	//DWORD raw = 0x103C5CF5;
+	//STMP *t = (STMP *)&raw;
 
 	DHFS::StartRecovering();
 

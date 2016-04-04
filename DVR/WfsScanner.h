@@ -34,8 +34,8 @@ namespace WFS
 
 		_FrameSequence() : frame_counter(0), size(0), offset(0) {}
 		void Clear(void) {
-			memset(&start_time, 0x00, sizeof(Timestamp));
-			memset(&end_time, 0x00, sizeof(Timestamp));
+			start_time.Clear();
+			end_time.Clear();
 			frame_counter = 0;
 			size = 0;
 			offset = 0;
@@ -61,8 +61,6 @@ namespace WFS
 		BOOL NextFrameWithTimestamp(void);
 		BOOL NextFrameSequence(FrameSequence &sequence);
 	};
-
-
 }
 
 #endif // _WFS_SCANNER_H
