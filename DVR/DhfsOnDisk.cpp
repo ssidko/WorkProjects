@@ -53,43 +53,82 @@ bool DHFS::Volume::IsValidHeader(FRAME_HEADER &header)
 	return false;
 }
 
+//bool DHFS::Volume::ReadFrame(std::vector<BYTE> &buffer, FrameInfo &info)
+//{
+//	FRAME_HEADER *header = NULL;
+//	FRAME_FOOTER *footer = NULL;
+//	size_t size = buffer.size();
+//	LONGLONG offset = io.Pointer();
+//
+//	info.Clear();
+//	buffer.resize(buffer.size() + sizeof(FRAME_HEADER), 0);
+//	if ( io.Read(&buffer[size], sizeof(FRAME_HEADER)) == sizeof(FRAME_HEADER) ) {
+//		header = (FRAME_HEADER *)&buffer[size];
+//
+//		info.camera = header->camera;
+//		info.offset = offset;
+//		info.counter = header->counter;
+//		info.size = header->size;
+//		header->time.Timestamp(info.timestamp);
+//
+//		if ( IsValidHeader(*header) ) {
+//			size_t tail_size = (header->size - sizeof(FRAME_HEADER));
+//			buffer.resize(buffer.size() + tail_size);
+//			if ( io.Read(&buffer[size + sizeof(FRAME_HEADER)], tail_size) == tail_size ) {
+//				footer = (FRAME_FOOTER *)&buffer[buffer.size() - sizeof(FRAME_FOOTER)];
+//				if ( (footer->magic == FRAME_FOOTER_MAGIC) && (footer->size == info.size) ) {
+//					return true;
+//				} else {
+//					info.Clear();
+//					return false;
+//				}
+//			}
+//		}
+//	}
+//	buffer.resize(size);
+//	io.SetPointer(offset);
+//
+//	return false;
+//}
+
+
 bool DHFS::Volume::ReadFrame(std::vector<BYTE> &buffer, FrameInfo &info)
 {
-	FRAME_HEADER *header = NULL;
-	FRAME_FOOTER *footer = NULL;
+	FRAME_HEADER header = {0};
+	FRAME_FOOTER footer = {0};
 	size_t size = buffer.size();
 	LONGLONG offset = io.Pointer();
 
 	info.Clear();
-	buffer.resize(buffer.size() + sizeof(FRAME_HEADER), 0);
-	if ( io.Read(&buffer[size], sizeof(FRAME_HEADER)) == sizeof(FRAME_HEADER) ) {
-		header = (FRAME_HEADER *)&buffer[size];
+	if (io.Read(&header, sizeof(FRAME_HEADER)) == sizeof(FRAME_HEADER)) {
 
-		info.camera = header->camera;
+		info.camera = header.camera;
 		info.offset = offset;
-		info.counter = header->counter;
-		info.size = header->size;
-		header->time.Timestamp(info.timestamp);
+		info.counter = header.counter;
+		info.size = header.size;
+		header.time.Timestamp(info.timestamp);
 
-		if ( IsValidHeader(*header) ) {
-			size_t tail_size = (header->size - sizeof(FRAME_HEADER));
-			buffer.resize(buffer.size() + tail_size);
-			if ( io.Read(&buffer[size + sizeof(FRAME_HEADER)], tail_size) == tail_size ) {
-				footer = (FRAME_FOOTER *)&buffer[buffer.size() - sizeof(FRAME_FOOTER)];
-				if ( (footer->magic == FRAME_FOOTER_MAGIC) && (footer->size == info.size) ) {
-					return true;
-				} else {
-					info.Clear();
-					return false;
+		if (IsValidHeader(header)) {
+			size_t data_size = (header.size - sizeof(FRAME_HEADER) - sizeof(FRAME_FOOTER));
+
+			buffer.resize(buffer.size() + data_size);
+			if (io.Read(&buffer[size], data_size) == data_size) {
+				if (io.Read(&footer, sizeof(FRAME_FOOTER)) == sizeof(FRAME_FOOTER)) {
+					if ((footer.magic == FRAME_FOOTER_MAGIC) && (footer.size == header.size)) {
+						return true;
+					}
 				}
 			}
 		}
 	}
+	info.Clear();
 	buffer.resize(size);
 	io.SetPointer(offset);
 
 	return false;
 }
+
+
 
 bool DHFS::Volume::NextFrame(std::vector<BYTE> &buffer, FrameInfo &info)
 {

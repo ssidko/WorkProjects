@@ -112,6 +112,7 @@
     <ClCompile Include="Raid5.cpp" />
     <ClCompile Include="TestWidget.cpp" />
     <ClCompile Include="Timestamp.cpp" />
+    <ClCompile Include="utility.cpp" />
     <ClCompile Include="VDev.cpp" />
     <ClCompile Include="WFS.cpp" />
     <ClCompile Include="WfsScanner.cpp" />
@@ -159,6 +160,7 @@
     <ClInclude Include="Orbita.h" />
     <ClInclude Include="Raid5.h" />
     <ClInclude Include="TestWidget.h" />
+    <ClInclude Include="utility.h" />
     <ClInclude Include="WfsOnDisk.h" />
     <ClInclude Include="Timestamp.h" />
     <ClInclude Include="VDev.h" />

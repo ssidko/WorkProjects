@@ -127,6 +127,9 @@
     <ClCompile Include="FileRecordRecovery.cpp">
       <Filter>NTFS</Filter>
     </ClCompile>
+    <ClCompile Include="utility.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="mainwindow.ui">
@@ -208,6 +211,9 @@
     </ClInclude>
     <ClInclude Include="FileRecordRecovery.h">
       <Filter>NTFS</Filter>
+    </ClInclude>
+    <ClInclude Include="utility.h">
+      <Filter>Generated Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

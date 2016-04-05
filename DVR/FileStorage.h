@@ -9,6 +9,7 @@
 #include "File.h"
 #include "DhfsOnDisk.h"
 #include "Timestamp.h"
+#include "utility.h"
 
 namespace DHFS
 {
@@ -31,6 +32,7 @@ namespace DHFS
 		Timestamp StartTime(void) {return start_time;}
 		Timestamp EndTime(void) {return end_time;}
 		LONGLONG Size(void) {return file.GetSize();}
+		std::string Name(void) {return name;}
 	};
 
 	class FileStorage

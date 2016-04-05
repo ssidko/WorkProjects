@@ -1,34 +1,24 @@
 #include "WFS.h"
 
 #include <iostream>
-//#include "WinConsole.h"
+#include "utility.h"
 
 #include "File.h"
 
 using namespace WFS;
 
-void ConvertToMkv(std::string &raw_file_name, std::string &mkv_file_name)
-{
-	std::string t;
-	//std::string convertor_app("C:\\Program Files\\MKVToolNix\\mkvmerge.exe ");
-	std::string convertor_app("D:\\Soft\\#RecoverySoft#\\mkvtoolnix\\mkvmerge.exe ");
-
-	std::stringstream cmd_line;
-	cmd_line << convertor_app << "-o " << mkv_file_name << " " << raw_file_name;
-	t = cmd_line.str();
-	const char *zzz = t.data();
-	system(cmd_line.str().data());
-}
-
-void Convert2Avi(std::string &raw_file_name, std::string &avi_file_name)
-{
-	std::string cmd_line = "ffmpeg -f h264 -i ";
-	cmd_line += raw_file_name;
-	cmd_line += " -an -vcodec copy ";
-	cmd_line += avi_file_name;
-
-	system(cmd_line.data());
-}
+//void ConvertToMkv(std::string &raw_file_name, std::string &mkv_file_name)
+//{
+//	std::string t;
+//	//std::string convertor_app("C:\\Program Files\\MKVToolNix\\mkvmerge.exe ");
+//	std::string convertor_app("D:\\Soft\\#RecoverySoft#\\mkvtoolnix\\mkvmerge.exe ");
+//
+//	std::stringstream cmd_line;
+//	cmd_line << convertor_app << "-o " << mkv_file_name << " " << raw_file_name;
+//	t = cmd_line.str();
+//	const char *zzz = t.data();
+//	system(cmd_line.str().data());
+//}
 
 void NextFileName(FrameSequence &sequence)
 {
