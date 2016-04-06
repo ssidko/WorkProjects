@@ -35,14 +35,26 @@ namespace DHFS
 	} TIMESTAMP;
 
 	typedef struct _FRAME_HEADER {
-		DWORD magic;					// FRAME_HEADER_MAGIC
+		DWORD magic;		// FRAME_HEADER_MAGIC
 		WORD flags;
 		WORD camera;
 		DWORD counter;
-		DWORD size;
+		DWORD size;			// Frame size
 		TIMESTAMP time;
 		BYTE unk1[8];
 		DWORD unk2;
+		DWORD HeaderSize(void) {
+			switch (flags) {			
+			case 0x00FC:
+				return 0x20;
+			case 0x00FD:
+				return 0x28;
+			case 0x00F0:
+				return 0x24;
+			default :
+				return 0;
+			}		
+		}
 	} FRAME_HEADER;
 
 	typedef struct _FRAME_FOOTER {

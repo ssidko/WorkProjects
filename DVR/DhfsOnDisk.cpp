@@ -46,7 +46,7 @@ void DHFS::Volume::SetPointer( LONGLONG &pointer )
 bool DHFS::Volume::IsValidHeader(FRAME_HEADER &header)
 {
 	if (header.magic == FRAME_HEADER_MAGIC) {
-		if ((header.size > (sizeof(FRAME_HEADER) + sizeof(FRAME_FOOTER))) && (header.size <= FRAME_MAX_SIZE)) {
+		if ((header.HeaderSize()) && (header.size > (sizeof(FRAME_HEADER) + sizeof(FRAME_FOOTER))) && (header.size <= FRAME_MAX_SIZE)) {
 			return true;
 		}
 	}
@@ -101,17 +101,17 @@ bool DHFS::Volume::ReadFrame(std::vector<BYTE> &buffer, FrameInfo &info)
 
 	info.Clear();
 	if (io.Read(&header, sizeof(FRAME_HEADER)) == sizeof(FRAME_HEADER)) {
+		if (IsValidHeader(header) && ((header.flags == 0x00FC) || (header.flags == 0x00FD))) {
+			info.camera = header.camera;
+			info.offset = offset;
+			info.counter = header.counter;
+			info.size = header.size;
+			header.time.Timestamp(info.timestamp);
 
-		info.camera = header.camera;
-		info.offset = offset;
-		info.counter = header.counter;
-		info.size = header.size;
-		header.time.Timestamp(info.timestamp);
-
-		if (IsValidHeader(header)) {
-			size_t data_size = (header.size - sizeof(FRAME_HEADER) - sizeof(FRAME_FOOTER));
+			size_t data_size = (header.size - header.HeaderSize() - sizeof(FRAME_FOOTER));
 
 			buffer.resize(buffer.size() + data_size);
+			io.SetPointer(io.Pointer() + (header.HeaderSize() - sizeof(FRAME_HEADER)));
 			if (io.Read(&buffer[size], data_size) == data_size) {
 				if (io.Read(&footer, sizeof(FRAME_FOOTER)) == sizeof(FRAME_FOOTER)) {
 					if ((footer.magic == FRAME_FOOTER_MAGIC) && (footer.size == header.size)) {
@@ -119,6 +119,9 @@ bool DHFS::Volume::ReadFrame(std::vector<BYTE> &buffer, FrameInfo &info)
 					}
 				}
 			}
+
+		} else {
+			int y = 0;
 		}
 	}
 	info.Clear();

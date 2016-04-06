@@ -18,19 +18,31 @@ bool DHFS::VideoFile::Create(void)
 {
 	return file.Create();
 }
+void DHFS::VideoFile::Close(void)
+{
+	file.Close();
+}
 
 bool DHFS::VideoFile::SaveFrameSequence(std::vector<BYTE> &sequence_buffer, FrameSequenceInfo &sequence_info)
 {
 	if (start_time.Seconds() == 0) {
+		camera = sequence_info.start_frame.camera;
 		start_time = sequence_info.start_frame.timestamp;
 	}
 	end_time = sequence_info.end_frame.timestamp;
 	return (file.Write(&sequence_buffer[0], sequence_buffer.size()) == sequence_buffer.size());
 }
 
-DHFS::FileStorage::FileStorage(int cam_count, const std::string &raw_directory_path, const std::string &mkv_directory_path) :
-	raw_directory(raw_directory_path),
-	mkv_directory(mkv_directory_path)
+bool DHFS::VideoFile::Rename(const std::string &new_name)
+{
+	if (file.Rename(new_name.data())) {
+		name = new_name;
+		return true;
+	}
+	return false;
+}
+
+DHFS::FileStorage::FileStorage(int cam_count, const std::string &out_directory_path) : out_directory(out_directory_path)
 {
 	if (cam_count == 0) {
 		files.resize(64, NULL);
@@ -54,16 +66,28 @@ bool DHFS::FileStorage::SaveFrameSequence(std::vector<BYTE> &sequence_buffer, Fr
 
 	if (vfile) {
 		if (vfile->Size() >= MAX_VIDEO_FILE_SIZE) {
-			delete vfile;
+			//delete vfile;
+			//vfile = NULL;
+			CloseFile(sequence_info.start_frame.camera);
 			vfile = NULL;
-		} else if (sequence_info.start_frame.timestamp < vfile->EndTime()) {
-			/*skip this sequence*/
-			return true;
-		} else if ((sequence_info.start_frame.timestamp - vfile->EndTime()) > (LONGLONG)2*60) {
-			/*save in next file*/
-			delete vfile;
-			vfile = NULL;
-		}
+		} else if (sequence_info.start_frame.timestamp.Seconds() < vfile->EndTime().Seconds()) {
+			if ((vfile->EndTime().Seconds() - sequence_info.start_frame.timestamp.Seconds()) > 2) {
+				/*skip this sequence*/
+				return true;
+			}
+		} 
+
+
+		//else if (sequence_info.start_frame.timestamp.Seconds() < vfile->EndTime().Seconds()) {
+		//	/*skip this sequence*/
+		//	return true;
+		//} else if ((sequence_info.start_frame.timestamp.Seconds() - vfile->EndTime().Seconds()) > (LONGLONG)2*60) {
+		//	/*save in next file*/
+		//	//delete vfile;
+		//	//vfile = NULL;
+		//	CloseFile(sequence_info.start_frame.camera);
+		//	vfile = NULL;
+		//}
 	}
 
 	if (vfile == NULL) {
@@ -80,23 +104,45 @@ bool DHFS::FileStorage::SaveFrameSequence(std::vector<BYTE> &sequence_buffer, Fr
 
 DHFS::VideoFile *DHFS::FileStorage::CreateNewFile(FrameSequenceInfo &sequence_info)
 {
-	std::string new_file_name;
-	GenerateFileName(new_file_name, sequence_info);
-	VideoFile *new_file = new VideoFile(new_file_name.c_str());
+	std::string file_name;
+	//GenerateFileName(file_name, sequence_info);
+	file_name += out_directory;
+	file_name += std::to_string(sequence_info.start_frame.camera+1);
+	file_name += ".tmp";
+	VideoFile *new_file = new VideoFile(file_name.c_str());
 	if (new_file) {
 		if (new_file->Create()) {
 			return new_file;
-		} else {
-			delete new_file;
 		}
 	}
 	return NULL;
 }
 
+void DHFS::FileStorage::CloseFile(unsigned int file_index)
+{
+	VideoFile *vfile = files[file_index];
+	if (vfile) {
+
+		vfile->Close();
+
+		//std::stringstream file_name;
+		//file_name << out_directory << "[" << file_index + 1 << "]-" << vfile->StartTime().String() << "-=-" << vfile->EndTime().String() /*<< ".avi"*/;
+
+		//vfile->Rename(file_name.str() + ".h264");
+
+		//Convert2Avi(file_name.str() + ".h264", file_name.str() + ".avi");
+
+		std::stringstream file_name;
+		file_name << out_directory << "[" << file_index + 1 << "]-" << vfile->StartTime().String() << "-=-" << vfile->EndTime().String() << ".avi";
+
+		Convert2Avi(vfile->Name(), file_name.str());
+
+		delete files[file_index];
+		files[file_index] = NULL;
+	}
+}
+
 void DHFS::FileStorage::GenerateFileName(std::string &new_file_name, FrameSequenceInfo &sequence_info)
 {
-	std::stringstream stream;
-	stream << raw_directory << "\\" << /*sequence.offset << " " <<*/ "[" << sequence_info.start_frame.camera << "] ";
-	stream << sequence_info.start_frame.timestamp.String() << ".h264";
-	new_file_name = stream.str();
+
 }

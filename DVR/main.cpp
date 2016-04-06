@@ -56,7 +56,7 @@ int main(int argc, char *argv[])
 	//DWORD raw = 0x103C5CF5;
 	//STMP *t = (STMP *)&raw;
 
-	DHFS::StartRecovering();
+	DHFS::StartRecovering("\\\\.\\PhysicalDrive2", "F:\\39405\\out\\", Timestamp(2015,11,25,0,0,0), Timestamp());
 
 	//FileRecordRecoveryStart();
 
