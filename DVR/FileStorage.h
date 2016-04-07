@@ -49,7 +49,7 @@ namespace DHFS
 		bool SaveFrameSequence(std::vector<BYTE> &sequence_buffer, FrameSequenceInfo &sequence_info);
 		VideoFile *CreateNewFile(FrameSequenceInfo &sequence_info);
 		void CloseFile(unsigned int file_index);
-		void GenerateFileName(std::string &new_file_name, FrameSequenceInfo &sequence_info);
+		void CloseAllFiles(void);
 	};
 }
 

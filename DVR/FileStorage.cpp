@@ -53,6 +53,7 @@ DHFS::FileStorage::FileStorage(int cam_count, const std::string &out_directory_p
 
 DHFS::FileStorage::~FileStorage(void)
 {
+	CloseAllFiles();
 }
 
 bool DHFS::FileStorage::SaveFrameSequence(std::vector<BYTE> &sequence_buffer, FrameSequenceInfo &sequence_info)
@@ -66,14 +67,12 @@ bool DHFS::FileStorage::SaveFrameSequence(std::vector<BYTE> &sequence_buffer, Fr
 
 	if (vfile) {
 		if (vfile->Size() >= MAX_VIDEO_FILE_SIZE) {
-			//delete vfile;
-			//vfile = NULL;
 			CloseFile(sequence_info.start_frame.camera);
 			vfile = NULL;
 		} else if (sequence_info.start_frame.timestamp.Seconds() < vfile->EndTime().Seconds()) {
-			if ((vfile->EndTime().Seconds() - sequence_info.start_frame.timestamp.Seconds()) > 2) {
-				/*skip this sequence*/
-				return true;
+			if ((vfile->EndTime().Seconds() - sequence_info.start_frame.timestamp.Seconds()) > 10) {
+				CloseFile(sequence_info.start_frame.camera);
+				vfile = NULL;
 			}
 		} 
 
@@ -137,12 +136,16 @@ void DHFS::FileStorage::CloseFile(unsigned int file_index)
 
 		Convert2Avi(vfile->Name(), file_name.str());
 
+
 		delete files[file_index];
 		files[file_index] = NULL;
 	}
 }
 
-void DHFS::FileStorage::GenerateFileName(std::string &new_file_name, FrameSequenceInfo &sequence_info)
+void DHFS::FileStorage::CloseAllFiles(void)
 {
-
+	for (DWORD i = 0; i < files.size(); ++i) {
+		CloseFile(i);
+	}
 }
+
