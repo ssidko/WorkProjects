@@ -156,7 +156,7 @@ bool DHFS::Volume::NextFrameSequence(std::vector<BYTE> &sequence_buffer, FrameSe
 
 	frame_info.Clear();
 	sequence_info.Clear();
-	sequence_buffer.clear();
+	sequence_buffer.resize(0);
 
 	while (NextFrame(sequence_buffer, frame_info)) {
 		if (sequence_info.frame_counter == 0) {

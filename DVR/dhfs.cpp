@@ -26,8 +26,6 @@ int DHFS::StartRecovering(const std::string &dhfs_volume, const std::string &out
 			}
 
 			storage.SaveFrameSequence(sequence, sequence_info);
-			sequence.clear();
-			sequence_info.Clear();
 		}
 	}
 

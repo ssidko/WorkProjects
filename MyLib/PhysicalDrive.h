@@ -18,14 +18,14 @@ public:
 	~PhysicalDrive();
 
 	/*--== iBlockDevice interface ==--*/
-	virtual BOOL Open(void);
-	virtual void Close(void);
-	virtual const DWORD &BlockSize(void);
-	virtual const ULONGLONG &BlocksCount(void);
-	virtual LONGLONG Pointer(void);
-	virtual BOOL SetPointer(const LONGLONG &new_pointer);
-	virtual BOOL ReadBlocks(void *buffer, DWORD size_in_blocks, DWORD *blocks_readed = NULL);
-	virtual BOOL WriteBlocks(void *buffer, DWORD size_in_blocks, DWORD *blocks_readed = NULL);
+	virtual BOOL Open(void) = 0;
+	virtual void Close(void) = 0;
+	virtual const DWORD &BlockSize(void) = 0;
+	virtual const ULONGLONG &BlocksCount(void) = 0;
+	virtual LONGLONG Pointer(void) = 0;
+	virtual BOOL SetPointer(const LONGLONG &new_pointer) = 0;
+	virtual BOOL ReadBlocks(void *buffer, DWORD size_in_blocks, DWORD *blocks_readed = NULL) = 0;
+	virtual BOOL WriteBlocks(void *buffer, DWORD size_in_blocks, DWORD *blocks_readed = NULL) = 0;
 
 	/*--== Extended functionality ==--*/
 };
