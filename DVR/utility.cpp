@@ -1,5 +1,28 @@
 #include "utility.h"
 
+
+WORD BeToLe(WORD word)
+{
+	WORD res;
+	BYTE *be = (BYTE *)&word;
+	BYTE *le = (BYTE *)&res;
+	le[0] = be[1];
+	le[1] = be[0];
+	return res;
+}
+
+DWORD BeToLe(DWORD dword)
+{
+	DWORD res;
+	BYTE *be = (BYTE *)&dword;
+	BYTE *le = (BYTE *)&res;
+	le[0] = be[3];
+	le[1] = be[2];
+	le[2] = be[1];
+	le[3] = be[0];
+	return res;
+}
+
 void ConvertToMkv(std::string &raw_file_name, std::string &mkv_file_name)
 {
 	std::string convertor_app("D:\\Soft\\#RecoverySoft#\\mkvtoolnix\\mkvmerge.exe ");

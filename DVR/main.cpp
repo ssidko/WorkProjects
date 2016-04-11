@@ -35,6 +35,7 @@ inline void _trace(char *format, ...)
 
 #include "ExtentRecovery.h"
 #include "FileRecordRecovery.h"
+#include "Hikvision.h"
 
 int main(int argc, char *argv[])
 {
@@ -56,8 +57,8 @@ int main(int argc, char *argv[])
 	//DWORD raw = 0x103C148E;
 	//STMP *t = (STMP *)&raw;
 
-
-	DHFS::StartRecovering("\\\\.\\PhysicalDrive1", "F:\\39405\\out1\\", Timestamp(2015,11,25,0,0,0), Timestamp());
+	//DHFS::StartRecovering("\\\\.\\PhysicalDrive1", "F:\\39405\\out1\\", Timestamp(2015,11,25,0,0,0), Timestamp());
+	HIKV::StartRecovering("\\\\.\\PhysicalDrive1", "F:\\39405\\out2\\", Timestamp(2015, 11, 25, 0, 0, 0), Timestamp());
 
 	//FileRecordRecoveryStart();
 

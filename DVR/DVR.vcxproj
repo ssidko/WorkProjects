@@ -109,6 +109,7 @@
     <ClCompile Include="GeneratedFiles\Release\moc_mainwindow.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="Hikvision.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="mainwindow.cpp" />
     <ClCompile Include="Orbita.cpp" />
@@ -159,6 +160,7 @@
     <ClInclude Include="FileStorage.h" />
     <ClInclude Include="DhfsOnDisk.h" />
     <ClInclude Include="GeneratedFiles\ui_mainwindow.h" />
+    <ClInclude Include="Hikvision.h" />
     <ClInclude Include="Ntfs.h" />
     <ClInclude Include="Orbita.h" />
     <ClInclude Include="Raid5.h" />

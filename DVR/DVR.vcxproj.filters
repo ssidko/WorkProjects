@@ -58,6 +58,9 @@
     <Filter Include="NTFS">
       <UniqueIdentifier>{b34018a3-5fcd-4181-9cc5-8a5ee862b5da}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Core\Hikvision">
+      <UniqueIdentifier>{ddc66bb8-6a68-4eb5-9abf-125c3db7c460}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GeneratedFiles\Debug\moc_mainwindow.cpp">
@@ -128,7 +131,10 @@
       <Filter>NTFS</Filter>
     </ClCompile>
     <ClCompile Include="utility.cpp">
-      <Filter>Generated Files</Filter>
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Hikvision.cpp">
+      <Filter>Core\Hikvision</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -213,7 +219,10 @@
       <Filter>NTFS</Filter>
     </ClInclude>
     <ClInclude Include="utility.h">
-      <Filter>Generated Files</Filter>
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Hikvision.h">
+      <Filter>Core\Hikvision</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
