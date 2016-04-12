@@ -11,11 +11,10 @@ namespace HIKV
 #pragma pack(1)
 
 	typedef struct _FRAME_HEADER {
-		BYTE signature;			// {0x00, 0x00, 0x01}
+		BYTE signature[3];			// {0x00, 0x00, 0x01}
 		BYTE type;
-		WORD data_size;
-		bool IsFixedDataSize(void) { return type == 0xBA; }
 		DWORD DataSize(void);
+		bool IsValid(void);
 	} FRAME_HEADER;
 
 #pragma pack(pop)
@@ -31,9 +30,12 @@ namespace HIKV
 		bool Open(void) { return io.Open(); }
 
 		void SetPointer(const LONGLONG &offset) { io.SetPointer(offset); }
+		LONGLONG Pointer(void) { return io.Pointer(); }
 		LONGLONG GoToNextFrame(void);
 		bool ReadFrame(std::vector<BYTE> &buffer);
 	};
+
+	void SaveToFile(const std::string &file_name, std::vector<BYTE> &buffer);
 
 	int StartRecovering(const std::string &dhfs_volume, const std::string &out_directory, const Timestamp &start_time, const Timestamp &end_time);
 

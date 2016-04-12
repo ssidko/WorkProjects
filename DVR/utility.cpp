@@ -36,7 +36,7 @@ void ConvertToMkv(std::string &raw_file_name, std::string &mkv_file_name)
 	system(cmd_line.data());
 }
 
-void Convert2Avi(std::string &raw_file_name, std::string &avi_file_name)
+void Convert2Avi(const std::string &raw_file_name, const std::string &avi_file_name)
 {
 	std::string cmd_line = "ffmpeg -f h264 -i ";
 	cmd_line += raw_file_name;
