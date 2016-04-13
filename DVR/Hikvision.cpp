@@ -27,7 +27,7 @@ LONGLONG HIKV::HikVolume::GoToNextFrame(void)
 	return io.Find(signature, sizeof(signature));
 }
 
-bool HIKV::HikVolume::ReadFrame(std::vector<BYTE> &buffer)
+bool HIKV::HikVolume::ReadFrame(std::vector<BYTE> &buffer, FrameInfo &frame)
 {
 	FRAME_HEADER *header = nullptr;
 	size_t origin_size = buffer.size();
@@ -41,6 +41,7 @@ bool HIKV::HikVolume::ReadFrame(std::vector<BYTE> &buffer)
 		if (header->IsValid()) {
 			if (header->type == 0xBA) {
 				data_size = 16;
+				frame.full_size = sizeof(FRAME_HEADER) + data_size;
 			} else {				
 				buffer.resize(buffer.size() + sizeof(WORD));
 				if (io.Read(&buffer[origin_size + sizeof(FRAME_HEADER)], sizeof(WORD)) != sizeof(WORD)) {
@@ -51,9 +52,15 @@ bool HIKV::HikVolume::ReadFrame(std::vector<BYTE> &buffer)
 					goto _error;
 				}
 				data_pos = origin_size + sizeof(FRAME_HEADER) + sizeof(WORD);
+				frame.full_size = sizeof(FRAME_HEADER) + sizeof(WORD) + data_size;
 			}
 			buffer.resize(buffer.size() + data_size);
 			if (io.Read(&buffer[data_pos], data_size) == data_size) {
+				header = (FRAME_HEADER *)&buffer[origin_size];
+				frame.offset = offset;
+				frame.frame_type = header->type;
+				frame.data_size = data_size;
+
 				return true;
 			}		
 		} else { 
@@ -62,10 +69,25 @@ bool HIKV::HikVolume::ReadFrame(std::vector<BYTE> &buffer)
 	}
 
 _error:
-	
+
 	io.SetPointer(offset);
 	buffer.resize(origin_size);
 
+	return false;
+}
+
+bool HIKV::HikVolume::NextFrameSequence(FrameSequence &sequence)
+{
+	LONGLONG offset;
+	FrameInfo frame;
+	while ((offset = GoToNextFrame()) != -1) {
+
+		while (ReadFrame(sequence.buffer, frame)) {
+		
+		
+		}
+
+	}
 	return false;
 }
 
@@ -85,43 +107,29 @@ void HIKV::SaveToFile(const std::string &file_name, std::vector<BYTE> &buffer)
 int HIKV::StartRecovering(const std::string &dhfs_volume, const std::string &out_directory, const Timestamp &start_time, const Timestamp & end_time)
 {
 	DWORD rw = 0;
-	BYTE signature[] = { 0x00, 0x00, 0x01 };
-	LONGLONG pos = 0;
 	HikVolume vol("\\\\.\\PhysicalDrive2");
 	if (vol.Open()) {
 
-		std::vector<BYTE> seq;
-		const size_t max_size = 100*1024*1024;
-		size_t file_size = 0;
-		seq.reserve(max_size);
-		vol.SetPointer(156400000 * 512LL);
+		LONGLONG offset;
+		FrameInfo frame;
+		FrameSequence sequence;
+		vol.SetPointer(353168518*512LL);
 
-		std::string file_name = "F:\\39551\\1.tmp";
+		while ((offset = vol.GoToNextFrame()) != -1) {
 
-		while ((pos = vol.GoToNextFrame()) != -1) {
+			while (vol.ReadFrame(sequence.buffer, frame)) {
+				++sequence.frames_count;
 
-			while (vol.ReadFrame(seq)) {
-				if (seq.size() >= max_size) {
-					SaveToFile(file_name, seq);
-					file_size += seq.size();
-					seq.clear();				
-				}			
+
+
+
+
+				frame.Clear();
 			}
 
-			if (seq.size()) {
-				SaveToFile(file_name, seq);
-				file_size += seq.size();
-			}
-			if (file_size) {
-				Convert2Avi(file_name, "F:\\39551\\1.avi");
-			}
+			int x = 0;
 
-			file_size = 0;
-
-
-			vol.SetPointer(vol.Pointer() + 1);		
-			seq.clear();
-		}	
+		}
 	}
 
 	return 0;

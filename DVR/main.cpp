@@ -45,26 +45,13 @@ int main(int argc, char *argv[])
 	//Orbita::Main("\\\\.\\PhysicalDrive0", "K:\\38702\\out");
 	//WFS::Main();
 
-	typedef struct _STMP {
-		DWORD seconds : 4;
-		DWORD minutes : 6;
-		DWORD hours : 5;
-		DWORD day : 5;
-		DWORD month : 4;
-		DWORD year : 8;
-	} STMP;
-
-	//typedef struct _STMP {
-	//	DWORD seconds : 6;
-	//	DWORD minutes : 6;
-	//	DWORD hours : 5;
-	//	DWORD day : 5;
-	//	DWORD month : 4;
-	//	DWORD year : 6;
-	//} STMP;
-
 	DWORD raw = 0x102508AC;
-	STMP *t = (STMP *)&raw;
+	HIKV::TIMESTAMP *t = (HIKV::TIMESTAMP *)&raw;
+
+	HIKV::TIMESTAMP tst = { 0,23,14,23,5,16 };
+
+	Timestamp time;
+	time = (Timestamp)tst;
 
 	//DHFS::StartRecovering("\\\\.\\PhysicalDrive1", "F:\\39405\\out1\\", Timestamp(2015,11,25,0,0,0), Timestamp());
 	HIKV::StartRecovering("\\\\.\\PhysicalDrive1", "F:\\39405\\out2\\", Timestamp(2015, 11, 25, 0, 0, 0), Timestamp());
