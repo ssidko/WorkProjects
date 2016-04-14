@@ -104,7 +104,7 @@ void HIKV::SaveToFile(const std::string &file_name, std::vector<BYTE> &buffer)
 	}
 }
 
-int HIKV::StartRecovering(const std::string &dhfs_volume, const std::string &out_directory, const Timestamp &start_time, const Timestamp & end_time)
+int HIKV::StartRecovering(const std::string &dhfs_volume, const std::string &out_directory, const Timestamp &start_time, const Timestamp &end_time)
 {
 	DWORD rw = 0;
 	HikVolume vol("\\\\.\\PhysicalDrive2");
