@@ -45,7 +45,7 @@ int main(int argc, char *argv[])
 	//Orbita::Main("\\\\.\\PhysicalDrive0", "K:\\38702\\out");
 	//WFS::Main();
 
-	DWORD raw = 0x102508AC;
+	DWORD raw = 0x116AC796;
 	HIKV::TIMESTAMP *t = (HIKV::TIMESTAMP *)&raw;
 
 	HIKV::TIMESTAMP tst = { 0,23,14,23,5,16 };

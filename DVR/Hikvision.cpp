@@ -113,7 +113,8 @@ int HIKV::StartRecovering(const std::string &dhfs_volume, const std::string &out
 		LONGLONG offset;
 		FrameInfo frame;
 		FrameSequence sequence;
-		vol.SetPointer(353168518*512LL);
+
+		//vol.SetPointer(353168518*512LL);
 
 		while ((offset = vol.GoToNextFrame()) != -1) {
 

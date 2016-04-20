@@ -50,12 +50,14 @@ namespace HIKV
 		Timestamp start_time;
 		Timestamp end_time;
 		std::vector<BYTE> buffer;
+		std::string file_name;
 		void Clear(void) {
 			offset = 0;
 			frames_count = 0;
 			start_time.Clear();
 			end_time.Clear();
-			buffer.clear();		
+			buffer.clear();
+			file_name.clear();
 		}
 	} FrameSequence;
 
