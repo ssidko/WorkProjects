@@ -51,14 +51,8 @@ namespace HIKV
 		Timestamp end_time;
 		std::vector<BYTE> buffer;
 		std::string file_name;
-		void Clear(void) {
-			offset = 0;
-			frames_count = 0;
-			start_time.Clear();
-			end_time.Clear();
-			buffer.clear();
-			file_name.clear();
-		}
+		void Clear(void);
+		void SaveToFile(void);
 	} FrameSequence;
 
 	class HikVolume
@@ -76,8 +70,6 @@ namespace HIKV
 		bool ReadFrame(std::vector<BYTE> &buffer, FrameInfo &frame);
 		bool NextFrameSequence(FrameSequence &sequence);
 	};
-
-	void SaveToFile(const std::string &file_name, std::vector<BYTE> &buffer);
 
 	int StartRecovering(const std::string &dhfs_volume, const std::string &out_directory, const Timestamp &start_time, const Timestamp &end_time);
 

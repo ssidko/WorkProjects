@@ -19,6 +19,29 @@ bool HIKV::FRAME_HEADER::IsValid(void)
 	return false;
 }
 
+void HIKV::FrameSequence::Clear(void)
+{
+	offset = 0;
+	frames_count = 0;
+	start_time.Clear();
+	end_time.Clear();
+	buffer.clear();
+	file_name.clear();
+}
+
+void HIKV::FrameSequence::SaveToFile(void)
+{
+	DWORD rw = 0;
+	W32Lib::FileEx out_file(file_name.c_str());
+	if (out_file.Open() || out_file.Create()) {
+		if (out_file.SetPointer(0, FILE_END) == 0x00) {
+			rw = ::GetLastError();
+		}
+		rw = out_file.Write(buffer.data(), buffer.size());
+		out_file.Close();
+	}
+}
+
 LONGLONG HIKV::HikVolume::GoToNextFrame(void)
 {
 	LONGLONG init_offset = io.Pointer();
@@ -89,19 +112,6 @@ bool HIKV::HikVolume::NextFrameSequence(FrameSequence &sequence)
 
 	}
 	return false;
-}
-
-void HIKV::SaveToFile(const std::string &file_name, std::vector<BYTE> &buffer)
-{
-	DWORD rw = 0;
-	W32Lib::FileEx out_file(file_name.c_str());
-	if (out_file.Open() || out_file.Create()) {
-		if (out_file.SetPointer(0, FILE_END) == 0x00) {
-			rw = ::GetLastError();		
-		}
-		rw = out_file.Write(buffer.data(), buffer.size());
-		out_file.Close();
-	}
 }
 
 int HIKV::StartRecovering(const std::string &dhfs_volume, const std::string &out_directory, const Timestamp &start_time, const Timestamp &end_time)
