@@ -46,7 +46,7 @@ LONGLONG HIKV::HikVolume::GoToNextFrame(void)
 {
 	LONGLONG init_offset = io.Pointer();
 	LONGLONG cur_offset = 0;
-	BYTE signature[] = { 0x00, 0x00, 0x01 };
+	BYTE signature[] = { 0x00, 0x00, 0x01, 0xBA };
 	return io.Find(signature, sizeof(signature));
 }
 
@@ -83,6 +83,18 @@ bool HIKV::HikVolume::ReadFrame(std::vector<BYTE> &buffer, FrameInfo &frame)
 				frame.offset = offset;
 				frame.frame_type = header->type;
 				frame.data_size = data_size;
+
+				if (header->type == 0xBC) {
+					if ( (*(WORD *)(&buffer[data_pos + 6]) == 0x4B48) && (*(WORD *)(&buffer[data_pos + 22]) == 0x4B48) ) {
+						
+						frame.time_stamp = ((TIMESTAMP *)(&buffer[data_pos + 10]))->TimeStamp();
+					
+					}
+				
+				
+				
+				}
+
 
 				return true;
 			}		

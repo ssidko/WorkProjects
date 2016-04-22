@@ -45,13 +45,14 @@ int main(int argc, char *argv[])
 	//Orbita::Main("\\\\.\\PhysicalDrive0", "K:\\38702\\out");
 	//WFS::Main();
 
-	DWORD raw = 0x116AC796;
+	//DWORD raw = 0x103CB6A9;
+	DWORD raw = 0xA9B63C10;
 	HIKV::TIMESTAMP *t = (HIKV::TIMESTAMP *)&raw;
 
 	HIKV::TIMESTAMP tst = { 0,23,14,23,5,16 };
 
 	Timestamp time;
-	time = (Timestamp)tst;
+	time = (Timestamp)tst.TimeStamp();
 
 	//DHFS::StartRecovering("\\\\.\\PhysicalDrive1", "F:\\39405\\out1\\", Timestamp(2015,11,25,0,0,0), Timestamp());
 	HIKV::StartRecovering("\\\\.\\PhysicalDrive1", "F:\\39405\\out2\\", Timestamp(2015, 11, 25, 0, 0, 0), Timestamp());

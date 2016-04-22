@@ -10,14 +10,24 @@ namespace HIKV
 #pragma pack(push)
 #pragma pack(1)
 
+	//typedef struct _TIMESTAMP {
+	//	DWORD seconds	: 4;
+	//	DWORD minutes	: 6;
+	//	DWORD hours		: 5;
+	//	DWORD day		: 5;
+	//	DWORD month		: 4;
+	//	DWORD year		: 8;
+	//	Timestamp TimeStamp (void) { return Timestamp(year + 2000, month, day, hours, minutes, seconds); }
+	//} TIMESTAMP;
+
 	typedef struct _TIMESTAMP {
-		DWORD seconds	: 4;
-		DWORD minutes	: 6;
-		DWORD hours		: 5;
-		DWORD day		: 5;
-		DWORD month		: 4;
-		DWORD year		: 8;
-		operator Timestamp () { return Timestamp(year + 2000, month, day, hours, minutes, seconds); }
+		DWORD year : 8;
+		DWORD day : 5;
+		DWORD month : 4;
+		DWORD hours : 5;
+		DWORD minutes : 6;
+		DWORD seconds : 4;
+		Timestamp TimeStamp(void) { return Timestamp(year + 2000, month, day, hours, minutes, seconds); }
 	} TIMESTAMP;
 
 	typedef struct _FRAME_HEADER {

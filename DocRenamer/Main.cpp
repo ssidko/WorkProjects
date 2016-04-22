@@ -25,7 +25,7 @@ DWORD CALLBACK ForFilesProc(TCHAR *full_path)
 			{
 				_tprintf(L"%s\n", stat_stg.pwcsName);
 				if (stat_stg.type == STGTY_STREAM)
-					/*if (0 == _tcscmp(stat_stg.pwcsName, L"WordDocument"))*/
+				/*if (0 == _tcscmp(stat_stg.pwcsName, L"WordDocument"))*/
 				{
 					IStream *stream = NULL; 
 					res = root_storage->OpenStream(stat_stg.pwcsName, 0, STGM_DIRECT|STGM_READ|STGM_SHARE_EXCLUSIVE, 0, &stream);
