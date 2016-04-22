@@ -87,15 +87,13 @@ bool HIKV::HikVolume::ReadFrame(std::vector<BYTE> &buffer, FrameInfo &frame)
 				if (header->type == 0xBC) {
 					if ( (*(WORD *)(&buffer[data_pos + 6]) == 0x4B48) && (*(WORD *)(&buffer[data_pos + 22]) == 0x4B48) ) {
 						
-						frame.time_stamp = ((TIMESTAMP *)(&buffer[data_pos + 10]))->TimeStamp();
+						DWORD raw = BeToLe(*((DWORD *)&buffer[data_pos + 10]));
+						TIMESTAMP *stmp = (TIMESTAMP *)&raw;
+						frame.time_stamp = stmp->TimeStamp();
 					
-					}
-				
-				
+					}			
 				
 				}
-
-
 				return true;
 			}		
 		} else { 
@@ -129,7 +127,8 @@ bool HIKV::HikVolume::NextFrameSequence(FrameSequence &sequence)
 int HIKV::StartRecovering(const std::string &dhfs_volume, const std::string &out_directory, const Timestamp &start_time, const Timestamp &end_time)
 {
 	DWORD rw = 0;
-	HikVolume vol("\\\\.\\PhysicalDrive2");
+	//HikVolume vol("\\\\.\\PhysicalDrive2");
+	HikVolume vol("f:\\tst\\example.bin");
 	if (vol.Open()) {
 
 		LONGLONG offset;
