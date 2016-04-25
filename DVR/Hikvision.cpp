@@ -2,6 +2,7 @@
 #include <vector>
 #include "utility.h"
 #include "BufferedFile.h"
+#include <sstream>
 
 bool HIKV::FRAME_HEADER::IsValid(void)
 {
@@ -26,23 +27,9 @@ void HIKV::FrameSequence::Clear(void)
 	start_time.Clear();
 	end_time.Clear();
 	buffer.clear();
-	file_name.clear();
 }
 
-void HIKV::FrameSequence::SaveToFile(void)
-{
-	DWORD rw = 0;
-	W32Lib::FileEx out_file(file_name.c_str());
-	if (out_file.Open() || out_file.Create()) {
-		if (out_file.SetPointer(0, FILE_END) == 0x00) {
-			rw = ::GetLastError();
-		}
-		rw = out_file.Write(buffer.data(), buffer.size());
-		out_file.Close();
-	}
-}
-
-LONGLONG HIKV::HikVolume::GoToNextFrame(void)
+LONGLONG HIKV::HikVolume::FindNextFrame(void)
 {
 	LONGLONG init_offset = io.Pointer();
 	LONGLONG cur_offset = 0;
@@ -113,7 +100,7 @@ bool HIKV::HikVolume::NextFrameSequence(FrameSequence &sequence)
 {
 	LONGLONG offset;
 	FrameInfo frame;
-	while ((offset = GoToNextFrame()) != -1) {
+	while ((offset = FindNextFrame()) != -1) {
 
 		while (ReadFrame(sequence.buffer, frame)) {
 		
@@ -124,33 +111,86 @@ bool HIKV::HikVolume::NextFrameSequence(FrameSequence &sequence)
 	return false;
 }
 
+bool HIKV::HikVolume::SaveFrameSequenceToFile(std::string &file_name, FrameSequence &sequence)
+{
+	FrameInfo frame;
+	size_t buffer_max_size = 100 * 1024 * 1024;
+
+	W32Lib::FileEx out_file(file_name.c_str());
+	if (!out_file.Create()) {
+		return false;
+	}
+
+	frame.Clear();
+	sequence.Clear();
+
+	while (ReadFrame(sequence.buffer, frame)) {
+
+		if (sequence.frames_count == 0) {
+			sequence.offset = frame.offset;
+		}
+		
+		if (frame.time_stamp.Seconds() != 0) {
+			if (sequence.start_time.Seconds() == 0) {
+				sequence.start_time = frame.time_stamp;
+			}
+			sequence.end_time = frame.time_stamp;		
+		}
+	
+		++sequence.frames_count;
+
+		if (sequence.buffer.size() >= buffer_max_size) {
+			out_file.Write(sequence.buffer.data(), sequence.buffer.size());
+			sequence.buffer.clear();
+		}
+	}
+
+	if (sequence.buffer.size()) {
+		out_file.Write(sequence.buffer.data(), sequence.buffer.size());
+		sequence.buffer.clear();
+	}
+
+	return (sequence.frames_count != 0);
+}
+
 int HIKV::StartRecovering(const std::string &dhfs_volume, const std::string &out_directory, const Timestamp &start_time, const Timestamp &end_time)
 {
+	DWORD error;
 	DWORD rw = 0;
-	//HikVolume vol("\\\\.\\PhysicalDrive2");
-	HikVolume vol("f:\\tst\\example.bin");
+	HikVolume vol(dhfs_volume.c_str());
 	if (vol.Open()) {
 
 		LONGLONG offset;
+		LONGLONG file_counter = 0;
 		FrameInfo frame;
 		FrameSequence sequence;
+		std::string file_name = out_directory + "temp.h264";
 
 		//vol.SetPointer(353168518*512LL);
 
-		while ((offset = vol.GoToNextFrame()) != -1) {
+		while ((offset = vol.FindNextFrame()) != -1) {
 
-			while (vol.ReadFrame(sequence.buffer, frame)) {
-				++sequence.frames_count;
+			vol.SaveFrameSequenceToFile(file_name, sequence);
+			vol.SetPointer(vol.Pointer() + 1);
 
+			if (sequence.end_time.Seconds() - sequence.start_time.Seconds()) {
+				
+				std::stringstream new_name;
+				new_name << out_directory << sequence.start_time.String() << "-=-" << sequence.end_time.String() << "--[" << sequence.offset << "]" << ".h264";
+				//new_name << out_directory << "[" << file_counter++ << "]--" << sequence.start_time.String() << "-=-" << sequence.end_time.String() << ".h264";
 
+				W32Lib::FileEx out_file(file_name.c_str());
+				if (out_file.Open()) {					
+					out_file.Close();
+					bool result = out_file.Rename(new_name.str().c_str());
+					if (!result) {
+						error = ::GetLastError();
+					}
 
-
-
-				frame.Clear();
+					int x = 0;
+				}
+			
 			}
-
-			int x = 0;
-
 		}
 	}
 

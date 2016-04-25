@@ -17,26 +17,23 @@ namespace HIKV
 		DWORD day		: 5;
 		DWORD month		: 4;
 		DWORD year		: 8;
-		Timestamp TimeStamp (void) { return Timestamp(year + 2000, month, day, hours, minutes, seconds); }
+		Timestamp TimeStamp (void) { return Timestamp(year + 2000, month, day, hours, minutes, /*seconds*/0); }
 	} TIMESTAMP;
 
-	//typedef struct _TIMESTAMP {
-	//	DWORD year : 8;
-	//	DWORD day : 5;
-	//	DWORD month : 4;
-	//	DWORD hours : 5;
-	//	DWORD minutes : 6;
-	//	DWORD seconds : 4;
-	//	Timestamp TimeStamp(void) { return Timestamp(year + 2000, month, day, hours, minutes, seconds); }
-	//} TIMESTAMP;
-
 	typedef struct _FRAME_HEADER {
-		BYTE signature[3];			// {0x00, 0x00, 0x01}
-		BYTE type;
+		BYTE signature[3];			// {0x00, 0x00, 0x01} synchro bytes
+		BYTE type;					// enum FrameType
 		bool IsValid(void);
 	} FRAME_HEADER;
 
 #pragma pack(pop)
+
+	typedef enum {
+		kPS_frame			= 0xBA,
+		kPES_frame			= 0xE0,
+		kHikPrivateData_1	= 0xBC, // contain TimeStamp
+		kTypeCode_BD		= 0xBD,
+	} FrameType;
 
 	typedef struct _FrameInfo {
 		LONGLONG offset;
@@ -60,9 +57,7 @@ namespace HIKV
 		Timestamp start_time;
 		Timestamp end_time;
 		std::vector<BYTE> buffer;
-		std::string file_name;
 		void Clear(void);
-		void SaveToFile(void);
 	} FrameSequence;
 
 	class HikVolume
@@ -76,12 +71,14 @@ namespace HIKV
 		bool Open(void) { return io.Open(); }
 		void SetPointer(const LONGLONG &offset) { io.SetPointer(offset); }
 		LONGLONG Pointer(void) { return io.Pointer(); }
-		LONGLONG GoToNextFrame(void);
+		LONGLONG FindNextFrame(void);
 		bool ReadFrame(std::vector<BYTE> &buffer, FrameInfo &frame);
 		bool NextFrameSequence(FrameSequence &sequence);
+		bool SaveFrameSequenceToFile(std::string &file_name, FrameSequence &sequence);
 	};
 
 	int StartRecovering(const std::string &dhfs_volume, const std::string &out_directory, const Timestamp &start_time, const Timestamp &end_time);
+	bool RenameFile();
 
 }
 
