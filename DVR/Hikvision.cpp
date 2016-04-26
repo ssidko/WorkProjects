@@ -3,6 +3,8 @@
 #include "utility.h"
 #include "BufferedFile.h"
 #include <sstream>
+#include <fstream>
+#include <iostream>
 
 bool HIKV::FRAME_HEADER::IsValid(void)
 {
@@ -151,6 +153,42 @@ bool HIKV::HikVolume::SaveFrameSequenceToFile(std::string &file_name, FrameSeque
 	}
 
 	return (sequence.frames_count != 0);
+}
+
+bool HIKV::HikVolume::SaveFramesInfoToFile(std::string &file_name) 
+{
+	std::fstream file(file_name.c_str(), std::fstream::in | std::fstream::out | std::fstream::app);
+	if (!file.is_open()) {
+		return false;
+	}
+
+	LONGLONG offset = 0;
+	FrameInfo frame;
+	std::vector<BYTE> buffer;
+
+	while ((offset = FindNextFrame()) != -1) {
+		while (ReadFrame(buffer, frame)) {
+
+			switch (frame.frame_type) {
+			
+			case kHikPrivateData_1:
+
+				std::endl;
+
+			default:
+				break;
+			
+			}
+		
+		
+			buffer.clear();
+		}	
+	}
+
+	file.flush();
+	file.close();
+
+	return true;
 }
 
 int HIKV::StartRecovering(const std::string &dhfs_volume, const std::string &out_directory, const Timestamp &start_time, const Timestamp &end_time)

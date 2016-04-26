@@ -46,7 +46,7 @@ int main(int argc, char *argv[])
 	//WFS::Main();
 
 	//DWORD raw = 0x103CB6A9;
-	DWORD raw = 0x102080fa;
+	DWORD raw = 0x102C034a;
 	HIKV::TIMESTAMP *t = (HIKV::TIMESTAMP *)&raw;
 
 	HIKV::TIMESTAMP tst = { 0,0,0,25,2,16 };
