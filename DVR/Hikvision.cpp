@@ -173,7 +173,9 @@ bool HIKV::HikVolume::SaveFramesInfoToFile(std::string &file_name)
 			
 			case kHikPrivateData_1:
 
-				std::endl;
+
+
+				
 
 			default:
 				break;
