@@ -5,6 +5,7 @@
 #include <sstream>
 #include <fstream>
 #include <iostream>
+#include <ios>
 
 bool HIKV::FRAME_HEADER::IsValid(void)
 {
@@ -39,6 +40,7 @@ LONGLONG HIKV::HikVolume::FindNextFrame(void)
 	return io.Find(signature, sizeof(signature));
 }
 
+
 bool HIKV::HikVolume::ReadFrame(std::vector<BYTE> &buffer, FrameInfo &frame)
 {
 	FRAME_HEADER *header = nullptr;
@@ -72,16 +74,12 @@ bool HIKV::HikVolume::ReadFrame(std::vector<BYTE> &buffer, FrameInfo &frame)
 				frame.offset = offset;
 				frame.frame_type = header->type;
 				frame.data_size = data_size;
-
 				if (header->type == 0xBC) {
-					if ( (*(WORD *)(&buffer[data_pos + 6]) == 0x4B48) && (*(WORD *)(&buffer[data_pos + 22]) == 0x4B48) ) {
-						
+					if ( (*(WORD *)(&buffer[data_pos + 6]) == 0x4B48) && (*(WORD *)(&buffer[data_pos + 22]) == 0x4B48) ) {						
 						DWORD raw = BeToLe(*((DWORD *)&buffer[data_pos + 10]));
 						TIMESTAMP *stmp = (TIMESTAMP *)&raw;
 						frame.time_stamp = stmp->TimeStamp();
-					
-					}			
-				
+					}				
 				}
 				return true;
 			}		
@@ -117,16 +115,19 @@ bool HIKV::HikVolume::SaveFrameSequenceToFile(std::string &file_name, FrameSeque
 {
 	FrameInfo frame;
 	size_t buffer_max_size = 100 * 1024 * 1024;
+	LONGLONG last_frame_offset = 0;
 
 	W32Lib::FileEx out_file(file_name.c_str());
 	if (!out_file.Create()) {
-		return false;
+		throw std::ios_base::failure("Error create file.");
 	}
 
 	frame.Clear();
 	sequence.Clear();
 
 	while (ReadFrame(sequence.buffer, frame)) {
+
+		last_frame_offset = frame.offset;
 
 		if (sequence.frames_count == 0) {
 			sequence.offset = frame.offset;
@@ -152,6 +153,10 @@ bool HIKV::HikVolume::SaveFrameSequenceToFile(std::string &file_name, FrameSeque
 		sequence.buffer.clear();
 	}
 
+	if (last_frame_offset) {
+		SetPointer(last_frame_offset + 1);
+	}
+
 	return (sequence.frames_count != 0);
 }
 
@@ -169,13 +174,19 @@ bool HIKV::HikVolume::SaveFramesInfoToFile(std::string &file_name)
 	while ((offset = FindNextFrame()) != -1) {
 		while (ReadFrame(buffer, frame)) {
 
+
+
+
 			switch (frame.frame_type) {
 			
 			case kHikPrivateData_1:
-
-
-
-				
+				break;
+			case kPS_frame:
+				break;
+			case kPES_frame:
+				break;
+			case kTypeCode_BD:				
+				break;				
 
 			default:
 				break;
@@ -210,10 +221,11 @@ int HIKV::StartRecovering(const std::string &dhfs_volume, const std::string &out
 
 		while ((offset = vol.FindNextFrame()) != -1) {
 
-			vol.SaveFrameSequenceToFile(file_name, sequence);
-			vol.SetPointer(vol.Pointer() + 1);
+			if (!vol.SaveFrameSequenceToFile(file_name, sequence)) {
 
-			if (sequence.end_time.Seconds() - sequence.start_time.Seconds()) {
+				vol.SetPointer(offset + 1);	
+
+			} else if (sequence.end_time.Seconds() - sequence.start_time.Seconds()) {
 				
 				std::stringstream new_name;
 				new_name << out_directory << sequence.start_time.String() << "-=-" << sequence.end_time.String() << "--[" << sequence.offset << "]" << ".h264";
