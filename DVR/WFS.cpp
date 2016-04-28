@@ -101,3 +101,67 @@ int WFS::Main(void)
 
 	return 0;
 }
+
+int WFS::StartRecovering(const std::string &volume_name, const std::string &out_directory, const Timestamp &start_time, const Timestamp &end_time)
+{
+	std::string mkv_file_name;
+	std::string raw_file_name = out_directory + "out.dvr";
+
+	Scanner wfs(volume_name);
+	W32Lib::FileEx *out_file = nullptr;
+
+	LONGLONG max_offset = 0;
+
+	if (wfs.Open()) {
+		FrameSequence sequence;
+		//wfs.SetPointer((1300) * 1024 * 1024 * 1024LL);
+		while (wfs.NextFrameSequence(sequence)) {
+
+			if (start_time.Seconds()) {
+				if (sequence.start_time.Seconds() < start_time.Seconds()) {
+					if (sequence.end_time.Seconds() < start_time.Seconds()) {
+						continue;
+					}
+				}
+			}
+
+			if (end_time.Seconds()) {
+				if (sequence.start_time.Seconds() > end_time.Seconds()) {
+					continue;
+				}
+			}
+
+
+			if (out_file == nullptr) {
+				//raw_file_name = out_dir_path + SequenceInfoString(sequence) + ".h264";
+				mkv_file_name = out_directory + SequenceInfoString(sequence) + ".avi";
+				out_file = new W32Lib::FileEx(raw_file_name.data());
+				if (out_file) {
+					if (!out_file->Create()) {
+						return -1;
+					}
+				}
+			}
+
+			out_file->Write(sequence.buffer.data(), sequence.buffer.size());
+
+			if (out_file->GetSize() > 512 * 1024 * 1024LL) {
+				out_file->Close();
+				delete out_file;
+				out_file = nullptr;
+				//ConvertToMkv(raw_file_name, mkv_file_name);
+				Convert2Avi(raw_file_name, mkv_file_name);
+
+			}
+		}
+		if (out_file && out_file->GetSize()) {
+			out_file->Close();
+			delete out_file;
+			out_file = nullptr;
+			//ConvertToMkv(raw_file_name, mkv_file_name);
+			Convert2Avi(raw_file_name, mkv_file_name);
+		}
+	}
+
+	return 0;
+}

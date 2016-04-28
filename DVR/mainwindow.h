@@ -8,12 +8,17 @@ class MainWindow : public QMainWindow
 {
 	Q_OBJECT
 
+private:
+	Ui::MainWindowClass ui;
+
 public:
 	MainWindow(QWidget *parent = 0);
 	~MainWindow();
 
-private:
-	Ui::MainWindowClass ui;
+	void Initialize(void);
+	void InitializeDvrTypeComboBox(void);
+
+
 };
 
 #endif // MAINWINDOW_H

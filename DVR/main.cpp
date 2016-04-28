@@ -1,24 +1,15 @@
 #include "mainwindow.h"
 #include <QtWidgets/QApplication>
-
-#include "dhfs.h"
-#include "WFS.h"
-#include "File.h"
+#include <QDir>
 
 #include <vector>
+#include "File.h"
 #include "BufferedFile.h"
-
-//#include "ZPool.h"
-#include "VDev.h"
-
-#include <QDir>
 
 #include "WinConsole.h"
 #include "TestWidget.h"
 #include "Raid5.h"
 #include "Orbita.h"
-
-using namespace DHFS;
 
 inline void _trace(char *format, ...)
 {
@@ -36,6 +27,8 @@ inline void _trace(char *format, ...)
 #include "ExtentRecovery.h"
 #include "FileRecordRecovery.h"
 #include "Hikvision.h"
+#include "dhfs.h"
+#include "WFS.h"
 
 int main(int argc, char *argv[])
 {
@@ -53,12 +46,16 @@ int main(int argc, char *argv[])
 	//DWORD *qq = (DWORD *)&tst;
 	//qq;
 
+	DWORD dw = 0x409EB74F;
+	WFS::TIMESTAMP *tm = (WFS::TIMESTAMP *)&dw;
+
 
 	//Timestamp time;
 	//time = (Timestamp)tst.TimeStamp();
 
 	//DHFS::StartRecovering("\\\\.\\PhysicalDrive1", "F:\\39405\\out1\\", Timestamp(2015,11,25,0,0,0), Timestamp());
-	HIKV::StartRecovering("\\\\.\\PhysicalDrive12", "F:\\39389\\out\\", Timestamp(2015, 11, 25, 0, 0, 0), Timestamp());
+	//HIKV::StartRecovering("\\\\.\\PhysicalDrive12", "F:\\39389\\out\\", Timestamp(2015, 11, 25, 0, 0, 0), Timestamp());
+	//WFS::StartRecovering("\\\\.\\PhysicalDrive11", "F:\\39493\\out\\", Timestamp(2016, 01, 01, 0, 0, 0), Timestamp());
 
 	//FileRecordRecoveryStart();
 

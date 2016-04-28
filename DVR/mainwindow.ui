@@ -7,19 +7,19 @@
     <x>0</x>
     <y>0</y>
     <width>366</width>
-    <height>295</height>
+    <height>356</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
     <width>366</width>
-    <height>295</height>
+    <height>356</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
     <width>16777215</width>
-    <height>295</height>
+    <height>356</height>
    </size>
   </property>
   <property name="windowTitle">
@@ -68,12 +68,12 @@
             </size>
            </property>
            <property name="text">
-            <string>Файловая система</string>
+            <string>DVR Type</string>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="QComboBox" name="comboBox_2">
+          <widget class="QComboBox" name="DvrType_comboBox">
            <property name="minimumSize">
             <size>
              <width>0</width>
@@ -86,16 +86,6 @@
              <height>20</height>
             </size>
            </property>
-           <item>
-            <property name="text">
-             <string>DHFS</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>WFS0.4</string>
-            </property>
-           </item>
           </widget>
          </item>
         </layout>
@@ -146,7 +136,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QLineEdit" name="lineEdit">
+          <widget class="QLineEdit" name="InputFile_lineEdit">
            <property name="minimumSize">
             <size>
              <width>0</width>
@@ -162,7 +152,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QPushButton" name="pushButton">
+          <widget class="QPushButton" name="SelectFile_pushButton">
            <property name="minimumSize">
             <size>
              <width>0</width>
@@ -264,7 +254,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QLineEdit" name="lineEdit_2">
+          <widget class="QLineEdit" name="ConvertorCmdLine_lineEdit">
            <property name="minimumSize">
             <size>
              <width>0</width>
@@ -304,6 +294,99 @@
      </widget>
     </item>
     <item>
+     <layout class="QHBoxLayout" name="horizontalLayout_9">
+      <item>
+       <widget class="QGroupBox" name="StartTimestamp_groupBox">
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>53</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="title">
+         <string>Start time</string>
+        </property>
+        <property name="checkable">
+         <bool>true</bool>
+        </property>
+        <property name="checked">
+         <bool>false</bool>
+        </property>
+        <layout class="QHBoxLayout" name="horizontalLayout_7">
+         <item>
+          <widget class="QDateTimeEdit" name="StartTimestamp_dateTimeEdit">
+           <property name="date">
+            <date>
+             <year>2016</year>
+             <month>1</month>
+             <day>1</day>
+            </date>
+           </property>
+           <property name="calendarPopup">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item>
+       <widget class="QGroupBox" name="EndTimestamp_groupBox">
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>53</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="title">
+         <string>EndTime</string>
+        </property>
+        <property name="checkable">
+         <bool>true</bool>
+        </property>
+        <property name="checked">
+         <bool>false</bool>
+        </property>
+        <layout class="QHBoxLayout" name="horizontalLayout_8">
+         <item>
+          <widget class="QDateTimeEdit" name="EndTimestamp_dateTimeEdit">
+           <property name="date">
+            <date>
+             <year>2016</year>
+             <month>1</month>
+             <day>1</day>
+            </date>
+           </property>
+           <property name="time">
+            <time>
+             <hour>23</hour>
+             <minute>59</minute>
+             <second>59</second>
+            </time>
+           </property>
+           <property name="calendarPopup">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item>
      <widget class="QGroupBox" name="groupBox_3">
       <property name="minimumSize">
        <size>
@@ -324,7 +407,7 @@
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout_5">
          <item>
-          <widget class="QLineEdit" name="lineEdit_3">
+          <widget class="QLineEdit" name="OutFolder_lineEdit">
            <property name="minimumSize">
             <size>
              <width>0</width>
@@ -340,7 +423,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QPushButton" name="pushButton_4">
+          <widget class="QPushButton" name="SelectOutFolder_pushButton">
            <property name="minimumSize">
             <size>
              <width>0</width>
@@ -370,13 +453,25 @@
         <property name="enabled">
          <bool>false</bool>
         </property>
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>21</height>
+         </size>
+        </property>
         <property name="value">
          <number>24</number>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="start_stop_button">
+       <widget class="QPushButton" name="Start_pushButton">
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>21</height>
+         </size>
+        </property>
         <property name="text">
          <string>Старт</string>
         </property>
@@ -389,6 +484,8 @@
    <zorder>groupBox_2</zorder>
    <zorder>groupBox_3</zorder>
    <zorder>groupBox_4</zorder>
+   <zorder>StartTimestamp_groupBox</zorder>
+   <zorder>EndTimestamp_groupBox</zorder>
   </widget>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
