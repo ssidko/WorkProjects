@@ -46,8 +46,8 @@ int main(int argc, char *argv[])
 	//DWORD *qq = (DWORD *)&tst;
 	//qq;
 
-	DWORD dw = 0x409EB74F;
-	WFS::TIMESTAMP *tm = (WFS::TIMESTAMP *)&dw;
+	//DWORD dw = 0x409EB74F;
+	//WFS::TIMESTAMP *tm = (WFS::TIMESTAMP *)&dw;
 
 
 	//Timestamp time;

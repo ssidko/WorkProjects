@@ -83,8 +83,6 @@ bool HIKV::HikVolume::ReadFrame(std::vector<BYTE> &buffer, FrameInfo &frame)
 				}
 				return true;
 			}		
-		} else { 
-			int x = 0;
 		}
 	}
 
@@ -173,8 +171,6 @@ bool HIKV::HikVolume::SaveFramesInfoToFile(std::string &file_name)
 
 	while ((offset = FindNextFrame()) != -1) {
 		while (ReadFrame(buffer, frame)) {
-
-
 
 
 			switch (frame.frame_type) {
