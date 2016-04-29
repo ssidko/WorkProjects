@@ -168,30 +168,31 @@ bool HIKV::HikVolume::SaveFramesInfoToFile(std::string &file_name)
 	LONGLONG offset = 0;
 	FrameInfo frame;
 	std::vector<BYTE> buffer;
+	char lba_str[32] = { 0 };
 
 	while ((offset = FindNextFrame()) != -1) {
 		while (ReadFrame(buffer, frame)) {
 
+//			file << "### Start new sequence\n";
 
-			switch (frame.frame_type) {
-			
+			switch (frame.frame_type) {			
 			case kHikPrivateData_1:
+				sprintf_s(lba_str, sizeof(lba_str), "%011lld: ", frame.offset / 512);
+				file << lba_str << frame.time_stamp.String() << "\n";
 				break;
 			case kPS_frame:
 				break;
 			case kPES_frame:
 				break;
 			case kTypeCode_BD:				
-				break;				
-
+				break;			
 			default:
-				break;
-			
+				break;			
 			}
-		
-		
 			buffer.clear();
-		}	
+			file.flush();
+		}
+		SetPointer(frame.offset + 1);
 	}
 
 	file.flush();
