@@ -173,8 +173,6 @@ bool HIKV::HikVolume::SaveFramesInfoToFile(std::string &file_name)
 	while ((offset = FindNextFrame()) != -1) {
 		while (ReadFrame(buffer, frame)) {
 
-//			file << "### Start new sequence\n";
-
 			switch (frame.frame_type) {
 			case kHikPrivateData_1:
 				sprintf_s(lba_str, sizeof(lba_str), "%011lld: ", frame.offset / 512);

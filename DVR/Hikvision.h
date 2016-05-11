@@ -17,7 +17,7 @@ namespace HIKV
 		DWORD day		: 5;
 		DWORD month		: 4;
 		DWORD year		: 8;
-		Timestamp TimeStamp (void) { return Timestamp(year + 2000, month, day, hours, minutes, /*seconds*/0); }
+		Timestamp TimeStamp (void) { return Timestamp(year + 2000, month, day, hours, minutes, seconds << 2); }
 	} TIMESTAMP;
 
 	typedef struct _FRAME_HEADER {
