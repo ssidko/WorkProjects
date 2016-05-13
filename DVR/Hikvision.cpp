@@ -232,7 +232,7 @@ int HIKV::StartRecovering(const std::string &dhfs_volume, const std::string &out
 					bool result = out_file.Rename(new_name.str().c_str());
 					if (!result) {
 						error = ::GetLastError();
-					}
+				}	
 
 					int x = 0;
 				}

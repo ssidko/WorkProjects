@@ -30,6 +30,38 @@ inline void _trace(char *format, ...)
 #include "dhfs.h"
 #include "WFS.h"
 
+#include <iostream>
+
+class MyClass
+{
+public:
+	MyClass() {}
+	~MyClass() {}
+	void operator() (void) {
+		int x = 0;
+	}
+};
+
+
+void Test(void)
+{
+	MyClass obj;
+
+	void(*ptr_func)(void);
+
+	ptr_func = [](void) {
+		std::cout << "I`m lambda!\n";
+	};
+
+
+	ptr_func();
+
+
+	int y = 0;
+
+
+}
+
 int main(int argc, char *argv[])
 {
 	QApplication a(argc, argv);
@@ -54,7 +86,7 @@ int main(int argc, char *argv[])
 	//time = (Timestamp)tst.TimeStamp();
 
 	//DHFS::StartRecovering("\\\\.\\PhysicalDrive1", "F:\\39405\\out1\\", Timestamp(2015,11,25,0,0,0), Timestamp());
-	HIKV::StartRecovering("\\\\.\\PhysicalDrive4", "F:\\39710\\out\\", Timestamp(2016, 01, 01, 0, 0, 0), Timestamp());
+	//HIKV::StartRecovering("\\\\.\\PhysicalDrive4", "F:\\39710\\out\\", Timestamp(2016, 01, 01, 0, 0, 0), Timestamp());
 	//WFS::StartRecovering("\\\\.\\PhysicalDrive11", "F:\\39493\\out\\", Timestamp(2016, 01, 01, 0, 0, 0), Timestamp());
 
 	//FileRecordRecoveryStart();
@@ -64,6 +96,8 @@ int main(int argc, char *argv[])
 	//if (vol.Open()) {
 	//	vol.SaveFramesInfoToFile(out_file_name);	
 	//}
+
+	Test();
 
 	w.show();
 	return a.exec();
