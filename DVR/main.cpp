@@ -53,12 +53,9 @@ void Test(void)
 		std::cout << "I`m lambda!\n";
 	};
 
-
 	ptr_func();
 
-
 	int y = 0;
-
 
 }
 
