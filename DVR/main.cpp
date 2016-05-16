@@ -43,20 +43,32 @@ public:
 };
 
 
+#include <vector>
+#include <string>
+#include <typeinfo>
+#include <functional>
+
+
+void EnumThings(std::function<void(std::string)> call_back)
+{
+	call_back("first");
+	call_back("second");
+	call_back("third");
+}
+
 void Test(void)
 {
 	MyClass obj;
 
-	void(*ptr_func)(void);
+	std::vector<std::string> list;
 
-	ptr_func = [](void) {
-		std::cout << "I`m lambda!\n";
-	};
+	EnumThings( [&list](std::string val) {
+			list.push_back(val);
+			int x = 0;
+		}
+	);
 
-	ptr_func();
-
-	int y = 0;
-
+	int x = 0;
 }
 
 int main(int argc, char *argv[])
@@ -77,7 +89,6 @@ int main(int argc, char *argv[])
 
 	//DWORD dw = 0x409EB74F;
 	//WFS::TIMESTAMP *tm = (WFS::TIMESTAMP *)&dw;
-
 
 	//Timestamp time;
 	//time = (Timestamp)tst.TimeStamp();
