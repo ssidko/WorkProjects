@@ -13,7 +13,7 @@ int main(int argc, char *argv[])
 
 	//Message msg;
 	//MasterModule master;
-	//if (master.Open("\\\\.\\COM6")) {
+	//if (master.Open("\\\\.\\COM3")) {
 	//	if (master.Identify()) {
 	//		while (master.WaitForMessage(msg)) {
 	//			int x = 0;

@@ -87,6 +87,13 @@ bool ComPort::Open(DWORD baud_rate)
 	last_error = 0;
 	handle = ::CreateFileA(name.c_str(), GENERIC_READ | GENERIC_WRITE, 0/*exclusive access*/, NULL, OPEN_EXISTING, FILE_FLAG_OVERLAPPED, NULL);
 	if (handle != INVALID_HANDLE_VALUE) {
+
+		//
+		// После открытия порта ардуине нужно время для инициализации, 
+		// в это время она может игнорировать запросы.
+		//
+		 ::Sleep(5000); 
+
 		SetupComm(handle, 2048, 2048);
 		COMMTIMEOUTS com_time_outs;
 		com_time_outs.ReadIntervalTimeout = 0xFFFFFFFF;
@@ -105,7 +112,7 @@ bool ComPort::Open(DWORD baud_rate)
 				com_param.Parity = NOPARITY;
 				if (SetCommState(handle, &com_param)) {
 					if (SetCommMask(handle, EV_RXCHAR)) {
-						//::Sleep(2000); // Ардуине нужно время чтобы загрузиться.
+						::Sleep(2000); // Ардуине нужно время чтобы загрузиться.
 						return true;
 					}
 				}
