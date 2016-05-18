@@ -15,6 +15,9 @@
 #include <winioctl.h>
 #include "ntddcdrm.h"
 
+//#include "WinConsole.h"
+#include "PhysicalDrive.h"
+
 using namespace DM;
 
 int _tmain(int argc, _TCHAR* argv[])

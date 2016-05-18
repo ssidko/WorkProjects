@@ -332,7 +332,7 @@ void loop()
     }  
   }
   if (slave.ReciveMessage(msg)) {
-    PrintMessage(msg);
+    //PrintMessage(msg);
     if (msg.type == MessageType::kNotification) {
       switch (msg.code) {
         case NotificationType::kSlaveGuardSensor1Activated:

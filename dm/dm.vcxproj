@@ -122,6 +122,11 @@
     <ClInclude Include="DmtTrace.h" />
     <ClInclude Include="Utilities.h" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\MyLib\MyLib.vcxproj">
+      <Project>{b5d0a23d-84f4-4930-9bbc-eafa8c7a3194}</Project>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
