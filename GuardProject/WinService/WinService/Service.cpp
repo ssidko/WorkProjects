@@ -380,13 +380,15 @@ void ReportSvcStatus(DWORD current_state, DWORD win32_exit_code, DWORD wait_hint
 
 bool ExecuteScript(std::string &script_file)
 {
+	PROCESS_INFORMATION pi = { 0 };
 	STARTUPINFOA si = {0};
-	PROCESS_INFORMATION pi = {0};
-
 	si.cb = sizeof(si);
 
-	std::string cmd_line = "/C " + script_file;
-	if (!CreateProcessA("cmd.exe", &cmd_line[0], NULL, NULL, FALSE, 0, NULL, NULL, &si, &pi)) {
+	std::string cmd_line = "cmd.exe";
+	cmd_line += " /C ";
+	cmd_line += script_file;
+
+	if (!CreateProcessA(NULL, &cmd_line[0], NULL, NULL, FALSE, 0, NULL, NULL, &si, &pi)) {
 		log_file.PrintLine("Error when executing the script (%s). WinError code: %d.", script_file.c_str(), ::GetLastError());
 		return false;		
 	} else {

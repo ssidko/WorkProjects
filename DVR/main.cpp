@@ -56,17 +56,35 @@ void EnumThings(std::function<void(std::string)> call_back)
 	call_back("third");
 }
 
+bool ExecuteScript(std::string &script_file)
+{
+	STARTUPINFOA si = { 0 };
+	PROCESS_INFORMATION pi = { 0 };
+
+	si.cb = sizeof(si);
+
+	DWORD err;
+	std::string cmd_line = "cmd.exe";
+	cmd_line += " /C ";
+	cmd_line += script_file;
+
+	if (!CreateProcessA(NULL, &cmd_line[0], NULL, NULL, FALSE, 0, NULL, NULL, &si, &pi)) {
+		err = ::GetLastError();
+		return false;
+	}
+	else {
+
+		return true;
+	}
+}
+
 void Test(void)
 {
-	MyClass obj;
+	std::string script_file = "D:\\GitHub\\script.bat";
 
-	std::vector<std::string> list;
-
-	EnumThings( [&list](std::string val) {
-			list.push_back(val);
-			int x = 0;
-		}
-	);
+	ExecuteScript(script_file);
+	ExecuteScript(script_file);
+	ExecuteScript(script_file);
 
 	int x = 0;
 }
