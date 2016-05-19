@@ -241,6 +241,11 @@ bool ComPort::Read(void *buff, DWORD size)
 					if (rw) {
 						ret = true;
 					}
+					/*------------------*/
+					else {
+						ret = false;
+					}
+					/*------------------*/
 					break;
 				}
 			default:
@@ -267,43 +272,39 @@ bool ComPort::WaitForInputData(DWORD timeout)
 	OVERLAPPED sync = { 0 };
 
 	last_error = 0;
-	sync.hEvent = ::CreateEvent(NULL, TRUE, FALSE, NULL);
+	sync.hEvent = ::CreateEvent(NULL, FALSE, FALSE, NULL);
 	if (sync.hEvent) {
 
-		if (::WaitCommEvent(handle, &event_type, &sync)) {
-			if (event_type == EV_RXCHAR || event_type == EV_LEONARDO_RXCHAR) {
-				ret = true;
+			if (::WaitCommEvent(handle, &event_type, &sync)) {
+				if (event_type & EV_RXCHAR) {
+					ret = true;
+				}
 			}
-		}
+			else {
 
-		//while (true) {
-		//	if (::WaitCommEvent(handle, &event_type, &sync)) {
-		//		if (event_type == EV_RXCHAR || event_type == EV_LEONARDO_RXCHAR) {
-		//			ret = true;
-		//			break;
-		//		} else {
-		//			continue;
-		//		}
-		//	}
-		//}
-
-		last_error = ::GetLastError();
-		if ((ret == false) && (ERROR_IO_PENDING == last_error)) {
-			result = ::WaitForSingleObject(sync.hEvent, timeout);
-			switch (result) {
-			case WAIT_OBJECT_0:
-				ret = true;
-				break;
-			case WAIT_TIMEOUT:
-				break;
-			case WAIT_FAILED:
 				last_error = ::GetLastError();
-				break;
-			default:
-				ret = false;
-				break;
+				//if ((ret == false) && (ERROR_IO_PENDING == last_error)) {
+				if (ERROR_IO_PENDING == last_error) {
+					result = ::WaitForSingleObject(sync.hEvent, timeout);
+					switch (result) {
+					case WAIT_OBJECT_0:
+						ret = true;
+						break;
+					case WAIT_TIMEOUT:
+						ret = false;
+						break;
+					case WAIT_FAILED:
+						last_error = ::GetLastError();
+						ret = false;
+						break;
+					default:
+						ret = false;
+						break;
+					}
+				}			
 			}
-		}
+
+
 
 		::CloseHandle(sync.hEvent);
 

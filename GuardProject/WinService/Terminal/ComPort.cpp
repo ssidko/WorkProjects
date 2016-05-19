@@ -263,7 +263,7 @@ bool ComPort::WaitForInputData(DWORD timeout)
 	if (sync.hEvent) {
 
 		if (::WaitCommEvent(handle, &event_type, &sync)) {
-			if (event_type == EV_RXCHAR || event_type == EV_LEONARDO_RXCHAR) {
+			if (event_type & EV_RXCHAR) {
 				ret = true;
 			} else {
 				ret = false;

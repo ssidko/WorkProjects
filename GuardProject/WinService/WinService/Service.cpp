@@ -12,7 +12,8 @@
 #define SCRIPT_LINE_3			"script3.bat"
 #define SCRIPT_LINE_4			"script4.bat"
 #define SCRIPT_LINE_5			"script5.bat"
-#define SCRIPTS_COUNT			5
+#define SCRIPT_6				"script6.bat"
+#define SCRIPTS_COUNT			6
 
 
 LogFile log_file;
@@ -21,6 +22,7 @@ SERVICE_STATUS_HANDLE svc_status_handle;
 HDEVNOTIFY notify_handle = NULL;
 std::vector<HANDLE> events;
 std::vector<std::string> scripts;
+MasterModule master;
 
 #define EVENT_DEVICE_ARRIVAL	0
 #define EVENT_DEVICE_REMOVE		1
@@ -84,12 +86,14 @@ bool ServiceInitialize(DWORD args_count, LPWSTR *args)
 	scripts[2] = service_directory + SCRIPT_LINE_3;
 	scripts[3] = service_directory + SCRIPT_LINE_4;
 	scripts[4] = service_directory + SCRIPT_LINE_5;
+	scripts[5] = service_directory + SCRIPT_6;
 
 	log_file.PrintLine("Script for control line 1: %s", scripts[0].c_str());
 	log_file.PrintLine("Script for control line 2: %s", scripts[1].c_str());
 	log_file.PrintLine("Script for control line 3: %s", scripts[2].c_str());
 	log_file.PrintLine("Script for control line 4: %s", scripts[3].c_str());
 	log_file.PrintLine("Script for control line 5: %s", scripts[4].c_str());
+	log_file.PrintLine("Script for disconnecetd: %s", scripts[5].c_str());
 	
 	//
 	// Notification initialization
@@ -138,7 +142,8 @@ void ServiceRun(void)
 	ReportSvcStatus(SERVICE_RUNNING, NO_ERROR, 0);
 	log_file << "*** Service started ***\n";
 
-	MasterModule master;
+	//MasterModule master;
+	
 	std::list<std::string> com_ports;
 
 	while (true) {
@@ -160,6 +165,7 @@ void ServiceRun(void)
 				ProcessMessage(msg);
 			}
 			log_file << "Master module disconnected.\n";
+			//ExecuteScript(scripts[5]);
 			master.Close();
 		}
 
@@ -324,6 +330,9 @@ DWORD WINAPI ServiceControlHandlerEx(DWORD  control_code, DWORD  event_type, LPV
 			ReportSvcStatus(SERVICE_STOP_PENDING, NO_ERROR, 0);
 			ServiceDeinitialize();
 			log_file << "*** Service stoped ***\n";
+			if (master.Opened()) {
+				master.Close();
+			}
 			ReportSvcStatus(SERVICE_STOPPED, NO_ERROR, 0);
 			break;
 
@@ -331,9 +340,15 @@ DWORD WINAPI ServiceControlHandlerEx(DWORD  control_code, DWORD  event_type, LPV
 			switch (event_type) {
 				case DBT_DEVICEARRIVAL:
 					::SetEvent(events[EVENT_DEVICE_ARRIVAL]);
+					//log_file << "DBT_DEVICEARRIVAL\n";
+					//ExecuteScript(scripts[5]);
 					break;
 				case DBT_DEVICEREMOVECOMPLETE:
 					::SetEvent(events[EVENT_DEVICE_REMOVE]);
+					//log_file << "DBT_DEVICEREMOVECOMPLETE\n";
+					if (master.Opened()) {
+						master.Close();
+					}
 					break;
 				default:
 					break;

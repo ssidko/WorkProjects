@@ -14,11 +14,12 @@ bool MasterModule::Identify(void)
 	Message id_cmd(MessageType::kIdentification, 0);
 	Message answer;
 	if (com.Write(&id_cmd, sizeof(Message))) {
-		if (WaitForMessage(answer, kIdentificationAnswerTimeout)) {
+		::Sleep(100);
+		if (WaitForMessage(answer, kIdentificationAnswerTimeout*10)) {
 			if ((answer.type == MessageType::kIdentification) && (answer.code == IdentificationType::kMasterID)) {
 				return true;
 			}
-		}	
+		}
 	}
 	return false;	
 }
@@ -79,6 +80,8 @@ bool MasterModule::WaitForMessage(Message &msg)
 				}
 			}
 		}
+		DWORD error = GetLastError();
+		error = GetLastError();
 	}
 	msg.Clear();
 	return false;

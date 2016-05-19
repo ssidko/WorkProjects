@@ -99,6 +99,38 @@ bool TryStopService(SC_HANDLE svc_handle)
 	return result;
 }
 
+bool TryRestartService(const TCHAR *svc_name)
+{
+	DWORD last_error = 0;
+	SC_HANDLE scm_handle = OpenSCManager(NULL, NULL, SC_MANAGER_ALL_ACCESS);
+	if (scm_handle == NULL) {
+		last_error = ::GetLastError();
+		switch (last_error) {
+		case ERROR_ACCESS_DENIED:
+			std::cout << "Error: ERROR_ACCESS_DENIED \n";
+			break;
+		case ERROR_DATABASE_DOES_NOT_EXIST:
+			std::cout << "Error: ERROR_DATABASE_DOES_NOT_EXIST \n";
+			break;
+		default:
+			std::cout << "Error: Unknown error code " << last_error << "\n";
+			break;
+		}
+		return false;
+	}
+
+	SC_HANDLE svc_handle = OpenService(scm_handle, svc_name, SERVICE_ALL_ACCESS);
+	if (svc_handle == NULL){
+		std::cout << "OpenService failed: " << ::GetLastError() << "\n";
+		CloseServiceHandle(scm_handle);
+		return false;
+	}
+
+	TryStopService(svc_handle);
+	TryRunService(svc_handle);
+
+	return true;
+}
 
 bool InstallService(const TCHAR *svc_name)
 {
@@ -225,6 +257,8 @@ int _tmain(int argc, _TCHAR* argv[])
 			} else if (argument == _T("uninstall")) {
 				std::wstring svc_name = argv[1];
 				DeleteService(SERVICE_NAME);
+			} else if (argument == _T("restart")) {
+				TryRestartService(SERVICE_NAME);
 			}
 			else {
 				std::cout << "Wrong 1st parameter. Must be [install] or [uninstall]\n";

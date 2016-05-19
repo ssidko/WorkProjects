@@ -5,6 +5,7 @@
 
 void Test(void)
 {
+	ServiceInitialize(0, 0);
 	ServiceRun();
 }
 
