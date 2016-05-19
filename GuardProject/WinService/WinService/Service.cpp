@@ -93,7 +93,7 @@ bool ServiceInitialize(DWORD args_count, LPWSTR *args)
 	log_file.PrintLine("Script for control line 3: %s", scripts[2].c_str());
 	log_file.PrintLine("Script for control line 4: %s", scripts[3].c_str());
 	log_file.PrintLine("Script for control line 5: %s", scripts[4].c_str());
-	log_file.PrintLine("Script for disconnecetd: %s", scripts[5].c_str());
+	log_file.PrintLine("Script for \"Master module disconnected\": %s", scripts[5].c_str());
 	
 	//
 	// Notification initialization
@@ -165,7 +165,7 @@ void ServiceRun(void)
 				ProcessMessage(msg);
 			}
 			log_file << "Master module disconnected.\n";
-			//ExecuteScript(scripts[5]);
+			ExecuteScript(scripts[5]);
 			master.Close();
 		}
 
