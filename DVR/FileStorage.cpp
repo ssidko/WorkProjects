@@ -58,8 +58,8 @@ DHFS::FileStorage::~FileStorage(void)
 
 bool DHFS::FileStorage::SaveFrameSequence(std::vector<BYTE> &sequence_buffer, FrameSequenceInfo &sequence_info)
 {
-	if (sequence_info.size > MAX_SEQUENCE_SIZE) {
-		throw std::exception();
+	if (sequence_info.size > MAX_VIDEO_FILE_SIZE) {
+		throw std::overflow_error("Sequence to long.");
 	}
 
 	assert(sequence_info.start_frame.camera <= files.size());

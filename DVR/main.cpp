@@ -32,63 +32,6 @@ inline void _trace(char *format, ...)
 
 #include <iostream>
 
-class MyClass
-{
-public:
-	MyClass() {}
-	~MyClass() {}
-	void operator() (void) {
-		int x = 0;
-	}
-};
-
-
-#include <vector>
-#include <string>
-#include <typeinfo>
-#include <functional>
-
-
-void EnumThings(std::function<void(std::string)> call_back)
-{
-	call_back("first");
-	call_back("second");
-	call_back("third");
-}
-
-bool ExecuteScript(std::string &script_file)
-{
-	STARTUPINFOA si = { 0 };
-	PROCESS_INFORMATION pi = { 0 };
-
-	si.cb = sizeof(si);
-
-	DWORD err;
-	std::string cmd_line = "cmd.exe";
-	cmd_line += " /C ";
-	cmd_line += script_file;
-
-	if (!CreateProcessA(NULL, &cmd_line[0], NULL, NULL, FALSE, 0, NULL, NULL, &si, &pi)) {
-		err = ::GetLastError();
-		return false;
-	}
-	else {
-
-		return true;
-	}
-}
-
-void Test(void)
-{
-	std::string script_file = "D:\\GitHub\\script.bat";
-
-	ExecuteScript(script_file);
-	ExecuteScript(script_file);
-	ExecuteScript(script_file);
-
-	int x = 0;
-}
-
 int main(int argc, char *argv[])
 {
 	QApplication a(argc, argv);
@@ -111,7 +54,7 @@ int main(int argc, char *argv[])
 	//Timestamp time;
 	//time = (Timestamp)tst.TimeStamp();
 
-	//DHFS::StartRecovering("\\\\.\\PhysicalDrive1", "F:\\39405\\out1\\", Timestamp(2015,11,25,0,0,0), Timestamp());
+	DHFS::StartRecovering("\\\\.\\PhysicalDrive2", "F:\\39859\\out\\", Timestamp(2016,05,18,0,0,0), Timestamp(2016,05,21,0,0,0));
 	//HIKV::StartRecovering("\\\\.\\PhysicalDrive4", "F:\\39710\\out\\", Timestamp(2016, 01, 01, 0, 0, 0), Timestamp());
 	//WFS::StartRecovering("\\\\.\\PhysicalDrive11", "F:\\39493\\out\\", Timestamp(2016, 01, 01, 0, 0, 0), Timestamp());
 
@@ -122,8 +65,6 @@ int main(int argc, char *argv[])
 	//if (vol.Open()) {
 	//	vol.SaveFramesInfoToFile(out_file_name);	
 	//}
-
-	Test();
 
 	w.show();
 	return a.exec();
