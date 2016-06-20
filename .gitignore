@@ -24,6 +24,7 @@ Thumbs.db
 *.vspx
 *.psess
 *.vsp
+*.db
 [Dd]ebug*/
 *.sbr
 obj/
