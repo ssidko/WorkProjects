@@ -110,7 +110,7 @@ LONGLONG BufferedFile::Find(BYTE *byte_string, DWORD length)
 	LONGLONG pointer = old_pointer;
 	BYTE *buff = new BYTE[DEFAULT_BUFFER_SIZE];
 	BYTE *substring = NULL; 
-	if (buff && (length <= DEFAULT_BUFFER_SIZE)) {3
+	if (buff && (length <= DEFAULT_BUFFER_SIZE)) {
 		while (rw = Read(buff, DEFAULT_BUFFER_SIZE)) {
 			if (rw >= length) {
 				for (int i = 0; (i + length) < rw; ++i) {

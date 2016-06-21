@@ -54,7 +54,7 @@ int main(int argc, char *argv[])
 	//Timestamp time;
 	//time = (Timestamp)tst.TimeStamp();
 
-	DHFS::StartRecovering("\\\\.\\PhysicalDrive2", "F:\\39859\\out\\", Timestamp(2016,05,18,0,0,0), Timestamp(2016,05,21,0,0,0));
+	DHFS::StartRecovering("\\\\.\\PhysicalDrive2", "F:\\39859\\out2\\", Timestamp(2016,05,22,18,0,0), Timestamp(2016,05,25,0,0,0));
 	//HIKV::StartRecovering("\\\\.\\PhysicalDrive4", "F:\\39710\\out\\", Timestamp(2016, 01, 01, 0, 0, 0), Timestamp());
 	//WFS::StartRecovering("\\\\.\\PhysicalDrive11", "F:\\39493\\out\\", Timestamp(2016, 01, 01, 0, 0, 0), Timestamp());
 
