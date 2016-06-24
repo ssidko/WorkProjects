@@ -16,13 +16,13 @@ int DHFS::StartRecovering(const std::string &dhfs_volume, const std::string &out
 					if (sequence_info.end_frame.timestamp.Seconds() < start_time.Seconds()) {
 						continue;
 					}
-				}				
+				}
 			}
 
 			if (end_time.Seconds()) {
 				if (sequence_info.start_frame.timestamp.Seconds() > end_time.Seconds()) {
 					continue;
-				}				
+				}
 			}
 
 			storage.SaveFrameSequence(sequence, sequence_info);

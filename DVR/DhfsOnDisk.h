@@ -12,7 +12,7 @@ namespace DHFS
 #define FRAME_HEADER_MAGIC			((DWORD)0x56414844)
 #define FRAME_FOOTER_MAGIC			((DWORD)0x76616864)
 
-#define FRAME_MAX_SIZE				((DWORD)2*1024*1024)
+#define FRAME_MAX_SIZE				((DWORD)32*1024*1024)
 
 #pragma pack(push)
 #pragma pack(1)
@@ -44,7 +44,7 @@ namespace DHFS
 		BYTE unk1[8];
 		DWORD unk2;
 		DWORD HeaderSize(void) {
-			switch (flags) {			
+			switch (flags) {
 			case 0x00FC:
 				return 0x20;
 			case 0x00FD:
@@ -68,6 +68,7 @@ namespace DHFS
 		LONGLONG offset;
 		Timestamp timestamp;
 		DWORD camera;
+		DWORD flag;
 		DWORD counter;
 		DWORD size;
 		void Clear(void) {memset(this, 0x00, sizeof(_FrameInfo));}
@@ -93,10 +94,11 @@ namespace DHFS
 		void SetPointer(LONGLONG &pointer);
 		bool IsValidHeader(FRAME_HEADER &header);
 		bool ReadFrame(std::vector<BYTE> &buffer, FrameInfo &info);
-		bool NextFrame(std::vector<BYTE> &buffer, FrameInfo &info);
+		bool FindNextFrame(std::vector<BYTE> &buffer, FrameInfo &info);
 		bool NextFrameSequence(std::vector<BYTE> &sequence_buffer, FrameSequenceInfo &sequnence_info);
 		void Test(void);
 		void SaveFrameInfo(void);
+		void SaveFrameSequenceInfo(const std::string &out_file);
 	};
 }
 

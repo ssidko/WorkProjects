@@ -54,7 +54,7 @@ int main(int argc, char *argv[])
 	//Timestamp time;
 	//time = (Timestamp)tst.TimeStamp();
 
-	DHFS::StartRecovering("\\\\.\\PhysicalDrive2", "F:\\39859\\out2\\", Timestamp(2016,05,22,18,0,0), Timestamp(2016,05,25,0,0,0));
+	DHFS::StartRecovering("\\\\.\\PhysicalDrive1", "f:\\39988\\out\\", Timestamp(2016,05,01,0,0,0), Timestamp(0,0,0,0,0,0));
 	//HIKV::StartRecovering("\\\\.\\PhysicalDrive4", "F:\\39710\\out\\", Timestamp(2016, 01, 01, 0, 0, 0), Timestamp());
 	//WFS::StartRecovering("\\\\.\\PhysicalDrive11", "F:\\39493\\out\\", Timestamp(2016, 01, 01, 0, 0, 0), Timestamp());
 
@@ -64,6 +64,12 @@ int main(int argc, char *argv[])
 	//HIKV::HikVolume vol("\\\\.\\PhysicalDrive13");
 	//if (vol.Open()) {
 	//	vol.SaveFramesInfoToFile(out_file_name);	
+	//}
+
+	//DHFS::Volume volume("\\\\.\\PhysicalDrive1");
+	//if (volume.Open()) {
+	//	//volume.SaveFrameInfo();
+	//	volume.SaveFrameSequenceInfo("F:\\39988\\sequences.txt");
 	//}
 
 	w.show();

@@ -10,6 +10,7 @@ void DHFS::_FrameInfo::ToString( std::string &info_str )
 	stream << offset << " ";
 	stream << timestamp.String() << " ";
 	stream << "camera: " << camera << " ";
+	stream << "flag: " << flag << " ";
 	stream << "counter: " << counter << " ";
 	stream << "\n";
 	info_str = stream.str();
@@ -53,45 +54,6 @@ bool DHFS::Volume::IsValidHeader(FRAME_HEADER &header)
 	return false;
 }
 
-//bool DHFS::Volume::ReadFrame(std::vector<BYTE> &buffer, FrameInfo &info)
-//{
-//	FRAME_HEADER *header = NULL;
-//	FRAME_FOOTER *footer = NULL;
-//	size_t size = buffer.size();
-//	LONGLONG offset = io.Pointer();
-//
-//	info.Clear();
-//	buffer.resize(buffer.size() + sizeof(FRAME_HEADER), 0);
-//	if ( io.Read(&buffer[size], sizeof(FRAME_HEADER)) == sizeof(FRAME_HEADER) ) {
-//		header = (FRAME_HEADER *)&buffer[size];
-//
-//		info.camera = header->camera;
-//		info.offset = offset;
-//		info.counter = header->counter;
-//		info.size = header->size;
-//		header->time.Timestamp(info.timestamp);
-//
-//		if ( IsValidHeader(*header) ) {
-//			size_t tail_size = (header->size - sizeof(FRAME_HEADER));
-//			buffer.resize(buffer.size() + tail_size);
-//			if ( io.Read(&buffer[size + sizeof(FRAME_HEADER)], tail_size) == tail_size ) {
-//				footer = (FRAME_FOOTER *)&buffer[buffer.size() - sizeof(FRAME_FOOTER)];
-//				if ( (footer->magic == FRAME_FOOTER_MAGIC) && (footer->size == info.size) ) {
-//					return true;
-//				} else {
-//					info.Clear();
-//					return false;
-//				}
-//			}
-//		}
-//	}
-//	buffer.resize(size);
-//	io.SetPointer(offset);
-//
-//	return false;
-//}
-
-
 bool DHFS::Volume::ReadFrame(std::vector<BYTE> &buffer, FrameInfo &info)
 {
 	FRAME_HEADER header = {0};
@@ -101,8 +63,9 @@ bool DHFS::Volume::ReadFrame(std::vector<BYTE> &buffer, FrameInfo &info)
 
 	info.Clear();
 	if (io.Read(&header, sizeof(FRAME_HEADER)) == sizeof(FRAME_HEADER)) {
-		if (IsValidHeader(header) && ((header.flags == 0x00FC) || (header.flags == 0x00FD))) {
+		if (IsValidHeader(header) && ((header.flags == 0x00FC) || (header.flags == 0x00FD) || (header.flags == 0x00F0))) {
 			info.camera = header.camera;
+			info.flag = header.flags;
 			info.offset = offset;
 			info.counter = header.counter;
 			info.size = header.size;
@@ -131,9 +94,7 @@ bool DHFS::Volume::ReadFrame(std::vector<BYTE> &buffer, FrameInfo &info)
 	return false;
 }
 
-
-
-bool DHFS::Volume::NextFrame(std::vector<BYTE> &buffer, FrameInfo &info)
+bool DHFS::Volume::FindNextFrame(std::vector<BYTE> &buffer, FrameInfo &info)
 {
 	LONGLONG offset = 0;
 	DWORD header_magic = FRAME_HEADER_MAGIC;
@@ -152,37 +113,36 @@ bool DHFS::Volume::NextFrame(std::vector<BYTE> &buffer, FrameInfo &info)
 
 bool DHFS::Volume::NextFrameSequence(std::vector<BYTE> &sequence_buffer, FrameSequenceInfo &sequence_info)
 {
+	bool result = false;
 	FrameInfo frame_info;
 
 	frame_info.Clear();
 	sequence_info.Clear();
 	sequence_buffer.resize(0);
 
-	while (NextFrame(sequence_buffer, frame_info)) {
-		if (sequence_info.frame_counter == 0) {
-			sequence_info.start_frame = frame_info;
-			sequence_info.end_frame = frame_info;
-		}
-		do {
+	if (FindNextFrame(sequence_buffer, frame_info)) {
+
+		sequence_info.frame_counter = 1;
+		sequence_info.start_frame = frame_info;
+		sequence_info.end_frame = frame_info;
+
+		while (result = ReadFrame(sequence_buffer, frame_info)) {
 			if (sequence_info.IsYourNextFrame(frame_info)) {
 				sequence_info.frame_counter++;
 				sequence_info.end_frame = frame_info;
 				sequence_info.size += frame_info.size;
 				continue;
 			} else {
-				if (sequence_info.frame_counter > 1) {
-					sequence_buffer.resize(sequence_info.size);
-					io.SetPointer(sequence_info.start_frame.offset + sequence_info.size);
-					return true;
-				} else {
-					sequence_buffer.clear();
-					sequence_info.Clear();
-					break;
-				}
-			}
-		} while (ReadFrame(sequence_buffer, frame_info));
-	}
+				io.SetPointer(frame_info.offset);
+				break;
+			}		
+		}
 
+		if (!result) {
+			io.SetPointer(sequence_info.end_frame.offset + 1);
+		}
+		return true;
+	}
 	return false;
 }
 
@@ -208,13 +168,64 @@ void DHFS::Volume::SaveFrameInfo(void)
 	std::vector<BYTE> buffer;
 	buffer.reserve(4*1024*1024);
 
-	W32Lib::FileEx log("E:\\37025\\frames.txt");
+	W32Lib::FileEx log("F:\\39988\\frames.txt");
 	if (log.Create()) {
-		while (NextFrame(buffer, frame_info)) {
-			frame_info.ToString(str);
-			log.Write((void *)str.c_str(), str.size());
-			str.clear();
+		while (FindNextFrame(buffer, frame_info)) {
+
+			if (frame_info.camera == 1) {
+				frame_info.ToString(str);
+				log.Write((void *)str.c_str(), str.size());
+				str.clear();			
+			}
+
 			buffer.clear();
+		}
+	}
+}
+
+void DHFS::Volume::SaveFrameSequenceInfo(const std::string &out_file)
+{
+	FrameInfo frame_info;
+	std::string info;
+	std::string out_str;
+	std::vector<BYTE> buffer;
+	buffer.reserve(4 * 1024 * 1024);
+
+	W32Lib::FileEx log(out_file.data());
+	if (log.Create()) {
+
+		std::vector<BYTE> sequence;
+		FrameSequenceInfo sequence_info;
+
+		while (NextFrameSequence(sequence, sequence_info)) {
+
+			out_str = "frames: ";
+			out_str += std::to_string(sequence_info.frame_counter) + "; ";
+			out_str += "size: ";
+			out_str += std::to_string(sequence_info.size) + ";\n";
+
+			log.Write((void *)out_str.c_str(), out_str.size());
+			out_str.clear();
+			
+			out_str = "first: ";
+			sequence_info.start_frame.ToString(info);
+			out_str += info;
+
+			log.Write((void *)out_str.c_str(), out_str.size());
+			out_str.clear();
+
+			out_str = "last:  ";
+			sequence_info.end_frame.ToString(info);
+			out_str += info;
+
+			log.Write((void *)out_str.c_str(), out_str.size());
+			out_str.clear();
+
+			out_str = "===============================================================================\n";
+
+			log.Write((void *)out_str.c_str(), out_str.size());
+			out_str.clear();
+	
 		}
 	}
 }
