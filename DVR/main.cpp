@@ -54,7 +54,6 @@ int main(int argc, char *argv[])
 	//Timestamp time;
 	//time = (Timestamp)tst.TimeStamp();
 
-	DHFS::StartRecovering("\\\\.\\PhysicalDrive1", "f:\\39988\\out\\", Timestamp(2016,05,01,0,0,0), Timestamp(0,0,0,0,0,0));
 	//HIKV::StartRecovering("\\\\.\\PhysicalDrive4", "F:\\39710\\out\\", Timestamp(2016, 01, 01, 0, 0, 0), Timestamp());
 	//WFS::StartRecovering("\\\\.\\PhysicalDrive11", "F:\\39493\\out\\", Timestamp(2016, 01, 01, 0, 0, 0), Timestamp());
 
@@ -66,10 +65,19 @@ int main(int argc, char *argv[])
 	//	vol.SaveFramesInfoToFile(out_file_name);	
 	//}
 
+	DHFS::StartRecovering("\\\\.\\PhysicalDrive1", "F:\\39988\\out\\", Timestamp(2016,05,01,0,0,0), Timestamp(0,0,0,0,0,0));
 	//DHFS::Volume volume("\\\\.\\PhysicalDrive1");
 	//if (volume.Open()) {
-	//	//volume.SaveFrameInfo();
-	//	volume.SaveFrameSequenceInfo("F:\\39988\\sequences.txt");
+	//	volume.SaveFrameInfo("F:\\40052\\frames.txt");
+	//	//volume.SaveFrameSequenceInfo("F:\\39988\\sequences.txt");
+	//}
+
+
+	//DHFS::StartRecovering("\\\\.\\PhysicalDrive4", "F:\\40052\\out\\", Timestamp(2016,05,01,0,0,0), Timestamp(0,0,0,0,0,0));
+	//DHFS::Volume volume("\\\\.\\PhysicalDrive4");
+	//if (volume.Open()) {
+	//	volume.SaveFrameInfo("F:\\40052\\frames.txt");
+	//	//volume.SaveFrameSequenceInfo("F:\\40052\\sequences.txt");
 	//}
 
 	w.show();

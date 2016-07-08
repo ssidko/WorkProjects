@@ -223,36 +223,36 @@ typedef struct {
 											 value size in clusters minus 1. Can be -1 for
 											 zero length files. Can be 0 for "single extent"
 											 attributes. */
-			WORD mapping_pairs_offset; /* Byte offset from the
-													  beginning of the structure to the mapping pairs
-													  array which contains the mappings between the
-													  ULONGLONGs and the logical cluster numbers (lcns).
-													  When creating, place this at the end of this
-													  record header aligned to 8-byte boundary. */
-			BYTE compression_unit; /* The compression unit expressed
-												 as the log to the base 2 of the number of
-												 clusters in a compression unit. 0 means not
-												 compressed. (This effectively limits the
-												 compression unit size to be a power of two
-												 clusters.) WinNT4 only uses a value of 4. */
-			BYTE reserved1[5];	/* Align to 8-byte boundary. */
-												/* The sizes below are only used when lowest_ULONGLONG is zero, as otherwise it would
-												be difficult to keep them up-to-date.*/
-			LONGLONG allocated_size;	/* Byte size of disk space
-												allocated to hold the attribute value. Always
-												is a multiple of the cluster size. When a file
-												is compressed, this field is a multiple of the
-												compression block size (2^compression_unit) and
-												it represents the logically allocated space
-												rather than the actual on disk usage. For this
-												use the compressed_size (see below). */
-			LONGLONG data_size;	/* Byte size of the attribute
-											value. Can be larger than allocated_size if
-											attribute value is compressed or sparse. */
-			LONGLONG initialized_size;	/* Byte size of initialized
+			WORD mapping_pairs_offset;				/* Byte offset from the
+													 beginning of the structure to the mapping pairs
+													 array which contains the mappings between the
+													 ULONGLONGs and the logical cluster numbers (lcns).
+													 When creating, place this at the end of this
+													 record header aligned to 8-byte boundary. */
+			BYTE compression_unit;					/* The compression unit expressed
+													 as the log to the base 2 of the number of
+													 clusters in a compression unit. 0 means not
+													 compressed. (This effectively limits the
+													 compression unit size to be a power of two
+													 clusters.) WinNT4 only uses a value of 4. */
+			BYTE reserved1[5];					/* Align to 8-byte boundary. */
+													/* The sizes below are only used when lowest_ULONGLONG is zero, as otherwise it would
+													be difficult to keep them up-to-date.*/
+			LONGLONG allocated_size;			/* Byte size of disk space
+													allocated to hold the attribute value. Always
+													is a multiple of the cluster size. When a file
+													is compressed, this field is a multiple of the
+													compression block size (2^compression_unit) and
+													it represents the logically allocated space
+													rather than the actual on disk usage. For this
+													use the compressed_size (see below). */
+			LONGLONG data_size;						/* Byte size of the attribute
+													value. Can be larger than allocated_size if
+													attribute value is compressed or sparse. */
+			LONGLONG initialized_size;			/* Byte size of initialized
 													portion of the attribute value. Usually equals
 													data_size. */
-			LONGLONG compressed_size;	/* Byte size of the attribute
+			LONGLONG compressed_size;			/* Byte size of the attribute
 													value after compression. Only present when
 													compressed. Always is a multiple of the
 													cluster size. Represents the actual amount of

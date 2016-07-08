@@ -39,7 +39,7 @@ namespace DHFS
 		WORD flags;
 		WORD camera;
 		DWORD counter;
-		DWORD size;			// Frame size
+		DWORD frame_size;			// Frame size
 		TIMESTAMP time;
 		BYTE unk1[8];
 		DWORD unk2;
@@ -59,7 +59,7 @@ namespace DHFS
 
 	typedef struct _FRAME_FOOTER {
 		DWORD magic;					// FRAME_FOOTER_MAGIC
-		DWORD size;
+		DWORD frame_size;
 	} FRAME_FOOTER;
 
 #pragma pack(pop)
@@ -79,9 +79,10 @@ namespace DHFS
 		FrameInfo start_frame;
 		FrameInfo end_frame;
 		DWORD frame_counter;
+		DWORD sync_counter;
 		DWORD size;
 		void Clear(void) {memset(this, 0x00, sizeof(_FrameSequenceInfo));}
-		bool IsYourNextFrame(FrameInfo &next_frame);
+		bool IsNextFrame(FrameInfo &frame);
 	} FrameSequenceInfo;
 
 	class Volume
@@ -97,7 +98,7 @@ namespace DHFS
 		bool FindNextFrame(std::vector<BYTE> &buffer, FrameInfo &info);
 		bool NextFrameSequence(std::vector<BYTE> &sequence_buffer, FrameSequenceInfo &sequnence_info);
 		void Test(void);
-		void SaveFrameInfo(void);
+		void SaveFrameInfo(const std::string &out_file);
 		void SaveFrameSequenceInfo(const std::string &out_file);
 	};
 }
