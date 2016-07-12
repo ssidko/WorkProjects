@@ -79,10 +79,12 @@ namespace DHFS
 		FrameInfo start_frame;
 		FrameInfo end_frame;
 		DWORD frame_counter;
-		DWORD sync_counter;
+		DWORD start_sync_counter;
+		DWORD end_sync_counter;
 		DWORD size;
 		void Clear(void) {memset(this, 0x00, sizeof(_FrameSequenceInfo));}
-		bool IsNextFrame(FrameInfo &frame);
+		void SetFirstFrame(FrameInfo &frame);
+		bool AppendFrame(FrameInfo &frame);
 	} FrameSequenceInfo;
 
 	class Volume
@@ -92,10 +94,10 @@ namespace DHFS
 	public:
 		Volume(const std::string &volume_file_name);
 		bool Open();
-		void SetPointer(LONGLONG &pointer);
+		void SetPointer(const LONGLONG &pointer);
 		bool IsValidHeader(FRAME_HEADER &header);
 		bool ReadFrame(std::vector<BYTE> &buffer, FrameInfo &info);
-		bool FindNextFrame(std::vector<BYTE> &buffer, FrameInfo &info);
+		bool FindAndReadNextFrame(std::vector<BYTE> &buffer, FrameInfo &info);
 		bool NextFrameSequence(std::vector<BYTE> &sequence_buffer, FrameSequenceInfo &sequnence_info);
 		void Test(void);
 		void SaveFrameInfo(const std::string &out_file);

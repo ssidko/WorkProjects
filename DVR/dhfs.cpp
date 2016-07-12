@@ -4,6 +4,8 @@ int DHFS::StartRecovering(const std::string &dhfs_volume, const std::string &out
 {
 	Volume volume(dhfs_volume);
 	if (volume.Open()) {
+
+		//volume.SetPointer(70LL * 1024 * 1024 * 1024LL);
 	
 		std::vector<BYTE> sequence;
 		FrameSequenceInfo sequence_info;

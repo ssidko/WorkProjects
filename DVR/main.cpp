@@ -65,13 +65,12 @@ int main(int argc, char *argv[])
 	//	vol.SaveFramesInfoToFile(out_file_name);	
 	//}
 
-	DHFS::StartRecovering("\\\\.\\PhysicalDrive1", "F:\\39988\\out\\", Timestamp(2016,05,01,0,0,0), Timestamp(0,0,0,0,0,0));
+	DHFS::StartRecovering("\\\\.\\PhysicalDrive1", "F:\\39988\\out\\", Timestamp(2015,5,1,0,0,0), Timestamp(2016,8,14,0,0,0));
 	//DHFS::Volume volume("\\\\.\\PhysicalDrive1");
 	//if (volume.Open()) {
-	//	volume.SaveFrameInfo("F:\\40052\\frames.txt");
+	//	volume.SaveFrameInfo("F:\\39988\\frames.txt");
 	//	//volume.SaveFrameSequenceInfo("F:\\39988\\sequences.txt");
 	//}
-
 
 	//DHFS::StartRecovering("\\\\.\\PhysicalDrive4", "F:\\40052\\out\\", Timestamp(2016,05,01,0,0,0), Timestamp(0,0,0,0,0,0));
 	//DHFS::Volume volume("\\\\.\\PhysicalDrive4");
