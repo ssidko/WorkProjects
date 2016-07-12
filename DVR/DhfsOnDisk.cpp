@@ -1,6 +1,7 @@
 #include <assert.h>
 #include "DhfsOnDisk.h"
 #include <sstream>
+#include "File.h"
 
 using namespace DHFS;
 
@@ -47,9 +48,10 @@ bool DHFS::_FrameSequenceInfo::AppendFrame(FrameInfo & frame)
 						start_sync_counter = frame.counter;
 						end_sync_counter = frame.counter;					
 					} else {
-						if () {
-						
-						
+						if ((frame.counter - end_sync_counter) == 1) {
+							end_sync_counter = frame.counter;
+						} else {
+							return false;
 						}
 					}
 				}
@@ -123,7 +125,7 @@ bool DHFS::Volume::ReadFrame(std::vector<BYTE> &buffer, FrameInfo &info)
 			info.camera = header.camera;
 			info.flag = header.flags;
 			info.offset = frame_offset;
-			info.counter = header.counter;
+			info.counter = header.sync_counter;
 			info.size = header.frame_size;
 			header.time.Timestamp(info.timestamp);
 
@@ -166,20 +168,14 @@ bool DHFS::Volume::NextFrameSequence(std::vector<BYTE> &sequence_buffer, FrameSe
 		sequence_info.SetFirstFrame(frame_info);
 
 		while (result = ReadFrame(sequence_buffer, frame_info)) {
-			if (sequence_info.IsNextFrame(frame_info)) {
-				sequence_info.frame_counter++;
-				sequence_info.end_frame = frame_info;
-				sequence_info.size += frame_info.size;
 
-				if ((frame_info.flag == 0xFC) || (frame_info.flag == 0xFD)) {
-					sequence_info.end_sync_counter = frame_info.counter;
-				}
-
+			if (sequence_info.AppendFrame(frame_info)) {
 				continue;
 			} else {
 				io.SetPointer(frame_info.offset);
 				break;
 			}		
+
 		}
 
 		if (!result) {
@@ -202,8 +198,6 @@ void DHFS::Volume::Test(void)
 		int x = 0;
 	}
 }
-
-#include "File.h"
 
 void DHFS::Volume::SaveFrameInfo(const std::string &out_file)
 {

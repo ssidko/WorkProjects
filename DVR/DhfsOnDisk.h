@@ -38,7 +38,7 @@ namespace DHFS
 		DWORD magic;		// FRAME_HEADER_MAGIC
 		WORD flags;
 		WORD camera;
-		DWORD counter;
+		DWORD sync_counter;
 		DWORD frame_size;			// Frame size
 		TIMESTAMP time;
 		BYTE unk1[8];
