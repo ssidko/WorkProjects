@@ -107,7 +107,7 @@ bool DHFS::FileStorage::SaveFrameSequence(std::vector<BYTE>& sequence_buffer, Fr
 							break;					
 						}
 					} else {
-						if ((std::fdim(delta_time * fps, delta_counter)) < 100) {
+						if ((std::fdim(delta_time * fps, delta_counter)) <= (2 * fps)) {
 							out_file = vfile;
 							break;
 						}		
