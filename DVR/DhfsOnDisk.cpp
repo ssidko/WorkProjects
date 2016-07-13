@@ -17,12 +17,17 @@ void DHFS::_FrameInfo::ToString( std::string &info_str )
 	info_str = stream.str();
 }
 
+inline void DHFS::_FrameSequenceInfo::Clear(void)
+{
+	memset(this, 0x00, sizeof(_FrameSequenceInfo));
+}
+
 void DHFS::_FrameSequenceInfo::SetFirstFrame(FrameInfo & frame)
 {
 	frame_counter = 1;
 	start_frame = frame;
 	end_frame = frame;
-	size = frame.size;
+	size = frame.frame_size;
 
 	if ((frame.flag == 0xFC) || (frame.flag == 0xFD)) {
 		start_sync_counter = frame.counter;
@@ -58,7 +63,7 @@ bool DHFS::_FrameSequenceInfo::AppendFrame(FrameInfo & frame)
 
 				end_frame = frame;
 				frame_counter++;
-				size += frame.size;
+				size += frame.frame_size;
 
 				return true;
 			}
@@ -101,10 +106,8 @@ bool DHFS::Volume::FindAndReadNextFrame(std::vector<BYTE> &buffer, FrameInfo &in
 	while ((offset = io.Find((BYTE *)&header_magic, sizeof(header_magic))) >= 0) {
 		if (ReadFrame(buffer, info)) {
 			return true;
-		}
-		else {
-			offset++;
-			io.SetPointer(offset);
+		} else {
+			io.SetPointer(++offset);
 		}
 	}
 	return false;
@@ -115,7 +118,6 @@ bool DHFS::Volume::ReadFrame(std::vector<BYTE> &buffer, FrameInfo &info)
 	FRAME_HEADER header = {0};
 	FRAME_FOOTER footer = {0};
 	size_t size = buffer.size();
-	size_t data_size = 0;
 	LONGLONG frame_offset = io.Pointer();
 
 	info.Clear();
@@ -126,16 +128,15 @@ bool DHFS::Volume::ReadFrame(std::vector<BYTE> &buffer, FrameInfo &info)
 			info.flag = header.flags;
 			info.offset = frame_offset;
 			info.counter = header.sync_counter;
-			info.size = header.frame_size;
+			info.frame_size = header.frame_size;
 			header.time.Timestamp(info.timestamp);
+			info.data_size = (header.frame_size - header.HeaderSize() - sizeof(FRAME_FOOTER));
 
-			data_size = (header.frame_size - header.HeaderSize() - sizeof(FRAME_FOOTER));
-
-			buffer.resize(buffer.size() + data_size);
+			buffer.resize(buffer.size() + info.data_size);
 
 			io.SetPointer(frame_offset + header.HeaderSize());
 
-			if (io.Read(&buffer[size], data_size) == data_size) {
+			if (io.Read(&buffer[size], info.data_size) == info.data_size) {
 				if (io.Read(&footer, sizeof(FRAME_FOOTER)) == sizeof(FRAME_FOOTER)) {
 					if ((footer.magic == FRAME_FOOTER_MAGIC) && (footer.frame_size == header.frame_size)) {
 						return true;
@@ -172,6 +173,7 @@ bool DHFS::Volume::NextFrameSequence(std::vector<BYTE> &sequence_buffer, FrameSe
 			if (sequence_info.AppendFrame(frame_info)) {
 				continue;
 			} else {
+				sequence_buffer.resize(sequence_buffer.size() - frame_info.data_size);
 				io.SetPointer(frame_info.offset);
 				break;
 			}		

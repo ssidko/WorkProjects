@@ -70,7 +70,8 @@ namespace DHFS
 		DWORD camera;
 		DWORD flag;
 		DWORD counter;
-		DWORD size;
+		DWORD frame_size;
+		DWORD data_size;
 		void Clear(void) {memset(this, 0x00, sizeof(_FrameInfo));}
 		void ToString(std::string &info_str);
 	} FrameInfo;
@@ -82,7 +83,8 @@ namespace DHFS
 		DWORD start_sync_counter;
 		DWORD end_sync_counter;
 		DWORD size;
-		void Clear(void) {memset(this, 0x00, sizeof(_FrameSequenceInfo));}
+		void Clear(void);
+		DWORD Camera(void) { return start_frame.camera; }
 		void SetFirstFrame(FrameInfo &frame);
 		bool AppendFrame(FrameInfo &frame);
 	} FrameSequenceInfo;
