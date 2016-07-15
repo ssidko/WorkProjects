@@ -104,7 +104,7 @@ bool DHFS::FileStorage::SaveFrameSequence(std::vector<BYTE>& sequence_buffer, Fr
 					if (delta_time == 0x00) {
 						if (delta_counter < (2 * fps)) {
 							out_file = vfile;
-							break;					
+							break;
 						}
 					} else {
 						if ((std::fdim(delta_time * fps, delta_counter)) <= (2 * fps)) {
@@ -116,15 +116,13 @@ bool DHFS::FileStorage::SaveFrameSequence(std::vector<BYTE>& sequence_buffer, Fr
 				} else {
 					int x = 0;
 				}
-			}			
-		}	
-		
+			}
+		}			
 
 		if ((sequence_info.start_frame.offset - vfile->LastOffset()) >= max_disatance) {
 			for_remove.push_back(vfile);
 		}
 	}
-
 
 	for (VideoFile *vfile : for_remove) {
 		CloseFile(vfile);
@@ -151,7 +149,6 @@ bool DHFS::FileStorage::SaveFrameSequence(std::vector<BYTE>& sequence_buffer, Fr
 	} else {
 		return false;
 	}
-
 }
 
 DHFS::VideoFile *DHFS::FileStorage::CreateNewFile(FrameSequenceInfo &sequence_info)
