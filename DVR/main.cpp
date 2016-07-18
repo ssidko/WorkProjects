@@ -26,6 +26,7 @@ inline void _trace(char *format, ...)
 
 #include "ExtentRecovery.h"
 #include "FileRecordRecovery.h"
+#include "Timestamp.h"
 #include "Hikvision.h"
 #include "dhfs.h"
 #include "WFS.h"
@@ -65,7 +66,7 @@ int main(int argc, char *argv[])
 	//	vol.SaveFramesInfoToFile(out_file_name);	
 	//}
 
-	DHFS::StartRecovering("\\\\.\\PhysicalDrive1", "F:\\39988\\out\\", Timestamp(2015, 1, 1, 0, 0, 0), Timestamp(0, 0, 0, 0, 0, 0));
+	//DHFS::StartRecovering("\\\\.\\PhysicalDrive1", "F:\\39988\\out\\", dvr::Timestamp(2015, 1, 1, 0, 0, 0), dvr::Timestamp(0, 0, 0, 0, 0, 0));
 	//DHFS::StartRecovering("\\\\.\\PhysicalDrive1", "F:\\39988\\out\\", Timestamp(2015, 5, 1, 0, 0, 0), Timestamp(2016, 8, 14, 0, 0, 0));
 	//DHFS::Volume volume("\\\\.\\PhysicalDrive1");
 	//if (volume.Open()) {

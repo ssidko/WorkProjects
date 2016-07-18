@@ -9,6 +9,8 @@
 
 namespace Orbita
 {
+	using namespace dvr;
+
 	#pragma pack(push)
 	#pragma pack(1)
 
@@ -19,7 +21,7 @@ namespace Orbita
 		BYTE hours;
 		BYTE minutes;
 		BYTE seconds;
-		Timestamp Timestamp(void) { return ::Timestamp(2000 + year, month, day, hours, minutes, seconds); }
+		Timestamp Timestamp(void) { return dvr::Timestamp(2000 + year, month, day, hours, minutes, seconds); }
 	} TIME_STAMP;
 
 	typedef struct _HEADER {

@@ -5,6 +5,8 @@
 
 namespace WFS
 {
+	using namespace dvr;
+
 	typedef struct _TIMESTAMP {
 		DWORD seconds : 6;
 		DWORD minutes : 6;

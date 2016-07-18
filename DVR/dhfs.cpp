@@ -1,5 +1,7 @@
 #include "dhfs.h"
 
+using namespace dvr;
+
 int DHFS::StartRecovering(const std::string &dhfs_volume, const std::string &out_directory, const Timestamp &start_time, const Timestamp & end_time)
 {
 	Volume volume(dhfs_volume);

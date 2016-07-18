@@ -14,6 +14,8 @@ namespace DHFS
 
 #define FRAME_MAX_SIZE				((DWORD)32*1024*1024)
 
+	using namespace dvr;
+
 #pragma pack(push)
 #pragma pack(1)
 

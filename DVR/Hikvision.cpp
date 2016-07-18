@@ -199,7 +199,7 @@ bool HIKV::HikVolume::SaveFramesInfoToFile(std::string &file_name)
 	return true;
 }
 
-int HIKV::StartRecovering(const std::string &dhfs_volume, const std::string &out_directory, const Timestamp &start_time, const Timestamp &end_time)
+int HIKV::StartRecovering(const std::string &dhfs_volume, const std::string &out_directory, const dvr::Timestamp &start_time, const dvr::Timestamp &end_time)
 {
 	DWORD error;
 	DWORD rw = 0;

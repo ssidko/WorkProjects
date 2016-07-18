@@ -7,6 +7,8 @@
 
 namespace HIKV
 {
+	using namespace dvr;
+
 #pragma pack(push)
 #pragma pack(1)
 
@@ -78,7 +80,7 @@ namespace HIKV
 		bool SaveFramesInfoToFile(std::string &file_name);
 	};
 
-	int StartRecovering(const std::string &dhfs_volume, const std::string &out_directory, const Timestamp &start_time, const Timestamp &end_time);
+	int StartRecovering(const std::string &dhfs_volume, const std::string &out_directory, const dvr::Timestamp &start_time, const dvr::Timestamp &end_time);
 	bool RenameFile();
 
 }

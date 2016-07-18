@@ -1,7 +1,8 @@
 #include "Timestamp.h"
 #include <stdio.h>
 
-Timestamp::Timestamp()
+
+dvr::Timestamp::Timestamp()
 {
 	seconds = 0;
 	minutes = 0;
@@ -12,7 +13,7 @@ Timestamp::Timestamp()
 	memset(str, 0x00, sizeof(str));
 }
 
-Timestamp::Timestamp(DWORD year_, DWORD month_, DWORD day_, DWORD hours_, DWORD mins_, DWORD sec_)
+dvr::Timestamp::Timestamp(DWORD year_, DWORD month_, DWORD day_, DWORD hours_, DWORD mins_, DWORD sec_)
 {
 	seconds = sec_;
 	minutes = mins_;
@@ -23,53 +24,53 @@ Timestamp::Timestamp(DWORD year_, DWORD month_, DWORD day_, DWORD hours_, DWORD 
 	memset(str, 0x00, sizeof(str));
 }
 
-Timestamp::~Timestamp(void)
+dvr::Timestamp::~Timestamp(void)
 {
 }
 
-void Timestamp::Clear( void )
+void dvr::Timestamp::Clear( void )
 {
 	memset(this, 0x00, sizeof(*this));
 }
 
-ULONGLONG Timestamp::Seconds( void ) const
+ULONGLONG dvr::Timestamp::Seconds( void ) const
 {
 	return (LONGLONG)((((year*12LL + month)*31LL + day)*24LL + hours)*60LL + minutes)*60LL + seconds;
 }
 
-const char * Timestamp::String( void )
+const char * dvr::Timestamp::String( void )
 {
 	memset(str, 0x00, sizeof(str));
 	sprintf_s(str, sizeof(str), "%04d-%02d-%02d--%02d-%02d-%02d",year,month,day,hours,minutes,seconds);
 	return str;
 }
 
-bool Timestamp::operator>( const Timestamp &t )
+bool dvr::Timestamp::operator>( const Timestamp &t )
 {
 	return (this->Seconds() > t.Seconds());
 }
 
-bool Timestamp::operator>=( const Timestamp &t )
+bool dvr::Timestamp::operator>=( const Timestamp &t )
 {
 	return (this->Seconds() >= t.Seconds());
 }
 
-bool Timestamp::operator<( const Timestamp &t )
+bool dvr::Timestamp::operator<( const Timestamp &t )
 {
 	return (this->Seconds() < t.Seconds());
 }
 
-bool Timestamp::operator<=( const Timestamp &t )
+bool dvr::Timestamp::operator<=( const Timestamp &t )
 {
 	return (this->Seconds() <= t.Seconds());
 }
 
-bool Timestamp::operator==( const Timestamp &t )
+bool dvr::Timestamp::operator==( const Timestamp &t )
 {
 	return (this->Seconds() == t.Seconds());
 }
 
-ULONGLONG Timestamp::operator-( const Timestamp &t )
+ULONGLONG dvr::Timestamp::operator-( const Timestamp &t )
 {
 	return (this->Seconds() - t.Seconds());
 }
