@@ -4,6 +4,7 @@
 #include <string>
 #include "Timestamp.h"
 #include "BufferedFile.h"
+#include "utility.h"
 
 namespace HIKV
 {

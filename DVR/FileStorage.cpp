@@ -15,6 +15,7 @@ DHFS::VideoFile::VideoFile(std::string full_path) :
 	name(full_path),
 	file(full_path.c_str()),
 	end_sync_counter(0),
+	first_offset(0),
 	last_offset(0)
 {
 	start_time.Clear();
@@ -40,6 +41,7 @@ bool DHFS::VideoFile::SaveFrameSequence(std::vector<BYTE> &sequence_buffer, Fram
 	if (start_time.Seconds() == 0) {
 		camera = sequence_info.start_frame.camera;
 		start_time = sequence_info.start_frame.timestamp;
+		first_offset = sequence_info.start_frame.offset;
 	}
 	end_time = sequence_info.end_frame.timestamp;
 	end_sync_counter = sequence_info.end_sync_counter;
@@ -119,7 +121,7 @@ bool DHFS::FileStorage::SaveFrameSequence(std::vector<BYTE>& sequence_buffer, Fr
 			}
 		}			
 
-		if ((sequence_info.start_frame.offset - vfile->LastOffset()) >= max_disatance) {
+		if ((sequence_info.start_frame.offset - vfile->LastFrameOffset()) >= max_disatance) {
 			for_remove.push_back(vfile);
 		}
 	}
@@ -182,7 +184,8 @@ void DHFS::FileStorage::CloseFile(VideoFile *vfile)
 		std::stringstream file_name;
 		file_name << out_directory << "[" << vfile->Camera() + 1 << "]-";
 		file_name << vfile->StartTime().String() << "-=-" << vfile->EndTime().String();
-		file_name << "-=-" << std::to_string(vfile->LastOffset()) << ".avi";
+		file_name << "-=-" << std::to_string(vfile->FirstFrameOffset());
+		file_name << "--" << std::to_string(vfile->LastFrameOffset()) << ".avi";
 
 		Convert2Avi(vfile->Name(), file_name.str());
 

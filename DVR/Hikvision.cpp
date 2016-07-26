@@ -56,7 +56,7 @@ bool HIKV::HikVolume::ReadFrame(std::vector<BYTE> &buffer, FrameInfo &frame)
 			if (header->type == 0xBA) {
 				data_size = 16;
 				frame.full_size = sizeof(FRAME_HEADER) + data_size;
-			} else {				
+			} else {
 				buffer.resize(buffer.size() + sizeof(WORD));
 				if (io.Read(&buffer[origin_size + sizeof(FRAME_HEADER)], sizeof(WORD)) != sizeof(WORD)) {
 					goto _error;
@@ -223,19 +223,21 @@ int HIKV::StartRecovering(const std::string &dhfs_volume, const std::string &out
 			} else if (sequence.end_time.Seconds() - sequence.start_time.Seconds()) {
 				
 				std::stringstream new_name;
-				new_name << out_directory << sequence.start_time.String() << "-=-" << sequence.end_time.String() << "--[" << sequence.offset << "]" << ".h264";
+				new_name << out_directory << sequence.start_time.String() << "-=-" << sequence.end_time.String() << "--[" << sequence.offset << "]" << ".avi";
 				//new_name << out_directory << "[" << file_counter++ << "]--" << sequence.start_time.String() << "-=-" << sequence.end_time.String() << ".h264";
 
-				W32Lib::FileEx out_file(file_name.c_str());
-				if (out_file.Open()) {					
-					out_file.Close();
-					bool result = out_file.Rename(new_name.str().c_str());
-					if (!result) {
-						error = ::GetLastError();
-				}	
+				::Convert2Avi(file_name, new_name.str());
 
-					int x = 0;
-				}
+				//W32Lib::FileEx out_file(file_name.c_str());
+				//if (out_file.Open()) {					
+				//	out_file.Close();
+				//	bool result = out_file.Rename(new_name.str().c_str());
+				//	if (!result) {
+				//		error = ::GetLastError();
+				//	}	
+
+				//	int x = 0;
+				//}
 			
 			}
 		}

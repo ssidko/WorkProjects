@@ -25,6 +25,7 @@ namespace DHFS
 		Timestamp start_time;
 		Timestamp end_time;
 		DWORD end_sync_counter;
+		LONGLONG first_offset;
 		LONGLONG last_offset;
 		std::string name;
 		W32Lib::FileEx file;
@@ -37,7 +38,8 @@ namespace DHFS
 		Timestamp StartTime(void) {return start_time;}
 		Timestamp EndTime(void) {return end_time;}
 		DWORD EndSyncCounter(void) { return end_sync_counter; }
-		LONGLONG LastOffset(void) { return last_offset; }
+		LONGLONG FirstFrameOffset(void) { return first_offset; }
+		LONGLONG LastFrameOffset(void) { return last_offset; }
 		LONGLONG Size(void) {return file.GetSize();}
 		std::string Name(void) {return name;}
 		bool Rename(const std::string &new_name);
