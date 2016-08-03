@@ -211,11 +211,9 @@ void DHFS::Volume::SaveFrameInfo(const std::string &out_file)
 	W32Lib::FileEx log(out_file.data());
 	if (log.Create()) {
 		while (FindAndReadNextFrame(buffer, frame_info)) {
-
 			frame_info.ToString(info_str);
 			log.Write((void *)info_str.c_str(), info_str.size());
 			info_str.clear();
-
 			buffer.clear();
 		}
 	}
