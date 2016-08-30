@@ -33,10 +33,26 @@ inline void _trace(char *format, ...)
 
 #include <iostream>
 
+class A
+{
+	int x;
+	int y;
+	int z;
+public:
+	A() {}
+};
+
+A& test(A&& obj) {
+	//static A obj;
+	return obj;
+}
+
 int main(int argc, char *argv[])
 {
 	QApplication a(argc, argv);
 	MainWindow w;
+
+
 
 	//Orbita::Main("\\\\.\\PhysicalDrive0", "K:\\38702\\out");
 	//WFS::Main();
@@ -56,7 +72,7 @@ int main(int argc, char *argv[])
 	//time = (Timestamp)tst.TimeStamp();
 
 	//HIKV::StartRecovering("\\\\.\\PhysicalDrive0", "F:\\40038\\out\\", dvr::Timestamp(2016, 01, 01, 0, 0, 0), dvr::Timestamp());
-	//WFS::StartRecovering("\\\\.\\PhysicalDrive11", "F:\\39493\\out\\", Timestamp(2016, 01, 01, 0, 0, 0), Timestamp());
+	WFS::StartRecovering("\\\\.\\PhysicalDrive0", "F:\\40274\\out\\", dvr::Timestamp(2016, 01, 01, 0, 0, 0), dvr::Timestamp());
 
 	//FileRecordRecoveryStart();
 
@@ -66,7 +82,7 @@ int main(int argc, char *argv[])
 	//	vol.SaveFramesInfoToFile(out_file_name);	
 	//}
 
-	DHFS::StartRecovering("\\\\.\\PhysicalDrive0", "e:\\40175\\out\\", dvr::Timestamp(2015, 1, 1, 0, 0, 0), dvr::Timestamp(0, 0, 0, 0, 0, 0));
+	//DHFS::StartRecovering("\\\\.\\PhysicalDrive0", "e:\\40175\\out\\", dvr::Timestamp(2015, 1, 1, 0, 0, 0), dvr::Timestamp(0, 0, 0, 0, 0, 0));
 
 	//DHFS::StartRecovering("\\\\.\\PhysicalDrive1", "F:\\39988\\out\\", Timestamp(2015, 5, 1, 0, 0, 0), Timestamp(2016, 8, 14, 0, 0, 0));
 	//DHFS::Volume volume("\\\\.\\PhysicalDrive1");

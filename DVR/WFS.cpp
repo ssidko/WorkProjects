@@ -107,15 +107,15 @@ int WFS::StartRecovering(const std::string &volume_name, const std::string &out_
 	std::string mkv_file_name;
 	std::string raw_file_name = out_directory + "out.dvr";
 
-	Scanner wfs(volume_name);
+	Scanner volum(volume_name);
 	W32Lib::FileEx *out_file = nullptr;
 
 	LONGLONG max_offset = 0;
 
-	if (wfs.Open()) {
+	if (volum.Open()) {
 		FrameSequence sequence;
-		//wfs.SetPointer((1300) * 1024 * 1024 * 1024LL);
-		while (wfs.NextFrameSequence(sequence)) {
+		volum.SetPointer(1911834175387LL);
+		while (volum.NextFrameSequence(sequence)) {
 
 			if (start_time.Seconds()) {
 				if (sequence.start_time.Seconds() < start_time.Seconds()) {
@@ -130,7 +130,6 @@ int WFS::StartRecovering(const std::string &volume_name, const std::string &out_
 					continue;
 				}
 			}
-
 
 			if (out_file == nullptr) {
 				//raw_file_name = out_dir_path + SequenceInfoString(sequence) + ".h264";

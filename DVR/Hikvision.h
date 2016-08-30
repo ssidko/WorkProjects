@@ -83,7 +83,6 @@ namespace HIKV
 
 	int StartRecovering(const std::string &dhfs_volume, const std::string &out_directory, const dvr::Timestamp &start_time, const dvr::Timestamp &end_time);
 	bool RenameFile();
-
 }
 
 

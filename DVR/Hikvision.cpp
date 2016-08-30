@@ -75,7 +75,7 @@ bool HIKV::HikVolume::ReadFrame(std::vector<BYTE> &buffer, FrameInfo &frame)
 				frame.frame_type = header->type;
 				frame.data_size = data_size;
 				if (header->type == 0xBC) {
-					if ( (*(WORD *)(&buffer[data_pos + 6]) == 0x4B48) && (*(WORD *)(&buffer[data_pos + 22]) == 0x4B48) ) {						
+					if ( (*(WORD *)(&buffer[data_pos + 6]) == 0x4B48) && (*(WORD *)(&buffer[data_pos + 22]) == 0x4B48) ) {
 						DWORD raw = BeToLe(*((DWORD *)&buffer[data_pos + 10]));
 						TIMESTAMP *stmp = (TIMESTAMP *)&raw;
 						frame.time_stamp = stmp->TimeStamp();
