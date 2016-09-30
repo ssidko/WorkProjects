@@ -52,8 +52,6 @@ int main(int argc, char *argv[])
 	QApplication a(argc, argv);
 	MainWindow w;
 
-
-
 	//Orbita::Main("\\\\.\\PhysicalDrive0", "K:\\38702\\out");
 	//WFS::Main();
 
@@ -72,7 +70,7 @@ int main(int argc, char *argv[])
 	//time = (Timestamp)tst.TimeStamp();
 
 	//HIKV::StartRecovering("\\\\.\\PhysicalDrive0", "F:\\40038\\out\\", dvr::Timestamp(2016, 01, 01, 0, 0, 0), dvr::Timestamp());
-	WFS::StartRecovering("\\\\.\\PhysicalDrive0", "F:\\40274\\out\\", dvr::Timestamp(2016, 01, 01, 0, 0, 0), dvr::Timestamp());
+	//DHFS::StartRecovering("\\\\.\\PhysicalDrive0", "E:\\40623\\out\\", dvr::Timestamp(2016, 01, 01, 0, 0, 0), dvr::Timestamp());
 
 	//FileRecordRecoveryStart();
 
@@ -92,11 +90,11 @@ int main(int argc, char *argv[])
 	//}
 
 	//DHFS::StartRecovering("\\\\.\\PhysicalDrive4", "F:\\40052\\out\\", Timestamp(2016,05,01,0,0,0), Timestamp(0,0,0,0,0,0));
-	//DHFS::Volume volume("\\\\.\\PhysicalDrive4");
-	//if (volume.Open()) {
-	//	volume.SaveFrameInfo("F:\\40052\\frames.txt");
-	//	//volume.SaveFrameSequenceInfo("F:\\40052\\sequences.txt");
-	//}
+	DHFS::Volume volume("\\\\.\\PhysicalDrive0");
+	if (volume.Open()) {
+		volume.SaveFrameInfo("E:\\40623\\frames.txt");
+		//volume.SaveFrameSequenceInfo("F:\\40052\\sequences.txt");
+	}
 
 	w.show();
 	return a.exec();

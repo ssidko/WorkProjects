@@ -133,7 +133,7 @@ BOOL WFS::Scanner::NextFrameHeader(FrameInfo &info)
 	memset(buffer, 0x00, buffer_size);
 
 	io.Pointer(info.offset);
-	while ((rw = io.Read(buffer, buffer_size)) >= sign_size) {		
+	while ((rw = io.Read(buffer, buffer_size)) >= sign_size) {
 		for (DWORD i = 0; (i + sign_size) < rw; ++i) {
 			sign = (DWORD *)&buffer[i];
 			if ((*sign & WFS_FRAME_HEADER_SIGNATURE_MASK) == WFS_FRAME_HEADER_SIGNATURE) {

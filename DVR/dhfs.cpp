@@ -7,11 +7,13 @@ int DHFS::StartRecovering(const std::string &dhfs_volume, const std::string &out
 	Volume volume(dhfs_volume);
 	if (volume.Open()) {
 
-		//volume.SetPointer(1930000000000LL);
+		//volume.SetPointer(846552576LL*512);
 	
 		std::vector<BYTE> sequence;
 		FrameSequenceInfo sequence_info;
 		FileStorage storage(32, out_directory);
+
+		sequence.resize(1*1024*1024*1024 + 200*1024*1024);
 
 		while (volume.NextFrameSequence(sequence, sequence_info)) {
 

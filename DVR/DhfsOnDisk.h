@@ -50,6 +50,7 @@ namespace DHFS
 			case 0x00FC:
 				return 0x20;
 			case 0x00FD:
+			case 0x00F1:
 				return 0x28;
 			case 0x00F0:
 				return 0x24;
