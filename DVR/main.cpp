@@ -89,12 +89,12 @@ int main(int argc, char *argv[])
 	//	//volume.SaveFrameSequenceInfo("F:\\39988\\sequences.txt");
 	//}
 
-	//DHFS::StartRecovering("\\\\.\\PhysicalDrive4", "F:\\40052\\out\\", Timestamp(2016,05,01,0,0,0), Timestamp(0,0,0,0,0,0));
-	DHFS::Volume volume("\\\\.\\PhysicalDrive0");
-	if (volume.Open()) {
-		volume.SaveFrameInfo("E:\\40623\\frames.txt");
-		//volume.SaveFrameSequenceInfo("F:\\40052\\sequences.txt");
-	}
+	DHFS::StartRecovering("\\\\.\\PhysicalDrive0", "F:\\40623\\out\\", dvr::Timestamp(2016, 01, 01, 0, 0, 0), dvr::Timestamp());
+	//DHFS::Volume volume("\\\\.\\PhysicalDrive0");
+	//if (volume.Open()) {
+	//	volume.SaveFrameInfo("E:\\40623\\frames.txt");
+	//	//volume.SaveFrameSequenceInfo("F:\\40052\\sequences.txt");
+	//}
 
 	w.show();
 	return a.exec();

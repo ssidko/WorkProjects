@@ -65,6 +65,26 @@ namespace DHFS
 		DWORD frame_size;
 	} FRAME_FOOTER;
 
+
+	typedef struct _VOLUME_HEADER {
+		BYTE unknown_1[12];				// 0x00
+		DWORD unknown_2;				// 0X55
+		TIMESTAMP start_time;
+		TIMESTAMP end_time;
+		DWORD records_count;
+		BYTE unknown_3[16];				// 0x00
+		DWORD sector_size;				// Размер сектора в байтах. Обычно - 512 байт.
+		DWORD cluster_size;				// Размер кластера в секторах. Часто 4096 секторов = 2 Мб.
+		DWORD unknown_4;				// 0x00
+		DWORD unknown_5;				// 0x40
+		DWORD unknown_6;				// 0x7900
+		DWORD vol_header_offset;		// 0x22
+		DWORD record_table_offset;		// 0xbb
+		DWORD first_cluster_offset;		// Смещение первого блока, в секторах
+		DWORD clusters_count			// Кол-во кластеров. 
+
+	} VOLUME_HEADER;
+
 #pragma pack(pop)
 
 	typedef struct _FrameInfo {

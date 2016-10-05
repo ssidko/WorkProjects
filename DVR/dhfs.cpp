@@ -8,12 +8,13 @@ int DHFS::StartRecovering(const std::string &dhfs_volume, const std::string &out
 	if (volume.Open()) {
 
 		//volume.SetPointer(846552576LL*512);
-	
+		volume.SetPointer(1770000000000LL);
+
 		std::vector<BYTE> sequence;
 		FrameSequenceInfo sequence_info;
 		FileStorage storage(32, out_directory);
 
-		sequence.resize(1*1024*1024*1024 + 200*1024*1024);
+		sequence.resize(1*1024*1024*1024 + 100*1024*1024);
 
 		while (volume.NextFrameSequence(sequence, sequence_info)) {
 
@@ -31,7 +32,7 @@ int DHFS::StartRecovering(const std::string &dhfs_volume, const std::string &out
 				}
 			}
 
-			storage.SaveFrameSequence(sequence, sequence_info);
+			//storage.SaveFrameSequence(sequence, sequence_info);
 		}
 	}
 
