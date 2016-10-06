@@ -71,7 +71,11 @@ namespace DHFS
 		DWORD unknown_2;				// 0X55
 		TIMESTAMP start_time;
 		TIMESTAMP end_time;
-		DWORD records_count;
+
+		DWORD current_cluster;			// Судя по всему выделение кластеров происходит последовательно
+										// Скорее всего тут сохраняется текущий свободный кластер,  
+										// который будет выделен для записи новых данных.
+
 		BYTE unknown_3[16];				// 0x00
 		DWORD sector_size;				// Размер сектора в байтах. Обычно - 512 байт.
 		DWORD cluster_size;				// Размер кластера в секторах. Часто 4096 секторов = 2 Мб.
