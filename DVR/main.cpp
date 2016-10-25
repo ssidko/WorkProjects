@@ -33,19 +33,8 @@ inline void _trace(char *format, ...)
 
 #include <iostream>
 
-class A
-{
-	int x;
-	int y;
-	int z;
-public:
-	A() {}
-};
+#include "g2fdb_ondisk.h"
 
-A& test(A&& obj) {
-	//static A obj;
-	return obj;
-}
 
 int main(int argc, char *argv[])
 {
@@ -96,14 +85,29 @@ int main(int argc, char *argv[])
 	//	//volume.SaveFrameSequenceInfo("F:\\40052\\sequences.txt");
 	//}
 
-	DWORD t1, t2;
-	t1 = 0x419F7DB7;
-	t2 = 0x41F4B460;
+	DWORD raw = 0xba86d71c;
 
-	DHFS::TIMESTAMP *start, *end;
+	DHFS::TIMESTAMP *time;
+	time = (DHFS::TIMESTAMP *)&raw;
 
-	start = (DHFS::TIMESTAMP *)&t1;
-	end = (DHFS::TIMESTAMP *)&t2;
+	size_t year = time->year + 1970;
+
+
+	G2FDB::FrameHeader *hdr;
+	size_t size = sizeof(G2FDB::FrameHeader);
+
+	W32Lib::FileEx file("D:\\Work\\40673\\tst\\4");
+	if (file.Open()) {
+	
+		BYTE buffer[256];
+		if (0xa1 == file.Read(buffer, 0xa1)) {
+			
+			hdr = (G2FDB::FrameHeader *)buffer;
+
+		
+			int x = 0;
+		}
+	}
 
 	w.show();
 	return a.exec();

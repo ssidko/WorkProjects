@@ -97,6 +97,7 @@
     <ClCompile Include="FileRecordRecovery.cpp" />
     <ClCompile Include="FileStorage.cpp" />
     <ClCompile Include="DhfsOnDisk.cpp" />
+    <ClCompile Include="G2fdbVolume.cpp" />
     <ClCompile Include="GeneratedFiles\Debug\moc_mainwindow.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
@@ -159,6 +160,8 @@
     <ClInclude Include="FileRecordRecovery.h" />
     <ClInclude Include="FileStorage.h" />
     <ClInclude Include="DhfsOnDisk.h" />
+    <ClInclude Include="G2fdbVolume.h" />
+    <ClInclude Include="g2fdb_ondisk.h" />
     <ClInclude Include="GeneratedFiles\ui_mainwindow.h" />
     <ClInclude Include="Hikvision.h" />
     <ClInclude Include="Ntfs.h" />
