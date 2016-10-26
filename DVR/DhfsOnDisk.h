@@ -84,7 +84,7 @@ namespace DHFS
 		DWORD unknown_6;				// 0x7900
 		DWORD vol_header_offset;		// 0x22
 		DWORD record_table_offset;		// 0xbb
-		DWORD first_cluster_offset;		// Смещение первого блока, в секторах
+		DWORD first_cluster_offset;		// Смещение первого кластера, в секторах
 		DWORD clusters_count;			// Кол-во кластеров. 
 
 	} VOLUME_HEADER;

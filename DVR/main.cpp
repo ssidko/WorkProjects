@@ -35,6 +35,37 @@ inline void _trace(char *format, ...)
 
 #include "g2fdb_ondisk.h"
 
+class WinApiException : public std::exception
+{
+private:
+	DWORD error_code;
+	std::string error_description;
+public:
+	WinApiException()
+	{
+		error_code = ::GetLastError();
+		if (error_code) {
+			char *str = NULL;
+			if (::FormatMessageA(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM, NULL, error_code, 0, (LPSTR)&str, 0, NULL)) {
+				error_description = str;
+				::LocalFree(str);
+			} else {
+				error_description = "Format message failed.";
+			}
+		}
+	}
+
+	virtual const char * what() const noexcept override
+	{
+		return error_description.c_str();
+	}
+};
+
+int Test(void)
+{
+	throw WinApiException();
+	return 0;
+}
 
 int main(int argc, char *argv[])
 {
@@ -92,22 +123,14 @@ int main(int argc, char *argv[])
 
 	size_t year = time->year + 1970;
 
-
-	G2FDB::FrameHeader *hdr;
-	size_t size = sizeof(G2FDB::FrameHeader);
-
-	W32Lib::FileEx file("D:\\Work\\40673\\tst\\4");
-	if (file.Open()) {
 	
-		BYTE buffer[256];
-		if (0xa1 == file.Read(buffer, 0xa1)) {
-			
-			hdr = (G2FDB::FrameHeader *)buffer;
-
-		
-			int x = 0;
-		}
+	try {
+		Test();
 	}
+	catch (WinApiException &e) {
+		int x = 0;	
+	}
+
 
 	w.show();
 	return a.exec();

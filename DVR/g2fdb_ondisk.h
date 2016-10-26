@@ -34,13 +34,15 @@ namespace G2FDB
 		}
 	};
 
-#define FRAME_HEADER_SIZE	((DWORD)0xA1)
+#define FRAME_HEADER_SIZE					((DWORD)0xA1)
+#define FRAME_HEADER_SIGNATURE_1			((DWORD)0x00000002)
+#define FRAME_HEADER_SIGNATURE_2			((DWORD)0x03419F7D)
 
-	struct FrameHeader {
+	struct FRAME_HEADER {
 		DWORD signature;
 		TIMESTAMP time;						// 0x00000002
 		DWORD unk_1;
-		DWORD unk_2;						// 0x03419F7D may be signature
+		DWORD signature_2;					// 0x03419F7D may be signature
 		DWORD data_size;
 		DWORD unk_3;
 		WORD camera;
@@ -49,8 +51,8 @@ namespace G2FDB
 		WORD width;
 		WORD height;
 		WORD str_length;
-		BYTE string[92];
-		BYTE unk_5[33];
+		BYTE string[91];
+		BYTE unk_5[32];
 	};
 
 #pragma pack(pop)

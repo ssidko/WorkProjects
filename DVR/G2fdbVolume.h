@@ -13,6 +13,8 @@ namespace G2FDB
 	{
 	private:
 		BufferedFile io;
+
+		bool IsValidFrameHeader(const FRAME_HEADER &header);
 	public:
 		G2fdbVolume(const std::string &volume_file);
 		~G2fdbVolume();
