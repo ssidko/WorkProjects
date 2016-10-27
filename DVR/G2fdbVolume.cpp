@@ -1,4 +1,5 @@
 #include "G2fdbVolume.h"
+#include <cassert>
 
 using namespace G2FDB;
 
@@ -38,18 +39,34 @@ bool G2FDB::G2fdbVolume::IsValidFrameHeader(const FRAME_HEADER &header)
 		return false;
 	}
 
+	//
+	// Необходима проверка на максимальный размер фрейма.
+	//
+
+	//#define MAX_FRAME_DATA_SIZE 4096*1024
+	//if (header.data_size > MAX_FRAME_DATA_SIZE)) {
+	//	return false;
+	//}
+
 	return true;
 }
 
 bool G2FDB::G2fdbVolume::ReadFrame(std::vector<BYTE>& buffer)
 {
+	size_t origin_size = buffer.size();
 	FRAME_HEADER header = { 0 };
 
 	if (FRAME_HEADER_SIZE == io.Read(&header, sizeof(FRAME_HEADER))) {
 		if (IsValidFrameHeader(header)) {
 			
-		}
-	
+			assert(header.data_size <= 64 * 1024);
+
+			buffer.resize(buffer.size() + header.data_size);
+			if (header.data_size == io.Read(&buffer[origin_size], header.data_size)) {
+				
+				return true;
+			}
+		}	
 	}
 
 	return false;

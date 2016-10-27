@@ -13,6 +13,7 @@
 
 namespace G2FDB
 {
+
 #pragma pack(push)
 #pragma pack(1)
 
@@ -56,10 +57,6 @@ namespace G2FDB
 	};
 
 #pragma pack(pop)
-
-
-
-
 
 }
 

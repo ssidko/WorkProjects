@@ -2,7 +2,7 @@
 #define _G2FDB_VOLUME_H
 
 #include "windows.h"
-#include "g2fdb_ondisk.h"
+#include "G2fdbOnDisk.h"
 #include "BufferedFile.h"
 #include <vector>
 
@@ -20,6 +20,7 @@ namespace G2FDB
 		~G2fdbVolume();
 		bool Open(void);
 		bool SetPointer(LONGLONG &offset);
+		bool FindNextFrame();
 		bool ReadFrame(std::vector<BYTE> &buffer);
 	};
 

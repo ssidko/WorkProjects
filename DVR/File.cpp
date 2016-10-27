@@ -15,8 +15,9 @@ BOOL File::Open()
 						FILE_ATTRIBUTE_NORMAL/*|FILE_FLAG_NO_BUFFERING*/,
 						NULL);
 
-	if (hFile == INVALID_HANDLE_VALUE)
-		return FALSE;
+	if (hFile == INVALID_HANDLE_VALUE) {
+		return FALSE;	
+	}
 	else
 		return TRUE;
 }

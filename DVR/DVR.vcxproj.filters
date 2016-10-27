@@ -142,6 +142,9 @@
     <ClCompile Include="G2fdbVolume.cpp">
       <Filter>Core\G2FDb</Filter>
     </ClCompile>
+    <ClCompile Include="G2fdbRecovery.cpp">
+      <Filter>Core\G2FDb</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="mainwindow.ui">
@@ -230,10 +233,13 @@
     <ClInclude Include="Hikvision.h">
       <Filter>Core\Hikvision</Filter>
     </ClInclude>
-    <ClInclude Include="g2fdb_ondisk.h">
+    <ClInclude Include="G2fdbVolume.h">
       <Filter>Core\G2FDb</Filter>
     </ClInclude>
-    <ClInclude Include="G2fdbVolume.h">
+    <ClInclude Include="G2fdbOnDisk.h">
+      <Filter>Core\G2FDb</Filter>
+    </ClInclude>
+    <ClInclude Include="G2fdbRecovery.h">
       <Filter>Core\G2FDb</Filter>
     </ClInclude>
   </ItemGroup>

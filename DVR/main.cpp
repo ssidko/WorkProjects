@@ -33,7 +33,7 @@ inline void _trace(char *format, ...)
 
 #include <iostream>
 
-#include "g2fdb_ondisk.h"
+#include "G2fdbOnDisk.h"
 
 class WinApiException : public std::exception
 {
@@ -41,9 +41,8 @@ private:
 	DWORD error_code;
 	std::string error_description;
 public:
-	WinApiException()
+	WinApiException(DWORD os_error_code) : error_code(os_error_code)
 	{
-		error_code = ::GetLastError();
 		if (error_code) {
 			char *str = NULL;
 			if (::FormatMessageA(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM, NULL, error_code, 0, (LPSTR)&str, 0, NULL)) {
@@ -63,7 +62,11 @@ public:
 
 int Test(void)
 {
-	throw WinApiException();
+	W32Lib::FileEx file("wewe");
+	if (!file.Open()) {
+		throw WinApiException(::GetLastError());
+	}
+
 	return 0;
 }
 
@@ -122,15 +125,13 @@ int main(int argc, char *argv[])
 	time = (DHFS::TIMESTAMP *)&raw;
 
 	size_t year = time->year + 1970;
-
-	
+		
 	try {
 		Test();
 	}
 	catch (WinApiException &e) {
 		int x = 0;	
 	}
-
 
 	w.show();
 	return a.exec();
