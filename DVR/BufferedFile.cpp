@@ -142,3 +142,48 @@ LONGLONG BufferedFile::Find(BYTE *byte_string, DWORD length)
 	delete[] buff;
 	return ((LONGLONG)-1);
 }
+
+bool BufferedFile::Find(BYTE * byte_string, DWORD length, LONGLONG & offset)
+{
+	assert(byte_string);
+	assert(length);
+
+	DWORD rw = 0;
+	LONGLONG old_pointer = Pointer();
+	LONGLONG pointer = old_pointer;
+	BYTE *buff = new BYTE[DEFAULT_BUFFER_SIZE];
+	BYTE *substring = NULL;
+	if (buff && (length <= DEFAULT_BUFFER_SIZE)) {
+		while (rw = Read(buff, DEFAULT_BUFFER_SIZE)) {
+			if (rw >= length) {
+				for (int i = 0; (i + length) < rw; ++i) {
+					substring = &buff[i];
+					for (int j = 0; j < length; ++j) {
+						if (substring[j] != byte_string[j]) {
+							break;
+						}
+						if (j >= (length - 1)) {
+							pointer += i;
+							SetPointer(pointer);
+							delete[] buff;
+							offset = pointer;
+							return true;
+						}
+					}
+				}
+				pointer += (rw - length + 1);
+				SetPointer(pointer);
+			}
+		}
+		DWORD err = 0;
+		err = ::GetLastError();
+		if (err) {
+			int x = 0;
+		}
+	}
+
+	SetPointer(old_pointer);
+	delete[] buff;
+
+	return false;
+}

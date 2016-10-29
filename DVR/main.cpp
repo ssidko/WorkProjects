@@ -34,6 +34,7 @@ inline void _trace(char *format, ...)
 #include <iostream>
 
 #include "G2fdbOnDisk.h"
+#include "utility.h"
 
 class WinApiException : public std::exception
 {
@@ -41,7 +42,7 @@ private:
 	DWORD error_code;
 	std::string error_description;
 public:
-	WinApiException(DWORD os_error_code) : error_code(os_error_code)
+	WinApiException(DWORD os_error_code)
 	{
 		if (error_code) {
 			char *str = NULL;
@@ -49,7 +50,7 @@ public:
 				error_description = str;
 				::LocalFree(str);
 			} else {
-				error_description = "Format message failed.";
+				error_description = "Не удалось получить описание ошибки.";
 			}
 		}
 	}
@@ -68,6 +69,62 @@ int Test(void)
 	}
 
 	return 0;
+}
+
+void TestFind(void)
+{
+	QLabel label1;
+	QLabel label2;
+	QString label_string;
+
+	size_t counter = 0;
+	size_t position = 0;
+
+	DWORD start = ::GetTickCount();
+	DWORD end = 0;
+	DWORD time = 0;
+
+	W32Lib::FileEx file("D:\\Work\\40673\\1.bin");
+	if (file.Open()) {
+
+		std::vector<BYTE> buffer;
+		//std::vector<BYTE> signature = { 0x7D, 0x9F, 0x41, 0x03 };
+		std::vector<BYTE> signature = { 0x8F, 0xFA, 0xB1, 0xB6, 0x7D, 0x9F, 0x41, 0x03 };
+		buffer.resize((size_t)file.GetSize());
+
+		if (buffer.size() == file.Read(&buffer[0], buffer.size())) {
+
+			counter = 0;
+			position = 0;
+
+			start = ::GetTickCount();
+			while (FindByteStringBruteforce(buffer, position, signature, position)) {
+				counter++;
+				position++;
+			}
+			end = ::GetTickCount();
+
+			time = end - start;
+			label_string = QString::fromLatin1("FindByteStringBruteforce():\nSignatures: ") + QString::number(counter) + "\n" + QString::fromLatin1("Time: ") + QString::number(time);
+			label2.setText(label_string);
+			label2.show();
+
+			counter = 0;
+			position = 0;
+
+			start = ::GetTickCount();
+			while (FindByteString(buffer, position, signature, position)) {
+				counter++;
+				position++;
+			}
+			end = ::GetTickCount();
+
+			time = end - start;
+			label_string = QString::fromLatin1("FindByteString():\nSignatures: ") + QString::number(counter) + "\n" + QString::fromLatin1("Time: ") + QString::number(time);
+			label1.setText(label_string);
+			label1.show();
+		}
+	}
 }
 
 int main(int argc, char *argv[])
@@ -119,19 +176,7 @@ int main(int argc, char *argv[])
 	//	//volume.SaveFrameSequenceInfo("F:\\40052\\sequences.txt");
 	//}
 
-	DWORD raw = 0xba86d71c;
-
-	DHFS::TIMESTAMP *time;
-	time = (DHFS::TIMESTAMP *)&raw;
-
-	size_t year = time->year + 1970;
-		
-	try {
-		Test();
-	}
-	catch (WinApiException &e) {
-		int x = 0;	
-	}
+	TestFind();
 
 	w.show();
 	return a.exec();

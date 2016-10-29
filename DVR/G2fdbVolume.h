@@ -3,13 +3,36 @@
 
 #include "windows.h"
 #include "G2fdbOnDisk.h"
+#include "Timestamp.h"
 #include "BufferedFile.h"
 #include <vector>
 
 namespace G2FDB
 {
+	using namespace std;
+	using namespace dvr;
 
-	class G2fdbVolume
+	struct FrameInfo {
+		LONGLONG offset;
+		DWORD camera;
+		Timestamp time;
+		DWORD data_size;
+
+		void Clear(void);
+		DWORD FullSize(void);
+	};
+
+	struct FrameSequence {
+		LONGLONG offset;
+		DWORD camera;
+		Timestamp start_time;
+		Timestamp end_time;
+		vector<BYTE> data;
+
+		void Clear(void);
+	};
+
+	class G2fdbVolume 
 	{
 	private:
 		BufferedFile io;
@@ -20,10 +43,10 @@ namespace G2FDB
 		~G2fdbVolume();
 		bool Open(void);
 		bool SetPointer(LONGLONG &offset);
-		bool FindNextFrame();
-		bool ReadFrame(std::vector<BYTE> &buffer);
+		bool FindNextFrame(FrameInfo &frame_info);
+		bool ReadFrame(FrameInfo &frame_info, vector<BYTE> &data);
+		bool ReadFrameSequence(FrameSequence &sequence);
 	};
-
 }
 
 #endif // _G2FDB_VOLUME_H

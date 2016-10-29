@@ -26,6 +26,7 @@ public:
 	BOOL SetPointer(const LONGLONG &new_pointer);
 	DWORD Read(void *buff, DWORD count);
 	LONGLONG Find(BYTE *byte_string, DWORD length);
+	bool Find(BYTE *byte_string, DWORD length, LONGLONG &offset);
 };
 
 #endif /*_BUFFERED_FILE_H*/

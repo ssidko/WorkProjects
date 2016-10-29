@@ -34,7 +34,6 @@ BOOL File::Open(const char *file_name)
 						NULL);
 
 	if (hFile == INVALID_HANDLE_VALUE) {
-		err = ::GetLastError();
 		return FALSE;
 	}
 	else {

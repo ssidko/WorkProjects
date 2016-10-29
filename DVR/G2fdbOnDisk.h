@@ -40,10 +40,10 @@ namespace G2FDB
 #define FRAME_HEADER_SIGNATURE_2			((DWORD)0x03419F7D)
 
 	struct FRAME_HEADER {
-		DWORD signature;
-		TIMESTAMP time;						// 0x00000002
+		DWORD signature;					// FRAME_HEADER_SIGNATURE_1 (0x00000002)
+		TIMESTAMP time;						 
 		DWORD unk_1;
-		DWORD signature_2;					// 0x03419F7D may be signature
+		DWORD signature_2;					// FRAME_HEADER_SIGNATURE_2 may be signature
 		DWORD data_size;
 		DWORD unk_3;
 		WORD camera;
