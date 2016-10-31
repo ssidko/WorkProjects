@@ -10,16 +10,14 @@ int G2FDB::StartRecovery(const std::string & dvr_volume, const std::string & out
 		return -1;
 	}
 
-	FrameInfo frame_info;
+	Frame frame;
 	FrameSequence sequence;
+	LONGLONG offset = 0;
 
-	while (volume.FindNextFrame(frame_info)) {
-
-		if (volume.ReadFrameSequence(sequence)) {
+	if (volume.ReadFrameSequence(sequence)) {
 
 
-		}
-
+		sequence.Clear();
 	}
 
 	return -1;

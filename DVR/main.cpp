@@ -33,7 +33,7 @@ inline void _trace(char *format, ...)
 
 #include <iostream>
 
-#include "G2fdbOnDisk.h"
+#include "G2fdbVolume.h"
 #include "utility.h"
 
 class WinApiException : public std::exception
@@ -73,57 +73,40 @@ int Test(void)
 
 void TestFind(void)
 {
-	QLabel label1;
-	QLabel label2;
-	QString label_string;
+	using namespace G2FDB;
 
-	size_t counter = 0;
-	size_t position = 0;
+	G2fdbVolume volume("D:\\Work\\40673\\1.bin");
+	if (volume.Open()) {
+	
+		Frame frame_info;
+		LONGLONG frame_offset = 0;
+		std::vector<BYTE> frame_data;
+		size_t counter = 0;
 
-	DWORD start = ::GetTickCount();
-	DWORD end = 0;
-	DWORD time = 0;
+		while(volume.FindNextFrame(frame_offset)) {
+		
+			//while (volume.ReadFrame(frame_info, frame_data)) {
+			//
+			//
+			//	counter++;
+			//	frame_offset = frame_info.offset;
+			//
+			//}
 
-	W32Lib::FileEx file("D:\\Work\\40673\\1.bin");
-	if (file.Open()) {
-
-		std::vector<BYTE> buffer;
-		//std::vector<BYTE> signature = { 0x7D, 0x9F, 0x41, 0x03 };
-		std::vector<BYTE> signature = { 0x8F, 0xFA, 0xB1, 0xB6, 0x7D, 0x9F, 0x41, 0x03 };
-		buffer.resize((size_t)file.GetSize());
-
-		if (buffer.size() == file.Read(&buffer[0], buffer.size())) {
-
-			counter = 0;
-			position = 0;
-
-			start = ::GetTickCount();
-			while (FindByteStringBruteforce(buffer, position, signature, position)) {
-				counter++;
-				position++;
-			}
-			end = ::GetTickCount();
-
-			time = end - start;
-			label_string = QString::fromLatin1("FindByteStringBruteforce():\nSignatures: ") + QString::number(counter) + "\n" + QString::fromLatin1("Time: ") + QString::number(time);
-			label2.setText(label_string);
-			label2.show();
-
-			counter = 0;
-			position = 0;
-
-			start = ::GetTickCount();
-			while (FindByteString(buffer, position, signature, position)) {
-				counter++;
-				position++;
-			}
-			end = ::GetTickCount();
-
-			time = end - start;
-			label_string = QString::fromLatin1("FindByteString():\nSignatures: ") + QString::number(counter) + "\n" + QString::fromLatin1("Time: ") + QString::number(time);
-			label1.setText(label_string);
-			label1.show();
+			counter++;
+		
+			//if (counter == 208) {
+			//	int x = 0;
+			//}
+		
+		
+			frame_offset += 41;
+			volume.SetPointer(frame_offset);
 		}
+		
+		int x = 0;
+	
+	
 	}
 }
 

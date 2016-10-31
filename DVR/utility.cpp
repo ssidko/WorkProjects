@@ -66,17 +66,14 @@ bool FindByteString(const std::vector<BYTE>& buffer, size_t start_pos, const std
 	}
 
 	while ((pos + string.size()) <= buffer.size()) {
-
 		if (bytes.end() != bytes.find(buffer[pos + string.size() - 1])) {
-
 			for (int i = 0; i < string.size(); ++i) {
 				if (0x00 == std::memcmp(&buffer[pos], string.data(), string.size())) {
 					find_pos = pos;
 					return true;
 				}
 				pos++;
-			}
-	
+			}	
 		} else {
 			pos += string.size();
 		}
@@ -93,16 +90,7 @@ bool FindByteStringBruteforce(const std::vector<BYTE>& buffer, size_t start_pos,
 	size_t pos = start_pos;
 
 	while ((pos + string.size()) <= buffer.size()) {
-
-		//if (0x00 == std::memcmp(&buffer[pos], string.data(), string.size())) {
-		//	find_pos = pos;
-		//	return true;
-		//}
-		//pos++;
-
-
-		for (int i = 0; i < string.size(); i++) {
-		
+		for (int i = 0; i < string.size(); i++) {		
 			if (buffer[pos + i] != string[i]) {
 				break;
 			} else {
@@ -110,12 +98,9 @@ bool FindByteStringBruteforce(const std::vector<BYTE>& buffer, size_t start_pos,
 					find_pos = pos;
 					return true;
 				}
-			}
-		
+			}		
 		}
-
 		pos++;
-
 	}
 
 	return false;

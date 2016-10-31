@@ -3,17 +3,22 @@
 
 using namespace G2FDB;
 
-void G2FDB::FrameInfo::Clear(void)
+void G2FDB::Frame::Clear(void)
 {
 	offset = 0;
 	camera = 0;
 	time.Clear();
-	data_size = 0;
+	data.clear();
 }
 
-DWORD G2FDB::FrameInfo::FullSize(void)
+DWORD G2FDB::Frame::HeaderSize(void)
 {
-	return (data_size + FRAME_HEADER_SIZE);
+	return FRAME_HEADER_SIZE;
+}
+
+DWORD G2FDB::Frame::FullSize(void)
+{
+	return (data.size() + FRAME_HEADER_SIZE);
 }
 
 G2FDB::G2fdbVolume::G2fdbVolume(const std::string &volume_file) : io(volume_file, 256*512)
@@ -57,50 +62,71 @@ bool G2FDB::G2fdbVolume::IsValidFrameHeader(const FRAME_HEADER &header)
 	return true;
 }
 
-bool G2FDB::G2fdbVolume::FindNextFrame(FrameInfo &frame_info)
+bool G2FDB::G2fdbVolume::FindNextFrame(LONGLONG &offset)
 {
-	LONGLONG offset = 0;
-	DWORD signature = FRAME_HEADER_SIGNATURE_2;
-	BYTE *str = (BYTE *)&signature;
+	LONGLONG offs = 0;
+	FRAME_HEADER header = { 0 };
+	BYTE signature[] = { 0x43, 0x41, 0x4D }; // 'CAM'
 
-	if (io.Find(str, sizeof(signature))) {
-	
-
-
+	while (io.Find(signature, sizeof(signature), offs)) {
+		
+		io.SetPointer(offs - 38);
+		if (FRAME_HEADER_SIZE == io.Read(&header, sizeof(FRAME_HEADER))) {
+			if (IsValidFrameHeader(header)) {
+				offset = (offs - 38);
+				return io.SetPointer(offset);			
+			}		
+		}
 	}
 
 	return false;
 }
 
-bool G2FDB::G2fdbVolume::ReadFrame(FrameInfo &frame_info, vector<BYTE> &data)
+bool G2FDB::G2fdbVolume::ReadFrame(Frame &frame)
 {
-	size_t origin_size = data.size();
-	FRAME_HEADER header = { 0 };
+	FRAME_HEADER *header = nullptr;
+	LONGLONG offset = io.Pointer();
 
-	frame_info.offset = io.Pointer();
-	if (FRAME_HEADER_SIZE == io.Read(&header, sizeof(FRAME_HEADER))) {
-		if (IsValidFrameHeader(header)) {
+	frame.data.resize(FRAME_HEADER_SIZE);
+
+	if (FRAME_HEADER_SIZE == io.Read(&frame.data[0], sizeof(FRAME_HEADER))) {
+		header = (FRAME_HEADER *)&frame.data[0];
+		if (IsValidFrameHeader(*header)) {
 			
-			data.resize(data.size() + header.data_size);
-			if (header.data_size == io.Read(&data[origin_size], header.data_size)) {
+			frame.data.resize(FRAME_HEADER_SIZE + header->data_size);
+			if (header->data_size == io.Read(&frame.data[FRAME_HEADER_SIZE], header->data_size)) {
 				
-				frame_info.camera = header.camera;
-				header.time.Timestamp(frame_info.time);
-				frame_info.data_size = header.data_size;
+				frame.offset = offset;
+				frame.camera = header->camera + 1;
+				header->time.Timestamp(frame.time);
 
 				return true;
 			}
 		}	
 	}
 
-	io.SetPointer(frame_info.offset);
-	data.resize(origin_size);
-	frame_info.Clear();
+	io.SetPointer(offset);
+	frame.Clear();
 
 	return false;
 }
 
 bool G2FDB::G2fdbVolume::ReadFrameSequence(FrameSequence &sequence)
 {
+	LONGLONG sequence_offset = 0;
+	Frame frame;
+	frame.Clear();
+
+	while(FindNextFrame(sequence_offset)) {	
+	
+		while(ReadFrame(frame)) {
+		
+		
+		
+		}
+	
+	}
+
+
 	return false;
 }

@@ -12,13 +12,14 @@ namespace G2FDB
 	using namespace std;
 	using namespace dvr;
 
-	struct FrameInfo {
+	struct Frame {
 		LONGLONG offset;
 		DWORD camera;
 		Timestamp time;
-		DWORD data_size;
+		std::vector<BYTE> data;
 
 		void Clear(void);
+		DWORD HeaderSize(void);
 		DWORD FullSize(void);
 	};
 
@@ -43,8 +44,8 @@ namespace G2FDB
 		~G2fdbVolume();
 		bool Open(void);
 		bool SetPointer(LONGLONG &offset);
-		bool FindNextFrame(FrameInfo &frame_info);
-		bool ReadFrame(FrameInfo &frame_info, vector<BYTE> &data);
+		bool FindNextFrame(LONGLONG &offset);
+		bool ReadFrame(Frame &frame);
 		bool ReadFrameSequence(FrameSequence &sequence);
 	};
 }
