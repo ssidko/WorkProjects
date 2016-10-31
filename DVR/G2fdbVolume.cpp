@@ -21,6 +21,15 @@ DWORD G2FDB::Frame::FullSize(void)
 	return (data.size() + FRAME_HEADER_SIZE);
 }
 
+void G2FDB::FrameSequence::Clear(void)
+{
+	offset = 0;
+	camera = 0;
+	start_time.Clear();
+	end_time.Clear();
+	data.clear();
+}
+
 G2FDB::G2fdbVolume::G2fdbVolume(const std::string &volume_file) : io(volume_file, 256*512)
 {
 }
@@ -115,7 +124,6 @@ bool G2FDB::G2fdbVolume::ReadFrameSequence(FrameSequence &sequence)
 {
 	LONGLONG sequence_offset = 0;
 	Frame frame;
-	frame.Clear();
 
 	while(FindNextFrame(sequence_offset)) {	
 	
