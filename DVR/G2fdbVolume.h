@@ -23,14 +23,20 @@ namespace G2FDB
 		DWORD FullSize(void);
 	};
 
+#define MAX_FRAME_SEQUANCE_SIZE					((DWORD) 512*1024*1024)
+
 	struct FrameSequence {
 		LONGLONG offset;
 		DWORD camera;
+		DWORD frames_count;
 		Timestamp start_time;
 		Timestamp end_time;
 		vector<BYTE> data;
 
 		void Clear(void);
+		void AddData(std::vector<BYTE> &new_data);
+		void AddFirstFrame(Frame &first_frame);
+		void AddFrame(Frame &frame);
 	};
 
 	class G2fdbVolume 
@@ -44,7 +50,16 @@ namespace G2FDB
 		~G2fdbVolume();
 		bool Open(void);
 		bool SetPointer(LONGLONG &offset);
-		bool FindNextFrame(LONGLONG &offset);
+		size_t SignatureOffset(void);
+		
+		// С текущей позиции ищет следующий фрейм.
+		//
+		// В случае успеха считывает его и сохраняет в обьекте frame.
+		// Файловый указатель устанавливается сразу же за фреймом.
+		//
+		// Если найти фрейм не удалось - файловый указатель не определен.
+		bool FindNextFrame(Frame &frame);
+		
 		bool ReadFrame(Frame &frame);
 		bool ReadFrameSequence(FrameSequence &sequence);
 	};

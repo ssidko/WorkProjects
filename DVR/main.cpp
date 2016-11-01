@@ -78,12 +78,12 @@ void TestFind(void)
 	G2fdbVolume volume("D:\\Work\\40673\\1.bin");
 	if (volume.Open()) {
 	
-		Frame frame_info;
+		Frame frame;
 		LONGLONG frame_offset = 0;
 		std::vector<BYTE> frame_data;
 		size_t counter = 0;
 
-		while(volume.FindNextFrame(frame_offset)) {
+		while(volume.FindNextFrame(frame)) {
 		
 			//while (volume.ReadFrame(frame_info, frame_data)) {
 			//
@@ -100,7 +100,7 @@ void TestFind(void)
 			//}
 		
 		
-			frame_offset += 41;
+			frame_offset += 39;
 			volume.SetPointer(frame_offset);
 		}
 		
