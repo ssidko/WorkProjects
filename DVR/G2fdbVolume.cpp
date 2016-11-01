@@ -31,11 +31,11 @@ void G2FDB::FrameSequence::Clear(void)
 	data.clear();
 }
 
-void G2FDB::FrameSequence::AddData(std::vector<BYTE> &new_data)
+void G2FDB::FrameSequence::AddData(BYTE *frame_data, size_t size)
 {
 	size_t origin_size = data.size();
-	data.resize(origin_size + new_data.size());
-	std::memcpy(&data[origin_size], &new_data[0], new_data.size());
+	data.resize(origin_size + size);
+	std::memcpy(&data[origin_size], frame_data, size);
 }
 
 void G2FDB::FrameSequence::AddFirstFrame(Frame & first_frame)
@@ -46,14 +46,14 @@ void G2FDB::FrameSequence::AddFirstFrame(Frame & first_frame)
 	start_time = first_frame.time;
 	end_time = first_frame.time;
 	data.clear();
-	AddData(first_frame.data);
+	AddData(&first_frame.data[FRAME_HEADER_SIZE], first_frame.data.size() - FRAME_HEADER_SIZE);
 }
 
 void G2FDB::FrameSequence::AddFrame(Frame &frame)
 {
 	frames_count++;
 	end_time = frame.time;
-	AddData(frame.data);
+	AddData(&frame.data[FRAME_HEADER_SIZE], frame.data.size() - FRAME_HEADER_SIZE);
 }
 
 G2FDB::G2fdbVolume::G2fdbVolume(const std::string &volume_file) : io(volume_file, 256*512)
@@ -69,7 +69,7 @@ bool G2FDB::G2fdbVolume::Open(void)
 	return io.Open();
 }
 
-bool G2FDB::G2fdbVolume::SetPointer(LONGLONG &offset)
+bool G2FDB::G2fdbVolume::SetPointer(const LONGLONG &offset)
 {
 	return io.SetPointer(offset);
 }
@@ -102,7 +102,7 @@ bool G2FDB::G2fdbVolume::IsValidFrameHeader(const FRAME_HEADER &header)
 	return true;
 }
 
-bool G2FDB::G2fdbVolume::FindNextFrame(Frame &frame)
+bool G2FDB::G2fdbVolume::FindAndReadFrame(Frame &frame)
 {
 	LONGLONG offset = 0;
 	FRAME_HEADER header = { 0 };
@@ -117,13 +117,6 @@ bool G2FDB::G2fdbVolume::FindNextFrame(Frame &frame)
 		} else {
 			io.SetPointer(offset + SignatureOffset() + 1);
 		}
-
-		//if (FRAME_HEADER_SIZE == io.Read(&header, sizeof(FRAME_HEADER))) {
-		//	if (IsValidFrameHeader(header)) {
-		//		offset = (offs - 38);
-		//		return io.SetPointer(offset);			
-		//	}		
-		//}
 	}
 
 	return false;
@@ -146,7 +139,6 @@ bool G2FDB::G2fdbVolume::ReadFrame(Frame &frame)
 				frame.offset = offset;
 				frame.camera = header->camera + 1;
 				header->time.Timestamp(frame.time);
-
 				return true;
 			}
 		}
@@ -154,38 +146,33 @@ bool G2FDB::G2fdbVolume::ReadFrame(Frame &frame)
 
 	io.SetPointer(offset);
 	frame.Clear();
-
 	return false;
 }
 
 bool G2FDB::G2fdbVolume::ReadFrameSequence(FrameSequence &sequence)
 {
-	LONGLONG sequence_offset = 0;
+	LONGLONG last_frame_offset = 0;
 	Frame frame;
 
-	while(FindNextFrame(frame)) {		
-		sequence.AddFirstFrame(frame);	
+	if (FindAndReadFrame(frame)) {
+
+		sequence.AddFirstFrame(frame);
+		last_frame_offset = frame.offset;
+
 		while(ReadFrame(frame)) {
-
-			if ((frame.camera == sequence.camera) && ((sequence.data.size() + frame.data.size()) > MAX_FRAME_SEQUANCE_SIZE)) {
-				
-
+			last_frame_offset = frame.offset;
+			if ((frame.camera == sequence.camera) && ((sequence.data.size() + frame.data.size()) <= MAX_FRAME_SEQUANCE_SIZE)) {
 				sequence.AddFrame(frame);
-			}
-		
-		
-		
+			} else {
+				SetPointer(frame.offset);
+				return true;
+			}		
 		}
 
-		if (sequence.frames_count > 1) {
-			return true;
-		} else {
-			sequence.Clear();
-		}
-	
+		SetPointer(last_frame_offset + SignatureOffset() + 1);
+		return true;	
 	}
 
 	sequence.Clear();
-
 	return false;
 }
