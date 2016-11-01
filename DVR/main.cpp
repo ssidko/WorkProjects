@@ -83,22 +83,9 @@ void TestFind(void)
 		std::vector<BYTE> frame_data;
 		size_t counter = 0;
 
-		while(volume.FindNextFrame(frame)) {
+		while(volume.FindAndReadFrame(frame)) {
 		
-			//while (volume.ReadFrame(frame_info, frame_data)) {
-			//
-			//
-			//	counter++;
-			//	frame_offset = frame_info.offset;
-			//
-			//}
-
-			counter++;
-		
-			//if (counter == 208) {
-			//	int x = 0;
-			//}
-		
+			counter++;	
 		
 			frame_offset += 39;
 			volume.SetPointer(frame_offset);

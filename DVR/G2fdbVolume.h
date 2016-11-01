@@ -34,7 +34,7 @@ namespace G2FDB
 		vector<BYTE> data;
 
 		void Clear(void);
-		void AddData(std::vector<BYTE> &new_data);
+		void AddData(BYTE *frame_data, size_t size);
 		void AddFirstFrame(Frame &first_frame);
 		void AddFrame(Frame &frame);
 	};
@@ -49,16 +49,16 @@ namespace G2FDB
 		G2fdbVolume(const std::string &volume_file);
 		~G2fdbVolume();
 		bool Open(void);
-		bool SetPointer(LONGLONG &offset);
+		bool SetPointer(const LONGLONG &offset);
 		size_t SignatureOffset(void);
 		
-		// С текущей позиции ищет следующий фрейм.
+		// С текущей позиции ищет фрейм.
 		//
 		// В случае успеха считывает его и сохраняет в обьекте frame.
 		// Файловый указатель устанавливается сразу же за фреймом.
 		//
 		// Если найти фрейм не удалось - файловый указатель не определен.
-		bool FindNextFrame(Frame &frame);
+		bool FindAndReadFrame(Frame &frame);
 		
 		bool ReadFrame(Frame &frame);
 		bool ReadFrameSequence(FrameSequence &sequence);
