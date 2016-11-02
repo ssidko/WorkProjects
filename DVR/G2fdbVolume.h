@@ -45,12 +45,12 @@ namespace G2FDB
 		BufferedFile io;
 
 		bool IsValidFrameHeader(const FRAME_HEADER &header);
+		size_t SignatureOffset(void);
 	public:
 		G2fdbVolume(const std::string &volume_file);
 		~G2fdbVolume();
 		bool Open(void);
 		bool SetPointer(const LONGLONG &offset);
-		size_t SignatureOffset(void);
 		
 		// С текущей позиции ищет фрейм.
 		//
@@ -61,7 +61,7 @@ namespace G2FDB
 		bool FindAndReadFrame(Frame &frame);
 		
 		bool ReadFrame(Frame &frame);
-		bool ReadFrameSequence(FrameSequence &sequence);
+		bool ReadFrameSequence(FrameSequence &sequence, size_t max_delta_time = 1);
 	};
 }
 

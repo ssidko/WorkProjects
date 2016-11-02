@@ -125,20 +125,23 @@ bool G2FDB::G2fdbVolume::FindAndReadFrame(Frame &frame)
 bool G2FDB::G2fdbVolume::ReadFrame(Frame &frame)
 {
 	FRAME_HEADER *header = nullptr;
+	size_t data_size = 0;
 	LONGLONG offset = io.Pointer();
 
 	frame.data.resize(FRAME_HEADER_SIZE);
 
 	if (FRAME_HEADER_SIZE == io.Read(&frame.data[0], sizeof(FRAME_HEADER))) {
 		header = (FRAME_HEADER *)&frame.data[0];
-		if (IsValidFrameHeader(*header)) {
-			
-			frame.data.resize(FRAME_HEADER_SIZE + header->data_size);
-			if (header->data_size == io.Read(&frame.data[FRAME_HEADER_SIZE], header->data_size)) {
-				
-				frame.offset = offset;
-				frame.camera = header->camera + 1;
-				header->time.Timestamp(frame.time);
+		if (IsValidFrameHeader(*header)) {	
+
+			frame.offset = offset;
+			frame.camera = header->camera + 1;
+			header->time.Timestamp(frame.time);
+
+			data_size = header->data_size;
+			frame.data.resize(FRAME_HEADER_SIZE + data_size);
+
+			if (data_size == io.Read(&frame.data[FRAME_HEADER_SIZE], data_size)) {
 				return true;
 			}
 		}
@@ -149,7 +152,7 @@ bool G2FDB::G2fdbVolume::ReadFrame(Frame &frame)
 	return false;
 }
 
-bool G2FDB::G2fdbVolume::ReadFrameSequence(FrameSequence &sequence)
+bool G2FDB::G2fdbVolume::ReadFrameSequence(FrameSequence &sequence, size_t max_delta_time)
 {
 	LONGLONG last_frame_offset = 0;
 	Frame frame;
@@ -161,7 +164,11 @@ bool G2FDB::G2fdbVolume::ReadFrameSequence(FrameSequence &sequence)
 
 		while(ReadFrame(frame)) {
 			last_frame_offset = frame.offset;
-			if ((frame.camera == sequence.camera) && ((sequence.data.size() + frame.data.size()) <= MAX_FRAME_SEQUANCE_SIZE)) {
+			if ((frame.camera == sequence.camera) &&
+				((sequence.data.size() + frame.data.size()) <= MAX_FRAME_SEQUANCE_SIZE) &&
+				(frame.time.Seconds() >= sequence.end_time.Seconds()) && 
+				((frame.time.Seconds() - sequence.end_time.Seconds()) <= max_delta_time)
+				) {
 				sequence.AddFrame(frame);
 			} else {
 				SetPointer(frame.offset);

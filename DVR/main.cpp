@@ -35,6 +35,7 @@ inline void _trace(char *format, ...)
 
 #include "G2fdbVolume.h"
 #include "utility.h"
+#include "G2fdbRecovery.h"
 
 class WinApiException : public std::exception
 {
@@ -71,31 +72,7 @@ int Test(void)
 	return 0;
 }
 
-void TestFind(void)
-{
-	using namespace G2FDB;
 
-	G2fdbVolume volume("D:\\Work\\40673\\1.bin");
-	if (volume.Open()) {
-	
-		Frame frame;
-		LONGLONG frame_offset = 0;
-		std::vector<BYTE> frame_data;
-		size_t counter = 0;
-
-		while(volume.FindAndReadFrame(frame)) {
-		
-			counter++;	
-		
-			frame_offset += 39;
-			volume.SetPointer(frame_offset);
-		}
-		
-		int x = 0;
-	
-	
-	}
-}
 
 int main(int argc, char *argv[])
 {
@@ -146,7 +123,8 @@ int main(int argc, char *argv[])
 	//	//volume.SaveFrameSequenceInfo("F:\\40052\\sequences.txt");
 	//}
 
-	TestFind();
+	//G2FDB::StartRecovery("\\\\.\\PhysicalDrive1", "F:\\40673\\out\\", dvr::Timestamp(2016, 01, 01, 0, 0, 0), dvr::Timestamp());
+	G2FDB::StartRecovery("D:\\Work\\40673\\1.bin", "F:\\40673\\out\\", dvr::Timestamp(2016, 01, 01, 0, 0, 0), dvr::Timestamp());
 
 	w.show();
 	return a.exec();

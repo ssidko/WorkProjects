@@ -10,11 +10,12 @@ int G2FDB::StartRecovery(const std::string & dvr_volume, const std::string & out
 		return -1;
 	}
 
-	Frame frame;
 	FrameSequence sequence;
 	LONGLONG offset = 0;
 
-	if (volume.ReadFrameSequence(sequence)) {
+	sequence.data.reserve(MAX_FRAME_SEQUANCE_SIZE);
+
+	while (volume.ReadFrameSequence(sequence, 60)) {
 
 
 		sequence.Clear();
