@@ -124,7 +124,8 @@ int main(int argc, char *argv[])
 	//}
 
 	//G2FDB::StartRecovery("\\\\.\\PhysicalDrive1", "F:\\40673\\out\\", dvr::Timestamp(2016, 01, 01, 0, 0, 0), dvr::Timestamp());
-	G2FDB::StartRecovery("D:\\Work\\40673\\1.bin", "F:\\40673\\out\\", dvr::Timestamp(2016, 01, 01, 0, 0, 0), dvr::Timestamp());
+
+	G2FDB::StartRecovery("D:\\Work\\40673\\1.bin", "F:\\40673\\result     ", dvr::Timestamp(2016, 01, 01, 0, 0, 0), dvr::Timestamp());
 
 	w.show();
 	return a.exec();
