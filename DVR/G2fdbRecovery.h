@@ -20,12 +20,12 @@ namespace G2FDB
 	{
 	private:
 		std::string base_directory;
-		bool IsDirectoryExist(const std::string &directory);
+		bool CreateDirectory(const std::string &directory);
 	public:
 		VideoStorage() {}
 		~VideoStorage() {}
 		bool Open(const std::string &storage_directory);
-		bool SaveFrameSequence(FrameSequence &sequennce);
+		bool SaveFrameSequence(FrameSequence &sequence);
 	};
 
 	int StartRecovery(const std::string &dvr_volume, const std::string &out_directory, const dvr::Timestamp &start_time, const dvr::Timestamp &end_time);

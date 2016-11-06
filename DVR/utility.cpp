@@ -43,7 +43,6 @@ void Convert2Avi(const std::string &raw_file_name, const std::string &avi_file_n
 	std::string cmd_line = "ffmpeg -f h264 -i ";
 	cmd_line += raw_file_name;
 	
-	//
 	// -an - without audio 
 	//cmd_line += " -an -vcodec copy ";
 	
