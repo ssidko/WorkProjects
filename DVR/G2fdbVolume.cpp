@@ -97,7 +97,9 @@ bool G2FDB::G2fdbVolume::IsValidFrameHeader(const FRAME_HEADER &header)
 		return false;
 	}
 
-	assert(header.data_size <= 64 * 1024);
+	if (header.data_size > 128 * 1024) {	
+		return false;
+	}
 
 	return true;
 }

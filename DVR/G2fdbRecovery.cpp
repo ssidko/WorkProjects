@@ -16,6 +16,8 @@ int G2FDB::StartRecovery(const std::string & dvr_volume, const std::string & out
 		sequence.Clear();
 		sequence.data.reserve(MAX_FRAME_SEQUANCE_SIZE);
 
+		//volume.SetPointer(500449675890LL);
+
 		while (volume.ReadFrameSequence(sequence, max_delta_time)) {
 
 			storage.SaveFrameSequence(sequence);
@@ -79,7 +81,7 @@ bool G2FDB::VideoStorage::SaveFrameSequence(FrameSequence & sequence)
 	sprintf_s(date, sizeof(date), "%04d-%02d-%02d", sequence.start_time.year, sequence.start_time.month, sequence.start_time.day);
 
 	std::string date_dir = base_directory + date + "\\";
-	std::string cam_dir = date_dir + std::to_string(sequence.camera) + "\\";
+	std::string cam_dir = date_dir + "CAM-" + std::to_string(sequence.camera) + "\\";
 	std::string temp_file_name = cam_dir + "dvr.tmp";
 
 	if (CreateDirectory(date_dir) && CreateDirectory(cam_dir)) {

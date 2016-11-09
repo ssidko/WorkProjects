@@ -8,7 +8,7 @@ int DHFS::StartRecovering(const std::string &dhfs_volume, const std::string &out
 	if (volume.Open()) {
 
 		//volume.SetPointer(846552576LL*512);
-		volume.SetPointer(1770000000000LL);
+		volume.SetPointer(294400*512LL);
 
 		std::vector<BYTE> sequence;
 		FrameSequenceInfo sequence_info;
@@ -32,7 +32,7 @@ int DHFS::StartRecovering(const std::string &dhfs_volume, const std::string &out
 				}
 			}
 
-			//storage.SaveFrameSequence(sequence, sequence_info);
+			storage.SaveFrameSequence(sequence, sequence_info);
 		}
 	}
 
