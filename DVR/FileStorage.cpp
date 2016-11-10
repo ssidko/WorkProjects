@@ -4,10 +4,9 @@
 #include "FileStorage.h"
 #include <cmath>
 
-//
+
 //
 // class VideoFile
-//
 //
 
 DHFS::VideoFile::VideoFile(std::string full_path) : 
@@ -58,10 +57,9 @@ bool DHFS::VideoFile::Rename(const std::string &new_name)
 	return false;
 }
 
-//
+
 //
 // class FileStorage
-//
 //
 
 DHFS::FileStorage::FileStorage(int cam_count, const std::string &out_directory_path) : out_directory(out_directory_path)
@@ -93,9 +91,7 @@ bool DHFS::FileStorage::SaveFrameSequence(std::vector<BYTE>& sequence_buffer, Fr
 
 	for (VideoFile *vfile : files) {
 
-		if (!vfile) {
-			throw std::exception();
-		}
+		assert(vfile);
 
 		if (sequence_info.start_frame.timestamp.Seconds() >= vfile->EndTime().Seconds()) {
 			delta_time = sequence_info.start_frame.timestamp.Seconds() - vfile->EndTime().Seconds();

@@ -145,6 +145,9 @@
     <ClCompile Include="G2fdbRecovery.cpp">
       <Filter>Core\G2FDb</Filter>
     </ClCompile>
+    <ClCompile Include="DhfsVolume.cpp">
+      <Filter>Core\DHFS</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="mainwindow.ui">
@@ -241,6 +244,9 @@
     </ClInclude>
     <ClInclude Include="G2fdbRecovery.h">
       <Filter>Core\G2FDb</Filter>
+    </ClInclude>
+    <ClInclude Include="DhfsVolume.h">
+      <Filter>Core\DHFS</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -81,7 +81,6 @@ bool DHFS::Volume::Open()
 	return io.Open();
 }
 
-
 void DHFS::Volume::SetPointer(const LONGLONG &pointer )
 {
 	io.SetPointer(pointer);

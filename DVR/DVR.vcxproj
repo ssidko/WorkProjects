@@ -91,6 +91,7 @@
   <ItemGroup>
     <ClCompile Include="BufferedFile.cpp" />
     <ClCompile Include="dhfs.cpp" />
+    <ClCompile Include="DhfsVolume.cpp" />
     <ClCompile Include="dvr1.cpp" />
     <ClCompile Include="ExtentRecovery.cpp" />
     <ClCompile Include="File.cpp" />
@@ -155,6 +156,7 @@
   <ItemGroup>
     <ClInclude Include="BufferedFile.h" />
     <ClInclude Include="dhfs.h" />
+    <ClInclude Include="DhfsVolume.h" />
     <ClInclude Include="dvr1.h" />
     <ClInclude Include="ExtentRecovery.h" />
     <ClInclude Include="File.h" />
