@@ -41,7 +41,7 @@ ULONGLONG dvr::Timestamp::Seconds( void ) const
 const char * dvr::Timestamp::String( void )
 {
 	memset(str, 0x00, sizeof(str));
-	sprintf_s(str, sizeof(str), "%04d-%02d-%02d--%02d-%02d-%02d",year,month,day,hours,minutes,seconds);
+	sprintf_s(str, sizeof(str), "%04u-%02u-%02u--%02u-%02u-%02u",year,month,day,hours,minutes,seconds);
 	return str;
 }
 

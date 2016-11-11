@@ -142,7 +142,7 @@ bool dvr1::InitializeIndexList(const std::string &index_file_name, std::vector<I
 void dvr1::FileName(IndexRecord &record, std::string &file_name)
 {
 	char buff[64] = { 0 };
-	sprintf_s(buff, sizeof(buff), "fly%05d.ifv", record.file_id);
+	sprintf_s(buff, sizeof(buff), "fly%05u.ifv", record.file_id);
 	file_name = buff;
 }
 

@@ -109,12 +109,12 @@ int main(int argc, char *argv[])
 
 	//DHFS::StartRecovering("\\\\.\\PhysicalDrive0", "e:\\40175\\out\\", dvr::Timestamp(2015, 1, 1, 0, 0, 0), dvr::Timestamp(0, 0, 0, 0, 0, 0));
 
-	//DHFS::StartRecovering("\\\\.\\PhysicalDrive1", "F:\\40773\\out\\", dvr::Timestamp(2015, 5, 1, 0, 0, 0), dvr::Timestamp(2016, 8, 14, 0, 0, 0));
-	DHFS::Volume volume("\\\\.\\PhysicalDrive1");
-	if (volume.Open()) {
-		volume.SaveFrameInfo("F:\\40773\\frames.txt");
-		//volume.SaveFrameSequenceInfo("F:\\39988\\sequences.txt");
-	}
+	DHFS::StartRecovering("\\\\.\\PhysicalDrive1", "F:\\40773\\out\\", dvr::Timestamp(2015, 5, 1, 0, 0, 0), dvr::Timestamp(0, 0, 0, 0, 0, 0));
+	//DHFS::Volume volume("\\\\.\\PhysicalDrive1");
+	//if (volume.Open()) {
+	//	volume.SaveFrameInfo("F:\\40773\\frames.txt");
+	//	//volume.SaveFrameSequenceInfo("F:\\39988\\sequences.txt");
+	//}
 
 	//DHFS::StartRecovering("\\\\.\\PhysicalDrive0", "F:\\40623\\out\\", dvr::Timestamp(2016, 01, 01, 0, 0, 0), dvr::Timestamp());
 	//DHFS::Volume volume("\\\\.\\PhysicalDrive0");

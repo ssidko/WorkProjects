@@ -19,6 +19,7 @@ namespace DHFS
 	public:
 		DhfsVolume(const std::string &volume_file);
 		~DhfsVolume();
+		bool Open(void);
 	};
 
 }

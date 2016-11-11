@@ -78,7 +78,7 @@ bool G2FDB::VideoStorage::SaveFrameSequence(FrameSequence & sequence)
 {
 	// 2016-05-28
 	char date[16] = {0};
-	sprintf_s(date, sizeof(date), "%04d-%02d-%02d", sequence.start_time.year, sequence.start_time.month, sequence.start_time.day);
+	sprintf_s(date, sizeof(date), "%04u-%02u-%02u", sequence.start_time.year, sequence.start_time.month, sequence.start_time.day);
 
 	std::string date_dir = base_directory + date + "\\";
 	std::string cam_dir = date_dir + "CAM-" + std::to_string(sequence.camera) + "\\";
