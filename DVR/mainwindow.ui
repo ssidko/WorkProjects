@@ -2,6 +2,9 @@
 <ui version="4.0">
  <class>MainWindowClass</class>
  <widget class="QMainWindow" name="MainWindowClass">
+  <property name="enabled">
+   <bool>true</bool>
+  </property>
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -112,9 +115,12 @@
       </property>
       <layout class="QVBoxLayout" name="verticalLayout">
        <item>
-        <layout class="QHBoxLayout" name="horizontalLayout">
+        <layout class="QHBoxLayout" name="horizontalLayout_2">
          <item>
-          <widget class="QRadioButton" name="radioButton">
+          <widget class="QRadioButton" name="Drives_radioButton">
+           <property name="enabled">
+            <bool>true</bool>
+           </property>
            <property name="minimumSize">
             <size>
              <width>50</width>
@@ -128,7 +134,7 @@
             </size>
            </property>
            <property name="text">
-            <string>Файл</string>
+            <string>Drive</string>
            </property>
            <property name="checked">
             <bool>true</bool>
@@ -136,7 +142,58 @@
           </widget>
          </item>
          <item>
+          <widget class="QComboBox" name="Drives_comboBox">
+           <property name="enabled">
+            <bool>true</bool>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>20</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>16777215</width>
+             <height>20</height>
+            </size>
+           </property>
+           <property name="editable">
+            <bool>false</bool>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout">
+         <item>
+          <widget class="QRadioButton" name="File_radioButton">
+           <property name="minimumSize">
+            <size>
+             <width>50</width>
+             <height>0</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>50</width>
+             <height>16777215</height>
+            </size>
+           </property>
+           <property name="text">
+            <string>File</string>
+           </property>
+           <property name="checked">
+            <bool>false</bool>
+           </property>
+          </widget>
+         </item>
+         <item>
           <widget class="QLineEdit" name="InputFile_lineEdit">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
            <property name="minimumSize">
             <size>
              <width>0</width>
@@ -152,7 +209,10 @@
           </widget>
          </item>
          <item>
-          <widget class="QPushButton" name="SelectFile_pushButton">
+          <widget class="QPushButton" name="SelectInputFile_pushButton">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
            <property name="minimumSize">
             <size>
              <width>0</width>
@@ -172,51 +232,6 @@
          </item>
         </layout>
        </item>
-       <item>
-        <layout class="QHBoxLayout" name="horizontalLayout_2">
-         <item>
-          <widget class="QRadioButton" name="radioButton_2">
-           <property name="enabled">
-            <bool>false</bool>
-           </property>
-           <property name="minimumSize">
-            <size>
-             <width>50</width>
-             <height>0</height>
-            </size>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>50</width>
-             <height>16777215</height>
-            </size>
-           </property>
-           <property name="text">
-            <string>Диск</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QComboBox" name="comboBox">
-           <property name="enabled">
-            <bool>false</bool>
-           </property>
-           <property name="minimumSize">
-            <size>
-             <width>0</width>
-             <height>20</height>
-            </size>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>16777215</width>
-             <height>20</height>
-            </size>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </item>
       </layout>
      </widget>
     </item>
@@ -224,6 +239,9 @@
      <layout class="QHBoxLayout" name="horizontalLayout_9">
       <item>
        <widget class="QGroupBox" name="StartTimestamp_groupBox">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <property name="minimumSize">
          <size>
           <width>0</width>
@@ -277,6 +295,9 @@
       </item>
       <item>
        <widget class="QGroupBox" name="EndTimestamp_groupBox">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <property name="minimumSize">
          <size>
           <width>0</width>
@@ -339,6 +360,9 @@
     </item>
     <item>
      <widget class="QGroupBox" name="groupBox_2">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
       <property name="minimumSize">
        <size>
         <width>0</width>
@@ -352,7 +376,7 @@
        </size>
       </property>
       <property name="title">
-       <string>Конвертор</string>
+       <string>Convertion cmd line</string>
       </property>
       <property name="checkable">
        <bool>true</bool>
@@ -425,7 +449,7 @@
        </size>
       </property>
       <property name="title">
-       <string>Сохранить в каталог</string>
+       <string>Save to</string>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_3">
        <item>
@@ -448,6 +472,9 @@
          </item>
          <item>
           <widget class="QPushButton" name="SelectOutFolder_pushButton">
+           <property name="enabled">
+            <bool>true</bool>
+           </property>
            <property name="minimumSize">
             <size>
              <width>0</width>
@@ -514,5 +541,54 @@
  <resources>
   <include location="mainwindow.qrc"/>
  </resources>
- <connections/>
+ <connections>
+  <connection>
+   <sender>File_radioButton</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>InputFile_lineEdit</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>69</x>
+     <y>85</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>97</x>
+     <y>85</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>File_radioButton</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>SelectInputFile_pushButton</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>56</x>
+     <y>73</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>325</x>
+     <y>81</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>Drives_radioButton</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>Drives_comboBox</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>41</x>
+     <y>106</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>93</x>
+     <y>109</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>

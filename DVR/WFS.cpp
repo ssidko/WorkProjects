@@ -102,7 +102,7 @@ int WFS::Main(void)
 	return 0;
 }
 
-int WFS::StartRecovering(const std::string &volume_name, const std::string &out_directory, const Timestamp &start_time, const Timestamp &end_time)
+int WFS::StartRecovery(const std::string &volume_name, const std::string &out_directory, const Timestamp &start_time, const Timestamp &end_time)
 {
 	std::string mkv_file_name;
 	std::string raw_file_name = out_directory + "out.dvr";

@@ -7,7 +7,7 @@
 
 namespace DHFS
 {
-	int StartRecovering(const std::string &dhfs_volume, const std::string &out_directory, const Timestamp &start_time, const Timestamp &end_time);
+	int StartRecovering(const std::string &dhfs_volume, const std::string &out_directory, const Timestamp &start_time = Timestamp(), const Timestamp &end_time = Timestamp());
 }
 
 #endif // _DHFS_H

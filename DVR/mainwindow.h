@@ -17,7 +17,13 @@ public:
 
 	void Initialize(void);
 	void InitializeDvrTypeComboBox(void);
+	void UpdateDrivesComboBox(void);
 
+
+public slots:
+	void OnStart(void);
+	QString OnSelectOutDirectory(void);
+	QString OnSelectInputFile(void);
 
 };
 

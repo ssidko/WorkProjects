@@ -199,7 +199,7 @@ bool HIKV::HikVolume::SaveFramesInfoToFile(std::string &file_name)
 	return true;
 }
 
-int HIKV::StartRecovering(const std::string &dhfs_volume, const std::string &out_directory, const dvr::Timestamp &start_time, const dvr::Timestamp &end_time)
+int HIKV::StartRecovery(const std::string &dhfs_volume, const std::string &out_directory, const dvr::Timestamp &start_time, const dvr::Timestamp &end_time)
 {
 	DWORD error;
 	DWORD rw = 0;
@@ -210,11 +210,13 @@ int HIKV::StartRecovering(const std::string &dhfs_volume, const std::string &out
 		LONGLONG file_counter = 0;
 		FrameInfo frame;
 		FrameSequence sequence;
-		std::string file_name = out_directory + "temp.h264";
+		std::string file_name = out_directory + "temp";
 
 		//vol.SetPointer(353168518*512LL);
 
 		while ((offset = vol.FindNextFrame()) != -1) {
+
+			file_name = out_directory + std::to_string(offset) + ".tmp";
 
 			if (!vol.SaveFrameSequenceToFile(file_name, sequence)) {
 
@@ -223,22 +225,25 @@ int HIKV::StartRecovering(const std::string &dhfs_volume, const std::string &out
 			} else if (sequence.end_time.Seconds() - sequence.start_time.Seconds()) {
 				
 				std::stringstream new_name;
-				new_name << out_directory << sequence.start_time.String() << "-=-" << sequence.end_time.String() << "--[" << sequence.offset << "]" << ".avi";
-				//new_name << out_directory << "[" << file_counter++ << "]--" << sequence.start_time.String() << "-=-" << sequence.end_time.String() << ".h264";
+				new_name << out_directory << sequence.start_time.String() << "-=-" << sequence.end_time.String() << "--[" << sequence.offset << "]" << ".h264";
 
-				::Convert2Avi(file_name, new_name.str());
+				W32Lib::FileEx out_file(file_name.c_str());
+				if (out_file.Open()) {					
+					out_file.Close();
+					bool result = out_file.Rename(new_name.str().c_str());
+					if (!result) {
+						error = ::GetLastError();
+					}	
+				}
 
-				//W32Lib::FileEx out_file(file_name.c_str());
-				//if (out_file.Open()) {					
-				//	out_file.Close();
-				//	bool result = out_file.Rename(new_name.str().c_str());
-				//	if (!result) {
-				//		error = ::GetLastError();
-				//	}	
+				//::Convert2Avi(file_name, new_name.str());
+				//::ConvertToMkv(file_name, new_name.str());
 
-				//	int x = 0;
-				//}
-			
+			} else {
+				bool result = ::DeleteFileA(file_name.data());
+				if (!result) {
+					error = ::GetLastError();
+				}
 			}
 		}
 	}

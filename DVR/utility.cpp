@@ -1,6 +1,7 @@
 #include "utility.h"
 #include <set>
 #include <cassert>
+#include "File.h"
 
 
 WORD BeToLe(WORD word)
@@ -25,12 +26,14 @@ DWORD BeToLe(DWORD dword)
 	return res;
 }
 
-void ConvertToMkv(std::string &raw_file_name, std::string &mkv_file_name)
+void ConvertToMkv(const std::string &raw_file_name, const std::string &mkv_file_name)
 {
-	std::string convertor_app("D:\\Soft\\#RecoverySoft#\\mkvtoolnix\\mkvmerge.exe ");
+	//std::string convertor_app("D:\\Soft\\#RecoverySoft#\\mkvtoolnix\\mkvmerge.exe ");
+	//std::string convertor_app = ".\\bin\\mkvmerge.exe ";
 
 	std::string cmd_line;
-	cmd_line += "mkvmerge -o ";
+//	cmd_line += "mkvmerge -o ";
+	cmd_line += ".\\bin\\mkvmerge.exe -o ";
 	cmd_line += mkv_file_name;
 	cmd_line += " ";
 	cmd_line += raw_file_name;
@@ -40,7 +43,11 @@ void ConvertToMkv(std::string &raw_file_name, std::string &mkv_file_name)
 
 void Convert2Avi(const std::string &raw_file_name, const std::string &avi_file_name)
 {
-	std::string cmd_line = "ffmpeg -f h264 -i ";
+	//std::string cmd_line = "ffmpeg -f h264 -i ";
+	//D:\GitHub\WorkProjects\DVR\ffm\bin\ffmpeg.exe
+
+	std::string cmd_line;
+	cmd_line += ".\\bin\\ffmpeg.exe -f h264 -i ";
 	cmd_line += raw_file_name;
 	
 	// -an - without audio 
@@ -102,5 +109,36 @@ bool FindByteStringBruteforce(const std::vector<BYTE>& buffer, size_t start_pos,
 		pos++;
 	}
 
+	return false;
+}
+
+void EnumeratePhysicalDrives(std::function<void(const std::string &)> call_back)
+{
+	std::string prefix = "\\\\.\\PhysicalDrive";
+	for (size_t i = 0; i < 32; i++) {	
+		std::string drive_name = prefix + std::to_string(i);
+		W32Lib::FileEx drive(drive_name.c_str());
+		if (drive.Open()) {
+			call_back(drive_name);
+		}	
+	}
+}
+
+bool CurrentDirectory(std::string &current_directory)
+{
+	current_directory = "";
+	std::vector<char> buff;
+
+	DWORD size = ::GetCurrentDirectoryA(0, nullptr);
+	if (size) {
+		buff.resize(size + 1, 0x00);
+		if (size = ::GetCurrentDirectoryA(buff.size(), &buff[0])) {
+			current_directory = buff.data();
+			return true;
+		}
+	} else {
+		DWORD error = ::GetLastError();
+		int x = 0;
+	}
 	return false;
 }

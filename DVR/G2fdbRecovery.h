@@ -28,7 +28,7 @@ namespace G2FDB
 		bool SaveFrameSequence(FrameSequence &sequence);
 	};
 
-	int StartRecovery(const std::string &dvr_volume, const std::string &out_directory, const dvr::Timestamp &start_time, const dvr::Timestamp &end_time);
+	int StartRecovery(const std::string &dvr_volume, const std::string &out_directory, const dvr::Timestamp &start_time = dvr::Timestamp(), const dvr::Timestamp &end_time = dvr::Timestamp());
 }
 
 #endif // _G2FDB_RECOVERY_H

@@ -8,9 +8,8 @@
 namespace WFS
 {
 	int Main(void);
-	int StartRecovering(const std::string &volume_name, const std::string &out_directory, const Timestamp &start_time, const Timestamp &end_time);
+	int StartRecovery(const std::string &volume_name, const std::string &out_directory, const Timestamp &start_time = dvr::Timestamp(), const Timestamp &end_time = dvr::Timestamp());
 	std::string SequenceInfoString(FrameSequence &sequence);
-	bool CreateNextVideoFile(void);
 }
 
 #endif // _WFS_H

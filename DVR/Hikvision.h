@@ -81,8 +81,7 @@ namespace HIKV
 		bool SaveFramesInfoToFile(std::string &file_name);
 	};
 
-	int StartRecovering(const std::string &dhfs_volume, const std::string &out_directory, const dvr::Timestamp &start_time, const dvr::Timestamp &end_time);
-	bool RenameFile();
+	int StartRecovery(const std::string &dhfs_volume, const std::string &out_directory, const dvr::Timestamp &start_time = dvr::Timestamp(), const dvr::Timestamp &end_time = dvr::Timestamp());
 }
 
 

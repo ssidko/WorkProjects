@@ -1,4 +1,5 @@
 #include "file.h"
+#include <cassert>
 
 using namespace W32Lib;
 ////////////////////////////////////////////////////////////
@@ -87,8 +88,9 @@ DWORD File::Read(void *buffer, DWORD count)
 	DWORD rw = 0;
 	if (ReadFile(hFile, buffer, count, &rw, NULL))
 		return rw;
-	else
+	else {
 		return 0;
+	}
 }
 
 DWORD File::Write(void *buffer, DWORD count)
