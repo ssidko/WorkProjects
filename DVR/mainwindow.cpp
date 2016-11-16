@@ -14,6 +14,8 @@
 #define DHFS_ID_STRING					"DHFS"
 #define G2FDB_ID_STRING					"G2FDb"
 
+#define MAIN_WINDOW_TITLE				"DVR"
+
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 {
 	ui.setupUi(this);
@@ -26,7 +28,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::Initialize(void)
 {
-	this->setWindowTitle("DVR");
+	this->setWindowTitle(MAIN_WINDOW_TITLE);
 	InitializeDvrTypeComboBox();
 	UpdateDrivesComboBox();
 
@@ -75,6 +77,12 @@ void MainWindow::OnStart(void)
 	}
 
 	if (!dvr_type.isEmpty() && !io_name.isEmpty() && !out_directory.isEmpty()) {
+
+		QString title = MAIN_WINDOW_TITLE;
+		title +=" -- In progress";
+
+		this->setWindowTitle(title);
+
 		if (dvr_type == DHFS_ID_STRING) {
 			DHFS::StartRecovering(io_name.toStdString(), out_directory.toStdString());
 		} else if (dvr_type == G2FDB_ID_STRING) {
@@ -84,6 +92,11 @@ void MainWindow::OnStart(void)
 		} else if (dvr_type == WFS_04_ID_STRING) {
 			WFS::StartRecovery(io_name.toStdString(), out_directory.toStdString());
 		}
+
+		title = MAIN_WINDOW_TITLE;
+		title += " -- Finished";
+
+		this->setWindowTitle(title);
 	}
 
 	return;
