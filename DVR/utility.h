@@ -19,5 +19,7 @@ void EnumeratePhysicalDrives(std::function<void(const std::string &)> call_back)
 
 bool CurrentDirectory(std::string &current_directory);
 
+LONGLONG GetPhysicalDriveSize(const std::string &name);
+
 #endif // _UTILITY_H
 

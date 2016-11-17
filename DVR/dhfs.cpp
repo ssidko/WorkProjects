@@ -9,8 +9,6 @@ int DHFS::StartRecovering(const std::string &dhfs_volume, const std::string &out
 
 		//volume.SetPointer(3883960495LL * 512);
 
-		//volume.SetPointer(1998810148988LL);
-
 		std::vector<BYTE> sequence;
 		FrameSequenceInfo sequence_info;
 		FileStorage storage(32, out_directory);

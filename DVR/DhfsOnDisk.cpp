@@ -72,7 +72,7 @@ bool DHFS::_FrameSequenceInfo::AppendFrame(FrameInfo & frame)
 	return false;
 }
 
-DHFS::Volume::Volume(const std::string &volume_file_name) : io(volume_file_name, 4096*1024)
+DHFS::Volume::Volume(const std::string &volume_file_name) : io(volume_file_name, 128*1024)
 {
 }
 

@@ -142,3 +142,26 @@ bool CurrentDirectory(std::string &current_directory)
 	}
 	return false;
 }
+
+LONGLONG GetPhysicalDriveSize(const std::string & name)
+{
+	bool result = false;
+	DWORD rw;
+	DISK_GEOMETRY_EX geometry = {0};
+
+	W32Lib::FileEx drive(name.data());
+	if (drive.Open()) {
+
+		result = DeviceIoControl(drive.Handle(),
+								IOCTL_DISK_GET_DRIVE_GEOMETRY_EX,
+								NULL, 0,
+								&geometry, sizeof(DISK_GEOMETRY_EX),
+								&rw, NULL);
+
+		if (result) {
+			return geometry.DiskSize.QuadPart;
+		}
+	}
+
+	return -1;
+}

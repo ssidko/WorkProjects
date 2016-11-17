@@ -183,7 +183,19 @@ void DHFS::FileStorage::CloseFile(VideoFile *vfile)
 		file_name << "-=-" << std::to_string(vfile->FirstFrameOffset());
 		file_name << "--" << std::to_string(vfile->LastFrameOffset()) << ".avi";
 
-		Convert2Avi(vfile->Name(), file_name.str());
+		//Convert2Avi(vfile->Name(), file_name.str());
+		ConvertToMkv(vfile->Name(), file_name.str());
+
+		// Only rename
+		//DWORD error = 0;
+		//W32Lib::FileEx out_file(vfile->Name().c_str());
+		//if (out_file.Open()) {
+		//	out_file.Close();
+		//	bool result = out_file.Rename(file_name.str().str().c_str());
+		//	if (!result) {
+		//		error = ::GetLastError();
+		//	}
+		//}
 
 		::DeleteFileA(old_name.data());
 

@@ -86,9 +86,12 @@ void File::Close(void)
 DWORD File::Read(void *buffer, DWORD count)
 {
 	DWORD rw = 0;
+	LONGLONG pointer = 0;
+	bool result = GetPointer(&pointer);
 	if (ReadFile(hFile, buffer, count, &rw, NULL))
 		return rw;
 	else {
+		DWORD err = ::GetLastError();
 		return 0;
 	}
 }

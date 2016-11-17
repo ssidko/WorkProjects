@@ -66,6 +66,8 @@ namespace W32Lib
 			using File::Create;
 			using File::SetPointer;
 
+			HANDLE Handle(void) { return hFile; }
+
 			BOOL Open(DWORD dwDesiredAccess, DWORD dwShareMode);
 			BOOL Open(const char *file_name, DWORD dwDesiredAccess, DWORD dwShareMode);
 
