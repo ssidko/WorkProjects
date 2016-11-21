@@ -89,6 +89,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="bitstream_reader.cpp" />
     <ClCompile Include="BufferedFile.cpp" />
     <ClCompile Include="dhfs.cpp" />
     <ClCompile Include="DhfsVolume.cpp" />
@@ -154,6 +155,7 @@
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="bitstream_reader.h" />
     <ClInclude Include="BufferedFile.h" />
     <ClInclude Include="dhfs.h" />
     <ClInclude Include="DhfsVolume.h" />

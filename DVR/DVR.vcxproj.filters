@@ -148,6 +148,9 @@
     <ClCompile Include="DhfsVolume.cpp">
       <Filter>Core\DHFS</Filter>
     </ClCompile>
+    <ClCompile Include="bitstream_reader.cpp">
+      <Filter>Utility</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="mainwindow.ui">
@@ -247,6 +250,9 @@
     </ClInclude>
     <ClInclude Include="DhfsVolume.h">
       <Filter>Core\DHFS</Filter>
+    </ClInclude>
+    <ClInclude Include="bitstream_reader.h">
+      <Filter>Utility</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
