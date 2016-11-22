@@ -9,8 +9,8 @@
 
 namespace DHFS
 {
-#define FRAME_HEADER_MAGIC			((DWORD)0x56414844)
-#define FRAME_FOOTER_MAGIC			((DWORD)0x76616864)
+#define FRAME_HEADER_MAGIC			((DWORD)0x56414844)		// 'DHAV'
+#define FRAME_FOOTER_MAGIC			((DWORD)0x76616864)		// 'dhav'
 
 #define FRAME_MAX_SIZE				((DWORD)32*1024*1024)
 
@@ -37,7 +37,7 @@ namespace DHFS
 	} TIMESTAMP;
 
 	typedef struct _FRAME_HEADER {
-		DWORD magic;		// FRAME_HEADER_MAGIC
+		DWORD magic;				// FRAME_HEADER_MAGIC
 		WORD flags;
 		WORD camera;
 		DWORD sync_counter;
@@ -64,7 +64,6 @@ namespace DHFS
 		DWORD magic;					// FRAME_FOOTER_MAGIC
 		DWORD frame_size;
 	} FRAME_FOOTER;
-
 
 	typedef struct _VOLUME_HEADER {
 		BYTE unknown_1[12];				// 0x00
