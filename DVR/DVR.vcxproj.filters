@@ -64,6 +64,9 @@
     <Filter Include="Core\G2FDb">
       <UniqueIdentifier>{89a64fc4-037d-40cd-abb5-51aa9a8b8045}</UniqueIdentifier>
     </Filter>
+    <Filter Include="h264">
+      <UniqueIdentifier>{e006dca7-9c78-44a2-b29b-6da3fb6bbcc5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GeneratedFiles\Debug\moc_mainwindow.cpp">
@@ -150,6 +153,9 @@
     </ClCompile>
     <ClCompile Include="bitstream_reader.cpp">
       <Filter>Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="h264_ps.cpp">
+      <Filter>h264</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -253,6 +259,9 @@
     </ClInclude>
     <ClInclude Include="bitstream_reader.h">
       <Filter>Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="h264_ps.h">
+      <Filter>h264</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

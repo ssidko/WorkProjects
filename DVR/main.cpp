@@ -63,11 +63,37 @@ public:
 };
 
 #include <iostream>
+#include "bitstream_reader.h"
+#include "h264_ps.h"
+
+void h264_test(void)
+{
+	SPS sps = { 0 };
+	uint8_t buff[] = { /*0x00, 0x00, 0x00, 0x01,*/ 0x67, 0x42, 0x00, 0x1E, 0x95, 0xA8, 0x2C, 0x04, 0x99 };
+	bitstream_reader bs(buff, sizeof(buff));
+
+	size_t bits_count = bs.bits_available();
+	size_t size_sps = sizeof(sps);
+
+	int forbidden_zero_bit = bs.f(1);
+	int nal_ref_idc = bs.u(2);	
+	int nal_unit_type = bs.u(5);
+
+	if (nal_unit_type == 7) {
+		ReadSPS(bs, sps);
+	}
+
+	int x = 0;
+
+	return;
+}
 
 int main(int argc, char *argv[])
 {
 	QApplication a(argc, argv);
 	MainWindow w;
+
+	h264_test();
 
 	w.show();
 	return a.exec();
