@@ -12,6 +12,9 @@
 namespace DHFS
 {
 
+	class Frame;
+	class FrameSequence;
+
 	class DhfsVolume
 	{
 	private:
@@ -20,6 +23,8 @@ namespace DHFS
 		DhfsVolume(const std::string &volume_file);
 		~DhfsVolume();
 		bool Open(void);
+		bool ReadFrame(Frame &frame);
+		bool ReadFrameSequence(FrameSequence sequence);
 	};
 
 }

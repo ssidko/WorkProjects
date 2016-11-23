@@ -11,10 +11,6 @@ DHFS::DhfsVolume::~DhfsVolume()
 bool DHFS::DhfsVolume::Open(void)
 {
 	if (io.Open()) {
-
-
-
-
 	}
 
 	return false;
