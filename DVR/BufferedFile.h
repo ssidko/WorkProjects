@@ -14,11 +14,12 @@ private:
 	std::vector<BYTE> buffer;
 	W32Lib::FileEx io;
 	LONGLONG io_pointer;
+	LONGLONG io_size;
 	DWORD offset;
 	DWORD readed;
-	BOOL SyncBuffer(void);
+	bool UpdateBuffer(void);
 public:
-	BufferedFile(const std::string &file_name, DWORD buffer_size = 0);
+	BufferedFile(const std::string &file_name, size_t buffer_size = 0, LONGLONG size = 0);
 	~BufferedFile(void);
 	BOOL Open(void);
 	LONGLONG Pointer(void);

@@ -2,6 +2,7 @@
 #include <QtWidgets/QApplication>
 #include <QDir>
 
+#include <iostream>
 #include <vector>
 #include "File.h"
 #include "BufferedFile.h"
@@ -30,9 +31,6 @@ inline void _trace(char *format, ...)
 #include "Hikvision.h"
 #include "dhfs.h"
 #include "WFS.h"
-
-#include <iostream>
-
 #include "G2fdbVolume.h"
 #include "utility.h"
 #include "G2fdbRecovery.h"
@@ -62,14 +60,13 @@ public:
 	}
 };
 
-#include <iostream>
 #include "bitstream_reader.h"
 #include "h264_ps.h"
 
 void h264_test(void)
 {
 	SPS sps = { 0 };
-	uint8_t buff[] = { /*0x00, 0x00, 0x00, 0x01,*/ 0x67, 0x64, 0x00, 0x28, 0xAC, 0xE8, 0x0E, 0x81, 0x26, 0xC0, 0x44};
+	uint8_t buff[] = { 0x67, 0x64, 0x00, 0x28, 0xAC, 0xE8, 0x0E, 0x81, 0x26, 0xC0, 0x44};
 	bitstream_reader bs(buff, sizeof(buff));
 
 	size_t bits_count = bs.bits_available();
@@ -93,7 +90,37 @@ int main(int argc, char *argv[])
 	QApplication a(argc, argv);
 	MainWindow w;
 
-	h264_test();
+	
+	size_t counter = 0;
+	LONGLONG offset = 0;
+	uint8_t sign[] = { 0x44, 0x48, 0x41, 0x56 };
+	BufferedFile io("\\\\.\\PhysicalDrive0", 128*512, 7020264960LL);
+	if (io.Open()) {
+		
+		while (io.Find(sign, sizeof(sign), offset)) {
+			io.SetPointer(offset + 1);
+			counter++;		
+		}	
+		int x = 0;	
+	}
+
+
+	//counter = 0;
+	//offset = 0;
+	//W32Lib::FileEx file("F:\\40774\\find-test.bin");
+	//if (file.Open()) {
+	//	counter = 0;
+	//	offset = 0;
+
+	//	while ( -1 != (offset = file.Find(sign, sizeof(sign))) ) {
+	//		file.SetPointer(offset + 1);
+	//		counter++;		
+	//	}	
+	//}
+
+	int x = 0;
+
+
 
 	w.show();
 	return a.exec();
