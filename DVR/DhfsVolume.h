@@ -15,9 +15,10 @@ namespace DHFS
 	struct Frame {
 		LONGLONG offset;
 		std::vector<BYTE> data;
-		void Clear(void);
-	};
 
+		void Clear(void);
+		FRAME_HEADER * Header(void);
+	};
 
 	class FrameSequence;
 
@@ -32,8 +33,8 @@ namespace DHFS
 		bool Open(void);
 		bool SetPointer(LONGLONG offset);
 		LONGLONG Poiner(void);
-		bool FindNextFrame(LONGLONG &offset);
 		bool ReadFrame(Frame &frame);
+		bool FindAndReadFrame(Frame &frame);
 		bool ReadFrameSequence(FrameSequence sequence);
 	};
 

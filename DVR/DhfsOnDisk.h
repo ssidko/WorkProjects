@@ -38,7 +38,7 @@ namespace DHFS
 
 	typedef struct _FRAME_HEADER {
 		DWORD magic;				// FRAME_HEADER_MAGIC
-		WORD flags;
+		WORD frame_type;
 		WORD camera;
 		DWORD sync_counter;
 		DWORD frame_size;			// Frame size
@@ -46,7 +46,7 @@ namespace DHFS
 		BYTE unk1[8];
 		DWORD unk2;
 		DWORD HeaderSize(void) {
-			switch (flags) {
+			switch (frame_type) {
 			case 0x00FC:
 				return 0x20;
 			case 0x00FD:

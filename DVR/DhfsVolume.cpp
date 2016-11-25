@@ -8,6 +8,10 @@ void DHFS::Frame::Clear(void)
 	data.clear();
 }
 
+DHFS::FRAME_HEADER * DHFS::Frame::Header(void)
+{
+	return (FRAME_HEADER *)data.data();
+}
 
 DHFS::DhfsVolume::DhfsVolume(const std::string &volume_file) : io(volume_file, 256*512)
 {
@@ -45,7 +49,6 @@ bool DHFS::DhfsVolume::ReadFrame(Frame & frame)
 	FRAME_HEADER *header = nullptr;
 	FRAME_FOOTER *footer = nullptr;
 
-	frame.Clear();
 	frame.data.resize(sizeof(FRAME_HEADER));
 	header = (FRAME_HEADER *)frame.data.data();
 	if (io.Read(&frame.data[0], sizeof(FRAME_HEADER)) == sizeof(FRAME_HEADER)) {
@@ -67,5 +70,27 @@ bool DHFS::DhfsVolume::ReadFrame(Frame & frame)
 
 	frame.Clear();
 	io.SetPointer(curr_offset);
+	return false;
+}
+
+/*
+* »щет валидный фрейм и считывает его.
+* ”казатель устанавливаетс€ на позицию сразу же за фреймом,
+* так что-бы последующим чтением можно было считать следущий за ним фрейм (если он там есть :))
+*/
+bool DHFS::DhfsVolume::FindAndReadFrame(Frame & frame)
+{
+	BYTE signature[] = { 'D', 'H', 'A', 'V' };
+	LONGLONG offset = 0;
+
+	while (io.Find(signature, sizeof(signature), offset)) {
+		if (ReadFrame(frame)) {
+			return true;
+		}
+		else {
+			io.SetPointer(offset + 1);
+		}
+	}
+
 	return false;
 }

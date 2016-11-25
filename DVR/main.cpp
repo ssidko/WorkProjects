@@ -105,6 +105,9 @@ int main(int argc, char *argv[])
 			counter++;
 			seq_size += frame.data.size();
 			offset = frame.offset;
+
+			frame.Header()->sync_counter;
+
 		}
 		int x = 0;
 	}

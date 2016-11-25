@@ -124,7 +124,7 @@ bool DHFS::Volume::ReadFrame(std::vector<BYTE> &buffer, FrameInfo &info)
 		if (IsValidHeader(header)) {
 			
 			info.camera = header.camera;
-			info.flag = header.flags;
+			info.flag = header.frame_type;
 			info.offset = frame_offset;
 			info.counter = header.sync_counter;
 			info.frame_size = header.frame_size;
