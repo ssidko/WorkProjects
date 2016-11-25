@@ -1,5 +1,14 @@
 #include "DhfsVolume.h"
 
+#define DHFS_FRAME_MAX_SIZE			(DWORD)2*1024*1024
+
+void DHFS::Frame::Clear(void)
+{
+	offset = 0;
+	data.clear();
+}
+
+
 DHFS::DhfsVolume::DhfsVolume(const std::string &volume_file) : io(volume_file, 256*512)
 {
 }
@@ -19,19 +28,44 @@ bool DHFS::DhfsVolume::Open(void)
 	return false;
 }
 
+bool DHFS::DhfsVolume::SetPointer(LONGLONG offset)
+{	
+	return io.SetPointer(offset);
+}
+
+LONGLONG DHFS::DhfsVolume::Poiner(void)
+{
+	return io.Pointer();
+}
+
 bool DHFS::DhfsVolume::ReadFrame(Frame & frame)
 {
 	LONGLONG curr_offset = io.Pointer();
 
 	FRAME_HEADER *header = nullptr;
 	FRAME_FOOTER *footer = nullptr;
-	frame.data.resize(sizeof(FRAME_HEADER));
-	if (io.Read(&frame.data[0], sizeof(FRAME_HEADER)) == sizeof(FRAME_HEADER)) {
-		header = (FRAME_HEADER *)frame.data.data();
 
-		header->frame_size;
-	
+	frame.Clear();
+	frame.data.resize(sizeof(FRAME_HEADER));
+	header = (FRAME_HEADER *)frame.data.data();
+	if (io.Read(&frame.data[0], sizeof(FRAME_HEADER)) == sizeof(FRAME_HEADER)) {
+		if ((header->magic == FRAME_HEADER_MAGIC) && (header->frame_size < DHFS_FRAME_MAX_SIZE)) {
+		
+			frame.data.resize(header->frame_size);
+			header = (FRAME_HEADER *)frame.data.data();
+			footer = (FRAME_FOOTER *)&frame.data[frame.data.size() - sizeof(FRAME_FOOTER)];
+
+			size_t tail_size = header->frame_size - sizeof(FRAME_HEADER);
+			if (io.Read(&frame.data[sizeof(FRAME_HEADER)], tail_size) == tail_size) {
+				if (footer->magic == FRAME_FOOTER_MAGIC && footer->frame_size == header->frame_size) {
+					frame.offset = curr_offset;
+					return true;
+				}			
+			}
+		}
 	}
 
+	frame.Clear();
+	io.SetPointer(curr_offset);
 	return false;
 }

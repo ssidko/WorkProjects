@@ -15,7 +15,7 @@ namespace DHFS
 	struct Frame {
 		LONGLONG offset;
 		std::vector<BYTE> data;
-
+		void Clear(void);
 	};
 
 
@@ -30,6 +30,8 @@ namespace DHFS
 		DhfsVolume(const std::string &volume_file);
 		~DhfsVolume();
 		bool Open(void);
+		bool SetPointer(LONGLONG offset);
+		LONGLONG Poiner(void);
 		bool FindNextFrame(LONGLONG &offset);
 		bool ReadFrame(Frame &frame);
 		bool ReadFrameSequence(FrameSequence sequence);

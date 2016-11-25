@@ -92,10 +92,22 @@ int main(int argc, char *argv[])
 	QApplication a(argc, argv);
 	MainWindow w;
 
-	//DHFS::DhfsVolume volume("\\\\.\\PhysicalDrive0");
-	//if (volume.Open()) {
-	//	int x = 0;
-	//}
+	DHFS::DhfsVolume volume("\\\\.\\PhysicalDrive0");
+	if (volume.Open()) {
+
+		DHFS::Frame frame;
+		size_t counter = 0;
+		size_t seq_size = 0;
+		LONGLONG offset = 0;
+
+		volume.SetPointer(170346847LL);
+		while (volume.ReadFrame(frame)) {
+			counter++;
+			seq_size += frame.data.size();
+			offset = frame.offset;
+		}
+		int x = 0;
+	}
 
 	w.show();
 	return a.exec();
