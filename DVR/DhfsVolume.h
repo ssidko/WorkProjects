@@ -12,17 +12,25 @@
 namespace DHFS
 {
 
-	class Frame;
+	struct Frame {
+		LONGLONG offset;
+		std::vector<BYTE> data;
+
+	};
+
+
 	class FrameSequence;
 
 	class DhfsVolume
 	{
 	private:
 		BufferedFile io;
+		VOLUME_HEADER volume_header{ 0 };
 	public:
 		DhfsVolume(const std::string &volume_file);
 		~DhfsVolume();
 		bool Open(void);
+		bool FindNextFrame(LONGLONG &offset);
 		bool ReadFrame(Frame &frame);
 		bool ReadFrameSequence(FrameSequence sequence);
 	};

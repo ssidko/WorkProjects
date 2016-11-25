@@ -107,25 +107,6 @@ DWORD BufferedFile::Read(void *buff, DWORD count)
 		}
 
 		return rd;
-
-		//DWORD rd = 0;
-		//if (count <= (readed - offset)) {
-		//	rd  = count;
-		//	memcpy(buff, (void *)&buffer[offset], rd);
-		//	offset += rd;
-		//} else {
-		//	rd = (readed - offset);
-		//	memcpy(buff, (void *)&buffer[offset], rd);
-		//	offset += rd;
-		//	if (readed == buffer.size()) {
-		//		SetPointer(io_pointer + buffer.size());
-		//		rd += Read(&((BYTE *)buff)[rd], count - rd);
-		//	}
-		//}
-		//if (offset >= buffer.size()) {
-		//	SetPointer(io_pointer + buffer.size());
-		//}
-		//return rd;
 	} 
 	return 0;
 }

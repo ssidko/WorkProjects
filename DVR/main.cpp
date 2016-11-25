@@ -85,42 +85,17 @@ void h264_test(void)
 	return;
 }
 
+#include "DhfsVolume.h"
+
 int main(int argc, char *argv[])
 {
 	QApplication a(argc, argv);
 	MainWindow w;
 
-	
-	size_t counter = 0;
-	LONGLONG offset = 0;
-	uint8_t sign[] = { 0x44, 0x48, 0x41, 0x56 };
-	BufferedFile io("\\\\.\\PhysicalDrive0", 128*512, 7020264960LL);
-	if (io.Open()) {
-		
-		while (io.Find(sign, sizeof(sign), offset)) {
-			io.SetPointer(offset + 1);
-			counter++;		
-		}	
-		int x = 0;	
-	}
-
-
-	//counter = 0;
-	//offset = 0;
-	//W32Lib::FileEx file("F:\\40774\\find-test.bin");
-	//if (file.Open()) {
-	//	counter = 0;
-	//	offset = 0;
-
-	//	while ( -1 != (offset = file.Find(sign, sizeof(sign))) ) {
-	//		file.SetPointer(offset + 1);
-	//		counter++;		
-	//	}	
+	//DHFS::DhfsVolume volume("\\\\.\\PhysicalDrive0");
+	//if (volume.Open()) {
+	//	int x = 0;
 	//}
-
-	int x = 0;
-
-
 
 	w.show();
 	return a.exec();

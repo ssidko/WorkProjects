@@ -11,6 +11,8 @@ class MainWindow : public QMainWindow
 private:
 	Ui::MainWindowClass ui;
 
+	QString SizeToString(uint64_t size);
+
 public:
 	MainWindow(QWidget *parent = 0);
 	~MainWindow();

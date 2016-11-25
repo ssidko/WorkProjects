@@ -26,6 +26,23 @@ MainWindow::~MainWindow()
 {
 }
 
+QString MainWindow::SizeToString(uint64_t size)
+{
+	float num = size;
+	QStringList list;
+	list << "KB" << "MB" << "GB" << "TB";
+
+	QStringListIterator i(list);
+	QString unit("bytes");
+
+	while (num >= 1024.0 && i.hasNext())
+	{
+		unit = i.next();
+		num /= 1024.0;
+	}
+	return QString().setNum(num, 'f', 2) + " " + unit;
+}
+
 void MainWindow::Initialize(void)
 {
 	this->setWindowTitle(MAIN_WINDOW_TITLE);
@@ -50,7 +67,13 @@ void MainWindow::UpdateDrivesComboBox(void)
 	std::list<std::string> drives;
 	EnumeratePhysicalDrives([&drives](const std::string &drive_name) {drives.push_back(drive_name);});
 	for (auto drive_name : drives) {
-		ui.Drives_comboBox->addItem(drive_name.c_str());	
+
+		LONGLONG drive_size = GetPhysicalDriveSize(drive_name);
+		QString item_text = drive_name.c_str();
+		item_text += "; ";
+		item_text += SizeToString(drive_size);
+
+		ui.Drives_comboBox->addItem(item_text);
 	}
 }
 
@@ -68,7 +91,7 @@ void MainWindow::OnStart(void)
 			io_name = OnSelectInputFile();
 		}
 	} else if (ui.Drives_comboBox->isEnabled()) {
-		io_name = ui.Drives_comboBox->currentText();
+		io_name = ui.Drives_comboBox->currentText().split(QChar(';')).at(0);
 	}
 
 	out_directory = ui.OutFolder_lineEdit->text();
