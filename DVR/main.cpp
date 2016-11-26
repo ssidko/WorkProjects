@@ -107,7 +107,6 @@ int main(int argc, char *argv[])
 			offset = frame.offset;
 
 			frame.Header()->sync_counter;
-
 		}
 		int x = 0;
 	}
