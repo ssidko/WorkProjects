@@ -92,23 +92,42 @@ int main(int argc, char *argv[])
 	QApplication a(argc, argv);
 	MainWindow w;
 
-	DHFS::DhfsVolume volume("\\\\.\\PhysicalDrive0");
+	std::string volume_name = "d:\\work\\DHFS.bin";
+	//std::string volume_name = "\\\\.\\PhysicalDrive0";
+	DHFS::DhfsVolume volume(volume_name);
 	if (volume.Open()) {
 
 		DHFS::Frame frame;
 		size_t counter = 0;
 		size_t seq_size = 0;
 		LONGLONG offset = 0;
+		size_t file_counter = 0;
 
-		volume.SetPointer(170346847LL);
-		while (volume.ReadFrame(frame)) {
-			counter++;
-			seq_size += frame.data.size();
+		//volume.SetPointer(170346847LL);
+
+		std::vector<BYTE> sequence;
+		sequence.reserve(2 * 1024 * 1024);
+
+		while (volume.FindAndReadFrame(frame)) {
+			counter = 1;
 			offset = frame.offset;
+			sequence.clear();
+			sequence.insert(sequence.end(), frame.data.begin(), frame.data.end());
 
-			frame.Header()->sync_counter;
+			while (volume.ReadFrame(frame)) {
+				counter++;
+				sequence.insert(sequence.end(), frame.data.begin(), frame.data.end());
+			}
+
+			std::string out_dir = "d:\\work\\test\\";
+			std::string file_name = out_dir + std::to_string(file_counter) + ".h264";
+			W32Lib::FileEx out_file(file_name.c_str());
+			if (out_file.Create()) {			
+				out_file.Write(sequence.data(), sequence.size());			
+			}
+ 
+			file_counter++;
 		}
-		int x = 0;
 	}
 
 	w.show();

@@ -18,12 +18,15 @@ namespace DHFS
 
 		void Clear(void);
 		FRAME_HEADER * Header(void);
+		size_t PayloadOffset(void);
 	};
 
 	struct FrameSequence {
 		LONGLONG offset;
 		std::vector<BYTE> data;
 
+		void AddFrame(Frame &frame);
+		void AddFirstFrame(Frame &frame);
 	};
 
 	class DhfsVolume
@@ -39,10 +42,9 @@ namespace DHFS
 		LONGLONG Poiner(void);
 		bool ReadFrame(Frame &frame);
 		bool FindAndReadFrame(Frame &frame);
-		bool ReadFrameSequence(FrameSequence &sequence);
+		bool FindAndReadFrameSequence(FrameSequence &sequence);
 	};
 
 }
 
 #endif // _DHFS_VOLUME_H
-

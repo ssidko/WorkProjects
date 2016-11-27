@@ -1,4 +1,5 @@
 #include "DhfsVolume.h"
+#include <cassert>
 
 #define DHFS_FRAME_MAX_SIZE			(DWORD)2*1024*1024
 
@@ -10,7 +11,30 @@ void DHFS::Frame::Clear(void)
 
 DHFS::FRAME_HEADER * DHFS::Frame::Header(void)
 {
+	assert(data.size());
 	return (FRAME_HEADER *)data.data();
+}
+
+size_t DHFS::Frame::PayloadOffset(void)
+{
+	size_t offset = 0;
+	switch (this->Header()->frame_type) {
+	case 0xFC:
+		offset = 0x20;
+	case 0xFD:
+	case 0xF1:
+		offset = 0x28;
+	case 0xF0:
+		offset = 0x24;
+	default:
+		offset = 0;
+	}
+	return offset;
+}
+
+void DHFS::FrameSequence::AddFrame(Frame &frame)
+{
+	
 }
 
 DHFS::DhfsVolume::DhfsVolume(const std::string &volume_file) : io(volume_file, 256*512)
@@ -90,6 +114,21 @@ bool DHFS::DhfsVolume::FindAndReadFrame(Frame & frame)
 		else {
 			io.SetPointer(offset + 1);
 		}
+	}
+
+	return false;
+}
+
+bool DHFS::DhfsVolume::FindAndReadFrameSequence(FrameSequence & sequence)
+{
+	Frame frame;
+	while (FindAndReadFrame(frame)) {
+
+
+
+
+
+
 	}
 
 	return false;
