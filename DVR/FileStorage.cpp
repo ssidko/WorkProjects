@@ -179,7 +179,7 @@ void DHFS::FileStorage::CloseFile(VideoFile *vfile)
 
 		std::stringstream file_name;
 		file_name << out_directory << "[" << vfile->Camera() + 1 << "]-";
-		file_name << vfile->StartTime().String() << "-=-" << vfile->EndTime().String();
+		file_name << vfile->StartTime().ToString() << "-=-" << vfile->EndTime().ToString();
 		file_name << "-=-" << std::to_string(vfile->FirstFrameOffset());
 		file_name << "--" << std::to_string(vfile->LastFrameOffset()) << ".avi";
 

@@ -9,7 +9,7 @@ void DHFS::_FrameInfo::ToString( std::string &info_str )
 {
 	std::stringstream stream;
 	stream << offset << " ";
-	stream << timestamp.String() << " ";
+	stream << timestamp.ToString() << " ";
 	stream << "camera: " << camera << " ";
 	stream << "flag: " << std::hex << "0x" <<  flag  << std::dec << " ";
 	stream << "counter: " << counter << " ";
@@ -22,7 +22,7 @@ inline void DHFS::_FrameSequenceInfo::Clear(void)
 	memset(this, 0x00, sizeof(_FrameSequenceInfo));
 }
 
-void DHFS::_FrameSequenceInfo::SetFirstFrame(FrameInfo & frame)
+void DHFS::_FrameSequenceInfo::SetFirstFrame(FrmInfo & frame)
 {
 	frame_counter = 1;
 	start_frame = frame;
@@ -42,7 +42,7 @@ void DHFS::_FrameSequenceInfo::SetFirstFrame(FrameInfo & frame)
 //	  последовательности или быть больше но не более чем на "1"
 //	- sync_counter должен быть больше на "1"
 //
-bool DHFS::_FrameSequenceInfo::AppendFrame(FrameInfo & frame)
+bool DHFS::_FrameSequenceInfo::AppendFrame(FrmInfo & frame)
 {
 	if (start_frame.camera == frame.camera) {
 		if (frame.timestamp.Seconds() >= end_frame.timestamp.Seconds()) {
@@ -96,7 +96,7 @@ bool DHFS::Volume::IsValidHeader(FRAME_HEADER &header)
 	return false;
 }
 
-bool DHFS::Volume::FindAndReadNextFrame(std::vector<BYTE> &buffer, FrameInfo &info)
+bool DHFS::Volume::FindAndReadNextFrame(std::vector<BYTE> &buffer, FrmInfo &info)
 {
 	LONGLONG offset = 0;
 	DWORD header_magic = FRAME_HEADER_MAGIC;
@@ -112,7 +112,7 @@ bool DHFS::Volume::FindAndReadNextFrame(std::vector<BYTE> &buffer, FrameInfo &in
 	return false;
 }
 
-bool DHFS::Volume::ReadFrame(std::vector<BYTE> &buffer, FrameInfo &info)
+bool DHFS::Volume::ReadFrame(std::vector<BYTE> &buffer, FrmInfo &info)
 {
 	FRAME_HEADER header = {0};
 	FRAME_FOOTER footer = {0};
@@ -157,7 +157,7 @@ bool DHFS::Volume::ReadFrame(std::vector<BYTE> &buffer, FrameInfo &info)
 bool DHFS::Volume::NextFrameSequence(std::vector<BYTE> &sequence_buffer, FrameSequenceInfo &sequence_info)
 {
 	bool result = false;
-	FrameInfo frame_info;
+	FrmInfo frame_info;
 
 	frame_info.Clear();
 	sequence_info.Clear();
@@ -202,7 +202,7 @@ void DHFS::Volume::Test(void)
 
 void DHFS::Volume::SaveFrameInfo(const std::string &out_file)
 {
-	FrameInfo frame_info;
+	FrmInfo frame_info;
 	std::string info_str;
 	std::vector<BYTE> buffer;
 	buffer.reserve(4*1024*1024);
@@ -220,7 +220,7 @@ void DHFS::Volume::SaveFrameInfo(const std::string &out_file)
 
 void DHFS::Volume::SaveFrameSequenceInfo(const std::string &out_file)
 {
-	FrameInfo frame_info;
+	FrmInfo frame_info;
 	std::string info;
 	std::string out_str;
 	std::vector<BYTE> buffer;
@@ -263,4 +263,9 @@ void DHFS::Volume::SaveFrameSequenceInfo(const std::string &out_file)
 	
 		}
 	}
+}
+
+dvr::Timestamp DHFS::_TIMESTAMP::Timestamp(void)
+{
+	return dvr::Timestamp(2000 + year, month, day, hours, minutes, seconds);
 }

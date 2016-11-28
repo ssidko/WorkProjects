@@ -93,7 +93,7 @@ bool G2FDB::VideoStorage::SaveFrameSequence(FrameSequence & sequence)
 
 				std::stringstream file_name;
 				file_name << cam_dir << "[" << sequence.camera << "]-";
-				file_name << sequence.start_time.String() << "-=-" << sequence.end_time.String();
+				file_name << sequence.start_time.ToString() << "-=-" << sequence.end_time.ToString();
 				file_name << "-=-" << std::to_string(sequence.offset);
 				file_name << ".avi";
 

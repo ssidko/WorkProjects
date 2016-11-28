@@ -1,48 +1,56 @@
 #include "Timestamp.h"
 #include <stdio.h>
+#include <cctype>
 
 
-dvr::Timestamp::Timestamp()
+dvr::Timestamp::Timestamp() : year(0), month(0), day(0), hours(0), minutes(0), seconds(0)
 {
-	seconds = 0;
-	minutes = 0;
-	hours = 0;
-	day = 0;
-	month = 0;
-	year = 0;
-	memset(str, 0x00, sizeof(str));
 }
 
-dvr::Timestamp::Timestamp(DWORD year_, DWORD month_, DWORD day_, DWORD hours_, DWORD mins_, DWORD sec_)
-{
-	seconds = sec_;
-	minutes = mins_;
-	hours = hours_;
-	day = day_;
-	month = month_;
-	year = year_;
-	memset(str, 0x00, sizeof(str));
-}
-
-dvr::Timestamp::~Timestamp(void)
+dvr::Timestamp::Timestamp(WORD year_, BYTE month_, BYTE day_, BYTE hours_, BYTE mins_, BYTE sec_) :
+	year(year_), month(month_), day(day_), hours(hours_), minutes(mins_), seconds(sec_)
 {
 }
 
 void dvr::Timestamp::Clear( void )
 {
-	memset(this, 0x00, sizeof(*this));
+	year = month = day = hours = minutes = seconds = 0;
 }
 
 ULONGLONG dvr::Timestamp::Seconds( void ) const
 {
-	return (LONGLONG)((((year*12LL + month)*31LL + day)*24LL + hours)*60LL + minutes)*60LL + seconds;
+	return (ULONGLONG)((((year*12LL + month)*31LL + day)*24LL + hours)*60LL + minutes)*60LL + seconds;
 }
 
-const char * dvr::Timestamp::String( void )
+std::string dvr::Timestamp::ToString(void)
 {
+	char str[32];
 	memset(str, 0x00, sizeof(str));
-	sprintf_s(str, sizeof(str), "%04u-%02u-%02u--%02u-%02u-%02u",year,month,day,hours,minutes,seconds);
-	return str;
+	sprintf_s(str, sizeof(str), "%04u-%02u-%02u--%02u-%02u-%02u", year, month, day, hours, minutes, seconds);
+	return std::string(str);
+}
+
+void dvr::Timestamp::ToString(std::string & str)
+{
+	str = ToString();
+}
+
+std::string dvr::Timestamp::Date(char separator)
+{
+	char str[12];
+	memset(str, 0x00, sizeof(str));
+	separator = std::isprint(separator) ? separator : ' ';
+	sprintf_s(str, sizeof(str), "%04u%c%02u%c%02u", year, separator, month, separator, day);
+	return std::string(str);
+}
+
+std::string dvr::Timestamp::Time(char separator)
+{
+	char str[12];
+	memset(str, 0x00, sizeof(str));
+	separator = std::isprint(separator) ? separator : ' ';
+	sprintf_s(str, sizeof(str), "%02u%c%02u%c%02u", hours, separator, minutes, separator, seconds);
+	return std::string(str);
 }
 
 bool dvr::Timestamp::operator>( const Timestamp &t )

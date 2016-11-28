@@ -4,37 +4,28 @@
 #define _TIMESTAMP_H
 
 #include <windows.h>
+#include <string>
 
-namespace dvr {
-	typedef struct _TIMESTAMP {
-		DWORD seconds;
-		DWORD minutes;
-		DWORD hours;
-		DWORD day;
-		DWORD month;
-		DWORD year;
-	} TIMESTAMP;
-
-	class Timestamp : public TIMESTAMP
+namespace dvr
+{
+	class Timestamp
 	{
-	private:
-		char str[32];
 	public:
+		WORD year;
+		BYTE month;
+		BYTE day;
+		BYTE hours;
+		BYTE minutes;
+		BYTE seconds;
+
 		Timestamp();
-		Timestamp(DWORD year_, DWORD month_, DWORD day_, DWORD hours_, DWORD mins_, DWORD sec_);
-		~Timestamp();
-
+		Timestamp(WORD year_, BYTE month_, BYTE day_, BYTE hours_, BYTE mins_, BYTE sec_);
 		void Clear(void);
-
-		void SetYear(DWORD y) { year = y; }
-		void SetMonth(DWORD m) { month = m; }
-		void SetDay(DWORD d) { day = d; }
-		void SetHours(DWORD h) { hours = h; }
-		void SetMinutes(DWORD m) { minutes = m; }
-		void SetSeconds(DWORD s) { seconds = s; }
-
 		ULONGLONG Seconds(void) const;
-		const char *String(void);
+		std::string ToString(void);
+		void ToString(std::string &str);
+		std::string Date(char separator = '-');
+		std::string Time(char separator = '-');
 
 		bool operator>(const Timestamp &t);
 		bool operator>=(const Timestamp &t);

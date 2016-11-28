@@ -34,7 +34,7 @@ std::string WFS::SequenceInfoString(FrameSequence &sequence)
 	//sstream << "\tsize: " << sequence.size;
 	//sstream << "\n";
 	//sstream << sequence.offset << "_";
-	sstream << sequence.start_time.String();
+	sstream << sequence.start_time.ToString();
 	sstream << "_" << sequence.offset;
 	return sstream.str();
 }

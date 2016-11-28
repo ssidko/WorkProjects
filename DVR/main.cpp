@@ -92,38 +92,41 @@ int main(int argc, char *argv[])
 	QApplication a(argc, argv);
 	MainWindow w;
 
-	std::string volume_name = "d:\\work\\DHFS.bin";
-	//std::string volume_name = "\\\\.\\PhysicalDrive0";
+	//std::string volume_name = "d:\\work\\DHFS.bin";
+	std::string volume_name = "\\\\.\\PhysicalDrive0";
 	DHFS::DhfsVolume volume(volume_name);
 	if (volume.Open()) {
 
 		DHFS::Frame frame;
-		size_t counter = 0;
-		size_t seq_size = 0;
-		LONGLONG offset = 0;
+		DHFS::FrameSequence sequence;
 		size_t file_counter = 0;
 
-		//volume.SetPointer(170346847LL);
+		volume.SetPointer(170346847LL);
 
-		std::vector<BYTE> sequence;
-		sequence.reserve(2 * 1024 * 1024);
+		bool fd_present = false;
 
-		while (volume.FindAndReadFrame(frame)) {
-			counter = 1;
-			offset = frame.offset;
-			sequence.clear();
-			sequence.insert(sequence.end(), frame.data.begin(), frame.data.end());
+		while (volume.FindAndReadFrameSequence(sequence)) {
 
-			while (volume.ReadFrame(frame)) {
-				counter++;
-				sequence.insert(sequence.end(), frame.data.begin(), frame.data.end());
-			}
+			//fd_present = frame.Header()->frame_type == 0xFD ? true : false;
+			//sequence.AddFirstFrame(frame);
 
-			std::string out_dir = "d:\\work\\test\\";
+			//while (volume.ReadFrame(frame)) {
+			//	sequence.AddFrame(frame);
+			//	if (frame.Header()->frame_type == 0xFD) {
+			//		fd_present = true;
+			//	}
+			//}
+
+			std::string out_dir = "F:\\40774\\test\\";
 			std::string file_name = out_dir + std::to_string(file_counter) + ".h264";
+			if (!fd_present) {
+				file_name += "-x";
+			}
+			file_name += ".h264";
+
 			W32Lib::FileEx out_file(file_name.c_str());
 			if (out_file.Create()) {			
-				out_file.Write(sequence.data(), sequence.size());			
+				out_file.Write(sequence.data.data(), sequence.data.size());			
 			}
  
 			file_counter++;

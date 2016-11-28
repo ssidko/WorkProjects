@@ -11,20 +11,34 @@
 
 namespace DHFS
 {
+	struct FrameInfo {
+		LONGLONG offset;
+		BYTE camera;
+		dvr::Timestamp time;
+
+		void Clear(void);
+	};
 
 	struct Frame {
-		LONGLONG offset;
+		FrameInfo info;
 		std::vector<BYTE> data;
 
 		void Clear(void);
 		FRAME_HEADER * Header(void);
-		size_t PayloadOffset(void);
+		size_t Size(void);
+		size_t HeaderSize(void);
+		size_t PayloadSize(void);
 	};
 
 	struct FrameSequence {
-		LONGLONG offset;
+		FrameInfo first_frame;
+		FrameInfo last_frame;
+		size_t width;
+		size_t height;
+		size_t frames_count;
 		std::vector<BYTE> data;
 
+		void Clear(void);
 		void AddFrame(Frame &frame);
 		void AddFirstFrame(Frame &frame);
 	};
@@ -44,6 +58,8 @@ namespace DHFS
 		bool FindAndReadFrame(Frame &frame);
 		bool FindAndReadFrameSequence(FrameSequence &sequence);
 	};
+
+	bool GetWidthAndHeight(Frame &frame, size_t &width, size_t &height);
 
 }
 

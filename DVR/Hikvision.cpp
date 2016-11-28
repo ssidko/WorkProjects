@@ -176,7 +176,7 @@ bool HIKV::HikVolume::SaveFramesInfoToFile(std::string &file_name)
 			switch (frame.frame_type) {
 			case kHikPrivateData_1:
 				sprintf_s(lba_str, sizeof(lba_str), "%011lld: ", frame.offset / 512);
-				file << lba_str << frame.time_stamp.String() << "\n";
+				file << lba_str << frame.time_stamp.ToString() << "\n";
 				break;
 			case kPS_frame:
 				break;
@@ -225,7 +225,7 @@ int HIKV::StartRecovery(const std::string &dhfs_volume, const std::string &out_d
 			} else if (sequence.end_time.Seconds() - sequence.start_time.Seconds()) {
 				
 				std::stringstream new_name;
-				new_name << out_directory << sequence.start_time.String() << "-=-" << sequence.end_time.String() << "--[" << sequence.offset << "]" << ".h264";
+				new_name << out_directory << sequence.start_time.ToString() << "-=-" << sequence.end_time.ToString() << "--[" << sequence.offset << "]" << ".h264";
 
 				W32Lib::FileEx out_file(file_name.c_str());
 				if (out_file.Open()) {					

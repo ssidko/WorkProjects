@@ -1,40 +1,100 @@
 #include "DhfsVolume.h"
+#include "bitstream_reader.h"
+#include "h264_ps.h"
 #include <cassert>
 
-#define DHFS_FRAME_MAX_SIZE			(DWORD)2*1024*1024
+#define DHFS_FRAME_MIN_SIZE			(DWORD)(sizeof(DHFS::FRAME_HEADER) + sizeof(DHFS::FRAME_FOOTER))
+#define DHFS_FRAME_MAX_SIZE			(DWORD)(2*1024*1024)
+
+void DHFS::FrameInfo::Clear(void)
+{
+	offset = 0;
+	camera = 0;
+	time.Clear();	
+}
 
 void DHFS::Frame::Clear(void)
 {
-	offset = 0;
+	info.Clear();
 	data.clear();
 }
 
 DHFS::FRAME_HEADER * DHFS::Frame::Header(void)
 {
-	assert(data.size());
 	return (FRAME_HEADER *)data.data();
 }
 
-size_t DHFS::Frame::PayloadOffset(void)
+size_t DHFS::Frame::Size(void)
 {
-	size_t offset = 0;
+	return data.size();
+}
+
+size_t DHFS::Frame::HeaderSize(void)
+{
+	DWORD *start_prefix = nullptr;
 	switch (this->Header()->frame_type) {
 	case 0xFC:
-		offset = 0x20;
+		start_prefix = (DWORD *)&data[0x20];
+		if (*start_prefix == 0x01000000) {
+			return 0x20;
+		}
+		start_prefix = (DWORD *)&data[0x24];
+		if (*start_prefix == 0x01000000) {
+			return 0x24;
+		}
+		assert(false);
+		return 0;
 	case 0xFD:
+		start_prefix = (DWORD *)&data[0x28];
+		if (*start_prefix == 0x01000000) {
+			return 0x28;
+		}
+		start_prefix = (DWORD *)&data[0x2C];
+		if (*start_prefix == 0x01000000) {
+			return 0x2C;
+		}
+		assert(false);
+		return 0;
 	case 0xF1:
-		offset = 0x28;
+		return 0x28;
 	case 0xF0:
-		offset = 0x24;
+		return 0x24;
 	default:
-		offset = 0;
+		return 0;
 	}
-	return offset;
+}
+
+size_t DHFS::Frame::PayloadSize(void)
+{
+	return Size() - (HeaderSize() + sizeof(DHFS::FRAME_FOOTER)); 
+}
+
+void DHFS::FrameSequence::Clear(void)
+{
+	first_frame.Clear();
+	last_frame.Clear();
+	width = 0;
+	height = 0;
+	frames_count = 0;
+	data.clear();	
 }
 
 void DHFS::FrameSequence::AddFrame(Frame &frame)
 {
-	
+	last_frame = frame.info;
+	frames_count++;
+
+	size_t size = data.size();
+	data.resize(size + frame.PayloadSize());
+	std::memcpy(&data[size], &frame.data[frame.HeaderSize()], frame.PayloadSize());
+}
+
+void DHFS::FrameSequence::AddFirstFrame(Frame &frame)
+{
+	Clear();
+	frames_count = 1;
+	first_frame = frame.info;
+	AddFrame(frame);
 }
 
 DHFS::DhfsVolume::DhfsVolume(const std::string &volume_file) : io(volume_file, 256*512)
@@ -76,17 +136,21 @@ bool DHFS::DhfsVolume::ReadFrame(Frame & frame)
 	frame.data.resize(sizeof(FRAME_HEADER));
 	header = (FRAME_HEADER *)frame.data.data();
 	if (io.Read(&frame.data[0], sizeof(FRAME_HEADER)) == sizeof(FRAME_HEADER)) {
-		if ((header->magic == FRAME_HEADER_MAGIC) && (header->frame_size < DHFS_FRAME_MAX_SIZE)) {
-		
-			frame.data.resize(header->frame_size);
-			header = (FRAME_HEADER *)frame.data.data();
-			footer = (FRAME_FOOTER *)&frame.data[frame.data.size() - sizeof(FRAME_FOOTER)];
+		if (header->magic == FRAME_HEADER_MAGIC){
+			if ((header->frame_size >= DHFS_FRAME_MIN_SIZE) && (header->frame_size < DHFS_FRAME_MAX_SIZE)) {
 
-			size_t tail_size = header->frame_size - sizeof(FRAME_HEADER);
-			if (io.Read(&frame.data[sizeof(FRAME_HEADER)], tail_size) == tail_size) {
-				if (footer->magic == FRAME_FOOTER_MAGIC && footer->frame_size == header->frame_size) {
-					frame.offset = curr_offset;
-					return true;
+				frame.data.resize(header->frame_size);
+				header = (FRAME_HEADER *)frame.data.data();
+				footer = (FRAME_FOOTER *)&frame.data[frame.data.size() - sizeof(FRAME_FOOTER)];
+
+				size_t tail_size = header->frame_size - sizeof(FRAME_HEADER);
+				if (io.Read(&frame.data[sizeof(FRAME_HEADER)], tail_size) == tail_size) {
+					if (footer->magic == FRAME_FOOTER_MAGIC && footer->frame_size == header->frame_size) {
+						frame.info.offset = curr_offset;
+						frame.info.camera = header->camera + 1;
+						frame.info.time = header->time.Timestamp();
+						return true;
+					}
 				}			
 			}
 		}
@@ -119,17 +183,58 @@ bool DHFS::DhfsVolume::FindAndReadFrame(Frame & frame)
 	return false;
 }
 
-bool DHFS::DhfsVolume::FindAndReadFrameSequence(FrameSequence & sequence)
+bool DHFS::DhfsVolume::FindAndReadFrameSequence(FrameSequence &sequence)
 {
 	Frame frame;
-	while (FindAndReadFrame(frame)) {
+	if (FindAndReadFrame(frame)) {
+		sequence.AddFirstFrame(frame);
+		while (ReadFrame(frame)) {
 
+			assert(sequence.first_frame.camera == frame.info.camera);
 
-
-
-
-
+			sequence.AddFrame(frame);
+			if (frame.Header()->frame_type == 0xfd) {
+				size_t width = 0;
+				size_t height = 0;
+				if (GetWidthAndHeight(frame, width, height)) {
+					sequence.width = width;
+					sequence.height = height;
+				}
+				int x = 0;			
+			}		
+		}
+		return true;
 	}
+	sequence.Clear();
+	return false;
+}
 
+bool DHFS::GetWidthAndHeight(Frame &frame, size_t &width, size_t &height)
+{
+	SPS sps = { 0 };
+	uint32_t *start_prefix = nullptr;
+	size_t start_prefix_size = 4;
+	size_t offset = frame.HeaderSize();
+
+	while (frame.data.size() >= (offset + start_prefix_size)) {
+		start_prefix = (uint32_t *)&frame.data[offset];
+		if (*start_prefix == 0x01000000) {
+		
+			bitstream_reader bs(&frame.data[offset + start_prefix_size], frame.data.size() - (offset + start_prefix_size));
+
+			int forbidden_zero_bit = bs.f(1);
+			int nal_ref_idc = bs.u(2);
+			int nal_unit_type = bs.u(5);
+
+			if (nal_unit_type == 7) {
+				ReadSPS(bs, sps);
+				width = sps.mb_width;
+				height = sps.mb_height;
+				return (width * height);
+			}
+		
+		}
+		offset++;
+	}
 	return false;
 }

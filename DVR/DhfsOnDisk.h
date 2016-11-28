@@ -26,14 +26,15 @@ namespace DHFS
 		DWORD day:5;
 		DWORD month:4;
 		DWORD year:6;
-		void Timestamp(Timestamp &t) {
-			t.SetYear(2000 + year);
-			t.SetMonth(month);
-			t.SetDay(day);
-			t.SetHours(hours);
-			t.SetMinutes(minutes);
-			t.SetSeconds(seconds);
+		void Timestamp(dvr::Timestamp &t) {
+			t.year = 2000 + year;
+			t.month = month;
+			t.day = day;
+			t.hours = hours;
+			t.minutes = minutes;
+			t.seconds = seconds;
 		}
+		dvr::Timestamp Timestamp(void);
 	} TIMESTAMP;
 
 	typedef struct _FRAME_HEADER {
@@ -43,8 +44,7 @@ namespace DHFS
 		DWORD sync_counter;
 		DWORD frame_size;			// Frame size
 		TIMESTAMP time;
-		BYTE unk1[8];
-		DWORD unk2;
+
 		DWORD HeaderSize(void) {
 			switch (frame_type) {
 			case 0x00FC:
@@ -99,19 +99,19 @@ namespace DHFS
 		DWORD data_size;
 		void Clear(void) {memset(this, 0x00, sizeof(_FrameInfo));}
 		void ToString(std::string &info_str);
-	} FrameInfo;
+	} FrmInfo;
 
 	typedef struct _FrameSequenceInfo {
-		FrameInfo start_frame;
-		FrameInfo end_frame;
+		FrmInfo start_frame;
+		FrmInfo end_frame;
 		DWORD frame_counter;
 		DWORD start_sync_counter;
 		DWORD end_sync_counter;
 		DWORD size;
 		void Clear(void);
 		DWORD Camera(void) { return start_frame.camera; }
-		void SetFirstFrame(FrameInfo &frame);
-		bool AppendFrame(FrameInfo &frame);
+		void SetFirstFrame(FrmInfo &frame);
+		bool AppendFrame(FrmInfo &frame);
 	} FrameSequenceInfo;
 
 	class Volume
@@ -123,8 +123,8 @@ namespace DHFS
 		bool Open();
 		void SetPointer(const LONGLONG &pointer);
 		bool IsValidHeader(FRAME_HEADER &header);
-		bool ReadFrame(std::vector<BYTE> &buffer, FrameInfo &info);
-		bool FindAndReadNextFrame(std::vector<BYTE> &buffer, FrameInfo &info);
+		bool ReadFrame(std::vector<BYTE> &buffer, FrmInfo &info);
+		bool FindAndReadNextFrame(std::vector<BYTE> &buffer, FrmInfo &info);
 		bool NextFrameSequence(std::vector<BYTE> &sequence_buffer, FrameSequenceInfo &sequnence_info);
 		void Test(void);
 		void SaveFrameInfo(const std::string &out_file);

@@ -358,7 +358,7 @@ bool Orbita::Storage::CreateNewFile(FRAME_SEQUENCE &sequence)
 {
 	DWORD channel = sequence.first_frame.channel;
 	std::string file_name;
-	file_name = directory + "\\" + std::to_string(sequence.first_frame.channel+1) + "--" + sequence.first_frame.timestamp.String() + "--" + std::to_string(sequence.first_frame.offset) + ".h264";
+	file_name = directory + "\\" + std::to_string(sequence.first_frame.channel+1) + "--" + sequence.first_frame.timestamp.ToString() + "--" + std::to_string(sequence.first_frame.offset) + ".h264";
 
 	if (files[channel]) {
 		CloseFile(channel);
