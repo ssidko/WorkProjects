@@ -99,13 +99,14 @@ int main(int argc, char *argv[])
 
 		DHFS::Frame frame;
 		DHFS::FrameSequence sequence;
+		size_t sequence_max_size = 200*1024*1024;
 		size_t file_counter = 0;
 
 		volume.SetPointer(170346847LL);
 
 		bool fd_present = false;
 
-		while (volume.FindAndReadFrameSequence(sequence)) {
+		while (volume.FindAndReadFrameSequence(sequence, sequence_max_size)) {
 
 			//fd_present = frame.Header()->frame_type == 0xFD ? true : false;
 			//sequence.AddFirstFrame(frame);

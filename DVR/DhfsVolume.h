@@ -56,7 +56,7 @@ namespace DHFS
 		LONGLONG Poiner(void);
 		bool ReadFrame(Frame &frame);
 		bool FindAndReadFrame(Frame &frame);
-		bool FindAndReadFrameSequence(FrameSequence &sequence);
+		bool FindAndReadFrameSequence(FrameSequence &sequence, size_t max_size);
 	};
 
 	bool GetWidthAndHeight(Frame &frame, size_t &width, size_t &height);

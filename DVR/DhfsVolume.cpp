@@ -183,7 +183,7 @@ bool DHFS::DhfsVolume::FindAndReadFrame(Frame & frame)
 	return false;
 }
 
-bool DHFS::DhfsVolume::FindAndReadFrameSequence(FrameSequence &sequence)
+bool DHFS::DhfsVolume::FindAndReadFrameSequence(FrameSequence &sequence, size_t max_size)
 {
 	Frame frame;
 	if (FindAndReadFrame(frame)) {
@@ -192,16 +192,29 @@ bool DHFS::DhfsVolume::FindAndReadFrameSequence(FrameSequence &sequence)
 
 			assert(sequence.first_frame.camera == frame.info.camera);
 
-			sequence.AddFrame(frame);
+			if ((sequence.data.size() + frame.data.size()) >= max_size) {
+				io.SetPointer(frame.info.offset);
+				return true;
+			}
+
 			if (frame.Header()->frame_type == 0xfd) {
 				size_t width = 0;
 				size_t height = 0;
 				if (GetWidthAndHeight(frame, width, height)) {
-					sequence.width = width;
-					sequence.height = height;
+					if (sequence.width && sequence.height) {
+						if ((sequence.width != width) || (sequence.height != height)) {
+							io.SetPointer(frame.info.offset);
+							return true;
+						}						
+					} else {
+						sequence.width = width;
+						sequence.height = height;					
+					}
 				}
-				int x = 0;			
-			}		
+			}
+
+			sequence.AddFrame(frame);
+
 		}
 		return true;
 	}
@@ -230,9 +243,8 @@ bool DHFS::GetWidthAndHeight(Frame &frame, size_t &width, size_t &height)
 				ReadSPS(bs, sps);
 				width = sps.mb_width;
 				height = sps.mb_height;
-				return (width * height);
-			}
-		
+				return (width && height);
+			}		
 		}
 		offset++;
 	}
