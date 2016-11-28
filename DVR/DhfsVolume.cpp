@@ -192,6 +192,10 @@ bool DHFS::DhfsVolume::FindAndReadFrameSequence(FrameSequence &sequence, size_t 
 
 			assert(sequence.first_frame.camera == frame.info.camera);
 
+			if ((frame.Header()->frame_type != 0xfd) && (frame.Header()->frame_type != 0xfc)) {
+				continue;
+			}
+
 			if ((sequence.data.size() + frame.data.size()) >= max_size) {
 				io.SetPointer(frame.info.offset);
 				return true;
