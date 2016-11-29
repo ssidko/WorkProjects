@@ -40,6 +40,10 @@ bool DHFS::VFile::SaveFrameSequence(FrameSequence &sequence)
 			width = sequence.width;
 			height = sequence.height;
 		}
+
+		assert(width == sequence.width);
+		assert(height == sequence.height);
+
 		end_time = sequence.last_frame.time;
 		last_frame_offset = sequence.last_frame.offset;
 		return true;
@@ -158,7 +162,7 @@ void DHFS::Storage::ConvertVideoFile(VFile &file)
 
 bool DHFS::Storage::SaveFrameSequenceEx(FrameSequence &sequence, LONGLONG max_delta_time)
 {
-	LONGLONG max_distance = 10*1024*1024*1024LL;
+	LONGLONG max_distance = 10*1024*1024LL;
 
 	std::string date = sequence.first_frame.time.Date();
 	LONGLONG offset = sequence.first_frame.offset;
@@ -220,8 +224,6 @@ bool DHFS::Storage::SaveFrameSequenceEx(FrameSequence &sequence, LONGLONG max_de
 			}
 		}
 	}
-
-
 
 	return false;
 }

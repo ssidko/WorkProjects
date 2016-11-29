@@ -2,6 +2,7 @@
 Thumbs.db
 *.obj
 *.exe
+*.bat
 *.pdb
 *.user
 *.aps
