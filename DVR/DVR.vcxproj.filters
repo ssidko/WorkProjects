@@ -157,6 +157,9 @@
     <ClCompile Include="h264_ps.cpp">
       <Filter>h264</Filter>
     </ClCompile>
+    <ClCompile Include="DhfsRecovery.cpp">
+      <Filter>Core\DHFS</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="mainwindow.ui">
@@ -262,6 +265,9 @@
     </ClInclude>
     <ClInclude Include="h264_ps.h">
       <Filter>h264</Filter>
+    </ClInclude>
+    <ClInclude Include="DhfsRecovery.h">
+      <Filter>Core\DHFS</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

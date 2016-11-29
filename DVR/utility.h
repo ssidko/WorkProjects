@@ -21,5 +21,7 @@ bool CurrentDirectory(std::string &current_directory);
 
 LONGLONG GetPhysicalDriveSize(const std::string &name);
 
+std::string string_format(const std::string fmt_str, ...);
+
 #endif // _UTILITY_H
 

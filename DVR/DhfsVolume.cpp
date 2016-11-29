@@ -212,7 +212,7 @@ bool DHFS::DhfsVolume::FindAndReadFrameSequence(FrameSequence &sequence, size_t 
 						}						
 					} else {
 						sequence.width = width;
-						sequence.height = height;					
+						sequence.height = height;
 					}
 				}
 			}
