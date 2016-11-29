@@ -6,7 +6,7 @@
 int DHFS::StartRecovery(const std::string & dvr_volume, const std::string & out_directory, const dvr::Timestamp & start_time, const dvr::Timestamp & end_time)
 {
 	DhfsVolume volume(dvr_volume);
-	Storage storage(out_directory, 500*1024*1024LL);
+	Storage storage(out_directory, 10*1024*1024LL);
 	FrameSequence sequence;
 
 	size_t max_delta_time = 2; // seconds
@@ -33,6 +33,7 @@ std::string DHFS::VFile::Description(void)
 
 bool DHFS::VFile::SaveFrameSequence(FrameSequence &sequence)
 {
+	io.SetPointer(io.GetSize());
 	if (io.Write(sequence.data.data(), sequence.data.size())) {
 		if (start_time.Seconds() == 0) {
 			camera = sequence.first_frame.camera;
@@ -105,15 +106,29 @@ void DHFS::Storage::Close()
 	for (auto substor_it : storage) {
 		for (auto files_it : substor_it.second) {
 			for (auto &file : files_it.second) {
-				if (file != nullptr) {
-					ConvertVideoFile(*file);
-					::DeleteFileA(file->FileName().c_str());
-					delete file;
-					file = nullptr;
-				}
+				assert(file != nullptr);
+				CloseVideoFile(*file);
 			}		
 		}	
 	}
+}
+
+void DHFS::Storage::CloseVideoFile(VFile &file)
+{
+	//ConvertVideoFile(file);
+	//::DeleteFileA(file.FileName().c_str());
+	delete &file;
+}
+
+void DHFS::Storage::ConvertVideoFile(VFile &file)
+{
+	file.Close();
+
+	std::string file_name = file.FileName();
+	std::string out_file_name = string_format("%s%s\\CAM-%02u\\%s.avi",
+		base_directory.c_str(), file.StartTime().Date().c_str(), file.Camera(), file.Description().c_str());
+
+	Convert2Avi(file_name, out_file_name);
 }
 
 bool DHFS::Storage::SaveFrameSequence(FrameSequence & sequence)
@@ -149,20 +164,9 @@ bool DHFS::Storage::SaveFrameSequence(FrameSequence & sequence)
 	return false;
 }
 
-void DHFS::Storage::ConvertVideoFile(VFile &file)
-{
-	file.Close();
-
-	std::string file_name = file.FileName();
-	std::string out_file_name = string_format("%s%s\\CAM-%02u\\%s.avi",
-		base_directory.c_str(), file.StartTime().Date().c_str(), file.Camera(), file.Description().c_str());
-
-	Convert2Avi(file_name, out_file_name);
-}
-
 bool DHFS::Storage::SaveFrameSequenceEx(FrameSequence &sequence, LONGLONG max_delta_time)
 {
-	LONGLONG max_distance = 10*1024*1024LL;
+	LONGLONG max_distance = 10*1024*1024*1024LL;
 
 	std::string date = sequence.first_frame.time.Date();
 	LONGLONG offset = sequence.first_frame.offset;
@@ -170,9 +174,8 @@ bool DHFS::Storage::SaveFrameSequenceEx(FrameSequence &sequence, LONGLONG max_de
 	VFile *vfile = nullptr;
 	auto &substor = storage[date];
 	auto &files = substor[sequence.first_frame.camera];
-	for (auto vf : files) {
-	
-		if (vf->Width() == sequence.width && vf->Height() == sequence.height) {
+	for (auto vf : files) {	
+		if ((vf->Width() == sequence.width) && (vf->Height() == sequence.height)) {
 			if (sequence.first_frame.time >= vf->EndTime()) {
 				if ((sequence.first_frame.time - vf->EndTime()) <= max_delta_time) {
 					vfile = vf;
@@ -202,27 +205,41 @@ bool DHFS::Storage::SaveFrameSequenceEx(FrameSequence &sequence, LONGLONG max_de
 				}
 			}
 		}	
-	}	
-	for (auto substor_it : storage) {
-		for (auto files_it : substor_it.second) {
-			std::list<VFile *> for_remove;
-			for (auto file : files_it.second) {
-				assert(file != nullptr);
-				assert(sequence.last_frame.offset >= file->LastFrameOffset());
-				if ((sequence.first_frame.offset - file->LastFrameOffset()) >= max_distance
-					|| file->Size() >= max_file_size)
-				{
-					for_remove.push_back(file);
-				} 
-			}
+	}
 
-			for (auto file : for_remove) {
-				ConvertVideoFile(*file);
-				::DeleteFileA(file->FileName().c_str());
-				delete file;
-				files_it.second.remove(file);
+	std::list<std::string> date_del;
+	for (auto &substor_pair : storage) {
+
+		std::list<size_t> cam_del;
+		for (auto &files_pair : substor_pair.second) {
+
+			files_pair.second.remove_if([this, sequence, max_distance](VFile *f)
+				{
+					assert(f != nullptr);
+					assert(sequence.last_frame.offset >= f->LastFrameOffset());
+					if ((sequence.first_frame.offset - f->LastFrameOffset()) >= max_distance
+						|| (f->Size() >= max_file_size))
+					{
+						CloseVideoFile(*f);
+						return true;
+					} else {
+						return false;
+					}
+				}
+			);
+			if (files_pair.second.size() == 0) {
+				cam_del.push_back(files_pair.first);
 			}
 		}
+		for (auto camera : cam_del) {
+			substor_pair.second.erase(camera);
+		}
+		if (substor_pair.second.size() == 0) {
+			date_del.push_back(substor_pair.first);
+		}
+	}
+	for (auto &date : date_del) {
+		storage.erase(date);
 	}
 
 	return false;

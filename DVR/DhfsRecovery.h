@@ -51,6 +51,7 @@ namespace DHFS
 		~Storage();
 		bool Open(void);
 		void Close(void);
+		void CloseVideoFile(VFile &file);
 		void ConvertVideoFile(VFile &file);
 		bool SaveFrameSequence(FrameSequence &sequence);
 		bool SaveFrameSequenceEx(FrameSequence &sequence, LONGLONG max_delta_time);
