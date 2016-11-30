@@ -3,6 +3,7 @@
 
 #include "dhfs.h"
 #include "G2fdbRecovery.h"
+#include "DhfsRecovery.h"
 #include "Hikvision.h"
 #include "WFS.h"
 
@@ -106,7 +107,8 @@ void MainWindow::OnStart(void)
 		this->setWindowTitle(title);
 
 		if (dvr_type == DHFS_ID_STRING) {
-			DHFS::StartRecovering(io_name.toStdString(), out_directory.toStdString());
+			//DHFS::StartRecovering(io_name.toStdString(), out_directory.toStdString());
+			DHFS::StartRecovery(io_name.toStdString(), out_directory.toStdString());
 		} else if (dvr_type == G2FDB_ID_STRING) {
 			G2FDB::StartRecovery(io_name.toStdString(), out_directory.toStdString());
 		} else if (dvr_type == HIKVISION_ID_STRING) {		

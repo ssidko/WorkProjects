@@ -93,10 +93,9 @@ int main(int argc, char *argv[])
 	QApplication a(argc, argv);
 	MainWindow w;
 
-	std::string volume_name = "d:\\work\\DHFS.bin";
+	//std::string volume_name = "d:\\work\\DHFS.bin";
 	//std::string volume_name = "\\\\.\\PhysicalDrive0";
-
-	DHFS::StartRecovery(volume_name, /*"F:\\40774\\result"*/"d:\\work\\result");
+	//DHFS::StartRecovery(volume_name, "F:\\40774\\result");
 
 	w.show();
 	return a.exec();

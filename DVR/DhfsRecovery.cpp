@@ -6,17 +6,19 @@
 int DHFS::StartRecovery(const std::string & dvr_volume, const std::string & out_directory, const dvr::Timestamp & start_time, const dvr::Timestamp & end_time)
 {
 	DhfsVolume volume(dvr_volume);
-	Storage storage(out_directory, 10*1024*1024LL);
+	Storage storage(out_directory, 500*1024*1024LL);
 	FrameSequence sequence;
 
-	size_t max_delta_time = 2; // seconds
+	size_t max_delta_time = 1*60; // seconds
 	size_t max_sequence_size = 100*1024*1024;
 
 	if (volume.Open() && storage.Open()) {
 
 		while (volume.FindAndReadFrameSequence(sequence, max_sequence_size)) {
 			//storage.SaveFrameSequence(sequence);
-			storage.SaveFrameSequenceEx(sequence, max_delta_time);
+			if (sequence.width && sequence.height) {
+				storage.SaveFrameSequenceEx(sequence, max_delta_time);
+			}
 		}
 		return 0;
 	}
@@ -33,21 +35,25 @@ std::string DHFS::VFile::Description(void)
 
 bool DHFS::VFile::SaveFrameSequence(FrameSequence &sequence)
 {
-	io.SetPointer(io.GetSize());
-	if (io.Write(sequence.data.data(), sequence.data.size())) {
-		if (start_time.Seconds() == 0) {
-			camera = sequence.first_frame.camera;
-			start_time = sequence.first_frame.time;
-			width = sequence.width;
-			height = sequence.height;
-		}
+	if (io.Open()) {
+		io.SetPointer(io.GetSize());
+		if (io.Write(sequence.data.data(), sequence.data.size())) {
+			if (start_time.Seconds() == 0) {
+				camera = sequence.first_frame.camera;
+				start_time = sequence.first_frame.time;
+				width = sequence.width;
+				height = sequence.height;
+			}
 
-		assert(width == sequence.width);
-		assert(height == sequence.height);
+			assert(width == sequence.width);
+			assert(height == sequence.height);
 
-		end_time = sequence.last_frame.time;
-		last_frame_offset = sequence.last_frame.offset;
-		return true;
+			end_time = sequence.last_frame.time;
+			last_frame_offset = sequence.last_frame.offset;
+
+			io.Close();
+			return true;
+		}	
 	}
 	return false;
 }
@@ -115,8 +121,8 @@ void DHFS::Storage::Close()
 
 void DHFS::Storage::CloseVideoFile(VFile &file)
 {
-	//ConvertVideoFile(file);
-	//::DeleteFileA(file.FileName().c_str());
+	ConvertVideoFile(file);
+	::DeleteFileA(file.FileName().c_str());
 	delete &file;
 }
 
@@ -137,7 +143,10 @@ bool DHFS::Storage::SaveFrameSequence(FrameSequence & sequence)
 	std::string cam_dir = date_dir + "CAM-" + std::to_string(sequence.first_frame.camera) + "\\";
 	std::string temp_file_name = cam_dir + "dvr.tmp";
 
+	static LONGLONG skiped_size = 0;
+
 	if (!(sequence.width & sequence.height)) {
+		skiped_size += sequence.data.size();
 		return false;
 	}
 
@@ -166,7 +175,7 @@ bool DHFS::Storage::SaveFrameSequence(FrameSequence & sequence)
 
 bool DHFS::Storage::SaveFrameSequenceEx(FrameSequence &sequence, LONGLONG max_delta_time)
 {
-	LONGLONG max_distance = 10*1024*1024*1024LL;
+	LONGLONG max_distance = 1*1024*1024*1024LL;
 
 	std::string date = sequence.first_frame.time.Date();
 	LONGLONG offset = sequence.first_frame.offset;
@@ -242,5 +251,5 @@ bool DHFS::Storage::SaveFrameSequenceEx(FrameSequence &sequence, LONGLONG max_de
 		storage.erase(date);
 	}
 
-	return false;
+	return true;
 }
