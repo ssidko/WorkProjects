@@ -33,6 +33,16 @@ std::string DHFS::VFile::Description(void)
 	return descr;
 }
 
+LONGLONG DHFS::VFile::Size(void)
+{
+	LONGLONG size = 0;
+	if (io.Open()) {
+		size = io.GetSize();
+		io.Close();
+	}
+	return io.GetSize();
+}
+
 bool DHFS::VFile::SaveFrameSequence(FrameSequence &sequence)
 {
 	if (io.Open()) {

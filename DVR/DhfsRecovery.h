@@ -33,7 +33,7 @@ namespace DHFS
 		size_t Height(void) { return height; }
 		Timestamp StartTime(void) { return start_time; }
 		Timestamp EndTime(void) { return end_time; }
-		LONGLONG Size(void) { return io.GetSize(); }
+		LONGLONG Size(void);
 		LONGLONG LastFrameOffset(void) { return last_frame_offset; }
 		bool SaveFrameSequence(FrameSequence &sequence);
 	};
