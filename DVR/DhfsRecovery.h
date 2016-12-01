@@ -24,8 +24,8 @@ namespace DHFS
 		W32Lib::FileEx io;
 	public:
 		VFile(const std::string file_name) :io(file_name.c_str()) {}
-		bool Create(void) { return io.Create(); }
-		void Close(void) { io.Close(); }
+		bool Create(void);
+		void Close(void);
 		std::string FileName(void) { return std::string(io.GetName()); }
 		std::string Description(void);
 		size_t Camera(void) { return camera; }

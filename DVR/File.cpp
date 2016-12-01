@@ -79,8 +79,16 @@ BOOL File::Create(const char *file_name)
 
 void File::Close(void)
 {
-	CloseHandle(hFile);
-	hFile = INVALID_HANDLE_VALUE;
+	DWORD err = 0;
+	if (hFile != INVALID_HANDLE_VALUE) {
+		if (CloseHandle(hFile)) {
+			hFile = INVALID_HANDLE_VALUE;
+		}
+		else {
+			err = ::GetLastError();
+			int x = 0;
+		}
+	}
 }
 
 DWORD File::Read(void *buffer, DWORD count)

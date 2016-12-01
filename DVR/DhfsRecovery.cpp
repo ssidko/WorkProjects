@@ -26,6 +26,20 @@ int DHFS::StartRecovery(const std::string & dvr_volume, const std::string & out_
 	return -1;
 }
 
+bool DHFS::VFile::Create(void)
+{
+	if (io.Create()) {
+		io.Close();
+		return true;
+	}
+	return false;
+}
+
+void DHFS::VFile::Close(void)
+{
+	io.Close();
+}
+
 std::string DHFS::VFile::Description(void)
 {
 	std::string descr = string_format("[%02u]-[ %s -=- %s ]-[%ux%u]", camera,
@@ -45,6 +59,8 @@ LONGLONG DHFS::VFile::Size(void)
 
 bool DHFS::VFile::SaveFrameSequence(FrameSequence &sequence)
 {
+	bool result = false;
+
 	if (io.Open()) {
 		io.SetPointer(io.GetSize());
 		if (io.Write(sequence.data.data(), sequence.data.size())) {
@@ -61,11 +77,11 @@ bool DHFS::VFile::SaveFrameSequence(FrameSequence &sequence)
 			end_time = sequence.last_frame.time;
 			last_frame_offset = sequence.last_frame.offset;
 
-			io.Close();
-			return true;
+			result = true;
 		}	
+		io.Close();
 	}
-	return false;
+	return result;
 }
 
 DHFS::Storage::Storage(const std::string &storage_directory, LONGLONG max_file_size_) :
@@ -132,7 +148,11 @@ void DHFS::Storage::Close()
 void DHFS::Storage::CloseVideoFile(VFile &file)
 {
 	ConvertVideoFile(file);
-	::DeleteFileA(file.FileName().c_str());
+	
+	DWORD error = 0;
+	if (!::DeleteFileA(file.FileName().c_str())) {
+		error = ::GetLastError();
+	}
 	delete &file;
 }
 
@@ -143,6 +163,8 @@ void DHFS::Storage::ConvertVideoFile(VFile &file)
 	std::string file_name = file.FileName();
 	std::string out_file_name = string_format("%s%s\\CAM-%02u\\%s.avi",
 		base_directory.c_str(), file.StartTime().Date().c_str(), file.Camera(), file.Description().c_str());
+
+	//MoveFileA(file_name.c_str(), out_file_name.c_str());
 
 	Convert2Avi(file_name, out_file_name);
 }
@@ -197,8 +219,10 @@ bool DHFS::Storage::SaveFrameSequenceEx(FrameSequence &sequence, LONGLONG max_de
 		if ((vf->Width() == sequence.width) && (vf->Height() == sequence.height)) {
 			if (sequence.first_frame.time >= vf->EndTime()) {
 				if ((sequence.first_frame.time - vf->EndTime()) <= max_delta_time) {
+
 					vfile = vf;
 					vfile->SaveFrameSequence(sequence);
+
 					break;
 				}			
 			}	
