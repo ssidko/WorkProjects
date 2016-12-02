@@ -4,6 +4,7 @@
 #include "Timestamp.h"
 #include "DhfsVolume.h"
 #include "File.h"
+#include "utility.h"
 
 #include <string>
 #include <map>

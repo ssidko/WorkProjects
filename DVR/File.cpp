@@ -262,8 +262,8 @@ LONGLONG FileEx::GetSize(void)
 	LARGE_INTEGER size;
 	if (::GetFileSizeEx(hFile, &size))
 		return size.QuadPart;
-	else
-		return (LONGLONG)(-1);
+	else 
+		return (LONGLONG)(0);
 }
 
 BOOL FileEx::SetFileSize(LONGLONG new_size)

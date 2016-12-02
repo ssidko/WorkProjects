@@ -97,7 +97,7 @@ void DHFS::FrameSequence::AddFirstFrame(Frame &frame)
 	AddFrame(frame);
 }
 
-DHFS::DhfsVolume::DhfsVolume(const std::string &volume_file) : io(volume_file, 256*512)
+DHFS::DhfsVolume::DhfsVolume(const std::string &volume_file, const LONGLONG &size) : io(volume_file, 256*512, size)
 {
 }
 

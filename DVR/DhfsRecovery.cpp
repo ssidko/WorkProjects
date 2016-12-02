@@ -5,12 +5,17 @@
 
 int DHFS::StartRecovery(const std::string & dvr_volume, const std::string & out_directory, const dvr::Timestamp & start_time, const dvr::Timestamp & end_time)
 {
-	DhfsVolume volume(dvr_volume);
-	Storage storage(out_directory, 500*1024*1024LL);
+	LONGLONG file_size = FileSize(dvr_volume);
+	if (!file_size) {
+		return -1;
+	}
+
+	DhfsVolume volume(dvr_volume, file_size);
+	Storage storage(out_directory, 500 * 1024 * 1024LL);
 	FrameSequence sequence;
 
-	size_t max_delta_time = 1*60; // seconds
-	size_t max_sequence_size = 100*1024*1024;
+	size_t max_delta_time = 1 * 60; // seconds
+	size_t max_sequence_size = 100 * 1024 * 1024;
 
 	if (volume.Open() && storage.Open()) {
 
@@ -54,7 +59,7 @@ LONGLONG DHFS::VFile::Size(void)
 		size = io.GetSize();
 		io.Close();
 	}
-	return io.GetSize();
+	return size;
 }
 
 bool DHFS::VFile::SaveFrameSequence(FrameSequence &sequence)

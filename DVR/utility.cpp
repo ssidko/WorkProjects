@@ -170,10 +170,26 @@ LONGLONG GetPhysicalDriveSize(const std::string & name)
 		}
 	}
 
-	return -1;
+	return 0;
 }
 
-std::string string_format(const std::string fmt_str, ...) {
+LONGLONG FileSize(const std::string & file_name)
+{
+	W32Lib::FileEx file(file_name.data());
+	if (file.Open()) {	
+		std::string drive_prefix = "\\\\.\\PhysicalDrive";
+		size_t pos = file_name.find(drive_prefix);
+		if (pos != std::string::npos) {
+			return GetPhysicalDriveSize(file_name);
+		} else {
+			return file.GetSize();
+		}
+	}
+	return 0;
+}
+
+std::string string_format(const std::string fmt_str, ...)
+{
 	int final_n, n = ((int)fmt_str.size()) * 2; /* Reserve two times as much as the length of the fmt_str */
 	std::string str;
 	std::unique_ptr<char[]> formatted;

@@ -49,7 +49,7 @@ namespace DHFS
 		BufferedFile io;
 		VOLUME_HEADER volume_header{ 0 };
 	public:
-		DhfsVolume(const std::string &volume_file);
+		DhfsVolume(const std::string &volume_file, const LONGLONG &size);
 		~DhfsVolume();
 		bool Open(void);
 		bool SetPointer(LONGLONG offset);
