@@ -2,11 +2,6 @@
 #include <stdio.h>
 #include <cctype>
 
-
-dvr::Timestamp::Timestamp() : year(0), month(0), day(0), hours(0), minutes(0), seconds(0)
-{
-}
-
 dvr::Timestamp::Timestamp(WORD year_, BYTE month_, BYTE day_, BYTE hours_, BYTE mins_, BYTE sec_) :
 	year(year_), month(month_), day(day_), hours(hours_), minutes(mins_), seconds(sec_)
 {

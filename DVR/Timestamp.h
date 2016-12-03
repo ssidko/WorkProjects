@@ -18,8 +18,7 @@ namespace dvr
 		BYTE minutes;
 		BYTE seconds;
 
-		Timestamp();
-		Timestamp(WORD year_, BYTE month_, BYTE day_, BYTE hours_, BYTE mins_, BYTE sec_);
+		Timestamp(WORD year_ = 0, BYTE month_ = 0, BYTE day_ = 0, BYTE hours_ = 0, BYTE mins_ = 0, BYTE sec_ = 0);
 		void Clear(void);
 		ULONGLONG Seconds(void) const;
 		std::string ToString(void);

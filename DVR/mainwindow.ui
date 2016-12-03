@@ -240,7 +240,7 @@
       <item>
        <widget class="QGroupBox" name="StartTimestamp_groupBox">
         <property name="enabled">
-         <bool>false</bool>
+         <bool>true</bool>
         </property>
         <property name="minimumSize">
          <size>
@@ -265,19 +265,7 @@
         </property>
         <layout class="QHBoxLayout" name="horizontalLayout_7">
          <item>
-          <widget class="QDateTimeEdit" name="StartTimestamp_dateTimeEdit">
-           <property name="minimumSize">
-            <size>
-             <width>0</width>
-             <height>20</height>
-            </size>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>16777215</width>
-             <height>20</height>
-            </size>
-           </property>
+          <widget class="QDateTimeEdit" name="start_dateTimeEdit">
            <property name="date">
             <date>
              <year>2016</year>
@@ -286,7 +274,7 @@
             </date>
            </property>
            <property name="calendarPopup">
-            <bool>true</bool>
+            <bool>false</bool>
            </property>
           </widget>
          </item>
@@ -296,7 +284,7 @@
       <item>
        <widget class="QGroupBox" name="EndTimestamp_groupBox">
         <property name="enabled">
-         <bool>false</bool>
+         <bool>true</bool>
         </property>
         <property name="minimumSize">
          <size>
@@ -321,19 +309,7 @@
         </property>
         <layout class="QHBoxLayout" name="horizontalLayout_8">
          <item>
-          <widget class="QDateTimeEdit" name="EndTimestamp_dateTimeEdit">
-           <property name="minimumSize">
-            <size>
-             <width>0</width>
-             <height>20</height>
-            </size>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>16777215</width>
-             <height>20</height>
-            </size>
-           </property>
+          <widget class="QDateTimeEdit" name="end_dateTimeEdit">
            <property name="date">
             <date>
              <year>2016</year>
@@ -349,7 +325,7 @@
             </time>
            </property>
            <property name="calendarPopup">
-            <bool>true</bool>
+            <bool>false</bool>
            </property>
           </widget>
          </item>
@@ -550,11 +526,11 @@
    <hints>
     <hint type="sourcelabel">
      <x>69</x>
-     <y>85</y>
+     <y>114</y>
     </hint>
     <hint type="destinationlabel">
-     <x>97</x>
-     <y>85</y>
+     <x>173</x>
+     <y>116</y>
     </hint>
    </hints>
   </connection>
@@ -565,12 +541,12 @@
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>56</x>
-     <y>73</y>
+     <x>69</x>
+     <y>114</y>
     </hint>
     <hint type="destinationlabel">
-     <x>325</x>
-     <y>81</y>
+     <x>345</x>
+     <y>117</y>
     </hint>
    </hints>
   </connection>
@@ -581,12 +557,44 @@
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>41</x>
-     <y>106</y>
+     <x>61</x>
+     <y>85</y>
     </hint>
     <hint type="destinationlabel">
-     <x>93</x>
-     <y>109</y>
+     <x>169</x>
+     <y>87</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>StartTimestamp_groupBox</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>start_dateTimeEdit</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>44</x>
+     <y>142</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>59</x>
+     <y>166</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>EndTimestamp_groupBox</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>end_dateTimeEdit</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>229</x>
+     <y>146</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>239</x>
+     <y>166</y>
     </hint>
    </hints>
   </connection>

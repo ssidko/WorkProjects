@@ -9,6 +9,7 @@
 
 #include <QDir>
 #include <QFileDialog>
+#include <QDateTimeEdit>
 
 #define HIKVISION_ID_STRING				"Hikvision"
 #define WFS_04_ID_STRING				"WFS 0.4"
@@ -82,6 +83,14 @@ void MainWindow::OnStart(void)
 	QString dvr_type;
 	QString io_name;
 	QString out_directory;
+
+	QDateTime start_date = ui.start_dateTimeEdit->dateTime();
+	QDateTime end_date = ui.end_dateTimeEdit->dateTime();
+
+	dvr::Timestamp start_tstmp(start_date.date().year(), start_date.date().month(),
+		start_date.date().day(), start_date.time().hour(), start_date.time().second());
+	dvr::Timestamp end_tstmp(end_date.date().year(), end_date.date().month(),
+		end_date.date().day(), end_date.time().hour(), end_date.time().second());
 
 	dvr_type = ui.DvrType_comboBox->currentText();
 
