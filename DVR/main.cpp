@@ -66,8 +66,9 @@ public:
 void h264_test(void)
 {
 	SPS sps = { 0 };
-	uint8_t buff[] = { 0x67, 0x64, 0x00, 0x28, 0xAC, 0xE8, 0x0E, 0x81, 0x26, 0xC0, 0x44};
+	uint8_t buff[] = { 0x67, 0x64, 0x00, 0x14, 0xAD, 0x84, 0x01, 0x0C, 0x20, 0x08, 0x61, 0x00, 0x43, 0x08, 0x02, 0x18, 0x40, 0x10, 0xC2, 0x00, 0x84, 0x2B, 0x50, 0xB0, 0x4B, 0x20 };
 	bitstream_reader bs(buff, sizeof(buff));
+	bitstream_reader bs2(buff, sizeof(buff));
 
 	size_t bits_count = bs.bits_available();
 	size_t size_sps = sizeof(sps);
@@ -76,22 +77,33 @@ void h264_test(void)
 	int nal_ref_idc = bs.u(2);	
 	int nal_unit_type = bs.u(5);
 
+	bs2.f(1);
+	bs2.u(2);
+	bs2.u(5);
+
+	size_t width = 0;
+	size_t height = 0;
+
 	if (nal_unit_type == 7) {
 		ReadSPS(bs, sps);
+		//GetResolution(bs2, width, height);
+		h264_GetWidthHeight(bs2, width, height);
 	}
-
-	int x = 0;
 
 	return;
 }
 
 #include "DhfsVolume.h"
 #include "DhfsRecovery.h"
+#include "GetWidthheight.h"
 
 int main(int argc, char *argv[])
 {
 	QApplication a(argc, argv);
 	MainWindow w;
+
+	h264_test();
+
 	w.show();
 	return a.exec();
 }

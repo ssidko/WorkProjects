@@ -57,5 +57,7 @@ typedef struct SPS {
 } SPS;
 
 bool ReadSPS(bitstream_reader &bs, SPS &sps);
+void GetResolution(bitstream_reader &bs, int &width, int &height);
+void h264_GetWidthHeight(bitstream_reader &bs, size_t &width, size_t &height);
 
 #endif /* AVCODEC_H264_PS_H */

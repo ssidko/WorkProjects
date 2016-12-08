@@ -160,6 +160,9 @@
     <ClCompile Include="DhfsRecovery.cpp">
       <Filter>Core\DHFS</Filter>
     </ClCompile>
+    <ClCompile Include="GetWidthheight.cpp">
+      <Filter>h264</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="mainwindow.ui">
@@ -268,6 +271,9 @@
     </ClInclude>
     <ClInclude Include="DhfsRecovery.h">
       <Filter>Core\DHFS</Filter>
+    </ClInclude>
+    <ClInclude Include="GetWidthheight.h">
+      <Filter>h264</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

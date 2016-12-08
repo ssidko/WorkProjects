@@ -114,6 +114,7 @@
     <ClCompile Include="GeneratedFiles\Release\moc_mainwindow.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="GetWidthheight.cpp" />
     <ClCompile Include="h264_ps.cpp" />
     <ClCompile Include="Hikvision.cpp" />
     <ClCompile Include="main.cpp" />
@@ -172,6 +173,7 @@
     <ClInclude Include="G2fdbVolume.h" />
     <ClInclude Include="G2fdbOnDisk.h" />
     <ClInclude Include="GeneratedFiles\ui_mainwindow.h" />
+    <ClInclude Include="GetWidthheight.h" />
     <ClInclude Include="h264_ps.h" />
     <ClInclude Include="Hikvision.h" />
     <ClInclude Include="Ntfs.h" />

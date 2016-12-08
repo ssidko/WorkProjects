@@ -244,9 +244,7 @@ bool DHFS::GetWidthAndHeight(Frame &frame, size_t &width, size_t &height)
 			int nal_unit_type = bs.u(5);
 
 			if (nal_unit_type == 7) {
-				ReadSPS(bs, sps);
-				width = sps.mb_width;
-				height = sps.mb_height;
+				h264_GetWidthHeight(bs, width, height);
 				return (width && height);
 			}		
 		}

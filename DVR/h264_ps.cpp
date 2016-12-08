@@ -17,7 +17,7 @@ void decode_scaling_list(bitstream_reader &bs, int size)
 				//memcpy(factors, jvt_list, size * sizeof(uint8_t));
 				break;
 			}
-			//last = factors[scan[i]] = next ? next : last;
+			last = next ? next : last;
 		}
 	}
 }
@@ -147,4 +147,211 @@ bool ReadSPS(bitstream_reader &bs, SPS &sps)
 	sps.mb_height *= 16;
 
 	return true;
+}
+
+void GetResolution(bitstream_reader &bs, int &width, int &height)
+{
+	int frame_crop_left_offset = 0;
+	int frame_crop_right_offset = 0;
+	int frame_crop_top_offset = 0;
+	int frame_crop_bottom_offset = 0;
+
+	int profile_idc = bs.u(8);
+	int constraint_set0_flag = bs.u(1);
+	int constraint_set1_flag = bs.u(1);
+	int constraint_set2_flag = bs.u(1);
+	int constraint_set3_flag = bs.u(1);
+	int constraint_set4_flag = bs.u(1);
+	int constraint_set5_flag = bs.u(1);
+	int reserved_zero_2bits = bs.u(2);
+	int level_idc = bs.u(8);
+	int seq_parameter_set_id = bs.ue();
+
+
+	if (profile_idc == 100 || profile_idc == 110 ||
+		profile_idc == 122 || profile_idc == 244 ||
+		profile_idc == 44 || profile_idc == 83 ||
+		profile_idc == 86 || profile_idc == 118)
+	{
+		int chroma_format_idc = bs.ue();
+
+		if (chroma_format_idc == 3)
+		{
+			int residual_colour_transform_flag = bs.u(1);
+		}
+		int bit_depth_luma_minus8 = bs.ue();
+		int bit_depth_chroma_minus8 = bs.ue();
+		int qpprime_y_zero_transform_bypass_flag = bs.u(1);
+		int seq_scaling_matrix_present_flag = bs.u(1);
+
+		if (seq_scaling_matrix_present_flag)
+		{
+			for (int i = 0; i < 8; i++)
+			{
+				int seq_scaling_list_present_flag = bs.u(1);
+				if (seq_scaling_list_present_flag)
+				{
+					int sizeOfScalingList = (i < 6) ? 16 : 64;
+					int lastScale = 8;
+					int nextScale = 8;
+					for (int j = 0; j < sizeOfScalingList; j++)
+					{
+						if (nextScale != 0)
+						{
+							int delta_scale = bs.se();
+							nextScale = (lastScale + delta_scale + 256) % 256;
+						}
+						lastScale = (nextScale == 0) ? lastScale : nextScale;
+					}
+				}
+			}
+		}
+	}
+
+	int log2_max_frame_num_minus4 = bs.ue();
+	int pic_order_cnt_type = bs.ue();
+	if (pic_order_cnt_type == 0)
+	{
+		int log2_max_pic_order_cnt_lsb_minus4 = bs.ue();
+	}
+	else if (pic_order_cnt_type == 1)
+	{
+		int delta_pic_order_always_zero_flag = bs.u(1);
+		int offset_for_non_ref_pic = bs.se();
+		int offset_for_top_to_bottom_field = bs.se();
+		int num_ref_frames_in_pic_order_cnt_cycle = bs.ue();
+		int i;
+		for (i = 0; i < num_ref_frames_in_pic_order_cnt_cycle; i++)
+		{
+			bs.se();
+			//sps->offset_for_ref_frame[ i ] = ReadSE();
+		}
+	}
+	int max_num_ref_frames = bs.ue();
+	int gaps_in_frame_num_value_allowed_flag = bs.u(1);
+	int pic_width_in_mbs_minus1 = bs.ue();
+	int pic_height_in_map_units_minus1 = bs.ue();
+	int frame_mbs_only_flag = bs.u(1);
+	if (!frame_mbs_only_flag)
+	{
+		int mb_adaptive_frame_field_flag = bs.u(1);
+	}
+	int direct_8x8_inference_flag = bs.u(1);
+	int frame_cropping_flag = bs.u(1);
+	if (frame_cropping_flag)
+	{
+		frame_crop_left_offset = bs.ue();
+		frame_crop_right_offset = bs.ue();
+		frame_crop_top_offset = bs.ue();
+		frame_crop_bottom_offset = bs.ue();
+	}
+	int vui_parameters_present_flag = bs.u(1);
+
+	width = ((pic_width_in_mbs_minus1 + 1) * 16) - frame_crop_bottom_offset * 2 - frame_crop_top_offset * 2;
+	height = ((2 - frame_mbs_only_flag)* (pic_height_in_map_units_minus1 + 1) * 16) - (frame_crop_right_offset * 2) - (frame_crop_left_offset * 2);
+}
+
+void h264_GetWidthHeight(bitstream_reader &bs, size_t &width, size_t &height)
+{
+	int profile_idc = bs.u(8);
+	int constraint_set0_flag = bs.u(1);
+	int constraint_set1_flag = bs.u(1);
+	int constraint_set2_flag = bs.u(1);
+	int constraint_set3_flag = bs.u(1);
+	int constraint_set4_flag = bs.u(1);
+	int constraint_set5_flag = bs.u(1);
+	int reserved_zero_2bits = bs.u(2);
+
+	int level_idc = bs.u(8);
+	int seq_parameter_set_id = bs.ue();
+
+	if (profile_idc == 100 || profile_idc == 110 || profile_idc == 122 ||
+		profile_idc == 244 || profile_idc == 44 || profile_idc == 83 ||		
+		profile_idc == 86 || profile_idc == 118 || profile_idc == 128 ||
+		profile_idc == 138 || profile_idc == 139 || profile_idc == 134 || profile_idc == 135)
+	{
+		int chroma_format_idc = bs.ue();
+		
+		if (chroma_format_idc == 3) {
+			int separate_colour_plane_flag = bs.u(1);
+			int for_debug = 0;
+		}
+
+		int bit_depth_luma_minus8 = bs.ue();
+		int bit_depth_chroma_minus8 = bs.ue();
+		int qpprime_y_zero_transform_bypass_flag = bs.u(1);		
+		int seq_scaling_matrix_present_flag = bs.u(1);
+
+		if (seq_scaling_matrix_present_flag) {
+
+			for (int i = 0; i < ((chroma_format_idc != 3) ? 8 : 12); i++) {
+
+				int seq_scaling_list_present_flag = bs.u(1);
+
+				if (seq_scaling_list_present_flag) {
+
+					int sizeOfScalingList = (i < 6) ? 16 : 64;
+					int lastScale = 8;
+					int nextScale = 8;
+
+					for (int j = 0; j < sizeOfScalingList; j++) {
+						if (nextScale != 0) {
+							int delta_scale = bs.se();
+							nextScale = (lastScale + delta_scale + 256) % 256;						
+						}
+						lastScale = (nextScale == 0) ? lastScale : nextScale;					
+					}
+				}
+			}		
+		}
+	}
+
+	int log2_max_frame_num_minus4 = bs.ue();
+	int pic_order_cnt_type = bs.ue();
+
+	if (pic_order_cnt_type == 0) {
+		int log2_max_pic_order_cnt_lsb_minus4 = bs.ue();
+		int for_debug = 0;
+	} else if (pic_order_cnt_type == 1) {
+		int delta_pic_order_always_zero_flag = bs.u(1);
+		int offset_for_non_ref_pic = bs.se();
+		int offset_for_top_to_bottom_field = bs.se();
+		int num_ref_frames_in_pic_order_cnt_cycle = bs.ue();
+
+		for (int i = 0; i < num_ref_frames_in_pic_order_cnt_cycle; i++) {
+			int offset_for_ref_frame = bs.se();
+			int for_debug = 0;
+		}		
+	}
+
+	int max_num_ref_frames = bs.ue();
+	int gaps_in_frame_num_value_allowed_flag = bs.u(1);
+	int pic_width_in_mbs_minus1 = bs.ue();
+	int pic_height_in_map_units_minus1 = bs.ue();
+	int frame_mbs_only_flag = bs.u(1);
+
+	if (!frame_mbs_only_flag) {
+		int mb_adaptive_frame_field_flag = bs.u(1);
+		int for_debug = 0;
+	}
+
+	int direct_8x8_inference_flag = bs.u(1);
+	int frame_cropping_flag = bs.u(1);
+
+	int frame_crop_left_offset = 0;
+	int frame_crop_right_offset = 0;
+	int frame_crop_top_offset = 0;
+	int frame_crop_bottom_offset = 0;
+
+	if (frame_cropping_flag) {
+		frame_crop_left_offset = bs.ue();
+		frame_crop_right_offset = bs.ue();
+		frame_crop_top_offset = bs.ue();
+		frame_crop_bottom_offset = bs.ue();
+	}
+
+	int vui_parameters_present_flag = bs.u(1);
+
+	width = ((pic_width_in_mbs_minus1 + 1) * 16) - frame_crop_bottom_offset * 2 - frame_crop_top_offset * 2;
+	height = ((2 - frame_mbs_only_flag)* (pic_height_in_map_units_minus1 + 1) * 16) - (frame_crop_right_offset * 2) - (frame_crop_left_offset * 2);
 }
