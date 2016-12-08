@@ -41,7 +41,7 @@ private:
 	DWORD error_code;
 	std::string error_description;
 public:
-	WinApiException(DWORD win_error_code) : error_code(win_error_code)
+	WinApiException() : error_code(::GetLastError())
 	{
 		if (error_code) {
 			char *str = NULL;
