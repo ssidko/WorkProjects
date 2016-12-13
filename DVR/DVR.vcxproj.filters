@@ -85,14 +85,8 @@
     <ClCompile Include="Timestamp.cpp">
       <Filter>Core</Filter>
     </ClCompile>
-    <ClCompile Include="dhfs.cpp">
-      <Filter>Core\DHFS</Filter>
-    </ClCompile>
     <ClCompile Include="File.cpp">
       <Filter>Utility</Filter>
-    </ClCompile>
-    <ClCompile Include="FileStorage.cpp">
-      <Filter>Core\DHFS</Filter>
     </ClCompile>
     <ClCompile Include="BufferedFile.cpp">
       <Filter>Utility</Filter>
@@ -179,17 +173,11 @@
     <ClInclude Include="GeneratedFiles\ui_mainwindow.h">
       <Filter>Generated Files</Filter>
     </ClInclude>
-    <ClInclude Include="dhfs.h">
-      <Filter>Core\DHFS</Filter>
-    </ClInclude>
     <ClInclude Include="Timestamp.h">
       <Filter>Core</Filter>
     </ClInclude>
     <ClInclude Include="File.h">
       <Filter>Utility</Filter>
-    </ClInclude>
-    <ClInclude Include="FileStorage.h">
-      <Filter>Core\DHFS</Filter>
     </ClInclude>
     <ClInclude Include="BufferedFile.h">
       <Filter>Utility</Filter>
