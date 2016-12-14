@@ -23,6 +23,17 @@ bool HIKV::FRAME_HEADER::IsValid(void)
 	return false;
 }
 
+void HIKV::Frame::Clear(void)
+{
+	offset = 0;
+	data.clear();
+}
+
+BYTE HIKV::Frame::Type(void)
+{
+	return ((FRAME_HEADER *)&data[0])->type;
+}
+
 void HIKV::FrameSequence::Clear(void)
 {
 	offset = 0;
@@ -38,6 +49,49 @@ LONGLONG HIKV::HikVolume::FindNextFrame(void)
 	LONGLONG cur_offset = 0;
 	BYTE signature[] = { 0x00, 0x00, 0x01, 0xBA };
 	return io.Find(signature, sizeof(signature));
+}
+
+bool HIKV::HikVolume::ReadFrame(Frame & frame)
+{
+	size_t header_size = 0;
+	size_t payload_size = 0;
+
+	frame.offset = io.Pointer();
+	frame.data.resize(sizeof(FRAME_HEADER), 0x00);
+	if (io.Read(&frame.data[0], sizeof(FRAME_HEADER)) == sizeof(FRAME_HEADER)) {
+		
+		FRAME_HEADER * header = (FRAME_HEADER *)&frame.data[0];
+		if (!header->IsValid()) { 
+			goto _error;
+		}
+		
+		if (header->type == 0xBA) {
+			header_size = sizeof(FRAME_HEADER);
+			payload_size = 16;
+		} else {
+			
+			frame.data.resize(frame.data.size() + sizeof(uint16_t), 0x00);
+			if (io.Read(&frame.data[sizeof(FRAME_HEADER)], sizeof(uint16_t)) != sizeof(uint16_t)) {
+				goto _error;
+			}
+
+			header_size = sizeof(FRAME_HEADER) + sizeof(uint16_t);
+			payload_size = _byteswap_ushort(*((uint16_t*)&frame.data[sizeof(FRAME_HEADER)]));
+		}
+
+		frame.data.resize(header_size + payload_size, 0x00);
+		if (io.Read(&frame.data[header_size], payload_size) != payload_size) {
+			goto _error;
+		}
+
+		return true;
+	}
+
+_error:
+	io.SetPointer(frame.offset + 1);
+	frame.Clear();	
+
+	return false;
 }
 
 

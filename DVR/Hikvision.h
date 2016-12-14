@@ -54,6 +54,14 @@ namespace HIKV
 		}
 	} FrameInfo;
 
+	struct Frame {
+		LONGLONG offset;
+		std::vector<BYTE> data;
+
+		void Clear(void);
+		BYTE Type(void);
+	};
+
 	typedef struct _FrameSequence {
 		LONGLONG offset;
 		DWORD frames_count;
@@ -75,6 +83,7 @@ namespace HIKV
 		void SetPointer(const LONGLONG &offset) { io.SetPointer(offset); }
 		LONGLONG Pointer(void) { return io.Pointer(); }
 		LONGLONG FindNextFrame(void);
+		bool ReadFrame(Frame &frame);
 		bool ReadFrame(std::vector<BYTE> &buffer, FrameInfo &frame);
 		bool NextFrameSequence(FrameSequence &sequence);
 		bool SaveFrameSequenceToFile(std::string &file_name, FrameSequence &sequence);

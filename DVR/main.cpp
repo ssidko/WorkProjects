@@ -29,7 +29,6 @@ inline void _trace(char *format, ...)
 #include "FileRecordRecovery.h"
 #include "Timestamp.h"
 #include "Hikvision.h"
-#include "dhfs.h"
 #include "WFS.h"
 #include "G2fdbVolume.h"
 #include "utility.h"
@@ -95,14 +94,89 @@ void h264_test(void)
 
 #include "DhfsVolume.h"
 #include "DhfsRecovery.h"
-#include "GetWidthheight.h"
+#include "GetWidthHeight.h"
 
 int main(int argc, char *argv[])
 {
 	QApplication a(argc, argv);
 	MainWindow w;
 
-	h264_test();
+	
+	//std::string hik_volume_name = "\\\\.\\physicaldrive0";
+	std::string hik_volume_name = "F:\\41045\\2016-11-15--16-27-04-=-2016-11-15--20-01-00--[752773096760]-4.h264";
+	HIKV::HikVolume vol(hik_volume_name);
+	W32Lib::FileEx out_file("F:\\41045\\frames.txt");
+	if (vol.Open() && out_file.Create()) {
+		
+		HIKV::Frame frame;
+		frame.data.reserve(0xffff);
+
+		//vol.SetPointer(156400LL * 512);
+		while(vol.FindNextFrame() != -1) {
+			while(vol.ReadFrame(frame)) {
+
+				std::string frame_info = "";
+
+				std::vector<char> buff(16, 0x00);
+
+				sprintf_s(&buff[0], buff.size(), "%010llX", frame.offset);
+
+				std::string offset_str;
+				offset_str += "[";
+				offset_str += buff.data();
+				offset_str += "] ";
+
+				frame_info += offset_str;
+
+				if (frame.data.size() == 0) {
+					continue;
+				}
+
+				sprintf_s(&buff[0], buff.size(), "0x%02X", frame.Type());
+
+				frame_info += "type: ";
+				frame_info += buff.data();
+
+
+				size_t pos = 0;
+				size_t count = 0;
+
+				switch (frame.Type()) {
+					case 0xBA:
+						pos = 4;
+						count = 16;
+						break;
+					case 0xBC:
+						pos = 6;
+						count = 16;
+						break;
+					case 0xBD:
+						pos = 6;
+						count = 16;
+						break;
+					case 0xE0:
+						pos = 6;
+						count = 16;
+						break;
+				}
+
+				for (int i = pos; ;) {
+				
+				
+				
+				}
+
+
+
+				frame_info += "\n";
+
+
+				
+			
+			}		
+		}
+	}
+
 
 	w.show();
 	return a.exec();
