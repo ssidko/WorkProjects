@@ -189,7 +189,7 @@ bool HIKV::HikVolume::SaveFrameSequenceToFile(std::string &file_name, FrameSeque
 			if (sequence.start_time.Seconds() == 0) {
 				sequence.start_time = frame.time_stamp;
 			}
-			sequence.end_time = frame.time_stamp;		
+			sequence.end_time = frame.time_stamp;
 		}
 	
 		++sequence.frames_count;

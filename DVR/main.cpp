@@ -96,12 +96,23 @@ void h264_test(void)
 #include "DhfsRecovery.h"
 #include "GetWidthHeight.h"
 
+void ToHexString(uint8_t *buff, size_t count, std::string &str)
+{
+	char ch[4] = { 0 };
+	for (int i = 0; i < count; i++) {
+		sprintf_s(ch, sizeof(ch), "%02X", buff[i]);
+		str += " ";
+		str += ch;
+	}
+}
+
+
 int main(int argc, char *argv[])
 {
 	QApplication a(argc, argv);
 	MainWindow w;
 
-	
+
 	//std::string hik_volume_name = "\\\\.\\physicaldrive0";
 	std::string hik_volume_name = "F:\\41045\\2016-11-15--16-27-04-=-2016-11-15--20-01-00--[752773096760]-4.h264";
 	HIKV::HikVolume vol(hik_volume_name);
@@ -119,7 +130,7 @@ int main(int argc, char *argv[])
 
 				std::vector<char> buff(16, 0x00);
 
-				sprintf_s(&buff[0], buff.size(), "%010llX", frame.offset);
+				sprintf_s(&buff[0], buff.size(), "%011llX", frame.offset);
 
 				std::string offset_str;
 				offset_str += "[";
@@ -136,44 +147,42 @@ int main(int argc, char *argv[])
 
 				frame_info += "type: ";
 				frame_info += buff.data();
-
+				frame_info += "; ";
 
 				size_t pos = 0;
 				size_t count = 0;
 
-				switch (frame.Type()) {
-					case 0xBA:
-						pos = 4;
-						count = 16;
-						break;
-					case 0xBC:
-						pos = 6;
-						count = 16;
-						break;
-					case 0xBD:
-						pos = 6;
-						count = 16;
-						break;
-					case 0xE0:
-						pos = 6;
-						count = 16;
-						break;
+				if (frame.Type() == 0xBA) {
+					pos = 4;
+				} else {
+					pos = 6;
 				}
 
-				for (int i = pos; ;) {
-				
-				
-				
+				//if (frame.Type() != 0xBC) {
+				//	continue;
+				//}
+
+				size_t tail = frame.data.size() - pos;
+
+				count = tail < 32 ? tail : 32;
+
+				assert(pos + count <= frame.data.size());
+
+				frame_info += "data: [";
+
+				ToHexString(&frame.data[pos], count, frame_info);
+
+				frame_info += " ]";
+
+				if (frame.Type() == 0xBA) {
+					frame_info += " ####### ";
 				}
-
-
 
 				frame_info += "\n";
 
-
-				
+				out_file.Write(&frame_info[0], frame_info.length());
 			
-			}		
+			}
 		}
 	}
 
