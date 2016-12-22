@@ -106,7 +106,6 @@ void ToHexString(uint8_t *buff, size_t count, std::string &str)
 	}
 }
 
-
 int main(int argc, char *argv[])
 {
 	QApplication a(argc, argv);
