@@ -6,6 +6,7 @@
 #include <fstream>
 #include <iostream>
 #include <ios>
+#include <assert.h>
 
 bool HIKV::FRAME_HEADER::IsValid(void)
 {
@@ -32,6 +33,38 @@ void HIKV::Frame::Clear(void)
 BYTE HIKV::Frame::Type(void)
 {
 	return ((FRAME_HEADER *)&data[0])->type;
+}
+
+dvr::Timestamp HIKV::Frame::TimeStamp()
+{
+	if (Type() == 0xBC) {
+		size_t data_pos = sizeof(FRAME_HEADER) + sizeof(WORD);
+		if ((*(WORD *)(&data[data_pos + 6]) == 0x4B48) && (*(WORD *)(&data[data_pos + 22]) == 0x4B48)) {
+			DWORD raw = _byteswap_ulong(*((DWORD *)&data[data_pos + 10]));
+			TIMESTAMP *stmp = (TIMESTAMP *)&raw;
+			return stmp->TimeStamp();
+		}
+	}
+	return dvr::Timestamp();
+}
+
+size_t HIKV::Frame::H264DataOffset(void)
+{
+	assert(Type() == 0xE0);
+
+	FRAME_TYPE_0E *header = (FRAME_TYPE_0E *)&data[0];
+	return (sizeof(FRAME_TYPE_0E) + header->meta_data_size);
+}
+
+size_t HIKV::Frame::H264DataSize(void)
+{
+	if (Type() == 0xE0) {
+		FRAME_TYPE_0E *header = (FRAME_TYPE_0E *)&data[0];
+		if (data.size() >= H264DataOffset()) {
+			return data.size() - H264DataOffset();
+		}
+	}
+	return 0;
 }
 
 void HIKV::FrameSequence::Clear(void)
@@ -77,6 +110,9 @@ bool HIKV::HikVolume::ReadFrame(Frame & frame)
 
 			header_size = sizeof(FRAME_HEADER) + sizeof(uint16_t);
 			payload_size = _byteswap_ushort(*((uint16_t*)&frame.data[sizeof(FRAME_HEADER)]));
+			if (payload_size == 0) {
+				goto _error;
+			}
 		}
 
 		frame.data.resize(header_size + payload_size, 0x00);
@@ -165,7 +201,8 @@ bool HIKV::HikVolume::NextFrameSequence(FrameSequence &sequence)
 
 bool HIKV::HikVolume::SaveFrameSequenceToFile(std::string &file_name, FrameSequence &sequence)
 {
-	FrameInfo frame;
+	//FrameInfo frame;
+	Frame frame;
 	size_t buffer_max_size = 100 * 1024 * 1024;
 	LONGLONG last_frame_offset = 0;
 
@@ -177,7 +214,8 @@ bool HIKV::HikVolume::SaveFrameSequenceToFile(std::string &file_name, FrameSeque
 	frame.Clear();
 	sequence.Clear();
 
-	while (ReadFrame(sequence.buffer, frame)) {
+	//while (ReadFrame(sequence.buffer, frame)) {
+	while (ReadFrame(frame)) {
 
 		last_frame_offset = frame.offset;
 
@@ -185,11 +223,17 @@ bool HIKV::HikVolume::SaveFrameSequenceToFile(std::string &file_name, FrameSeque
 			sequence.offset = frame.offset;
 		}
 		
-		if (frame.time_stamp.Seconds() != 0) {
+		if (frame.TimeStamp().Seconds() != 0) {
 			if (sequence.start_time.Seconds() == 0) {
-				sequence.start_time = frame.time_stamp;
+				sequence.start_time = frame.TimeStamp();
 			}
-			sequence.end_time = frame.time_stamp;
+			sequence.end_time = frame.TimeStamp();
+		}
+
+		if (frame.Type() == 0xE0) {
+			size_t prev_size = sequence.buffer.size();
+			sequence.buffer.resize(prev_size + frame.H264DataSize());
+			std::memcpy(&sequence.buffer[prev_size], &frame.data[frame.H264DataOffset()], frame.H264DataSize());		
 		}
 	
 		++sequence.frames_count;
@@ -264,13 +308,13 @@ int HIKV::StartRecovery(const std::string &dhfs_volume, const std::string &out_d
 		LONGLONG file_counter = 0;
 		FrameInfo frame;
 		FrameSequence sequence;
-		std::string file_name = out_directory + "temp";
+		std::string file_name = out_directory + "temp" + ".tmp";
 
 		//vol.SetPointer(353168518*512LL);
 
 		while ((offset = vol.FindNextFrame()) != -1) {
 
-			file_name = out_directory + std::to_string(offset) + ".tmp";
+			//file_name = out_directory + std::to_string(offset) + ".tmp";
 
 			if (!vol.SaveFrameSequenceToFile(file_name, sequence)) {
 
@@ -279,18 +323,18 @@ int HIKV::StartRecovery(const std::string &dhfs_volume, const std::string &out_d
 			} else if (sequence.end_time.Seconds() - sequence.start_time.Seconds()) {
 				
 				std::stringstream new_name;
-				new_name << out_directory << sequence.start_time.ToString() << "-=-" << sequence.end_time.ToString() << "--[" << sequence.offset << "]" << ".h264";
+				new_name << out_directory << "[" << sequence.start_time.ToString() << "-=-" << sequence.end_time.ToString() << "]" << "--[" << sequence.offset << "]" << ".avi";
 
-				W32Lib::FileEx out_file(file_name.c_str());
-				if (out_file.Open()) {					
-					out_file.Close();
-					bool result = out_file.Rename(new_name.str().c_str());
-					if (!result) {
-						error = ::GetLastError();
-					}	
-				}
+				//W32Lib::FileEx out_file(file_name.c_str());
+				//if (out_file.Open()) {					
+				//	out_file.Close();
+				//	bool result = out_file.Rename(new_name.str().c_str());
+				//	if (!result) {
+				//		error = ::GetLastError();
+				//	}	
+				//}
 
-				//::Convert2Avi(file_name, new_name.str());
+				::Convert2Avi(file_name, new_name.str());
 				//::ConvertToMkv(file_name, new_name.str());
 
 			} else {

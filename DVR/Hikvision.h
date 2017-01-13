@@ -29,6 +29,13 @@ namespace HIKV
 		bool IsValid(void);
 	} FRAME_HEADER;
 
+	typedef struct _FRAME_TYPE_0E {
+		FRAME_HEADER header;
+		uint16_t data_size;
+		uint16_t flags;
+		uint8_t meta_data_size;
+	} FRAME_TYPE_0E;
+
 #pragma pack(pop)
 
 	typedef enum {
@@ -60,6 +67,9 @@ namespace HIKV
 
 		void Clear(void);
 		BYTE Type(void);
+		Timestamp TimeStamp(void);
+		size_t H264DataOffset(void);
+		size_t H264DataSize(void);
 	};
 
 	typedef struct _FrameSequence {

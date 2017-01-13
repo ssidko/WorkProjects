@@ -112,10 +112,11 @@ int main(int argc, char *argv[])
 	MainWindow w;
 
 
+	/*
 	//std::string hik_volume_name = "\\\\.\\physicaldrive0";
 	std::string hik_volume_name = "F:\\41045\\2016-11-15--16-27-04-=-2016-11-15--20-01-00--[752773096760]-4.h264";
 	HIKV::HikVolume vol(hik_volume_name);
-	W32Lib::FileEx out_file("F:\\41045\\frames.txt");
+	W32Lib::FileEx out_file("F:\\41045\\frames_0xE0.txt");
 	if (vol.Open() && out_file.Create()) {
 		
 		HIKV::Frame frame;
@@ -151,15 +152,26 @@ int main(int argc, char *argv[])
 				size_t pos = 0;
 				size_t count = 0;
 
+
 				if (frame.Type() == 0xBA) {
 					pos = 4;
 				} else {
 					pos = 6;
 				}
 
-				//if (frame.Type() != 0xBC) {
-				//	continue;
-				//}
+				if (frame.Type() == 0xBC) {
+
+					dvr::Timestamp stamp = frame.TimeStamp();
+
+					continue;
+				}
+
+				if (frame.Type() != 0xE0) {
+					continue;
+				}
+
+
+				HIKV::FRAME_TYPE_0E *frm = (HIKV::FRAME_TYPE_0E *)&frame.data[0];
 
 				size_t tail = frame.data.size() - pos;
 
@@ -184,6 +196,7 @@ int main(int argc, char *argv[])
 			}
 		}
 	}
+	*/
 
 
 	w.show();
