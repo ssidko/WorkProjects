@@ -323,7 +323,7 @@ int HIKV::StartRecovery(const std::string &dhfs_volume, const std::string &out_d
 			} else if (sequence.end_time.Seconds() - sequence.start_time.Seconds()) {
 				
 				std::stringstream new_name;
-				new_name << out_directory << "[" << sequence.start_time.ToString() << "-=-" << sequence.end_time.ToString() << "]" << "--[" << sequence.offset << "]" << ".avi";
+				new_name << out_directory << "[ " << sequence.start_time.ToString() << " -=- " << sequence.end_time.ToString() << " ]" << "--[" << sequence.offset << "]" << ".avi";
 
 				//W32Lib::FileEx out_file(file_name.c_str());
 				//if (out_file.Open()) {					
