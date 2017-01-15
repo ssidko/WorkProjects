@@ -117,6 +117,7 @@
     <ClCompile Include="Hikvision.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="mainwindow.cpp" />
+    <ClCompile Include="MyPrintf.cpp" />
     <ClCompile Include="Orbita.cpp" />
     <ClCompile Include="Raid5.cpp" />
     <ClCompile Include="TestWidget.cpp" />
@@ -172,6 +173,7 @@
     <ClInclude Include="GetWidthheight.h" />
     <ClInclude Include="h264_ps.h" />
     <ClInclude Include="Hikvision.h" />
+    <ClInclude Include="MyPrintf.h" />
     <ClInclude Include="Ntfs.h" />
     <ClInclude Include="Orbita.h" />
     <ClInclude Include="Raid5.h" />

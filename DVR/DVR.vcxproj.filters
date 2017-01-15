@@ -157,6 +157,7 @@
     <ClCompile Include="GetWidthheight.cpp">
       <Filter>h264</Filter>
     </ClCompile>
+    <ClCompile Include="MyPrintf.cpp" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="mainwindow.ui">
@@ -263,6 +264,7 @@
     <ClInclude Include="GetWidthheight.h">
       <Filter>h264</Filter>
     </ClInclude>
+    <ClInclude Include="MyPrintf.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="DVR.rc" />

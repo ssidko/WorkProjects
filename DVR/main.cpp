@@ -106,11 +106,17 @@ void ToHexString(uint8_t *buff, size_t count, std::string &str)
 	}
 }
 
+#include "MyPrintf.h"
+
 int main(int argc, char *argv[])
 {
 	QApplication a(argc, argv);
 	MainWindow w;
 
+	char buff[32] = { 0 };
+
+	MyPrintf(buff, sizeof(buff), "test %% %s %d %01d %10d %012", "str1", 137, "string");
+	
 	w.show();
 	return a.exec();
 }
