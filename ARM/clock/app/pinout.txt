@@ -1,0 +1,9 @@
+*** LCD (SSD1309) ***
+SCK			PA-5
+MOSI		PA-7
+RESET		PA-2
+D\C			PA-3
+CS			PA-4
+
+*** LED ***
+PC-12
