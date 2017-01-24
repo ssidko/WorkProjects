@@ -1,9 +1,19 @@
-#include "lcd_ssd1306.h"
+#include "ssd1306.h"
 #include "spi.h"
 #include "gpio.h"
+#include "delay.h"
+
+#define SSD1306_RESET_PIN					Pin2
+#define SSD1306_DC_PIN						Pin3
 
 void ssd1306_GpioInit(void)
 {
+	// RESET		PA-2
+	// DC			PA-3
+	// SCK			PA-5
+	// MOSI			PA-7
+	// CS			GND
+
 	GPIOA_ClockEnable();
 
 	// PA-5 - LCD_SCK; PA-7 - LCD_MOSI
@@ -20,25 +30,36 @@ void ssd1306_GpioInit(void)
 	GPIOA->CRL |= ((Out_2Mhz|Out_PushPull) << (Pin2 * 4)) |
 				  ((Out_2Mhz|Out_PushPull) << (Pin3 * 4));
 
-
 	// Alternate function I/O clock enable
 	RCC->APB2ENR |= RCC_APB2ENR_AFIOEN;
 
-	//SPI-1 clock ENABLE
+	//SPI1 clock ENABLE
 	SPI1_ClockEnable();
 
-	SPI1->CR1 |= 0x4004;
-	//SPI1->CR1 |= Unidirect_TwoWire|Output_Enable|CRC_Disable|Frame_8bit|FullDuplex|MSB_First|Fpclk_2|SPI_Master|CPOL_0|CPHA_0;
+	// Reset SPI1 for defaults
+	RCC->APB2RSTR |=  RCC_APB2RSTR_SPI1RST;
+	RCC->APB2RSTR &=  ~RCC_APB2RSTR_SPI1RST;
 
-	// set CR1->SPE ENABLED
+	//SPI1->CR1 |= 0x4004;
+	SPI1->CR1 |= CPHA_0|CPOL_0|SPI_Master|Fpclk_2|MSB_First|Frame_8bit;
+
 	SPI_Enable(SPI1);
-
 }
 
 void ssd1306_Init(uint32_t width, uint32_t height)
 {
+	ssd1306_GpioInit();
+	Delay_ms(10);
+
+	// SSD1306 Reset
+	GPIO_PinSet(GPIOA, SSD1306_RESET_PIN);
+	Delay_ms(10);
+	GPIO_PinReset(GPIOA, SSD1306_RESET_PIN);
+	Delay_ms(10);
+	GPIO_PinSet(GPIOA, SSD1306_RESET_PIN);
+
 	// LCD_DC to low for command
-	GPIO_PinReset(GPIOA, 3);
+	GPIO_PinReset(GPIOA, SSD1306_DC_PIN);
 
 	// sleep
 	SPI_SendByte(SPI1, 0xAF);
@@ -90,5 +111,82 @@ void ssd1306_Init(uint32_t width, uint32_t height)
 	// Display ON
 	SPI_SendByte(SPI1, 0xAF);
 
-	GPIO_PinSet(GPIOA, 3);
+	Delay_ms(100);
+
+	// SSD1306 DC to high; Ready for Data
+	GPIO_PinSet(GPIOA, SSD1306_DC_PIN);
 }
+
+void ssd1306_Sleep(void)
+{
+	// LCD_DC to low for command
+	GPIO_PinReset(GPIOA, SSD1306_DC_PIN);
+
+	SPI_SendByte(SPI1, 0xAE);
+
+	// SSD1306 DC to high; Ready for Data
+	GPIO_PinSet(GPIOA, SSD1306_DC_PIN);
+}
+
+void ssd1306_Wakeup(void)
+{
+	// LCD_DC to low for command
+	GPIO_PinReset(GPIOA, SSD1306_DC_PIN);
+
+	SPI_SendByte(SPI1, 0xAF);
+
+	// SSD1306 DC to high; Ready for Data
+	GPIO_PinSet(GPIOA, SSD1306_DC_PIN);
+}
+
+void ssd1306_UpdateScreen(uint8_t *screen_buffer, uint32_t size)
+{
+	// SSD1306 DC to high; Ready for Data
+	GPIO_PinSet(GPIOA, SSD1306_DC_PIN);
+
+	for (uint32_t i = 0; i < size; i++) {
+		SPI_SendByte(SPI1, *screen_buffer++);
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

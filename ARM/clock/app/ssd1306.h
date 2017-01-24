@@ -7,10 +7,17 @@
 typedef struct {
 	uint32_t width;
 	uint32_t height;
-
 } ssd1306_driver;
 
-void ssd1306_GpioInit(void);
+typedef struct {
+	uint8_t *buff;
+	uint32_t width;
+	uint32_t height;
+} FrameBuffer;
+
 void ssd1306_Init(uint32_t width, uint32_t height);
+void ssd1306_Sleep(void);
+void ssd1306_Wakeup(void);
+void ssd1306_UpdateScreen(uint8_t *screen_buffer, uint32_t size);
 
 #endif // _SSD1306_H
