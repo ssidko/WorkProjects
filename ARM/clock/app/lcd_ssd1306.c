@@ -4,6 +4,34 @@
 
 void ssd1306_GpioInit(void)
 {
+	GPIOA_ClockEnable();
+
+	// PA-5 - LCD_SCK; PA-7 - LCD_MOSI
+	// MODE: 0b0011: Output mode, max speed 50 MHz.
+	// CNF:  0b1000: Alternate function output Push-pull
+	GPIOA->CRL &= ~((0x0F << (Pin5 * 4)) | (0x0F << (Pin7 * 4)));
+	GPIOA->CRL |= ((Out_50Mhz|Out_AF_PushPull) << (Pin5 * 4)) |
+				  ((Out_50Mhz|Out_AF_PushPull) << (Pin7 * 4));
+
+	// PA-2 - LCD_RESET; PA-3 - LCD_DC
+	// MODE: 0b0010: Output mode, max speed 2 MHz.
+	// CNF:  0b0000: General purpose output push-pull
+	GPIOA->CRL &= ~((0x0F << (Pin2 * 4)) | (0x0F << (Pin3 * 4)));
+	GPIOA->CRL |= ((Out_2Mhz|Out_PushPull) << (Pin2 * 4)) |
+				  ((Out_2Mhz|Out_PushPull) << (Pin3 * 4));
+
+
+	// Alternate function I/O clock enable
+	RCC->APB2ENR |= RCC_APB2ENR_AFIOEN;
+
+	//SPI-1 clock ENABLE
+	SPI1_ClockEnable();
+
+	SPI1->CR1 |= 0x4004;
+	//SPI1->CR1 |= Unidirect_TwoWire|Output_Enable|CRC_Disable|Frame_8bit|FullDuplex|MSB_First|Fpclk_2|SPI_Master|CPOL_0|CPHA_0;
+
+	// set CR1->SPE ENABLED
+	SPI_Enable(SPI1);
 
 }
 

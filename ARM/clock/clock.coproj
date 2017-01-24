@@ -87,10 +87,10 @@
     <File name="app/delay.h" path="app/delay.h" type="1"/>
     <File name="CMSIS/core/core_cm0.h" path="app/CMSIS/core/core_cm0.h" type="1"/>
     <File name="CMSIS/core/core_cmFunc.h" path="app/CMSIS/core/core_cmFunc.h" type="1"/>
+    <File name="CMSIS/core/cmsis_armcc_V6.h" path="app/CMSIS/core/cmsis_armcc_V6.h" type="1"/>
+    <File name="CMSIS" path="" type="2"/>
     <File name="pinout.txt" path="app/pinout.txt" type="1"/>
     <File name="fonts/f10x16f.c" path="app/fonts/f10x16f.c" type="1"/>
-    <File name="CMSIS" path="" type="2"/>
-    <File name="CMSIS/core/cmsis_armcc_V6.h" path="app/CMSIS/core/cmsis_armcc_V6.h" type="1"/>
     <File name="CMSIS/core/core_cm0plus.h" path="app/CMSIS/core/core_cm0plus.h" type="1"/>
     <File name="fonts/font.h" path="app/fonts/font.h" type="1"/>
     <File name="app/InteraptHendelrs.c" path="app/InteraptHendelrs.c" type="1"/>
@@ -108,8 +108,8 @@
     <File name="CMSIS/startup" path="" type="2"/>
     <File name="CMSIS/stm32f1xx.h" path="app/CMSIS/stm32f1xx.h" type="1"/>
     <File name="utility/gpio.c" path="app/gpio.c" type="1"/>
-    <File name="CMSIS/stm32f103x6.h" path="app/CMSIS/stm32f103x6.h" type="1"/>
     <File name="CMSIS/core/core_cmSimd.h" path="app/CMSIS/core/core_cmSimd.h" type="1"/>
+    <File name="CMSIS/stm32f103x6.h" path="app/CMSIS/stm32f103x6.h" type="1"/>
     <File name="fonts/f6x8m.c" path="app/fonts/f6x8m.c" type="1"/>
     <File name="CMSIS/core/core_sc000.h" path="app/CMSIS/core/core_sc000.h" type="1"/>
     <File name="CMSIS/system_stm32f1xx.h" path="app/CMSIS/system_stm32f1xx.h" type="1"/>

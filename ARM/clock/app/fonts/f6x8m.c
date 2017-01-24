@@ -8,14 +8,13 @@
 //------------------------------------------------------------------------------
 #include "font.h"
 
+
 /*
 // Таблица содержит латинские и русские символы (cp1251) и большинство спец. символов
 // Первые 2 байта символа - ширина и высота (для моноширинных шрифтов - константы)
-const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {       
+const uint8_t f6x8m_table[f6x8m_NOFCHARS][8] = {
 // 0x00
   {
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    ________,
@@ -26,8 +25,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0x01
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    ________,
@@ -38,8 +35,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0x02
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    ________,
@@ -50,8 +45,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0x03
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    ________,
@@ -62,8 +55,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0x04
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    ________,
@@ -74,8 +65,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0x05
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    ________,
@@ -86,8 +75,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0x06
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    ________,
@@ -98,8 +85,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0x07
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    ________,
@@ -110,8 +95,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0x08
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    ________,
@@ -122,8 +105,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0x09
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    ________,
@@ -134,8 +115,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0x0A
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    ________,
@@ -146,8 +125,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0x0B
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    ________,
@@ -158,8 +135,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0x0C
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    ________,
@@ -170,8 +145,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0x0D
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    ________,
@@ -182,8 +155,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0x0E
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    ________,
@@ -194,8 +165,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0x0F
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    ________,
@@ -206,8 +175,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0x10
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    ________,
@@ -218,8 +185,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0x11
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    ________,
@@ -230,8 +195,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0x12
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    ________,
@@ -242,8 +205,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0x13
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    ________,
@@ -254,8 +215,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0x14
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    ________,
@@ -266,8 +225,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0x15
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    ________,
@@ -278,8 +235,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0x16
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    ________,
@@ -290,8 +245,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0x17
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    ________,
@@ -302,8 +255,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0x18
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    ________,
@@ -314,8 +265,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0x19
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    ________,
@@ -326,8 +275,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0x1A
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    ________,
@@ -338,8 +285,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0x1B
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    ________,
@@ -350,8 +295,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0x1C
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    ________,
@@ -362,8 +305,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0x1D
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    ________,
@@ -374,8 +315,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0x1E
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    ________,
@@ -386,8 +325,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0x1F
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    ________,
@@ -398,8 +335,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0x20
   ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    ________,
@@ -410,8 +345,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0x21
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    __X_____,
    __X_____,
    __X_____,
@@ -422,8 +355,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0x22
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    _X__X___,
    _X__X___,
    _X__X___,
@@ -435,8 +366,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
 
 // 0x23
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    _X_X____,
    _X_X____,
    XXXXX___,
@@ -448,8 +377,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
 
 // 0x24
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    __X_____,
    _XXXX___,
    X_X_____,
@@ -460,8 +387,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
 
 // 0x25
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    XX______,
    XX__X___,
    ___X____,
@@ -473,8 +398,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
 
 // 0x26
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    _XX_____,
    X__X____,
    X_X_____,
@@ -486,8 +409,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
 
 // 0x27
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    _XX_____,
    __X_____,
    _X______,
@@ -499,8 +420,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
 
 // 0x28
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ___X____,
    __X_____,
    _X______,
@@ -511,8 +430,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0x29
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    _X______,
    __X_____,
    ___X____,
@@ -523,8 +440,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0x2A
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    _X_X____,
    __X_____,
@@ -535,8 +450,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0x2B
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    __X_____,
    __X_____,
@@ -547,8 +460,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0x2C
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    ________,
@@ -559,8 +470,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    _X______}
 // 0x2D
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    ________,
@@ -571,8 +480,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0x2E
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    ________,
@@ -583,8 +490,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0x2F
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ____X___,
    ___X____,
@@ -596,8 +501,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
 
 // 0x30
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    _XXX____,
    X___X___,
    X__XX___,
@@ -609,8 +512,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
 
 // 0x31
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    __X_____,
    _XX_____,
    __X_____,
@@ -622,8 +523,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
 
 // 0x32
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    _XXX____,
    X___X___,
    ____X___,
@@ -635,8 +534,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
 
 // 0x33
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    _XXX____,
    X___X___,
    ____X___,
@@ -647,8 +544,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0x34
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ___X____,
    __XX____,
    _X_X____,
@@ -659,8 +554,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0x35
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    XXXXX___,
    X_______,
    XXXX____,
@@ -671,8 +564,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0x36
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    __XX____,
    _X______,
    X_______,
@@ -683,8 +574,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0x37
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    XXXXX___,
    ____X___,
    ___X____,
@@ -695,8 +584,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0x38
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    _XXX____,
    X___X___,
    X___X___,
@@ -707,8 +594,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0x39
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    _XXX____,
    X___X___,
    X___X___,
@@ -719,8 +604,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0x3A
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    _XX_____,
    _XX_____,
@@ -731,8 +614,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0x3B
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    _XX_____,
@@ -743,8 +624,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    _X______}
 // 0x3C
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ___X____,
    __X_____,
    _X______,
@@ -755,8 +634,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0x3D
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    XXXXX___,
@@ -767,8 +644,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0x3E
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    X_______,
    _X______,
    __X_____,
@@ -779,8 +654,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0x3F
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    _XXX____,
    X___X___,
    ____X___,
@@ -791,8 +664,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0x40
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    _XXX____,
    X___X___,
    ____X___,
@@ -803,8 +674,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0x41
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    _XXX____,
    X___X___,
    X___X___,
@@ -815,8 +684,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0x42
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    XXXX____,
    X___X___,
    X___X___,
@@ -827,8 +694,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0x43
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    _XXX____,
    X___X___,
    X_______,
@@ -839,8 +704,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0x44
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    XXX_____,
    X__X____,
    X___X___,
@@ -851,8 +714,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0x45
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    XXXXX___,
    X_______,
    X_______,
@@ -863,8 +724,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0x46
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    XXXXX___,
    X_______,
    X_______,
@@ -875,8 +734,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0x47
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    _XXX____,
    X___X___,
    X_______,
@@ -887,8 +744,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0x48
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    X___X___,
    X___X___,
    X___X___,
@@ -899,8 +754,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0x49
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    _XXX____,
    __X_____,
    __X_____,
@@ -911,8 +764,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0x4A
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    __XXX___,
    ___X____,
    ___X____,
@@ -923,8 +774,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0x4B
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    X___X___,
    X__X____,
    X_X_____,
@@ -935,8 +784,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0x4C
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    X_______,
    X_______,
    X_______,
@@ -947,8 +794,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0x4D
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    X___X___,
    XX_XX___,
    X_X_X___,
@@ -959,8 +804,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0x4E
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    X___X___,
    X___X___,
    XX__X___,
@@ -971,8 +814,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0x4F
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    _XXX____,
    X___X___,
    X___X___,
@@ -983,8 +824,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0x50
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    XXXX____,
    X___X___,
    X___X___,
@@ -995,8 +834,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0x51
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    _XXX____,
    X___X___,
    X___X___,
@@ -1007,8 +844,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0x52
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    XXXX____,
    X___X___,
    X___X___,
@@ -1019,8 +854,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0x53
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    _XXX____,
    X___X___,
    X_______,
@@ -1031,8 +864,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0x54
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    XXXXX___,
    __X_____,
    __X_____,
@@ -1043,8 +874,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0x55
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    X___X___,
    X___X___,
    X___X___,
@@ -1055,8 +884,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0x56
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    X___X___,
    X___X___,
    X___X___,
@@ -1067,8 +894,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0x57
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    X___X___,
    X___X___,
    X___X___,
@@ -1079,8 +904,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0x58
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    X___X___,
    X___X___,
    _X_X____,
@@ -1091,8 +914,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0x59
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    X___X___,
    X___X___,
    X___X___,
@@ -1103,8 +924,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0x5A
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    XXXXX___,
    ____X___,
    ___X____,
@@ -1115,8 +934,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0x5B
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    _XXX____,
    _X______,
    _X______,
@@ -1127,8 +944,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0x5C
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    X_______,
    _X______,
@@ -1139,8 +954,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0x5D
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    _XXX____,
    ___X____,
    ___X____,
@@ -1151,8 +964,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0x5E
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    __X_____,
    _X_X____,
    X___X___,
@@ -1163,8 +974,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0x5F
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    ________,
@@ -1175,8 +984,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    XXXXX___}
 // 0x60
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    _X______,
    __X_____,
    ___X____,
@@ -1187,8 +994,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0x61
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    _XXX____,
@@ -1199,8 +1004,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0x62
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    X_______,
    X_______,
    X_XX____,
@@ -1211,8 +1014,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0x63
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    _XXX____,
@@ -1223,8 +1024,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0x64
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ____X___,
    ____X___,
    _XX_X___,
@@ -1235,8 +1034,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0x65
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    _XXX____,
@@ -1247,8 +1044,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0x66
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    __XX____,
    _X__X___,
    _X______,
@@ -1259,8 +1054,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0x67
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    _XXXX___,
@@ -1271,8 +1064,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    _XXX____}
 // 0x68
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    X_______,
    X_______,
    X_XX____,
@@ -1283,8 +1074,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0x69
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    __X_____,
    ________,
    _XX_____,
@@ -1295,8 +1084,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0x6A
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ___X____,
    ________,
    __XX____,
@@ -1307,8 +1094,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    _XX_____}
 // 0x6B
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    X_______,
    X_______,
    X__X____,
@@ -1319,8 +1104,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0x6C
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    _XX_____,
    __X_____,
    __X_____,
@@ -1331,8 +1114,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0x6D
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    XX_X____,
@@ -1343,8 +1124,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0x6E
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    X_XX____,
@@ -1355,8 +1134,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0x6F
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    _XXX____,
@@ -1367,8 +1144,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0x70
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    XXXX____,
@@ -1379,8 +1154,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    X_______}
 // 0x71
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    _XXXX___,
@@ -1391,8 +1164,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ____X___}
 // 0x72
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    X_XX____,
@@ -1403,8 +1174,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0x73
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    _XXXX___,
@@ -1415,8 +1184,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0x74
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    _X______,
    _X______,
    XXX_____,
@@ -1427,8 +1194,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0x75
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    X___X___,
@@ -1439,8 +1204,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0x76
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    X___X___,
@@ -1451,8 +1214,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0x77
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    X___X___,
@@ -1463,8 +1224,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0x78
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    X___X___,
@@ -1475,8 +1234,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0x79
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    X___X___,
@@ -1487,8 +1244,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    _XXX____}
 // 0x7A
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    XXXXX___,
@@ -1499,8 +1254,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0x7B
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ___X____,
    __X_____,
    __X_____,
@@ -1511,8 +1264,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0x7C
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    __X_____,
    __X_____,
    __X_____,
@@ -1523,8 +1274,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0x7D
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    _X______,
    __X_____,
    __X_____,
@@ -1535,8 +1284,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0x7E
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    _XX_X___,
    X__X____,
    ________,
@@ -1547,8 +1294,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0x7F
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    ________,
@@ -1559,8 +1304,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0x80
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    ________,
@@ -1571,8 +1314,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0x81
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    ________,
@@ -1583,8 +1324,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0x82
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    ________,
@@ -1595,8 +1334,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0x83
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    ________,
@@ -1607,8 +1344,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0x84
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    ________,
@@ -1619,8 +1354,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0x85
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    ________,
@@ -1631,8 +1364,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0x86
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    ________,
@@ -1643,8 +1374,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0x87
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    ________,
@@ -1655,8 +1384,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0x88
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    ________,
@@ -1667,8 +1394,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0x89
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    ________,
@@ -1679,8 +1404,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0x8A
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    ________,
@@ -1691,8 +1414,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0x8B
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    ________,
@@ -1703,8 +1424,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0x8C
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    ________,
@@ -1715,8 +1434,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0x8D
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    ________,
@@ -1727,8 +1444,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0x8E
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    ________,
@@ -1739,8 +1454,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0x8F
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    ________,
@@ -1751,8 +1464,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0x90
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    ________,
@@ -1763,8 +1474,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0x91
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    ________,
@@ -1775,8 +1484,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0x92
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    ________,
@@ -1787,8 +1494,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0x93
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    ________,
@@ -1799,8 +1504,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0x94
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    ________,
@@ -1811,8 +1514,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0x95
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    ________,
@@ -1823,8 +1524,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0x96
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    ________,
@@ -1835,8 +1534,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0x97
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    ________,
@@ -1847,8 +1544,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0x98
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    ________,
@@ -1859,8 +1554,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0x99
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    ________,
@@ -1871,8 +1564,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0x9A
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    ________,
@@ -1883,8 +1574,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0x9B
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    ________,
@@ -1895,8 +1584,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0x9C
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    ________,
@@ -1907,8 +1594,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0x9D
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    ________,
@@ -1919,8 +1604,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0x9E
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    ________,
@@ -1931,8 +1614,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0x9F
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    ________,
@@ -1943,8 +1624,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0xA0
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    ________,
@@ -1955,8 +1634,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0xA1
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    ________,
@@ -1967,8 +1644,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0xA2
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    ________,
@@ -1979,8 +1654,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0xA3
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    ________,
@@ -1991,8 +1664,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0xA4
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    ________,
@@ -2003,8 +1674,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0xA5
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    ________,
@@ -2015,8 +1684,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0xA6
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    ________,
@@ -2027,8 +1694,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0xA7
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    ________,
@@ -2039,8 +1704,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0xA8
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    _X_X____,
    ________,
    XXXXX___,
@@ -2051,8 +1714,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0xA9
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    ________,
@@ -2063,8 +1724,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0xAA
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    ________,
@@ -2075,8 +1734,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0xAB
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    ________,
@@ -2087,8 +1744,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0xAC
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    ________,
@@ -2099,8 +1754,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0xAD
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    ________,
@@ -2111,8 +1764,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0xAE
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    ________,
@@ -2123,8 +1774,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0xAF
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    ________,
@@ -2135,8 +1784,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0xB0
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    ________,
@@ -2147,8 +1794,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0xB1
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    ________,
@@ -2159,8 +1804,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0xB2
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    ________,
@@ -2171,8 +1814,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0xB3
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    ________,
@@ -2183,8 +1824,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0xB4
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    ________,
@@ -2195,8 +1834,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0xB5
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    ________,
@@ -2207,8 +1844,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0xB6
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    ________,
@@ -2219,8 +1854,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0xB7
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    ________,
@@ -2231,8 +1864,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0xB8
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    _X_X____,
    ________,
    _XXX____,
@@ -2243,8 +1874,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0xB9
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    ________,
@@ -2255,8 +1884,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0xBA
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    ________,
@@ -2267,8 +1894,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0xBB
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    ________,
@@ -2279,8 +1904,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0xBC
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    ________,
@@ -2291,8 +1914,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0xBD
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    ________,
@@ -2303,8 +1924,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0xBE
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    ________,
@@ -2315,8 +1934,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0xBF
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    ________,
@@ -2327,8 +1944,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0xC0
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    _XXX____,
    X___X___,
    X___X___,
@@ -2339,8 +1954,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0xC1
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    XXXXX___,
    X_______,
    X_______,
@@ -2351,8 +1964,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0xC2
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    XXXX____,
    X___X___,
    X___X___,
@@ -2363,8 +1974,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0xC3
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    XXXXX___,
    X_______,
    X_______,
@@ -2375,8 +1984,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0xC4
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    __XX____,
    _X_X____,
    _X_X____,
@@ -2387,8 +1994,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0xC5
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    XXXXX___,
    X_______,
    X_______,
@@ -2399,8 +2004,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0xC6
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    X_X_X___,
    X_X_X___,
    X_X_X___,
@@ -2411,8 +2014,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0xC7
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    _XXX____,
    X___X___,
    ____X___,
@@ -2423,8 +2024,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0xC8
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    X___X___,
    X___X___,
    X__XX___,
@@ -2435,8 +2034,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0xC9
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    X_X_X___,
    X___X___,
    X__XX___,
@@ -2447,8 +2044,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0xCA
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    X___X___,
    X___X___,
    X__X____,
@@ -2459,8 +2054,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0xCB
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    __XXX___,
    _X__X___,
    X___X___,
@@ -2471,8 +2064,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0xCC
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    X___X___,
    XX_XX___,
    XX_XX___,
@@ -2483,8 +2074,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0xCD
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    X___X___,
    X___X___,
    X___X___,
@@ -2495,8 +2084,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0xCE
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    _XXX____,
    X___X___,
    X___X___,
@@ -2507,8 +2094,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0xCF
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    XXXXX___,
    X___X___,
    X___X___,
@@ -2519,8 +2104,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0xD0
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    XXXX____,
    X___X___,
    X___X___,
@@ -2531,8 +2114,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0xD1
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    _XXX____,
    X___X___,
    X_______,
@@ -2543,8 +2124,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0xD2
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    XXXXX___,
    __X_____,
    __X_____,
@@ -2555,8 +2134,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0xD3
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    X___X___,
    X___X___,
    X___X___,
@@ -2567,8 +2144,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0xD4
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    _XXX____,
    X_X_X___,
    X_X_X___,
@@ -2579,8 +2154,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0xD5
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    X___X___,
    X___X___,
    _X_X____,
@@ -2591,8 +2164,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0xD6
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    X___X___,
    X___X___,
    X___X___,
@@ -2603,8 +2174,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ____X___}
 // 0xD7
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    X___X___,
    X___X___,
    X___X___,
@@ -2615,8 +2184,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0xD8
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    X_X_X___,
    X_X_X___,
    X_X_X___,
@@ -2627,8 +2194,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0xD9
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    X_X_X___,
    X_X_X___,
    X_X_X___,
@@ -2639,8 +2204,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ____X___}
 // 0xDA
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    XX______,
    _X______,
    _X______,
@@ -2651,8 +2214,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0xDB
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    X___X___,
    X___X___,
    X___X___,
@@ -2663,8 +2224,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0xDC
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    _X______,
    _X______,
    _X______,
@@ -2675,8 +2234,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0xDD
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    _XXX____,
    X___X___,
    ____X___,
@@ -2687,8 +2244,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0xDE
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    X__X____,
    X_X_X___,
    X_X_X___,
@@ -2699,8 +2254,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0xDF
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    _XXXX___,
    X___X___,
    X___X___,
@@ -2711,8 +2264,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0xE0
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    _XXX____,
@@ -2723,8 +2274,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0xE1
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ___XX___,
    _XX_____,
    X_______,
@@ -2735,8 +2284,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0xE2
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    XXXX____,
@@ -2747,8 +2294,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0xE3
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    XXXXX___,
@@ -2759,8 +2304,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0xE4
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    __XX____,
@@ -2771,8 +2314,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0xE5
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    _XXX____,
@@ -2783,8 +2324,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0xE6
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    X_X_X___,
@@ -2795,8 +2334,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0xE7
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    _XXX____,
@@ -2807,8 +2344,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0xE8
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    X___X___,
@@ -2819,8 +2354,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0xE9
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    _XXX____,
    ________,
    X___X___,
@@ -2831,8 +2364,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0xEA
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    X___X___,
@@ -2843,8 +2374,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0xEB
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    __XXX___,
@@ -2855,8 +2384,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0xEC
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    X___X___,
@@ -2867,8 +2394,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0xED
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    X___X___,
@@ -2879,8 +2404,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0xEE
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    _XXX____,
@@ -2891,8 +2414,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0xEF
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    XXXXX___,
@@ -2903,8 +2424,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0xF0
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    XXXX____,
@@ -2915,8 +2434,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0xF1
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    _XXX____,
@@ -2927,8 +2444,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0xF2
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    XXXXX___,
@@ -2939,8 +2454,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0xF3
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    X___X___,
@@ -2951,8 +2464,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0xF4
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    _XXX____,
@@ -2963,8 +2474,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0xF5
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    X___X___,
@@ -2975,8 +2484,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0xF6
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    X___X___,
@@ -2987,8 +2494,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ____X___}
 // 0xF7
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    X___X___,
@@ -2999,8 +2504,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0xF8
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    X_X_X___,
@@ -3011,8 +2514,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0xF9
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    X_X_X___,
@@ -3023,8 +2524,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ____X___}
 // 0xFA
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    XX______,
@@ -3035,8 +2534,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0xFB
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    X___X___,
@@ -3047,8 +2544,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0xFC
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    _X______,
@@ -3059,8 +2554,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0xFD
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    _XXX____,
@@ -3071,8 +2564,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0xFE
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    X__X____,
@@ -3083,8 +2574,6 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    ________}
 // 0xFF
  ,{
-   f6x8_MONO_WIDTH,
-   f6x8_MONO_HEIGHT,
    ________,
    ________,
    _XXXX___,
@@ -3094,5 +2583,7 @@ const uint8_t f6x8m_table[f6x8m_NOFCHARS][8 + 2] = {
    X___X___,
    ________}
 };
+
 */
+
 

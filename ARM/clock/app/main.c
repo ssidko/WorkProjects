@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include "stm32f1xx.h"
 #include "stm32f103xb.h"
-#include "core_cm3.h"
 #include "delay.h"
 #include "gpio.h"
 #include "spi.h"
@@ -17,16 +16,6 @@ void LCD_Reset(void)
 	GPIO_PinSet(GPIOA, 2);
 }
 
-void LCD_SendCmd(uint8_t cmd)
-{
-
-}
-
-void LCD_SendData(uint8_t data)
-{
-
-}
-
 void HW_Init()
 {
 	// Port-A clock ENABLE
@@ -38,8 +27,8 @@ void HW_Init()
 	// LED pin configure
 	// General purpose output Open-drain
 	// Output mode, max speed 2 MHz
-	GPIOC->CRH &= ~(0x0F << ((LED_PIN - 8) * 4));
-	GPIOC->CRH |= ((Out_2Mhz|Out_OpenDrain) << (LED_PIN - 8) * 4);
+	GPIOC->CRH &= ~(GPIO_CRH_MODE12 | GPIO_CRH_CNF12);
+	GPIOC->CRH |= (Out_2Mhz|Out_OpenDrain) << GPIO_CRH_MODE12_Pos;
 
 	// Alternate function I/O clock enable
 	//SET_BIT(RCC->APB2ENR, RCC_APB2ENR_AFIOEN);
@@ -133,78 +122,7 @@ void HW_Init()
 	SPI_SendByte(SPI1, 0xAF);
 
 	GPIO_PinSet(GPIOA, 3);
-
-
-	int anim_delay = 10;
-	int pause_delay = 1000;
-
-	while (1) {
-		for (int i = 0; i < 128*32/8; i++) {
-			SPI_SendByte(SPI1, 0x55);
-			//Delay(20000);
-		}
-		Delay_ms(pause_delay);
-		for (int i = 0; i < 128*32/8; i++) {
-			SPI_SendByte(SPI1, 0xFF);
-			//Delay(20000);
-		}
-		Delay_ms(pause_delay);
-		for (int i = 0; i < 128*32/8; i++) {
-			SPI_SendByte(SPI1, 0xAA);
-			//Delay(20000);
-		}
-		Delay_ms(pause_delay);
-		for (int i = 0; i < 128*32/8; i++) {
-			SPI_SendByte(SPI1, 0x00);
-			//Delay(20000);
-		}
-		Delay_ms(pause_delay);
-		for (int i = 0; i < 128*32/16; i++) {
-			SPI_SendByte(SPI1, 0x55);
-			SPI_SendByte(SPI1, 0xAA);
-			//Delay(20000);
-		}
-		Delay_ms(pause_delay);
-		for (int i = 0; i < 128*32/(8*4); i++) {
-			SPI_SendByte(SPI1, 0x33);
-			SPI_SendByte(SPI1, 0x33);
-			SPI_SendByte(SPI1, 0xCC);
-			SPI_SendByte(SPI1, 0xCC);
-		}
-		Delay_ms(pause_delay);
-
-		for (int i = 0; i < 128*32/8; i++) {
-			SPI_SendByte(SPI1, 0x55);
-			Delay_ms(anim_delay);
-		}
-		for (int i = 0; i < 128*32/8; i++) {
-			SPI_SendByte(SPI1, 0xFF);
-			Delay_ms(anim_delay);
-		}
-		for (int i = 0; i < 128*32/8; i++) {
-			SPI_SendByte(SPI1, 0xAA);
-			Delay_ms(anim_delay);
-		}
-		for (int i = 0; i < 128*32/8; i++) {
-			SPI_SendByte(SPI1, 0x00);
-			Delay_ms(anim_delay);
-		}
-		for (int i = 0; i < 128*32/16; i++) {
-			SPI_SendByte(SPI1, 0x55);
-			SPI_SendByte(SPI1, 0xAA);
-			Delay_ms(anim_delay);
-		}
-		for (int i = 0; i < 128*32/(8*4); i++) {
-			SPI_SendByte(SPI1, 0x33);
-			SPI_SendByte(SPI1, 0x33);
-			SPI_SendByte(SPI1, 0xCC);
-			SPI_SendByte(SPI1, 0xCC);
-			Delay_ms(anim_delay);
-		}
-		Delay_ms(pause_delay);
-	}
 }
-
 
 int main(void)
 {
