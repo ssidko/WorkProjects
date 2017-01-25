@@ -4832,3 +4832,6 @@ const uint8_t f10x16f_table[f10x16f_NOFCHARS][32] = {
    ________,________}
 };
 */
+
+Font fnt10x16 = {0, 10, 16, 0};
+

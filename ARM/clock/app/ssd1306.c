@@ -143,9 +143,17 @@ void ssd1306_UpdateScreen(uint8_t *screen_buffer, uint32_t size)
 {
 	// SSD1306 DC to high; Ready for Data
 	GPIO_PinSet(GPIOA, SSD1306_DC_PIN);
-
 	for (uint32_t i = 0; i < size; i++) {
 		SPI_SendByte(SPI1, *screen_buffer++);
+	}
+}
+
+void ssd1306_ClearScreen(uint32_t size)
+{
+	// SSD1306 DC to high; Ready for Data
+	GPIO_PinSet(GPIOA, SSD1306_DC_PIN);
+	for (uint32_t i = 0; i < size; i++) {
+		SPI_SendByte(SPI1, 0x00);
 	}
 }
 
