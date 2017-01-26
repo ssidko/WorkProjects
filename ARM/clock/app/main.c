@@ -22,6 +22,8 @@ void HW_Init()
 	GPIOC->CRH |= (Out_2Mhz|Out_OpenDrain) << GPIO_CRH_MODE12_Pos;
 
 	ssd1306_Init(128, 32);
+
+	SystemCoreClockUpdate();
 }
 
 #include "font_6x8.h"
@@ -86,8 +88,6 @@ typedef struct {
 
 int main(void)
 {
-	SystemCoreClockUpdate();
-
 	HW_Init();
 
 	uint32_t start = 0;
@@ -97,29 +97,6 @@ int main(void)
 
     while(1)
     {
-
-    	//Delay_ms(1000);
-
-    	/*
-    	start = GetTickCount();
-    	for (int y = 0; y < LCD_HEIGH; y++) {
-    		for (int x = 0; x < LCD_WIDTH; x++) {
-    			DrawPixel(x, y, 1, &ssd1306_fb);
-    			ssd1306_UpdateScreen(ssd1306_fb.buff, FRAME_BUFFER_SIZE);
-    		}
-    	}
-    	elapsed = GetTickCount() - start;
-
-    	start = GetTickCount();
-    	for (int y = 0; y < LCD_HEIGH; y++) {
-    		for (int x = 0; x < LCD_WIDTH; x++) {
-    			DrawPixel(x, y, 0, &ssd1306_fb);
-    			ssd1306_UpdateScreen(ssd1306_fb.buff, FRAME_BUFFER_SIZE);
-    		}
-    	}
-    	elapsed = GetTickCount() - start;
-    	*/
-
     	ssd1306_Wakeup();
 
     	for (uint32_t i = 0; i < FRAME_BUFFER_SIZE; i++) {
