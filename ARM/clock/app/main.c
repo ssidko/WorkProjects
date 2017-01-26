@@ -27,11 +27,11 @@ void HW_Init()
 #include "font_6x8.h"
 
 #define LCD_WIDTH						128
-#define LCD_HEIGH						32
-#define FRAME_BUFFER_SIZE				(LCD_WIDTH*LCD_HEIGH/8)
+#define LCD_HEIGHT						32
+#define FRAME_BUFFER_SIZE				(LCD_WIDTH*LCD_HEIGHT/8)
 
 uint8_t frame_buffer[FRAME_BUFFER_SIZE];
-FrameBuffer ssd1306_fb = {frame_buffer, LCD_WIDTH, LCD_HEIGH};
+FrameBuffer ssd1306_fb = {frame_buffer, LCD_WIDTH, LCD_HEIGHT};
 
 void DrawPixel(uint32_t x, uint32_t y, uint32_t colour, FrameBuffer *fb)
 {
@@ -69,9 +69,12 @@ void DrawChar(uint32_t x, uint32_t y, uint8_t ch, Font* font, FrameBuffer *fb)
 void PrintString(uint32_t x, uint32_t y, uint8_t *str, Font* font, FrameBuffer *fb)
 {
 	while (*str) {
-
-
-
+		if ((x + font->width < fb->width) && (y + font->height < fb->height)) {
+			DrawChar(x, y, *str, font, fb);
+			x += font->width;
+		} else {
+			break;
+		}
 		str++;
 	}
 }
@@ -124,6 +127,42 @@ int main(void)
     	}
     	ssd1306_UpdateScreen(ssd1306_fb.buff, FRAME_BUFFER_SIZE);
 
+    	PrintString(50, 10, "Hello", &fnt6x8, &ssd1306_fb);
+    	ssd1306_UpdateScreen(ssd1306_fb.buff, FRAME_BUFFER_SIZE);
+    	Delay_ms(5000);
+
+    	/*clear screen*/
+    	for (uint32_t i = 0; i < FRAME_BUFFER_SIZE; i++) {
+    		frame_buffer[i] = 0x00;
+    	}
+    	ssd1306_UpdateScreen(ssd1306_fb.buff, FRAME_BUFFER_SIZE);
+    	/*clear screen*/
+
+    	PrintString(5, 10, "Демонстрация шрифта", &fnt6x8, &ssd1306_fb);
+    	ssd1306_UpdateScreen(ssd1306_fb.buff, FRAME_BUFFER_SIZE);
+    	Delay_ms(2000);
+
+    	/*clear screen*/
+    	for (uint32_t i = 0; i < FRAME_BUFFER_SIZE; i++) {
+    		frame_buffer[i] = 0x00;
+    	}
+    	ssd1306_UpdateScreen(ssd1306_fb.buff, FRAME_BUFFER_SIZE);
+    	/*clear screen*/
+
+
+    	PrintString(10, 10, "Английские буквы", &fnt6x8, &ssd1306_fb);
+    	PrintString(15, 18, "и спец символы", &fnt6x8, &ssd1306_fb);
+    	ssd1306_UpdateScreen(ssd1306_fb.buff, FRAME_BUFFER_SIZE);
+    	Delay_ms(2000);
+
+    	/*clear screen*/
+    	for (uint32_t i = 0; i < FRAME_BUFFER_SIZE; i++) {
+    		frame_buffer[i] = 0x00;
+    	}
+    	ssd1306_UpdateScreen(ssd1306_fb.buff, FRAME_BUFFER_SIZE);
+    	/*clear screen*/
+
+
     	pos.x = 0;
     	pos.y = 0;
     	ssd1306_ClearScreen(FRAME_BUFFER_SIZE);
@@ -148,9 +187,28 @@ int main(void)
     	GPIO_ToglePin(GPIOC, LED_PIN);
     	Delay_ms(5000);
 
+
+    	/*clear screen*/
+    	for (uint32_t i = 0; i < FRAME_BUFFER_SIZE; i++) {
+    		frame_buffer[i] = 0x00;
+    	}
+    	ssd1306_UpdateScreen(ssd1306_fb.buff, FRAME_BUFFER_SIZE);
+    	/*clear screen*/
+
+
+    	PrintString(40, 10, "Кирилица", &fnt6x8, &ssd1306_fb);
+    	ssd1306_UpdateScreen(ssd1306_fb.buff, FRAME_BUFFER_SIZE);
+    	Delay_ms(2000);
+
+    	/*clear screen*/
+    	for (uint32_t i = 0; i < FRAME_BUFFER_SIZE; i++) {
+    		frame_buffer[i] = 0x00;
+    	}
+    	ssd1306_UpdateScreen(ssd1306_fb.buff, FRAME_BUFFER_SIZE);
+    	/*clear screen*/
+
     	pos.x = 0;
     	pos.y = 0;
-    	ssd1306_ClearScreen(FRAME_BUFFER_SIZE);
     	for (uint32_t symbol = 'А'; symbol <= 'я'; symbol++) {
     		if (pos.x + fnt6x8.width > ssd1306_fb.width) {
     			pos.x = 0;
@@ -168,11 +226,21 @@ int main(void)
         	ssd1306_UpdateScreen(ssd1306_fb.buff, FRAME_BUFFER_SIZE);
         	pos.x += fnt6x8.width;
     	}
-
     	Delay_ms(5000);
+
+    	/*clear screen*/
+    	for (uint32_t i = 0; i < FRAME_BUFFER_SIZE; i++) {
+    		frame_buffer[i] = 0x00;
+    	}
+    	ssd1306_UpdateScreen(ssd1306_fb.buff, FRAME_BUFFER_SIZE);
+    	/*clear screen*/
+
+    	PrintString(10, 10, "Go to sleep ...", &fnt6x8, &ssd1306_fb);
+    	ssd1306_UpdateScreen(ssd1306_fb.buff, FRAME_BUFFER_SIZE);
+    	Delay_ms(2000);
 
     	ssd1306_Sleep();
-    	Delay_ms(5000);
+    	Delay_ms(7000);
     }
 }
 
