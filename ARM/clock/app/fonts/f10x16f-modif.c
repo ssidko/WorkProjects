@@ -1,15 +1,3 @@
-#ifndef _FONT_H
-#define _FONT_H
-
-#include <stdint.h>
-
-typedef struct {
-	uint8_t offset;
-	uint8_t width;
-	uint8_t height;
-	uint8_t *chars;
-} Font;
-
 #define ________				0x00
 #define X_______				0x01
 #define _X______				0x02
@@ -265,6 +253,3 @@ typedef struct {
 #define __XXXXXX				0xFC
 #define X_XXXXXX				0xFD
 #define _XXXXXXX				0xFE
-#define XXXXXXXX				0xFF
-
-#endif // _FONT_H
