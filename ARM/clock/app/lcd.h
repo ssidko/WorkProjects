@@ -6,7 +6,6 @@
 typedef struct {
 	uint32_t width;
 	uint32_t height;
-
 	void (*DrawPixel) (uint32_t x, uint32_t y, uint32_t colour);
 } LCD;
 

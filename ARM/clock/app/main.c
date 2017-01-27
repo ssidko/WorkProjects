@@ -1,37 +1,13 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include "stm32f1xx.h"
 #include "stm32f103xb.h"
 #include "delay.h"
-#include "gpio.h"
-#include "spi.h"
-#include "ssd1306.h"
-
 #include "font_6x8.h"
 
-#define LCD_WIDTH						128
-#define LCD_HEIGHT						32
+#include "hardware.h"
+
 #define FRAME_BUFFER_SIZE				(LCD_WIDTH*LCD_HEIGHT/8)
-
-#define LED_PIN							Pin12
-
-void HW_Init()
-{
-	SystemCoreClockUpdate();
-	SysTick_Config(SystemCoreClock/1000 - 1);
-
-	// Port-C clock ENABLE
-	GPIOC_ClockEnable();
-
-	// LED pin configure
-	// General purpose output Open-drain
-	// Output mode, max speed 2 MHz
-	GPIOC->CRH &= ~(GPIO_CRH_MODE12 | GPIO_CRH_CNF12);
-	GPIOC->CRH |= (Out_2Mhz|Out_OpenDrain) << GPIO_CRH_MODE12_Pos;
-
-	ssd1306_Init(128, 32);
-}
-
-
 
 uint8_t frame_buffer[FRAME_BUFFER_SIZE];
 FrameBuffer ssd1306_fb = {frame_buffer, LCD_WIDTH, LCD_HEIGHT};
@@ -89,13 +65,12 @@ typedef struct {
 
 void DemoApp1(void);
 
-void DemoApp2(void)
+int main(void)
 {
-	Position pos = {0, 0};
-	char buff[] = {0xE0,0x01,0xF0,0x01,0x38,0x00,0x18,0x00,0x18,0x00,0x18,0x00,0xFE,0x00,0xFE,0x00,0x18,0x00,0x18,0x00,0x18,0x00,0x18,0x00,0x18,0x00,0x18,0x00,0x00,0x00,0x00,0x00};
+	SystemCoreClockUpdate();
+	SysTick_Config(SystemCoreClock/1000 - 1);
 
-	int width = 12;
-	int height = 16;
+	HW_Init();
 
 	/*clear screen*/
 	for (uint32_t i = 0; i < FRAME_BUFFER_SIZE; i++) {
@@ -104,43 +79,28 @@ void DemoApp2(void)
 	ssd1306_UpdateScreen(ssd1306_fb.buff, FRAME_BUFFER_SIZE);
 	/*clear screen*/
 
-	/* bytes per line */
-	int bpl = width / 8 + ((width % 8) ? 1 : 0);
-	/* bytes per char */
-	int bpc = bpl * height;
-	uint8_t *c = &buff;
-	uint8_t colour = 0;
 
-	for (int yy = 0; yy < height; yy++) {
-		for (int xx = 0; xx < width; xx++) {
-			colour = c[yy*bpl + xx / 8] & (1 << (xx % 8)) ? 1 : 0;
-			DrawPixel(pos.x + xx, pos.y + yy, colour, &ssd1306_fb);
-		}
-	}
+	char *str = malloc(32);
 
+	sprintf(str, "SysClk: %u Hz", SystemCoreClock);
+	PrintString(0, 0, str, &fnt6x8, &ssd1306_fb);
 	ssd1306_UpdateScreen(ssd1306_fb.buff, FRAME_BUFFER_SIZE);
-}
 
-int main(void)
-{
-	HW_Init();
+	str = malloc(32);
 
-	uint32_t start = 0;
-	uint32_t elapsed = 0;
+	sprintf(str, "SysClk: %u Hz", SystemCoreClock);
+	PrintString(0, 8, str, &fnt6x8, &ssd1306_fb);
+	ssd1306_UpdateScreen(ssd1306_fb.buff, FRAME_BUFFER_SIZE);
+
+	free(str);
 
     while(1)
     {
-    	/*
-    	DemoApp2();
-
-    	Delay_ms(5000);
-    	*/
-
-    	//DemoApp1();
-
+    	ssd1306_Wakeup();
     	GPIO_ToglePin(GPIOC, LED_PIN);
     	Delay_ms(5000);
-
+    	ssd1306_Sleep();
+    	Delay_ms(5000);
     }
 }
 

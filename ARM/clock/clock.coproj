@@ -69,19 +69,39 @@
     </DebugOption>
     <ExcludeFile/>
   </Target>
-  <Components path="./"/>
+  <Components path="./">
+    <Component id="99" name="C_library" path="" type="BasicComponet"/>
+  </Components>
   <LocalComponents/>
   <Files>
-    <File name="CMSIS/stm32f103xb.h" path="app/CMSIS/stm32f103xb.h" type="1"/>
     <File name="CMSIS/core/core_cmInstr.h" path="app/CMSIS/core/core_cmInstr.h" type="1"/>
     <File name="CMSIS/core/cmsis_gcc.h" path="app/CMSIS/core/cmsis_gcc.h" type="1"/>
-    <File name="CMSIS/core/arm_common_tables.h" path="app/CMSIS/core/arm_common_tables.h" type="1"/>
     <File name="utility/spi.h" path="app/spi.h" type="1"/>
-    <File name="utility" path="" type="2"/>
+    <File name="CMSIS/core/arm_common_tables.h" path="app/CMSIS/core/arm_common_tables.h" type="1"/>
     <File name="CMSIS/core/core_cm7.h" path="app/CMSIS/core/core_cm7.h" type="1"/>
     <File name="CMSIS/core/core_cm4.h" path="app/CMSIS/core/core_cm4.h" type="1"/>
     <File name="app" path="" type="2"/>
+    <File name="CMSIS/core/cmsis_armcc_V6.h" path="app/CMSIS/core/cmsis_armcc_V6.h" type="1"/>
+    <File name="CMSIS" path="" type="2"/>
+    <File name="fonts/font.h" path="app/fonts/font.h" type="1"/>
+    <File name="app/delay.c" path="app/delay.c" type="1"/>
+    <File name="fonts/f6x8m.h" path="app/fonts/f6x8m.h" type="1"/>
+    <File name="app/hardware.c" path="app/hardware.c" type="1"/>
+    <File name="fonts/font_10x16.h" path="app/fonts/font_10x16.h" type="1"/>
+    <File name="CMSIS/core" path="" type="2"/>
+    <File name="CMSIS/linker" path="" type="2"/>
+    <File name="CMSIS/system_stm32f1xx.c" path="app/CMSIS/system_stm32f1xx.c" type="1"/>
+    <File name="fonts" path="" type="2"/>
+    <File name="CMSIS/stm32f1xx.h" path="app/CMSIS/stm32f1xx.h" type="1"/>
+    <File name="CMSIS/startup" path="" type="2"/>
+    <File name="CMSIS/core/core_cmSimd.h" path="app/CMSIS/core/core_cmSimd.h" type="1"/>
+    <File name="app/ssd1306.h" path="app/ssd1306.h" type="1"/>
+    <File name="CMSIS/linker/STM32F103XB_FLASH.ld" path="app/CMSIS/linker/STM32F103XB_FLASH.ld" type="1"/>
+    <File name="CMSIS/stm32f103xb.h" path="app/CMSIS/stm32f103xb.h" type="1"/>
+    <File name="utility" path="" type="2"/>
+    <File name="components/C_library" path="" type="2"/>
     <File name="CMSIS/startup/startup_stm32f103xb.s" path="app/CMSIS/startup/startup_stm32f103xb.s" type="1"/>
+    <File name="components/C_library/syscalls.c" path="components/coocox-master/C_library/source/syscalls.c" type="1"/>
     <File name="utility/gpio.h" path="app/gpio.h" type="1"/>
     <File name="CMSIS/core/arm_const_structs.h" path="app/CMSIS/core/arm_const_structs.h" type="1"/>
     <File name="app/delay.h" path="app/delay.h" type="1"/>
@@ -90,36 +110,23 @@
     <File name="app/lcd.h" path="app/lcd.h" type="1"/>
     <File name="fonts/f10x16f.c" path="app/fonts/f10x16f.c" type="1"/>
     <File name="CMSIS/core/core_cm0plus.h" path="app/CMSIS/core/core_cm0plus.h" type="1"/>
-    <File name="CMSIS/core/cmsis_armcc_V6.h" path="app/CMSIS/core/cmsis_armcc_V6.h" type="1"/>
-    <File name="CMSIS" path="" type="2"/>
     <File name="pinout.txt" path="app/pinout.txt" type="1"/>
-    <File name="fonts/font.h" path="app/fonts/font.h" type="1"/>
     <File name="app/InteraptHendelrs.c" path="app/InteraptHendelrs.c" type="1"/>
-    <File name="app/delay.c" path="app/delay.c" type="1"/>
-    <File name="fonts/f6x8m.h" path="app/fonts/f6x8m.h" type="1"/>
     <File name="CMSIS/core/arm_math.h" path="app/CMSIS/core/arm_math.h" type="1"/>
     <File name="CMSIS/core/cmsis_armcc.h" path="app/CMSIS/core/cmsis_armcc.h" type="1"/>
-    <File name="fonts/font_10x16.h" path="app/fonts/font_10x16.h" type="1"/>
-    <File name="CMSIS/core" path="" type="2"/>
-    <File name="CMSIS/linker" path="" type="2"/>
-    <File name="CMSIS/system_stm32f1xx.c" path="app/CMSIS/system_stm32f1xx.c" type="1"/>
     <File name="CMSIS/core/core_cm3.h" path="app/CMSIS/core/core_cm3.h" type="1"/>
-    <File name="CMSIS/core/core_sc300.h" path="app/CMSIS/core/core_sc300.h" type="1"/>
     <File name="app/ssd1306.c" path="app/ssd1306.c" type="1"/>
-    <File name="fonts" path="" type="2"/>
+    <File name="CMSIS/core/core_sc300.h" path="app/CMSIS/core/core_sc300.h" type="1"/>
     <File name="utility/spi.c" path="app/spi.c" type="1"/>
-    <File name="CMSIS/stm32f1xx.h" path="app/CMSIS/stm32f1xx.h" type="1"/>
-    <File name="CMSIS/startup" path="" type="2"/>
+    <File name="components" path="" type="2"/>
     <File name="utility/gpio.c" path="app/gpio.c" type="1"/>
-    <File name="fonts/font_6x8.h" path="app/fonts/font_6x8.h" type="1"/>
     <File name="fonts/f10x16f.h" path="app/fonts/f10x16f.h" type="1"/>
-    <File name="CMSIS/core/core_cmSimd.h" path="app/CMSIS/core/core_cmSimd.h" type="1"/>
+    <File name="fonts/font_6x8.h" path="app/fonts/font_6x8.h" type="1"/>
     <File name="CMSIS/stm32f103x6.h" path="app/CMSIS/stm32f103x6.h" type="1"/>
+    <File name="app/hardware.h" path="app/hardware.h" type="1"/>
     <File name="fonts/f6x8m.c" path="app/fonts/f6x8m.c" type="1"/>
-    <File name="app/ssd1306.h" path="app/ssd1306.h" type="1"/>
     <File name="CMSIS/core/core_sc000.h" path="app/CMSIS/core/core_sc000.h" type="1"/>
     <File name="CMSIS/system_stm32f1xx.h" path="app/CMSIS/system_stm32f1xx.h" type="1"/>
-    <File name="CMSIS/linker/STM32F103XB_FLASH.ld" path="app/CMSIS/linker/STM32F103XB_FLASH.ld" type="1"/>
     <File name="main.c" path="app/main.c" type="1"/>
   </Files>
   <Bookmarks/>

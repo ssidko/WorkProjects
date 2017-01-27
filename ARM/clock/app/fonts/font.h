@@ -3,7 +3,13 @@
 
 #include <stdint.h>
 
+enum {
+	MonospaceFont,			// Моноширинный шрифт
+	ProportionalFont		// Пропорциональный шрифт
+};
+
 typedef struct {
+	//uint8_t type;			// {MonospaceFont, ProportionalFont}
 	uint8_t offset;
 	uint8_t width;
 	uint8_t height;
