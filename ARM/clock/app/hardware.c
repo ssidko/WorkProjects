@@ -11,5 +11,5 @@ void HW_Init()
 	GPIOC->CRH &= ~(GPIO_CRH_MODE12 | GPIO_CRH_CNF12);
 	GPIOC->CRH |= (Out_2Mhz|Out_OpenDrain) << GPIO_CRH_MODE12_Pos;
 
-	ssd1306_Init(128, 32);
+	SSD1306_Init(128, 32);
 }

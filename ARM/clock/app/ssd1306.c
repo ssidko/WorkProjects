@@ -3,10 +3,17 @@
 #include "gpio.h"
 #include "delay.h"
 
-#define SSD1306_RESET_PIN					Pin2
-#define SSD1306_DC_PIN						Pin3
+#define SSD1306_RESET_HIGH()					(GPIO_PinSet(SSD1306_RESET_PORT, SSD1306_RESET_PIN))
+#define SSD1306_RESET_LOW()						(GPIO_PinReset(SSD1306_RESET_PORT, SSD1306_RESET_PIN))
 
-void ssd1306_GpioInit(void)
+#define SSD1306_DC_HIGH()						(GPIO_PinSet(SSD1306_DC_PORT, SSD1306_DC_PIN))
+#define SSD1306_DC_LOW()						(GPIO_PinReset(SSD1306_DC_PORT, SSD1306_DC_PIN))
+
+#define SSD1306_CS_HIGH()						(GPIO_PinSet(SSD1306_CS_PORT, SSD1306_CS_PIN))
+#define SSD1306_CS_LOW()						(GPIO_PinReset(SSD1306_CS_PORT, SSD1306_CS_PIN))
+
+
+void SSD1306_GpioInit(void)
 {
 	// RESET		PA-2
 	// DC			PA-3
@@ -23,11 +30,12 @@ void ssd1306_GpioInit(void)
 	GPIOA->CRL |= ((Out_50Mhz|Out_AF_PushPull) << (Pin5 * 4)) |
 				  ((Out_50Mhz|Out_AF_PushPull) << (Pin7 * 4));
 
-	// PA-2 - LCD_RESET; PA-3 - LCD_DC
+	// PA-1 - LCD_CS; PA-2 - LCD_RESET; PA-3 - LCD_DC
 	// MODE: 0b0010: Output mode, max speed 2 MHz.
 	// CNF:  0b0000: General purpose output push-pull
-	GPIOA->CRL &= ~((0x0F << (Pin2 * 4)) | (0x0F << (Pin3 * 4)));
-	GPIOA->CRL |= ((Out_2Mhz|Out_PushPull) << (Pin2 * 4)) |
+	GPIOA->CRL &= ~((0x0F << (Pin2 * 4)) | (0x0F << (Pin3 * 4)) | (0x0F << (Pin1 * 4)));
+	GPIOA->CRL |= ((Out_2Mhz|Out_PushPull) << (Pin1 * 4)) |
+				  ((Out_2Mhz|Out_PushPull) << (Pin2 * 4)) |
 				  ((Out_2Mhz|Out_PushPull) << (Pin3 * 4));
 
 	// Alternate function I/O clock enable
@@ -46,20 +54,24 @@ void ssd1306_GpioInit(void)
 	SPI_Enable(SPI1);
 }
 
-void ssd1306_Init(uint32_t width, uint32_t height)
+void SSD1306_Reset(void)
 {
-	ssd1306_GpioInit();
+	SSD1306_RESET_HIGH();
 	Delay_ms(10);
+	SSD1306_RESET_LOW();
+	Delay_ms(1);
+	SSD1306_RESET_HIGH();
+	Delay_ms(10);
+}
 
-	// SSD1306 Reset
-	GPIO_PinSet(GPIOA, SSD1306_RESET_PIN);
-	Delay_ms(10);
-	GPIO_PinReset(GPIOA, SSD1306_RESET_PIN);
-	Delay_ms(10);
-	GPIO_PinSet(GPIOA, SSD1306_RESET_PIN);
+void SSD1306_Init(uint32_t width, uint32_t height)
+{
+	SSD1306_GpioInit();
 
-	// LCD_DC to low for command
-	GPIO_PinReset(GPIOA, SSD1306_DC_PIN);
+	SSD1306_Reset();
+
+	SSD1306_CS_LOW();
+	SSD1306_DC_LOW();
 
 	// sleep
 	SPI_SendByte(SPI1, 0xAF);
@@ -113,48 +125,138 @@ void ssd1306_Init(uint32_t width, uint32_t height)
 
 	Delay_ms(100);
 
-	// SSD1306 DC to high; Ready for Data
-	GPIO_PinSet(GPIOA, SSD1306_DC_PIN);
+	SSD1306_DC_HIGH();
+	SSD1306_CS_HIGH();
 }
 
-void ssd1306_Sleep(void)
+void SSD1306_Sleep(void)
 {
-	// LCD_DC to low for command
-	GPIO_PinReset(GPIOA, SSD1306_DC_PIN);
+	SSD1306_CS_LOW();
+	SSD1306_DC_LOW();
 
 	SPI_SendByte(SPI1, 0xAE);
 
-	// SSD1306 DC to high; Ready for Data
-	GPIO_PinSet(GPIOA, SSD1306_DC_PIN);
+	SSD1306_DC_HIGH();
+	SSD1306_CS_HIGH();
 }
 
-void ssd1306_Wakeup(void)
+void SSD1306_Wakeup(void)
 {
-	// LCD_DC to low for command
-	GPIO_PinReset(GPIOA, SSD1306_DC_PIN);
+	SSD1306_CS_LOW();
+	SSD1306_DC_LOW();
 
 	SPI_SendByte(SPI1, 0xAF);
 
-	// SSD1306 DC to high; Ready for Data
-	GPIO_PinSet(GPIOA, SSD1306_DC_PIN);
+	SSD1306_DC_HIGH();
+	SSD1306_CS_HIGH();
 }
 
-void ssd1306_UpdateScreen(uint8_t *screen_buffer, uint32_t size)
+void SSD1306_InverseOn(void)
 {
-	// SSD1306 DC to high; Ready for Data
-	GPIO_PinSet(GPIOA, SSD1306_DC_PIN);
+	SSD1306_CS_LOW();
+	SSD1306_DC_LOW();
+
+	SPI_SendByte(SPI1, 0xA7);
+
+	SSD1306_DC_HIGH();
+	SSD1306_CS_HIGH();
+}
+
+void SSD1306_InverseOff(void)
+{
+	SSD1306_CS_LOW();
+	SSD1306_DC_LOW();
+
+	SPI_SendByte(SPI1, 0xA6);
+
+	SSD1306_DC_HIGH();
+	SSD1306_CS_HIGH();
+}
+
+void SSD1306_HorisontalMode(void)
+{
+	SSD1306_CS_LOW();
+	SSD1306_DC_LOW();
+
+	SPI_SendByte(SPI1, 0x20);
+
+	SSD1306_DC_HIGH();
+	SSD1306_CS_HIGH();
+}
+
+void SSD1306_VerticalMode(void)
+{
+	SSD1306_CS_LOW();
+	SSD1306_DC_LOW();
+
+	SPI_SendByte(SPI1, 0x21);
+
+	SSD1306_DC_HIGH();
+	SSD1306_CS_HIGH();
+}
+
+void SSD1306_RowRemapOn(void)
+{
+	SSD1306_CS_LOW();
+	SSD1306_DC_LOW();
+
+	SPI_SendByte(SPI1, 0xC8);
+
+	SSD1306_DC_HIGH();
+	SSD1306_CS_HIGH();
+}
+
+void SSD1306_RowRemapOff(void)
+{
+	SSD1306_CS_LOW();
+	SSD1306_DC_LOW();
+
+	SPI_SendByte(SPI1, 0xC0);
+
+	SSD1306_DC_HIGH();
+	SSD1306_CS_HIGH();
+}
+
+void SSD1306_ColumnRemapOn(void)
+{
+	SSD1306_CS_LOW();
+	SSD1306_DC_LOW();
+
+	SPI_SendByte(SPI1, 0xA1);
+
+	SSD1306_DC_HIGH();
+	SSD1306_CS_HIGH();
+}
+
+void SSD1306_ColumnRemapOff(void)
+{
+	SSD1306_CS_LOW();
+	SSD1306_DC_LOW();
+
+	SPI_SendByte(SPI1, 0xA0);
+
+	SSD1306_DC_HIGH();
+	SSD1306_CS_HIGH();
+}
+
+void SSD1306_UpdateScreen(uint8_t *screen_buffer, uint32_t size)
+{
+	SSD1306_CS_LOW();
+	SSD1306_DC_HIGH();
 	for (uint32_t i = 0; i < size; i++) {
 		SPI_SendByte(SPI1, *screen_buffer++);
 	}
+	SSD1306_CS_HIGH();
 }
 
-void ssd1306_ClearScreen(uint32_t size)
+void SSD1306_ClearScreen(uint32_t size)
 {
-	// SSD1306 DC to high; Ready for Data
-	GPIO_PinSet(GPIOA, SSD1306_DC_PIN);
+	SSD1306_CS_LOW();
+	SSD1306_DC_HIGH();
 	for (uint32_t i = 0; i < size; i++) {
 		SPI_SendByte(SPI1, 0x00);
 	}
+	SSD1306_CS_HIGH();
 }
 
 

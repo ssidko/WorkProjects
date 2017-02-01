@@ -12,13 +12,6 @@
 #define LCD_WIDTH								128
 #define LCD_HEIGHT								32
 
-#define LCD_PORT								GPIOA
-#define LCD_PIN_RESET
-#define LCD_PIN_DC
-#define LCD_PIN_CS
-#define LCD_PIN_MOSI
-#define LCD_PIN_SCK
-
 void HW_Init();
 
 #endif // _HARDWARE_H

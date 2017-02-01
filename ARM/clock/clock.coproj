@@ -98,8 +98,8 @@
     <File name="app/ssd1306.h" path="app/ssd1306.h" type="1"/>
     <File name="CMSIS/linker/STM32F103XB_FLASH.ld" path="app/CMSIS/linker/STM32F103XB_FLASH.ld" type="1"/>
     <File name="CMSIS/stm32f103xb.h" path="app/CMSIS/stm32f103xb.h" type="1"/>
-    <File name="utility" path="" type="2"/>
     <File name="components/C_library" path="" type="2"/>
+    <File name="utility" path="" type="2"/>
     <File name="CMSIS/startup/startup_stm32f103xb.s" path="app/CMSIS/startup/startup_stm32f103xb.s" type="1"/>
     <File name="components/C_library/syscalls.c" path="components/coocox-master/C_library/source/syscalls.c" type="1"/>
     <File name="utility/gpio.h" path="app/gpio.h" type="1"/>
