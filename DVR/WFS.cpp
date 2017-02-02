@@ -114,7 +114,7 @@ int WFS::StartRecovery(const std::string &volume_name, const std::string &out_di
 
 	if (volum.Open()) {
 		FrameSequence sequence;
-		volum.SetPointer(1911834175387LL);
+		//volum.SetPointer(1911834175387LL);
 		while (volum.NextFrameSequence(sequence)) {
 
 			if (start_time.Seconds()) {

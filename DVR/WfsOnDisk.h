@@ -23,8 +23,10 @@ namespace WFS
 	enum FrameType {
 		kUnknownType = 0x00,
 		kType_0A = 0x0A,
-		kType_0D = 0x0D,
-		kType_0C = 0x0C,
+		//kType_0D = 0x0D,
+		//kType_0C = 0x0C,
+		kType_0D = 0x0C,
+		kType_0C = 0x0D,
 	};
 
 #define WFS_FRAME_HEADER_SIGNATURE_MASK			((DWORD)0xF0FFFFFF)	
