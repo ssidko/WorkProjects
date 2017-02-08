@@ -58,7 +58,14 @@ namespace WFS
 
 	typedef struct  _FRAME_0C {
 		FRAME_HEADER hdr;
-		DWORD unk_1;
+		
+		//
+		// Данное поле похоже на константу
+		// Для текущего ДВР она равна {x02, x19, x58, x48}
+		// Нужно проверить: эта константа одинакова для всех или индивидуальна для каждого ДВР-а.
+		//
+		DWORD unk_1;			
+		
 		TIMESTAMP time;
 		DWORD data_size;
 	} FRAME_0C;
