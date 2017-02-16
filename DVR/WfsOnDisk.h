@@ -23,10 +23,10 @@ namespace WFS
 	enum FrameType {
 		kUnknownType = 0x00,
 		kType_0A = 0x0A,
-		//kType_0D = 0x0D,
-		//kType_0C = 0x0C,
-		kType_0D = 0x0C,
-		kType_0C = 0x0D,
+		kType_0D = 0x0D,
+		kType_0C = 0x0C,
+		//kType_0D = 0x0C,
+		//kType_0C = 0x0D,
 	};
 
 #define WFS_FRAME_HEADER_SIGNATURE_MASK			((DWORD)0xF0FFFFFF)	
@@ -62,6 +62,7 @@ namespace WFS
 		//
 		// Данное поле похоже на константу
 		// Для текущего ДВР она равна {x02, x19, x58, x48}
+		//       еще один регистратор {x02, x19, xA0, x5A}
 		// Нужно проверить: эта константа одинакова для всех или индивидуальна для каждого ДВР-а.
 		//
 		DWORD unk_1;
