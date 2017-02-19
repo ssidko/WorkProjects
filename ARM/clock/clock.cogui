@@ -9,30 +9,28 @@
 <editorArea activeWorkbook="DefaultEditorWorkbook">
 <info part="DefaultEditorWorkbook">
 <folder appearance="1" expanded="2">
-<presentation id="org.eclipse.ui.internal.presentations.classic.WorkbenchPresentationFactoryClassic">
+<presentation id="org.eclipse.ui.presentations.WorkbenchPresentationFactory">
 <part id="0"/>
+<part id="5"/>
 <part id="1"/>
 <part id="2"/>
 <part id="3"/>
+<part id="12"/>
 <part id="4"/>
-<part id="5"/>
 <part id="6"/>
 <part id="7"/>
 <part id="8"/>
 <part id="9"/>
 <part id="10"/>
 <part id="11"/>
+<part id="13"/>
 </presentation>
 </folder>
 </info>
 </editorArea>
-<editor id="org.eclipse.cdt.ui.editor.CEditor" name="main.c" partName="main.c" path="D:/GitHub/WorkProjects/ARM/clock/app/main.c" title="main.c" tooltip="D:/GitHub/WorkProjects/ARM/clock/app/main.c" workbook="DefaultEditorWorkbook">
+<editor id="org.eclipse.cdt.ui.editor.CEditor" name="main.c" partName="main.c" path="D:/MyProjects/WorkProjects/ARM/clock/app/main.c" title="main.c" tooltip="D:/MyProjects/WorkProjects/ARM/clock/app/main.c" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/clock/main.c"/>
-<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="518" selectionTopPixel="0"/>
-</editor>
-<editor id="org.eclipse.cdt.ui.editor.CEditor" name="ssd1306.c" partName="ssd1306.c" path="D:/GitHub/WorkProjects/ARM/clock/app/ssd1306.c" title="ssd1306.c" tooltip="D:/GitHub/WorkProjects/ARM/clock/app/ssd1306.c" workbook="DefaultEditorWorkbook">
-<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/clock/app/ssd1306.c"/>
-<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="4697" selectionTopPixel="3360"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="1547" selectionTopPixel="1080"/>
 </editor>
 <editor id="org.eclipse.cdt.ui.editor.CEditor" name="font.h" partName="font.h" path="D:/MyProjects/WorkProjects/ARM/clock/app/fonts/font.h" title="font.h" tooltip="D:/MyProjects/WorkProjects/ARM/clock/app/fonts/font.h" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/clock/fonts/font.h"/>
@@ -46,21 +44,13 @@
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/clock/app/hardware.h"/>
 <editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="255" selectionTopPixel="0"/>
 </editor>
-<editor activePart="true" focus="true" id="org.eclipse.cdt.ui.editor.CEditor" name="hardware.c" partName="hardware.c" path="D:/GitHub/WorkProjects/ARM/clock/app/hardware.c" title="hardware.c" tooltip="D:/GitHub/WorkProjects/ARM/clock/app/hardware.c" workbook="DefaultEditorWorkbook">
+<editor id="org.eclipse.cdt.ui.editor.CEditor" name="hardware.c" partName="hardware.c" path="D:/MyProjects/WorkProjects/ARM/clock/app/hardware.c" title="hardware.c" tooltip="D:/MyProjects/WorkProjects/ARM/clock/app/hardware.c" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/clock/app/hardware.c"/>
-<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="338" selectionTopPixel="0"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="318" selectionTopPixel="0"/>
 </editor>
 <editor id="org.eclipse.cdt.ui.editor.CEditor" name="ssd1306.h" partName="ssd1306.h" path="D:/MyProjects/WorkProjects/ARM/clock/app/ssd1306.h" title="ssd1306.h" tooltip="D:/MyProjects/WorkProjects/ARM/clock/app/ssd1306.h" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/clock/app/ssd1306.h"/>
-<editorState selectionHorizontalPixel="0" selectionLength="136" selectionOffset="944" selectionTopPixel="0"/>
-</editor>
-<editor id="org.eclipse.cdt.ui.editor.CEditor" name="f10x16f.h" partName="f10x16f.h" path="D:/MyProjects/WorkProjects/ARM/clock/app/fonts/f10x16f.h" title="f10x16f.h" tooltip="D:/MyProjects/WorkProjects/ARM/clock/app/fonts/f10x16f.h" workbook="DefaultEditorWorkbook">
-<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/clock/fonts/f10x16f.h"/>
-<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="844" selectionTopPixel="0"/>
-</editor>
-<editor id="org.eclipse.cdt.ui.editor.CEditor" name="f10x16f.c" partName="f10x16f.c" path="D:/MyProjects/WorkProjects/ARM/clock/app/fonts/f10x16f.c" title="f10x16f.c" tooltip="D:/MyProjects/WorkProjects/ARM/clock/app/fonts/f10x16f.c" workbook="DefaultEditorWorkbook">
-<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/clock/fonts/f10x16f.c"/>
-<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="792" selectionTopPixel="0"/>
+<editorState selectionHorizontalPixel="0" selectionLength="83" selectionOffset="148" selectionTopPixel="0"/>
 </editor>
 <editor id="org.eclipse.cdt.ui.editor.CEditor" name="clock.c" partName="clock.c" path="D:/GitHub/WorkProjects/ARM/clock/app/clock.c" title="clock.c" tooltip="D:/GitHub/WorkProjects/ARM/clock/app/clock.c" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/clock/app/clock.c"/>
@@ -74,6 +64,26 @@
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/clock/app/delay.h"/>
 <editorState selectionHorizontalPixel="0" selectionLength="34" selectionOffset="0" selectionTopPixel="0"/>
 </editor>
+<editor id="org.eclipse.ui.DefaultTextEditor" name="pinout.txt" partName="pinout.txt" path="D:/MyProjects/WorkProjects/ARM/clock/app/pinout.txt" title="pinout.txt" tooltip="D:/MyProjects/WorkProjects/ARM/clock/app/pinout.txt" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/clock/pinout.txt"/>
+<editorState selectionHorizontalPixel="0" selectionLength="46" selectionOffset="35" selectionTopPixel="0"/>
+</editor>
+<editor id="org.eclipse.ui.DefaultTextEditor" name="STM32F103XB_FLASH.ld" partName="STM32F103XB_FLASH.ld" path="D:/MyProjects/WorkProjects/ARM/clock/app/CMSIS/linker/STM32F103XB_FLASH.ld" title="STM32F103XB_FLASH.ld" tooltip="D:/MyProjects/WorkProjects/ARM/clock/app/CMSIS/linker/STM32F103XB_FLASH.ld" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/clock/CMSIS/linker/STM32F103XB_FLASH.ld"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="0" selectionTopPixel="180"/>
+</editor>
+<editor id="org.eclipse.cdt.ui.editor.asm.AsmEditor" name="startup_stm32f103xb.s" partName="startup_stm32f103xb.s" path="D:/MyProjects/WorkProjects/ARM/clock/app/CMSIS/startup/startup_stm32f103xb.s" title="startup_stm32f103xb.s" tooltip="D:/MyProjects/WorkProjects/ARM/clock/app/CMSIS/startup/startup_stm32f103xb.s" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/clock/CMSIS/startup/startup_stm32f103xb.s"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="3691" selectionTopPixel="1190"/>
+</editor>
+<editor id="org.eclipse.cdt.ui.editor.CEditor" name="ssd1306.c" partName="ssd1306.c" path="D:/MyProjects/WorkProjects/ARM/clock/app/ssd1306.c" title="ssd1306.c" tooltip="D:/MyProjects/WorkProjects/ARM/clock/app/ssd1306.c" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/clock/app/ssd1306.c"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="2110" selectionTopPixel="864"/>
+</editor>
+<editor activePart="true" focus="true" id="org.eclipse.cdt.ui.editor.CEditor" name="spi.c" partName="spi.c" path="D:/MyProjects/WorkProjects/ARM/clock/app/spi.c" title="spi.c" tooltip="D:/MyProjects/WorkProjects/ARM/clock/app/spi.c" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/clock/utility/spi.c"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="139" selectionTopPixel="0"/>
+</editor>
 </editors>
 <views>
 <view id="org.coocox.builder.ui.views.ProjectView" partName="Project">
@@ -81,11 +91,10 @@
 <expanded>
 <element path="/clock"/>
 <element path="/clock/app"/>
-<element path="/clock/fonts"/>
 <element path="/clock/utility"/>
 </expanded>
 <selection>
-<element path="/clock/app/interrupt_handlers.c"/>
+<element path="/clock/app/ssd1306.c"/>
 </selection>
 </viewState>
 </view>
@@ -94,6 +103,9 @@
 </view>
 <view id="org.eclipse.ui.views.ProblemView" partName="Problems">
 <viewState PRIMARY_SORT_FIELD="org.eclipse.ui.ide.severityAndDescriptionField" categoryGroup="org.eclipse.ui.ide.severity" markerContentGenerator="org.eclipse.ui.ide.problemsGenerator" partName="Problems">
+<expanded>
+<category IMemento.internal.id="Warnings (1 item)"/>
+</expanded>
 <columnWidths org.eclipse.ui.ide.locationField="90" org.eclipse.ui.ide.markerType="90" org.eclipse.ui.ide.pathField="120" org.eclipse.ui.ide.resourceField="90" org.eclipse.ui.ide.severityAndDescriptionField="300"/>
 <visible IMemento.internal.id="org.eclipse.ui.ide.severityAndDescriptionField"/>
 <visible IMemento.internal.id="org.eclipse.ui.ide.resourceField"/>
@@ -112,10 +124,11 @@
 <viewState/>
 </view>
 <view id="org.coocox.coassistant.view.CoAssistantView_debug" partName="Peripherals">
-<viewState horizontalPosition="0" verticalPosition="0">
-<selection>&#x0A;<element name="GPIOA"/>
+<viewState horizontalPosition="0" verticalPosition="20">
+<selection>
+<element name="SPI1"/>
 </selection>
-<registerValues baseAddress="Base Address: 0x40010800" description="Description:  General purpose I/O"/>
+<registerValues baseAddress="Base Address: 0x40013000" description="Description:  Serial peripheral interface"/>
 </viewState>
 </view>
 <view id="org.eclipse.debug.ui.VariableView" partName="Variables">
@@ -159,7 +172,6 @@
 <view id="org.coocox.builder.ui.views.ProjectView"/>
 <view id="org.coocox.component.ui.view.ComponentView"/>
 <view id="org.eclipse.ui.views.ContentOutline"/>
-<view id="org.eclipse.debug.ui.BreakpointView"/>
 <fastViewBars>
 <fastViewBar fastViewLocation="1024" id="org.eclipse.ui.internal.ViewStack@1cd146b" orientation="256" selectedTabId="org.eclipse.ui.console.ConsoleView" style="0">
 <fastViews>
@@ -174,7 +186,7 @@
 <folder activePageID="org.coocox.builder.ui.views.ProjectView" appearance="2" expanded="2">
 <page content="org.coocox.builder.ui.views.ProjectView" label="Project"/>
 <page content="org.coocox.component.ui.view.ComponentView" label="Component View"/>
-<presentation id="org.eclipse.ui.internal.presentations.classic.WorkbenchPresentationFactoryClassic">
+<presentation id="org.eclipse.ui.presentations.WorkbenchPresentationFactory">
 <part id="0"/>
 <part id="1"/>
 </presentation>
@@ -194,13 +206,12 @@
 </info>
 <info part="org.eclipse.ui.editorss" ratio="0.17129387" ratioLeft="327" ratioRight="1582" relationship="2" relative="org.eclipse.ui.internal.ViewStack@f783e1"/>
 <info folder="true" part="org.eclipse.ui.internal.ViewStack@1f33281" ratio="0.71983916" ratioLeft="1074" ratioRight="418" relationship="2" relative="org.eclipse.ui.editorss">
-<folder activePageID="org.eclipse.debug.ui.BreakpointView" appearance="2" expanded="2">
+<folder activePageID="org.eclipse.ui.views.ContentOutline" appearance="2" expanded="2">
 <page content="org.eclipse.ui.views.ContentOutline" label="Outline"/>
-<page content="org.eclipse.debug.ui.BreakpointView" label="Breakpoints"/>
+<page content="org.eclipse.debug.ui.BreakpointView" label="LabelNotFound"/>
 <page content="org.coocox.coassistant.view.CoAssistantView" label="LabelNotFound"/>
-<presentation id="org.eclipse.ui.internal.presentations.classic.WorkbenchPresentationFactoryClassic">
+<presentation id="org.eclipse.ui.presentations.WorkbenchPresentationFactory">
 <part id="0"/>
-<part id="1"/>
 </presentation>
 </folder>
 </info>
@@ -248,8 +259,8 @@
 <hide_toolbar_item_id id="org.eclipse.ui.edit.text.toggleShowSelectedElementOnly"/>
 <hide_toolbar_item_id id="org.coocox.builder.ui.build"/>
 <hide_toolbar_item_id id="org.coocox.welcome.ui.action.welcome"/>
-<hide_toolbar_item_id id="org.coocox.codebugger.configuration.coideProgramDownloadAction"/>
 <hide_toolbar_item_id id="org.coocox.component.ui.ShowRepositoryAction"/>
+<hide_toolbar_item_id id="org.coocox.codebugger.configuration.coideProgramDownloadAction"/>
 <view id="org.eclipse.ui.console.ConsoleView"/>
 <view id="org.eclipse.debug.ui.DebugView"/>
 <view id="org.eclipse.debug.ui.BreakpointView"/>
@@ -259,39 +270,55 @@
 <view id="org.coocox.coassistant.view.CoAssistantView_debug"/>
 <fastViewBars/>
 <viewLayoutRec closeable="false" id="org.eclipse.debug.ui.DebugView"/>
-<layout>&#x0A;<mainWindow>&#x0A;<info folder="true" part="org.eclipse.ui.internal.ViewStack@9ce5fc">&#x0A;<folder activePageID="org.coocox.builder.ui.views.ProjectView" appearance="2" expanded="2">&#x0A;<page content="org.coocox.builder.ui.views.ProjectView" label="Project"/>
-<presentation id="org.eclipse.ui.presentations.WorkbenchPresentationFactory">&#x0A;<part id="0"/>
+<layout>
+<mainWindow>
+<info folder="true" part="org.eclipse.ui.internal.ViewStack@9ce5fc">
+<folder activePageID="org.coocox.builder.ui.views.ProjectView" appearance="2" expanded="2">
+<page content="org.coocox.builder.ui.views.ProjectView" label="Project"/>
+<presentation id="org.eclipse.ui.presentations.WorkbenchPresentationFactory">
+<part id="0"/>
 </presentation>
 </folder>
 </info>
-<info folder="true" part="stickyFolderRight" ratio="0.75" ratioLeft="1434" ratioRight="478" relationship="2" relative="org.eclipse.ui.internal.ViewStack@9ce5fc">&#x0A;<folder appearance="2" expanded="2">&#x0A;<page content="org.eclipse.help.ui.HelpView" label="LabelNotFound"/>
+<info folder="true" part="stickyFolderRight" ratio="0.75" ratioLeft="1434" ratioRight="478" relationship="2" relative="org.eclipse.ui.internal.ViewStack@9ce5fc">
+<folder appearance="2" expanded="2">
+<page content="org.eclipse.help.ui.HelpView" label="LabelNotFound"/>
 <page content="org.eclipse.ui.internal.introview" label="LabelNotFound"/>
 </folder>
 </info>
-<info folder="true" part="org.eclipse.ui.internal.ViewStack@18126ec" ratio="0.6992561" ratioLeft="658" ratioRight="283" relationship="4" relative="org.eclipse.ui.internal.ViewStack@9ce5fc">&#x0A;<folder activePageID="org.eclipse.ui.console.ConsoleView" appearance="2" expanded="2">&#x0A;<page content="org.eclipse.ui.console.ConsoleView" label="Console"/>
+<info folder="true" part="org.eclipse.ui.internal.ViewStack@18126ec" ratio="0.6992561" ratioLeft="658" ratioRight="283" relationship="4" relative="org.eclipse.ui.internal.ViewStack@9ce5fc">
+<folder activePageID="org.eclipse.debug.ui.DebugView" appearance="2" expanded="2">
+<page content="org.eclipse.ui.console.ConsoleView" label="Console"/>
 <page content="org.eclipse.debug.ui.DebugView" label="Debug"/>
 <page content="org.eclipse.debug.ui.BreakpointView" label="Breakpoints"/>
-<presentation id="org.eclipse.ui.presentations.WorkbenchPresentationFactory">&#x0A;<part id="0"/>
+<presentation id="org.eclipse.ui.presentations.WorkbenchPresentationFactory">
+<part id="0"/>
 <part id="1"/>
 <part id="2"/>
 </presentation>
 </folder>
 </info>
-<info folder="true" part="org.eclipse.ui.internal.ViewStack@754bef" ratio="0.5" ratioLeft="956" ratioRight="956" relationship="2" relative="org.eclipse.ui.internal.ViewStack@18126ec">&#x0A;<folder activePageID="org.eclipse.debug.ui.VariableView" appearance="2" expanded="2">&#x0A;<page content="org.coocox.codebugger.trace.ui.traceview" label="Semihosting"/>
+<info folder="true" part="org.eclipse.ui.internal.ViewStack@754bef" ratio="0.5" ratioLeft="956" ratioRight="956" relationship="2" relative="org.eclipse.ui.internal.ViewStack@18126ec">
+<folder activePageID="org.eclipse.debug.ui.VariableView" appearance="2" expanded="2">
+<page content="org.coocox.codebugger.trace.ui.traceview" label="Semihosting"/>
 <page content="org.eclipse.debug.ui.VariableView" label="Variables"/>
 <page content="org.eclipse.debug.ui.ExpressionView" label="LabelNotFound"/>
 <page content="org.eclipse.debug.ui.MemoryView" label="LabelNotFound"/>
 <page content="org.eclipse.cdt.debug.ui.memory.memorybrowser.MemoryBrowser" label="LabelNotFound"/>
-<presentation id="org.eclipse.ui.presentations.WorkbenchPresentationFactory">&#x0A;<part id="0"/>
+<presentation id="org.eclipse.ui.presentations.WorkbenchPresentationFactory">
+<part id="0"/>
 <part id="1"/>
 </presentation>
 </folder>
 </info>
-<info folder="true" part="org.eclipse.ui.internal.ViewStack@1e3d4a2" ratio="0.75" ratioLeft="1434" ratioRight="478" relationship="2" relative="org.eclipse.ui.internal.ViewStack@9ce5fc">&#x0A;<folder activePageID="org.coocox.coassistant.view.CoAssistantView_debug" appearance="2" expanded="2">&#x0A;<page content="org.coocox.coassistant.view.CoAssistantView_debug" label="Peripherals"/>
+<info folder="true" part="org.eclipse.ui.internal.ViewStack@1e3d4a2" ratio="0.75" ratioLeft="1434" ratioRight="478" relationship="2" relative="org.eclipse.ui.internal.ViewStack@9ce5fc">
+<folder activePageID="org.coocox.coassistant.view.CoAssistantView_debug" appearance="2" expanded="2">
+<page content="org.coocox.coassistant.view.CoAssistantView_debug" label="Peripherals"/>
 <page content="org.eclipse.cdt.dsf.debug.ui.disassembly.view" label="LabelNotFound"/>
 <page content="org.eclipse.ui.views.ContentOutline" label="LabelNotFound"/>
 <page content="org.eclipse.debug.ui.RegisterView" label="LabelNotFound"/>
-<presentation id="org.eclipse.ui.presentations.WorkbenchPresentationFactory">&#x0A;<part id="0"/>
+<presentation id="org.eclipse.ui.presentations.WorkbenchPresentationFactory">
+<part id="0"/>
 </presentation>
 </folder>
 </info>
@@ -303,167 +330,162 @@
 <workingSets/>
 <navigationHistory>
 <editors>
-<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/clock/app/ssd1306.c"/>
 <editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/clock/main.c"/>
-<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/clock/app/ssd1306.h"/>
-<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/clock/fonts/f10x16f.c"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.ui.DefaultTextEditor" path="/clock/pinout.txt"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.asm.AsmEditor" path="/clock/CMSIS/startup/startup_stm32f103xb.s"/>
 <editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/clock/app/ssd1306.c"/>
-<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/clock/app/clock.c"/>
-<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/clock/app/clock.h"/>
-<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/clock/app/delay.h"/>
-<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/clock/app/InteraptHendelrs.c"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/clock/utility/spi.c"/>
 <editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/clock/app/hardware.c"/>
-<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/clock/app/interrupt_handlers.c"/>
 </editors>
-<item historyLabel="ssd1306.h" index="2">
-<position info="not_deleted" x="106" y="0"/>
-</item>
-<item historyLabel="ssd1306.c" index="0">
-<position info="not_deleted" x="1429" y="0"/>
-</item>
-<item historyLabel="ssd1306.c" index="0">
-<position info="not_deleted" x="3436" y="0"/>
-</item>
-<item historyLabel="ssd1306.c" index="0">
-<position info="not_deleted" x="3585" y="0"/>
-</item>
-<item historyLabel="f10x16f.c" index="3">
-<position info="not_deleted" x="792" y="0"/>
-</item>
-<item historyLabel="main.c" index="1">
+<item historyLabel="main.c" index="0">
 <position info="not_deleted" x="1547" y="0"/>
 </item>
-<item historyLabel="ssd1306.h" index="2">
-<position info="not_deleted" x="106" y="0"/>
+<item historyLabel="ssd1306.c" index="3">
+<position info="not_deleted" x="696" y="0"/>
 </item>
-<item historyLabel="ssd1306.c" index="0">
-<position info="not_deleted" x="3619" y="0"/>
+<item historyLabel="ssd1306.c" index="3">
+<position info="not_deleted" x="863" y="0"/>
 </item>
-<item historyLabel="ssd1306.h" index="2">
-<position info="not_deleted" x="106" y="0"/>
+<item historyLabel="ssd1306.c" index="3">
+<position info="not_deleted" x="927" y="0"/>
 </item>
-<item historyLabel="ssd1306.c" index="0">
-<position info="not_deleted" x="5201" y="0"/>
+<item historyLabel="ssd1306.c" index="3">
+<position info="not_deleted" x="1196" y="0"/>
 </item>
-<item historyLabel="ssd1306.h" index="2">
-<position info="not_deleted" x="809" y="61"/>
+<item historyLabel="ssd1306.c" index="3">
+<position info="not_deleted" x="1283" y="0"/>
 </item>
-<item historyLabel="ssd1306.c" index="0">
-<position info="not_deleted" x="5201" y="0"/>
+<item historyLabel="ssd1306.c" index="3">
+<position info="not_deleted" x="1481" y="0"/>
 </item>
-<item historyLabel="ssd1306.h" index="2">
-<position info="not_deleted" x="809" y="61"/>
+<item historyLabel="ssd1306.c" index="3">
+<position info="not_deleted" x="1543" y="0"/>
 </item>
-<item historyLabel="ssd1306.c" index="0">
-<position info="not_deleted" x="5201" y="0"/>
+<item historyLabel="ssd1306.c" index="3">
+<position info="not_deleted" x="1596" y="0"/>
 </item>
-<item historyLabel="ssd1306.h" index="2">
-<position info="not_deleted" x="809" y="61"/>
+<item historyLabel="ssd1306.c" index="3">
+<position info="not_deleted" x="1638" y="0"/>
 </item>
-<item historyLabel="ssd1306.c" index="0">
-<position info="not_deleted" x="3816" y="0"/>
+<item historyLabel="ssd1306.c" index="3">
+<position info="not_deleted" x="1708" y="0"/>
 </item>
-<item historyLabel="ssd1306.h" index="2">
-<position info="not_deleted" x="809" y="61"/>
+<item historyLabel="ssd1306.c" index="3">
+<position info="not_deleted" x="1780" y="0"/>
 </item>
-<item historyLabel="ssd1306.c" index="0">
-<position info="not_deleted" x="3920" y="0"/>
+<item historyLabel="ssd1306.c" index="3">
+<position info="not_deleted" x="678" y="0"/>
 </item>
-<item historyLabel="main.c" index="1">
-<position/>
+<item historyLabel="startup_stm32f103xb.s" index="2">
+<position info="not_deleted" x="3691" y="0"/>
 </item>
-<item historyLabel="ssd1306.h" index="2">
-<position info="not_deleted" x="809" y="61"/>
+<item historyLabel="main.c" index="0">
+<position info="not_deleted" x="1547" y="0"/>
 </item>
-<item historyLabel="main.c" index="1">
-<position/>
+<item historyLabel="ssd1306.c" index="3">
+<position info="not_deleted" x="696" y="0"/>
 </item>
-<item historyLabel="ssd1306.c" index="0">
-<position info="not_deleted" x="3673" y="17"/>
+<item historyLabel="ssd1306.c" index="3">
+<position info="not_deleted" x="863" y="0"/>
 </item>
-<item historyLabel="main.c" index="1">
-<position/>
+<item historyLabel="ssd1306.c" index="3">
+<position info="not_deleted" x="927" y="0"/>
 </item>
-<item historyLabel="main.c" index="1">
-<position info="not_deleted" x="2633" y="0"/>
+<item historyLabel="ssd1306.c" index="3">
+<position info="not_deleted" x="1196" y="0"/>
 </item>
-<item historyLabel="ssd1306.h" index="2">
-<position info="not_deleted" x="872" y="68"/>
+<item historyLabel="ssd1306.c" index="3">
+<position info="not_deleted" x="1283" y="0"/>
 </item>
-<item historyLabel="ssd1306.c" index="0">
-<position info="not_deleted" x="4232" y="0"/>
+<item historyLabel="ssd1306.c" index="3">
+<position info="not_deleted" x="1481" y="0"/>
 </item>
-<item historyLabel="ssd1306.h" index="2">
-<position info="not_deleted" x="944" y="136"/>
+<item historyLabel="ssd1306.c" index="3">
+<position info="not_deleted" x="1543" y="0"/>
 </item>
-<item historyLabel="ssd1306.c" index="0">
-<position info="not_deleted" x="4597" y="21"/>
+<item historyLabel="ssd1306.c" index="3">
+<position info="not_deleted" x="1596" y="0"/>
 </item>
-<item historyLabel="main.c" index="1">
-<position info="not_deleted" x="2633" y="0"/>
+<item historyLabel="ssd1306.c" index="3">
+<position info="not_deleted" x="1638" y="0"/>
 </item>
-<item historyLabel="main.c" index="1">
-<position info="not_deleted" x="2633" y="0"/>
+<item historyLabel="ssd1306.c" index="3">
+<position info="not_deleted" x="1708" y="0"/>
 </item>
-<item historyLabel="ssd1306.c" index="0">
-<position info="not_deleted" x="4079" y="0"/>
+<item historyLabel="ssd1306.c" index="3">
+<position info="not_deleted" x="1780" y="0"/>
 </item>
-<item historyLabel="ssd1306.h" index="2">
-<position info="not_deleted" x="944" y="136"/>
+<item historyLabel="ssd1306.c" index="3">
+<position info="not_deleted" x="1800" y="0"/>
 </item>
-<item historyLabel="ssd1306.c" index="0">
-<position info="not_deleted" x="2390" y="0"/>
+<item historyLabel="ssd1306.c" index="3">
+<position info="not_deleted" x="2036" y="0"/>
 </item>
-<item historyLabel="main.c" index="1">
-<position info="not_deleted" x="2633" y="0"/>
+<item historyLabel="ssd1306.c" index="3">
+<position info="not_deleted" x="2057" y="0"/>
 </item>
-<item historyLabel="ssd1306.c" index="4">
-<position info="not_deleted" x="4697" y="0"/>
+<item historyLabel="ssd1306.c" index="3">
+<position info="not_deleted" x="2077" y="0"/>
 </item>
-<item historyLabel="clock.c" index="5">
-<position info="not_deleted" x="47" y="0"/>
+<item historyLabel="ssd1306.c" index="3">
+<position info="not_deleted" x="2117" y="0"/>
 </item>
-<item historyLabel="clock.h" index="6">
-<position info="not_deleted" x="62" y="0"/>
+<item historyLabel="spi.c" index="4">
+<position info="not_deleted" x="25" y="12"/>
 </item>
-<item historyLabel="delay.h" index="7">
-<position info="not_deleted" x="0" y="34"/>
+<item historyLabel="spi.c" index="4">
+<position info="not_deleted" x="135" y="0"/>
 </item>
-<item historyLabel="clock.h" index="6">
-<position info="not_deleted" x="38" y="0"/>
+<item historyLabel="ssd1306.c" index="3">
+<position info="not_deleted" x="1780" y="8"/>
 </item>
-<item historyLabel="clock.c" index="5">
-<position info="not_deleted" x="47" y="0"/>
+<item historyLabel="startup_stm32f103xb.s" index="2">
+<position info="not_deleted" x="3691" y="0"/>
 </item>
-<item historyLabel="clock.c" index="5">
-<position info="not_deleted" x="47" y="0"/>
+<item historyLabel="main.c" index="0">
+<position info="not_deleted" x="1547" y="0"/>
 </item>
-<item historyLabel="InteraptHendelrs.c" index="8">
-<position info="not_deleted" x="0" y="0"/>
+<item historyLabel="ssd1306.c" index="3">
+<position info="not_deleted" x="1780" y="0"/>
 </item>
-<item historyLabel="clock.c" index="5">
-<position info="not_deleted" x="47" y="0"/>
+<item historyLabel="hardware.c" index="5">
+<position info="not_deleted" x="318" y="0"/>
 </item>
-<item historyLabel="clock.c" index="5">
-<position info="not_deleted" x="24" y="21"/>
+<item historyLabel="pinout.txt" index="1">
+<position info="not_deleted" x="35" y="46"/>
 </item>
-<item historyLabel="clock.h" index="6">
-<position info="not_deleted" x="38" y="0"/>
+<item historyLabel="main.c" index="0">
+<position info="not_deleted" x="1547" y="0"/>
 </item>
-<item historyLabel="clock.c" index="5">
-<position info="not_deleted" x="24" y="21"/>
+<item historyLabel="startup_stm32f103xb.s" index="2">
+<position info="not_deleted" x="3691" y="0"/>
 </item>
-<item historyLabel="clock.h" index="6">
-<position/>
+<item historyLabel="main.c" index="0">
+<position info="not_deleted" x="1547" y="0"/>
 </item>
-<item historyLabel="hardware.c" index="9">
-<position info="not_deleted" x="44" y="289"/>
+<item historyLabel="ssd1306.c" index="3">
+<position info="not_deleted" x="1780" y="0"/>
 </item>
-<item historyLabel="interrupt_handlers.c" index="10">
-<position info="not_deleted" x="0" y="0"/>
+<item historyLabel="ssd1306.c" index="3">
+<position info="not_deleted" x="1800" y="0"/>
 </item>
-<item active="true" historyLabel="hardware.c" index="9">
-<position info="not_deleted" x="44" y="289"/>
+<item historyLabel="ssd1306.c" index="3">
+<position info="not_deleted" x="2036" y="0"/>
+</item>
+<item historyLabel="ssd1306.c" index="3">
+<position info="not_deleted" x="2057" y="0"/>
+</item>
+<item historyLabel="ssd1306.c" index="3">
+<position info="not_deleted" x="2077" y="0"/>
+</item>
+<item historyLabel="ssd1306.c" index="3">
+<position info="not_deleted" x="2110" y="0"/>
+</item>
+<item historyLabel="spi.c" index="4">
+<position info="not_deleted" x="74" y="0"/>
+</item>
+<item active="true" historyLabel="spi.c" index="4">
+<position info="not_deleted" x="139" y="0"/>
 </item>
 </navigationHistory>
 <input factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/" type="8"/>
@@ -472,29 +494,20 @@
 <actionBarAdvisor/>
 </window>
 <mruList>
-<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="interrupt_handlers.c" tooltip="clock/app/interrupt_handlers.c">
-<persistable path="/clock/app/interrupt_handlers.c"/>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="spi.c" tooltip="clock/utility/spi.c">
+<persistable path="/clock/utility/spi.c"/>
 </file>
-<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="InteraptHendelrs.c" tooltip="clock/app/InteraptHendelrs.c">
-<persistable path="/clock/app/InteraptHendelrs.c"/>
-</file>
-<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="delay.h" tooltip="clock/app/delay.h">
-<persistable path="/clock/app/delay.h"/>
-</file>
-<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="clock.h" tooltip="clock/app/clock.h">
-<persistable path="/clock/app/clock.h"/>
-</file>
-<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="clock.c" tooltip="clock/app/clock.c">
-<persistable path="/clock/app/clock.c"/>
-</file>
-<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="core_cm3.h" tooltip="clock/CMSIS/core/core_cm3.h">
-<persistable path="/clock/CMSIS/core/core_cm3.h"/>
-</file>
-<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="stm32f1xx.h" tooltip="clock/CMSIS/stm32f1xx.h">
-<persistable path="/clock/CMSIS/stm32f1xx.h"/>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="ssd1306.c" tooltip="clock/app/ssd1306.c">
+<persistable path="/clock/app/ssd1306.c"/>
 </file>
 <file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.asm.AsmEditor" name="startup_stm32f103xb.s" tooltip="clock/CMSIS/startup/startup_stm32f103xb.s">
 <persistable path="/clock/CMSIS/startup/startup_stm32f103xb.s"/>
+</file>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.ui.DefaultTextEditor" name="STM32F103XB_FLASH.ld" tooltip="clock/CMSIS/linker/STM32F103XB_FLASH.ld">
+<persistable path="/clock/CMSIS/linker/STM32F103XB_FLASH.ld"/>
+</file>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.ui.DefaultTextEditor" name="pinout.txt" tooltip="clock/pinout.txt">
+<persistable path="/clock/pinout.txt"/>
 </file>
 <file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="ssd1306.h" tooltip="clock/app/ssd1306.h">
 <persistable path="/clock/app/ssd1306.h"/>
@@ -502,20 +515,23 @@
 <file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="gpio.h" tooltip="clock/utility/gpio.h">
 <persistable path="/clock/utility/gpio.h"/>
 </file>
-<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="hardware.c" tooltip="clock/app/hardware.c">
-<persistable path="/clock/app/hardware.c"/>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="f10x16f.c" tooltip="clock/fonts/f10x16f.c">
+<persistable path="/clock/fonts/f10x16f.c"/>
 </file>
-<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="hardware.h" tooltip="clock/app/hardware.h">
-<persistable path="/clock/app/hardware.h"/>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="f10x16f.h" tooltip="clock/fonts/f10x16f.h">
+<persistable path="/clock/fonts/f10x16f.h"/>
 </file>
 <file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="syscalls.c" tooltip="clock/components/C_library/syscalls.c">
 <persistable path="/clock/components/C_library/syscalls.c"/>
 </file>
-<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="lcd.h" tooltip="clock/app/lcd.h">
-<persistable path="/clock/app/lcd.h"/>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="core_cm3.h" tooltip="clock/CMSIS/core/core_cm3.h">
+<persistable path="/clock/CMSIS/core/core_cm3.h"/>
 </file>
-<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="sysmem.c" tooltip="clock/sysmem.c">
-<persistable path="/clock/sysmem.c"/>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="delay.c" tooltip="clock/app/delay.c">
+<persistable path="/clock/app/delay.c"/>
+</file>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="InteraptHendelrs.c" tooltip="clock/app/InteraptHendelrs.c">
+<persistable path="/clock/app/InteraptHendelrs.c"/>
 </file>
 </mruList>
 </workbench>
