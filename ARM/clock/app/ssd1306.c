@@ -15,11 +15,11 @@
 
 void SSD1306_GpioInit(void)
 {
+	// CS			PA-1
 	// RESET		PA-2
 	// DC			PA-3
 	// SCK			PA-5
 	// MOSI			PA-7
-	// CS			GND
 
 	GPIOA_ClockEnable();
 
@@ -49,7 +49,7 @@ void SSD1306_GpioInit(void)
 	RCC->APB2RSTR &=  ~RCC_APB2RSTR_SPI1RST;
 
 	//SPI1->CR1 |= 0x4004;
-	SPI1->CR1 |= CPHA_0|CPOL_0|SPI_Master|Fpclk_2|MSB_First|Frame_8bit;
+	SPI1->CR1 |= CPHA_0|CPOL_0|SPI_Master|SSM_Enable|SSI_Set|Fpclk_2|MSB_First|Frame_8bit;
 
 	SPI_Enable(SPI1);
 }

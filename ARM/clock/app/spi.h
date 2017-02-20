@@ -37,6 +37,8 @@ enum {
 	MSB_First			= 0 << SPI_CR1_LSBFIRST_Pos,
 	LSB_First			= 1 << SPI_CR1_LSBFIRST_Pos,
 	/* SSI: Internal slave select */
+	SSI_Clear			= 0 << SPI_CR1_SSI_Pos,
+	SSI_Set				= 1 << SPI_CR1_SSI_Pos,
 	/* SSM: Software slave management */
 	SSM_Disable			= 0 << SPI_CR1_SSM_Pos,
 	SSM_Enable			= 1 << SPI_CR1_SSM_Pos,

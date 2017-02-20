@@ -7,7 +7,7 @@
 #include "ssd1306.h"
 
 #define LED_PORT								GPIOC
-#define LED_PIN									Pin12
+#define LED_PIN									Pin13
 
 #define LCD_WIDTH								128
 #define LCD_HEIGHT								32

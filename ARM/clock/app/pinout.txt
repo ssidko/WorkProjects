@@ -3,7 +3,7 @@ SCK			PA-5
 MOSI		PA-7
 RESET		PA-2
 D\C			PA-3
-CS			PA-4
+CS			PA-1
 
 *** LED ***
-PC-12
+PC-13

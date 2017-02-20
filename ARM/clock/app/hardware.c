@@ -6,10 +6,8 @@ void HW_Init()
 	GPIOC_ClockEnable();
 
 	// LED pin configure
-	// General purpose output Open-drain
-	// Output mode, max speed 2 MHz
-	GPIOC->CRH &= ~(GPIO_CRH_MODE12 | GPIO_CRH_CNF12);
-	GPIOC->CRH |= (Out_2Mhz|Out_OpenDrain) << GPIO_CRH_MODE12_Pos;
+	LED_PORT->CRH &= (0x0F << ((LED_PIN - 8) * 4));
+	LED_PORT->CRH |= ((Out_2Mhz|Out_PushPull) << ((LED_PIN - 8) * 4));
 
 	SSD1306_Init(128, 32);
 }
