@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<Project version="2G - 2.0.5" name="clock">
+<Project version="2G - 2.0.6" name="clock">
   <Target name="clock" isCurrent="1">
-    <Device manufacturerId="9" manufacturerName="ST" chipId="622" chipName="STM32F103RBT6" boardId="" boardName="" boardUrl="" coreId="3" coreName="Cortex M3"/>
+    <Device manufacturerId="9" manufacturerName="ST" chipId="599" chipName="STM32F103C8T6" boardId="" boardName="" boardUrl="" coreId="3" coreName="Cortex M3"/>
     <BuildOption>
       <Compile>
         <Option name="OptimizationLevel" value="0"/>
@@ -10,12 +10,11 @@
         <Option name="SupportCPlusplus" value="0"/>
         <Option name="DEBUG" value="2"/>
         <Option name="WARNING" value="1"/>
-        <Option name="STANDARD" value="2"/>
         <Includepaths>
           <Includepath path="."/>
         </Includepaths>
         <DefinedSymbols>
-          <Define name="STM32F103RBT6"/>
+          <Define name="STM32F103C8T6"/>
           <Define name="STM32F103xB"/>
         </DefinedSymbols>
       </Compile>
@@ -29,12 +28,12 @@
         <Option name="Library" value="Use nano C Library"/>
         <LinkedLibraries/>
         <MemoryAreas debugInFlashNotRAM="1">
-          <Memory name="IROM1" type="ReadOnly" size="0x00020000" startValue="0x08000000"/>
+          <Memory name="IROM1" type="ReadOnly" size="0x00010000" startValue="0x08000000"/>
           <Memory name="IRAM1" type="ReadWrite" size="0x00005000" startValue="0x20000000"/>
           <Memory name="IROM2" type="ReadOnly" size="" startValue=""/>
           <Memory name="IRAM2" type="ReadWrite" size="" startValue=""/>
         </MemoryAreas>
-        <LocateLinkFile path="app/cmsis/linker/stm32f103xb_flash.ld" type="0"/>
+        <LocateLinkFile path="./stm32f103xb_flash.ld" type="0"/>
       </Link>
       <Output>
         <Option name="OutputFileType" value="0"/>
@@ -51,7 +50,7 @@
     <DebugOption>
       <Option name="org.coocox.codebugger.gdbjtag.core.adapter" value="ST-Link"/>
       <Option name="org.coocox.codebugger.gdbjtag.core.debugMode" value="SWD"/>
-      <Option name="org.coocox.codebugger.gdbjtag.core.clockDiv" value="2M"/>
+      <Option name="org.coocox.codebugger.gdbjtag.core.clockDiv" value="1M"/>
       <Option name="org.coocox.codebugger.gdbjtag.corerunToMain" value="1"/>
       <Option name="org.coocox.codebugger.gdbjtag.core.jlinkgdbserver" value="D:\Program Files (x86)\SEGGER\JLink_V490e\JLinkGDBServerCL.exe"/>
       <Option name="org.coocox.codebugger.gdbjtag.core.userDefineGDBScript" value=""/>
@@ -62,144 +61,69 @@
       <Option name="org.coocox.codebugger.gdbjtag.core.ifCacheRom" value="1"/>
       <Option name="org.coocox.codebugger.gdbjtag.core.ipAddress" value="127.0.0.1"/>
       <Option name="org.coocox.codebugger.gdbjtag.core.portNumber" value="2009"/>
-      <Option name="org.coocox.codebugger.gdbjtag.core.autoDownload" value="0"/>
+      <Option name="org.coocox.codebugger.gdbjtag.core.autoDownload" value="1"/>
       <Option name="org.coocox.codebugger.gdbjtag.core.verify" value="1"/>
-      <Option name="org.coocox.codebugger.gdbjtag.core.downloadFuction" value="Do not Erase"/>
-      <Option name="org.coocox.codebugger.gdbjtag.core.defaultAlgorithm" value="coocox-flash/coide_stm32f1xx_md_64k/stm32f10x_md_64.elf"/>
+      <Option name="org.coocox.codebugger.gdbjtag.core.downloadFuction" value="Erase Effected"/>
+      <Option name="org.coocox.codebugger.gdbjtag.core.defaultAlgorithm" value="C:\Users\Sergey\AppData\Roaming\CooCox\CoIDE\config\flash\CooCox-Flash\CoIDE_STM32F1xx_MD_64K\STM32F10x_MD_64.elf"/>
     </DebugOption>
     <ExcludeFile/>
   </Target>
-  <Target name="c8t6" isCurrent="0">
-    <Device manufacturerId="9" manufacturerName="ST" chipId="622" chipName="STM32F103RBT6" boardId="" boardName="" boardUrl="" coreId="" coreName=""/>
-    <BuildOption>
-      <Compile>
-        <Option name="OptimizationLevel" value="0"/>
-        <Option name="UseFPU" value="0"/>
-        <Option name="UserEditCompiler" value=""/>
-        <Option name="SupportCPlusplus" value="0"/>
-        <Option name="DEBUG" value="2"/>
-        <Option name="WARNING" value="1"/>
-        <Option name="STANDARD" value="2"/>
-        <Option name="STANDARDCPP" value="2"/>
-        <Includepaths>
-          <Includepath path="."/>
-        </Includepaths>
-        <DefinedSymbols>
-          <Define name="STM32F103RBT6"/>
-          <Define name="STM32F103xB"/>
-        </DefinedSymbols>
-      </Compile>
-      <Link useDefault="0">
-        <Option name="DiscardUnusedSection" value="0"/>
-        <Option name="UserEditLinkder" value=""/>
-        <Option name="UseMemoryLayout" value="0"/>
-        <Option name="nostartfiles" value="0"/>
-        <Option name="LTO" value="0"/>
-        <Option name="IsNewStartupCode" value="1"/>
-        <Option name="Library" value="Use nano C Library"/>
-        <LinkedLibraries/>
-        <MemoryAreas debugInFlashNotRAM="1">
-          <Memory name="IROM1" type="ReadOnly" size="0x00020000" startValue="0x08000000"/>
-          <Memory name="IRAM1" type="ReadWrite" size="0x00005000" startValue="0x20000000"/>
-          <Memory name="IROM2" type="ReadOnly" size="" startValue=""/>
-          <Memory name="IRAM2" type="ReadWrite" size="" startValue=""/>
-        </MemoryAreas>
-        <LocateLinkFile path="app/cmsis/linker/stm32f103xb_flash.ld" type="0"/>
-      </Link>
-      <Output>
-        <Option name="OutputFileType" value="0"/>
-        <Option name="Path" value="./"/>
-        <Option name="Name" value="clock"/>
-        <Option name="HEX" value="1"/>
-        <Option name="BIN" value="1"/>
-      </Output>
-      <User>
-        <UserRun name="Run#1" type="Before" checked="0" value=""/>
-        <UserRun name="Run#1" type="After" checked="0" value=""/>
-      </User>
-    </BuildOption>
-    <DebugOption>
-      <Option name="org.coocox.codebugger.gdbjtag.core.adapter" value="ST-Link"/>
-      <Option name="org.coocox.codebugger.gdbjtag.core.debugMode" value="SWD"/>
-      <Option name="org.coocox.codebugger.gdbjtag.core.clockDiv" value="2M"/>
-      <Option name="org.coocox.codebugger.gdbjtag.corerunToMain" value="1"/>
-      <Option name="org.coocox.codebugger.gdbjtag.core.jlinkgdbserver" value="D:\Program Files (x86)\SEGGER\JLink_V490e\JLinkGDBServerCL.exe"/>
-      <Option name="org.coocox.codebugger.gdbjtag.core.userDefineGDBScript" value=""/>
-      <Option name="org.coocox.codebugger.gdbjtag.core.targetEndianess" value="0"/>
-      <Option name="org.coocox.codebugger.gdbjtag.core.jlinkResetMode" value="Type 0: Normal"/>
-      <Option name="org.coocox.codebugger.gdbjtag.core.resetMode" value="SYSRESETREQ"/>
-      <Option name="org.coocox.codebugger.gdbjtag.core.ifSemihost" value="0"/>
-      <Option name="org.coocox.codebugger.gdbjtag.core.ifCacheRom" value="1"/>
-      <Option name="org.coocox.codebugger.gdbjtag.core.ipAddress" value="127.0.0.1"/>
-      <Option name="org.coocox.codebugger.gdbjtag.core.portNumber" value="2009"/>
-      <Option name="org.coocox.codebugger.gdbjtag.core.autoDownload" value="0"/>
-      <Option name="org.coocox.codebugger.gdbjtag.core.verify" value="1"/>
-      <Option name="org.coocox.codebugger.gdbjtag.core.downloadFuction" value="Do not Erase"/>
-      <Option name="org.coocox.codebugger.gdbjtag.core.defaultAlgorithm" value="coocox-flash/coide_stm32f1xx_md_64k/stm32f10x_md_64.elf"/>
-    </DebugOption>
-    <ExcludeFile/>
-  </Target>
-  <Components path="./">
-    <Component id="99" name="C_library" path="" type="BasicComponet"/>
-  </Components>
+  <Components path="./"/>
   <LocalComponents/>
   <Files>
-    <File name="CMSIS/core/core_cmInstr.h" path="app/CMSIS/core/core_cmInstr.h" type="1"/>
-    <File name="CMSIS/core/cmsis_gcc.h" path="app/CMSIS/core/cmsis_gcc.h" type="1"/>
-    <File name="CMSIS/core/arm_common_tables.h" path="app/CMSIS/core/arm_common_tables.h" type="1"/>
-    <File name="utility/spi.h" path="app/spi.h" type="1"/>
-    <File name="CMSIS/core/core_cm7.h" path="app/CMSIS/core/core_cm7.h" type="1"/>
-    <File name="CMSIS/core/core_cm4.h" path="app/CMSIS/core/core_cm4.h" type="1"/>
+    <File name="CMSIS/core/core_cmInstr.h" path="CMSIS/core/core_cmInstr.h" type="1"/>
+    <File name="CMSIS/core/cmsis_gcc.h" path="CMSIS/core/cmsis_gcc.h" type="1"/>
+    <File name="CMSIS/core/arm_common_tables.h" path="CMSIS/core/arm_common_tables.h" type="1"/>
+    <File name="CMSIS/core/core_cm7.h" path="CMSIS/core/core_cm7.h" type="1"/>
+    <File name="CMSIS/core/core_cm4.h" path="CMSIS/core/core_cm4.h" type="1"/>
     <File name="app" path="" type="2"/>
     <File name="app/interrupt_handlers.c" path="app/interrupt_handlers.c" type="1"/>
+    <File name="STM32F103XB_FLASH.ld" path="STM32F103XB_FLASH.ld" type="1"/>
+    <File name="CMSIS/core/cmsis_armcc_V6.h" path="CMSIS/core/cmsis_armcc_V6.h" type="1"/>
+    <File name="clib/syscalls.c" path="clib/syscalls.c" type="1"/>
     <File name="CMSIS" path="" type="2"/>
-    <File name="CMSIS/core/cmsis_armcc_V6.h" path="app/CMSIS/core/cmsis_armcc_V6.h" type="1"/>
-    <File name="fonts/font.h" path="app/fonts/font.h" type="1"/>
+    <File name="fonts/font.h" path="fonts/font.h" type="1"/>
+    <File name="fonts/f10x16f-modif.c" path="fonts/f10x16f-modif.c" type="1"/>
     <File name="app/clock.c" path="app/clock.c" type="1"/>
     <File name="app/delay.c" path="app/delay.c" type="1"/>
-    <File name="fonts/f6x8m.h" path="app/fonts/f6x8m.h" type="1"/>
+    <File name="fonts/f6x8m.h" path="fonts/f6x8m.h" type="1"/>
     <File name="app/hardware.c" path="app/hardware.c" type="1"/>
-    <File name="fonts/font_10x16.h" path="app/fonts/font_10x16.h" type="1"/>
-    <File name="CMSIS/core" path="" type="2"/>
+    <File name="fonts/font_10x16.h" path="fonts/font_10x16.h" type="1"/>
     <File name="app/clock.h" path="app/clock.h" type="1"/>
-    <File name="CMSIS/linker" path="" type="2"/>
-    <File name="CMSIS/system_stm32f1xx.c" path="app/CMSIS/system_stm32f1xx.c" type="1"/>
+    <File name="CMSIS/core" path="" type="2"/>
+    <File name="clib" path="" type="2"/>
     <File name="fonts" path="" type="2"/>
-    <File name="CMSIS/startup" path="" type="2"/>
-    <File name="CMSIS/stm32f1xx.h" path="app/CMSIS/stm32f1xx.h" type="1"/>
-    <File name="CMSIS/core/core_cmSimd.h" path="app/CMSIS/core/core_cmSimd.h" type="1"/>
+    <File name="startup/system_stm32f1xx.c" path="startup/system_stm32f1xx.c" type="1"/>
+    <File name="CMSIS/stm32f1xx.h" path="CMSIS/stm32f1xx.h" type="1"/>
+    <File name="CMSIS/core/core_cmSimd.h" path="CMSIS/core/core_cmSimd.h" type="1"/>
     <File name="app/ssd1306.h" path="app/ssd1306.h" type="1"/>
-    <File name="CMSIS/linker/STM32F103XB_FLASH.ld" path="app/CMSIS/linker/STM32F103XB_FLASH.ld" type="1"/>
-    <File name="CMSIS/stm32f103xb.h" path="app/CMSIS/stm32f103xb.h" type="1"/>
-    <File name="utility" path="" type="2"/>
-    <File name="components/C_library" path="" type="2"/>
-    <File name="CMSIS/startup/startup_stm32f103xb.s" path="app/CMSIS/startup/startup_stm32f103xb.s" type="1"/>
-    <File name="components/C_library/syscalls.c" path="components/coocox-master/C_library/source/syscalls.c" type="1"/>
-    <File name="utility/gpio.h" path="app/gpio.h" type="1"/>
-    <File name="CMSIS/core/arm_const_structs.h" path="app/CMSIS/core/arm_const_structs.h" type="1"/>
+    <File name="startup" path="" type="2"/>
+    <File name="app/spi.h" path="app/spi.h" type="1"/>
+    <File name="CMSIS/stm32f103xb.h" path="CMSIS/stm32f103xb.h" type="1"/>
+    <File name="app/gpio.h" path="app/gpio.h" type="1"/>
+    <File name="CMSIS/core/arm_const_structs.h" path="CMSIS/core/arm_const_structs.h" type="1"/>
     <File name="app/delay.h" path="app/delay.h" type="1"/>
-    <File name="CMSIS/core/core_cm0.h" path="app/CMSIS/core/core_cm0.h" type="1"/>
-    <File name="CMSIS/core/core_cmFunc.h" path="app/CMSIS/core/core_cmFunc.h" type="1"/>
+    <File name="CMSIS/core/core_cm0.h" path="CMSIS/core/core_cm0.h" type="1"/>
+    <File name="startup/system_stm32f1xx.h" path="startup/system_stm32f1xx.h" type="1"/>
+    <File name="CMSIS/core/core_cmFunc.h" path="CMSIS/core/core_cmFunc.h" type="1"/>
     <File name="app/lcd.h" path="app/lcd.h" type="1"/>
-    <File name="fonts/f10x16f.c" path="app/fonts/f10x16f.c" type="1"/>
-    <File name="pinout.txt" path="app/pinout.txt" type="1"/>
-    <File name="CMSIS/core/core_cm0plus.h" path="app/CMSIS/core/core_cm0plus.h" type="1"/>
-    <File name="CMSIS/core/arm_math.h" path="app/CMSIS/core/arm_math.h" type="1"/>
-    <File name="CMSIS/core/cmsis_armcc.h" path="app/CMSIS/core/cmsis_armcc.h" type="1"/>
-    <File name="CMSIS/core/core_cm3.h" path="app/CMSIS/core/core_cm3.h" type="1"/>
+    <File name="startup/startup_stm32f103xb.s" path="startup/startup_stm32f103xb.s" type="1"/>
+    <File name="fonts/f10x16f.c" path="fonts/f10x16f.c" type="1"/>
+    <File name="CMSIS/core/core_cm0plus.h" path="CMSIS/core/core_cm0plus.h" type="1"/>
+    <File name="app/main.c" path="app/main.c" type="1"/>
+    <File name="CMSIS/core/arm_math.h" path="CMSIS/core/arm_math.h" type="1"/>
+    <File name="CMSIS/core/cmsis_armcc.h" path="CMSIS/core/cmsis_armcc.h" type="1"/>
+    <File name="CMSIS/core/core_cm3.h" path="CMSIS/core/core_cm3.h" type="1"/>
     <File name="app/ssd1306.c" path="app/ssd1306.c" type="1"/>
-    <File name="CMSIS/core/core_sc300.h" path="app/CMSIS/core/core_sc300.h" type="1"/>
-    <File name="utility/spi.c" path="app/spi.c" type="1"/>
-    <File name="components" path="" type="2"/>
-    <File name="utility/gpio.c" path="app/gpio.c" type="1"/>
-    <File name="fonts/font_6x8.h" path="app/fonts/font_6x8.h" type="1"/>
-    <File name="fonts/f10x16f.h" path="app/fonts/f10x16f.h" type="1"/>
-    <File name="CMSIS/stm32f103x6.h" path="app/CMSIS/stm32f103x6.h" type="1"/>
-    <File name="fonts/f6x8m.c" path="app/fonts/f6x8m.c" type="1"/>
+    <File name="CMSIS/core/core_sc300.h" path="CMSIS/core/core_sc300.h" type="1"/>
+    <File name="app/gpio.c" path="app/gpio.c" type="1"/>
+    <File name="app/spi.c" path="app/spi.c" type="1"/>
+    <File name="fonts/f10x16f.h" path="fonts/f10x16f.h" type="1"/>
+    <File name="fonts/font_6x8.h" path="fonts/font_6x8.h" type="1"/>
+    <File name="CMSIS/stm32f103x6.h" path="CMSIS/stm32f103x6.h" type="1"/>
     <File name="app/hardware.h" path="app/hardware.h" type="1"/>
-    <File name="CMSIS/core/core_sc000.h" path="app/CMSIS/core/core_sc000.h" type="1"/>
-    <File name="CMSIS/system_stm32f1xx.h" path="app/CMSIS/system_stm32f1xx.h" type="1"/>
-    <File name="main.c" path="app/main.c" type="1"/>
+    <File name="fonts/f6x8m.c" path="fonts/f6x8m.c" type="1"/>
+    <File name="CMSIS/core/core_sc000.h" path="CMSIS/core/core_sc000.h" type="1"/>
   </Files>
   <Bookmarks/>
 </Project>

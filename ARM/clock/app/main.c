@@ -119,11 +119,11 @@ void DemoApp1(void)
 		Delay_ms(500);
 	}
 
-	//SSD1306_RowRemapOff();
-	//SSD1306_ColumnRemapOff();
+	SSD1306_RowRemapOff();
+	SSD1306_ColumnRemapOff();
 
-	SSD1306_RowRemapOn();
-	SSD1306_ColumnRemapOn();
+	//SSD1306_RowRemapOn();
+	//SSD1306_ColumnRemapOn();
 
 	/*clear screen*/
 	for (uint32_t i = 0; i < FRAME_BUFFER_SIZE; i++) {
