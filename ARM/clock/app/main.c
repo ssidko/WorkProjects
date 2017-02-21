@@ -48,7 +48,7 @@ void DrawChar(uint32_t x, uint32_t y, char ch, Font* font, FrameBuffer *fb)
 void PrintString(uint32_t x, uint32_t y, char *str, Font* font, FrameBuffer *fb)
 {
 	while (*str) {
-		if ((x + font->width < fb->width) && (y + font->height < fb->height)) {
+		if ((x + font->width <= fb->width) && (y + font->height <= fb->height)) {
 			DrawChar(x, y, *str, font, fb);
 			x += font->width;
 		} else {
@@ -82,8 +82,11 @@ int main(void)
 
 	char *str = malloc(32);
 
-	sprintf(str, "SysClk: %u Hz", SystemCoreClock);
+	sprintf(str, "SysClk: %u MHz", SystemCoreClock/1000000);
 	PrintString(0, 0, str, &fnt6x8, &ssd1306_fb);
+	PrintString(0, 8, str, &fnt6x8, &ssd1306_fb);
+	PrintString(0, 16, str, &fnt6x8, &ssd1306_fb);
+	PrintString(0, 24, str, &fnt6x8, &ssd1306_fb);
 	SSD1306_UpdateScreen(ssd1306_fb.buff, FRAME_BUFFER_SIZE);
 
 	free(str);
@@ -92,10 +95,12 @@ int main(void)
 
     while(1)
     {
-    	GPIO_ToglePin(GPIOC, LED_PIN);
+    	LCD_TOGLE();
+    	Delay_ms(1000);
     	DemoApp1();
     }
 }
+
 
 void DemoApp1(void)
 {
@@ -118,12 +123,6 @@ void DemoApp1(void)
 		SSD1306_InverseOff();
 		Delay_ms(500);
 	}
-
-	SSD1306_RowRemapOff();
-	SSD1306_ColumnRemapOff();
-
-	//SSD1306_RowRemapOn();
-	//SSD1306_ColumnRemapOn();
 
 	/*clear screen*/
 	for (uint32_t i = 0; i < FRAME_BUFFER_SIZE; i++) {
@@ -235,6 +234,8 @@ void DemoApp1(void)
 	SSD1306_Sleep();
 	Delay_ms(7000);
 }
+
+
 
 
 

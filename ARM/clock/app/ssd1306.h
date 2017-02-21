@@ -13,11 +13,6 @@
 #define SSD1306_RESET_PIN							Pin2
 #define SSD1306_DC_PORT								SSD1306_CMD_PORT
 #define SSD1306_DC_PIN								Pin3
-#define SSD1306_SCK_PORT							SSD1306_CMD_PORT
-#define SSD1306_SCK_PIN								Pin5
-#define SSD1306_MOSI_PORT							SSD1306_CMD_PORT
-#define SSD1306_MOSI_PIN							Pin7
-
 
 typedef struct {
 	uint8_t *buff;

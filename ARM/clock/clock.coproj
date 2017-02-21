@@ -61,10 +61,10 @@
       <Option name="org.coocox.codebugger.gdbjtag.core.ifCacheRom" value="1"/>
       <Option name="org.coocox.codebugger.gdbjtag.core.ipAddress" value="127.0.0.1"/>
       <Option name="org.coocox.codebugger.gdbjtag.core.portNumber" value="2009"/>
-      <Option name="org.coocox.codebugger.gdbjtag.core.autoDownload" value="1"/>
+      <Option name="org.coocox.codebugger.gdbjtag.core.autoDownload" value="0"/>
       <Option name="org.coocox.codebugger.gdbjtag.core.verify" value="1"/>
       <Option name="org.coocox.codebugger.gdbjtag.core.downloadFuction" value="Erase Effected"/>
-      <Option name="org.coocox.codebugger.gdbjtag.core.defaultAlgorithm" value="C:\Users\Sergey\AppData\Roaming\CooCox\CoIDE\config\flash\CooCox-Flash\CoIDE_STM32F1xx_MD_64K\STM32F10x_MD_64.elf"/>
+      <Option name="org.coocox.codebugger.gdbjtag.core.defaultAlgorithm" value="C:\Users\ssidko.EPOS_MAIN\AppData\Roaming\CooCox\CoIDE\config\flash\CooCox-Flash\CoIDE_STM32F1xx_MD_64K\STM32F10x_MD_64.elf"/>
     </DebugOption>
     <ExcludeFile/>
   </Target>
@@ -79,9 +79,10 @@
     <File name="app" path="" type="2"/>
     <File name="app/interrupt_handlers.c" path="app/interrupt_handlers.c" type="1"/>
     <File name="STM32F103XB_FLASH.ld" path="STM32F103XB_FLASH.ld" type="1"/>
+    <File name="app/bmp280.h" path="app/bmp280.h" type="1"/>
     <File name="CMSIS/core/cmsis_armcc_V6.h" path="CMSIS/core/cmsis_armcc_V6.h" type="1"/>
-    <File name="clib/syscalls.c" path="clib/syscalls.c" type="1"/>
     <File name="CMSIS" path="" type="2"/>
+    <File name="clib/syscalls.c" path="clib/syscalls.c" type="1"/>
     <File name="fonts/font.h" path="fonts/font.h" type="1"/>
     <File name="fonts/f10x16f-modif.c" path="fonts/f10x16f-modif.c" type="1"/>
     <File name="app/clock.c" path="app/clock.c" type="1"/>
@@ -89,8 +90,8 @@
     <File name="fonts/f6x8m.h" path="fonts/f6x8m.h" type="1"/>
     <File name="app/hardware.c" path="app/hardware.c" type="1"/>
     <File name="fonts/font_10x16.h" path="fonts/font_10x16.h" type="1"/>
-    <File name="app/clock.h" path="app/clock.h" type="1"/>
     <File name="CMSIS/core" path="" type="2"/>
+    <File name="app/clock.h" path="app/clock.h" type="1"/>
     <File name="clib" path="" type="2"/>
     <File name="fonts" path="" type="2"/>
     <File name="startup/system_stm32f1xx.c" path="startup/system_stm32f1xx.c" type="1"/>
@@ -99,12 +100,13 @@
     <File name="app/ssd1306.h" path="app/ssd1306.h" type="1"/>
     <File name="startup" path="" type="2"/>
     <File name="app/spi.h" path="app/spi.h" type="1"/>
+    <File name="app/bmp280.c" path="app/bmp280.c" type="1"/>
     <File name="CMSIS/stm32f103xb.h" path="CMSIS/stm32f103xb.h" type="1"/>
     <File name="app/gpio.h" path="app/gpio.h" type="1"/>
     <File name="CMSIS/core/arm_const_structs.h" path="CMSIS/core/arm_const_structs.h" type="1"/>
     <File name="app/delay.h" path="app/delay.h" type="1"/>
-    <File name="CMSIS/core/core_cm0.h" path="CMSIS/core/core_cm0.h" type="1"/>
     <File name="startup/system_stm32f1xx.h" path="startup/system_stm32f1xx.h" type="1"/>
+    <File name="CMSIS/core/core_cm0.h" path="CMSIS/core/core_cm0.h" type="1"/>
     <File name="CMSIS/core/core_cmFunc.h" path="CMSIS/core/core_cmFunc.h" type="1"/>
     <File name="app/lcd.h" path="app/lcd.h" type="1"/>
     <File name="startup/startup_stm32f103xb.s" path="startup/startup_stm32f103xb.s" type="1"/>
@@ -116,13 +118,13 @@
     <File name="CMSIS/core/core_cm3.h" path="CMSIS/core/core_cm3.h" type="1"/>
     <File name="app/ssd1306.c" path="app/ssd1306.c" type="1"/>
     <File name="CMSIS/core/core_sc300.h" path="CMSIS/core/core_sc300.h" type="1"/>
-    <File name="app/gpio.c" path="app/gpio.c" type="1"/>
     <File name="app/spi.c" path="app/spi.c" type="1"/>
+    <File name="app/gpio.c" path="app/gpio.c" type="1"/>
     <File name="fonts/f10x16f.h" path="fonts/f10x16f.h" type="1"/>
     <File name="fonts/font_6x8.h" path="fonts/font_6x8.h" type="1"/>
     <File name="CMSIS/stm32f103x6.h" path="CMSIS/stm32f103x6.h" type="1"/>
-    <File name="app/hardware.h" path="app/hardware.h" type="1"/>
     <File name="fonts/f6x8m.c" path="fonts/f6x8m.c" type="1"/>
+    <File name="app/hardware.h" path="app/hardware.h" type="1"/>
     <File name="CMSIS/core/core_sc000.h" path="CMSIS/core/core_sc000.h" type="1"/>
   </Files>
   <Bookmarks/>

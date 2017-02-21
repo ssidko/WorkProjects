@@ -1,13 +1,53 @@
 #include "hardware.h"
+#include "delay.h"
 
 void HW_Init()
 {
-	// Port-C clock ENABLE
+	GPIOA_ClockEnable();
+	GPIOB_ClockEnable();
 	GPIOC_ClockEnable();
 
 	// LED pin configure
 	LED_PORT->CRH &= (0x0F << ((LED_PIN - 8) * 4));
 	LED_PORT->CRH |= ((Out_2Mhz|Out_PushPull) << ((LED_PIN - 8) * 4));
 
+	SPI1_Init();
+
+	// ssd1306 initialization
 	SSD1306_Init(128, 32);
+	SSD1306_RowRemapOff();
+	SSD1306_ColumnRemapOff();
+
+	// BMP280_CS pin configure
+	GPIOB->CRL &= (0x0F << (Pin0 * 4));
+	GPIOB->CRL |= ((Out_2Mhz|Out_PushPull) << ((LED_PIN - 8) * 4));
+
+	GPIO_PinSet(GPIOB, Pin0);
+	Delay_ms(1);
+}
+
+int SPI1_Init(void)
+{
+	// PA-5 - SCK; PA-6 - MISO; PA-7 - MOSI;
+	// MODE: 0b0011: Output mode, max speed 50 MHz.
+	// CNF:  0b1000: Alternate function output Push-pull
+	GPIOA->CRL &= ~((0x0F << (Pin5 * 4)) | (0x0F << (Pin6 * 4)) | (0x0F << (Pin7 * 4)));
+	GPIOA->CRL |= ((Out_50Mhz|Out_AF_PushPull) << (Pin5 * 4)) |
+				  ((Out_50Mhz|Out_AF_PushPull) << (Pin6 * 4)) |
+				  ((Out_50Mhz|Out_AF_PushPull) << (Pin7 * 4));
+
+	// Alternate function I/O clock enable
+	RCC->APB2ENR |= RCC_APB2ENR_AFIOEN;
+
+	SPI1_ClockEnable();
+
+	// Reset SPI1 for defaults
+	RCC->APB2RSTR |=  RCC_APB2RSTR_SPI1RST;
+	RCC->APB2RSTR &=  ~RCC_APB2RSTR_SPI1RST;
+
+	SPI1->CR1 |= CPHA_0|CPOL_0|SPI_Master|SSM_Enable|SSI_Set|Fpclk_2|MSB_First|Frame_8bit;
+
+	SPI_Enable(SPI1);
+
+	return 0;
 }
