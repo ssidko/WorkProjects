@@ -36,7 +36,7 @@
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/clock/app/hardware.h"/>
 <editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="103" selectionTopPixel="0"/>
 </editor>
-<editor activePart="true" focus="true" id="org.eclipse.cdt.ui.editor.CEditor" name="hardware.c" partName="hardware.c" path="D:/GitHub/WorkProjects/ARM/clock/app/hardware.c" title="hardware.c" tooltip="D:/GitHub/WorkProjects/ARM/clock/app/hardware.c" workbook="DefaultEditorWorkbook">
+<editor activePart="true" focus="true" id="org.eclipse.cdt.ui.editor.CEditor" name="hardware.c" partName="hardware.c" path="D:/MyProjects/WorkProjects/ARM/clock/app/hardware.c" title="hardware.c" tooltip="D:/MyProjects/WorkProjects/ARM/clock/app/hardware.c" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/clock/app/hardware.c"/>
 <editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="580" selectionTopPixel="0"/>
 </editor>
@@ -134,8 +134,8 @@
 <hide_menu_item_id id="org.coocox.codebugger.configuration.showMemoryBrowserAction"/>
 <hide_menu_item_id id="org.coocox.codebugger.configuration.showVariablesAction"/>
 <hide_menu_item_id id="org.coocox.builder.ui.openProjectExplorerAction"/>
-<hide_menu_item_id id="org.coocox.codebugger.trace.actions.ShowTraceControlAction"/>
 <hide_menu_item_id id="org.eclipse.debug.ui.commands.TerminateAndRelaunch"/>
+<hide_menu_item_id id="org.coocox.codebugger.trace.actions.ShowTraceControlAction"/>
 <hide_menu_item_id id="org.coocox.codebugger.configuration.showRegistersAction"/>
 <hide_toolbar_item_id id="org.eclipse.cdt.debug.internal.ui.actions.ToggleInstructionStepModeAction"/>
 <hide_toolbar_item_id id="org.eclipse.ui.edit.text.toggleShowSelectedElementOnly"/>
@@ -456,47 +456,49 @@
 <actionBarAdvisor/>
 </window>
 <mruList>
-<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="bmp280.h" tooltip="clock/app/bmp280.h">
-<persistable path="/clock/app/bmp280.h"/>
+<file factoryID="org.coocox.builder.ui.persistent.PersistentElementFactory" id="org.coocox.welcome.ui.WelcomePage" name="" tooltip="">
+<persistable>
+<org.coocox.welcome.ui.WelcomePage/>
+</persistable>
 </file>
-<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="bmp280.c" tooltip="clock/app/bmp280.c">
-<persistable path="/clock/app/bmp280.c"/>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="main.c" tooltip="clock/app/main.c">
+<persistable path="/clock/app/main.c"/>
 </file>
-<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="font.h" tooltip="clock/fonts/font.h">
-<persistable path="/clock/fonts/font.h"/>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="stm32f1xx.h" tooltip="clock/CMSIS/stm32f1xx.h">
+<persistable path="/clock/CMSIS/stm32f1xx.h"/>
 </file>
-<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="f6x8m.c" tooltip="clock/fonts/f6x8m.c">
-<persistable path="/clock/fonts/f6x8m.c"/>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="main.c" tooltip="clock/main.c">
+<persistable path="/clock/main.c"/>
 </file>
-<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.ui.DefaultTextEditor" name="STM32F103XB_FLASH.ld" tooltip="clock/STM32F103XB_FLASH.ld">
-<persistable path="/clock/STM32F103XB_FLASH.ld"/>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.ui.DefaultTextEditor" name="STM32F103XB_FLASH.ld" tooltip="clock/CMSIS/linker/STM32F103XB_FLASH.ld">
+<persistable path="/clock/CMSIS/linker/STM32F103XB_FLASH.ld"/>
 </file>
-<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="ssd1306.h" tooltip="clock/app/ssd1306.h">
-<persistable path="/clock/app/ssd1306.h"/>
-</file>
-<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="stm32f103xb.h" tooltip="clock/CMSIS/stm32f103xb.h">
-<persistable path="/clock/CMSIS/stm32f103xb.h"/>
-</file>
-<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="gpio.h" tooltip="clock/app/gpio.h">
-<persistable path="/clock/app/gpio.h"/>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="spi.c" tooltip="clock/utility/spi.c">
+<persistable path="/clock/utility/spi.c"/>
 </file>
 <file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="ssd1306.c" tooltip="clock/app/ssd1306.c">
 <persistable path="/clock/app/ssd1306.c"/>
 </file>
-<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="hardware.c" tooltip="clock/app/hardware.c">
-<persistable path="/clock/app/hardware.c"/>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.asm.AsmEditor" name="startup_stm32f103xb.s" tooltip="clock/CMSIS/startup/startup_stm32f103xb.s">
+<persistable path="/clock/CMSIS/startup/startup_stm32f103xb.s"/>
 </file>
-<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="hardware.h" tooltip="clock/app/hardware.h">
-<persistable path="/clock/app/hardware.h"/>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.ui.DefaultTextEditor" name="pinout.txt" tooltip="clock/pinout.txt">
+<persistable path="/clock/pinout.txt"/>
 </file>
-<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="system_stm32f1xx.c" tooltip="clock/startup/system_stm32f1xx.c">
-<persistable path="/clock/startup/system_stm32f1xx.c"/>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="ssd1306.h" tooltip="clock/app/ssd1306.h">
+<persistable path="/clock/app/ssd1306.h"/>
 </file>
-<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="system_stm32f1xx.h" tooltip="clock/startup/system_stm32f1xx.h">
-<persistable path="/clock/startup/system_stm32f1xx.h"/>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="gpio.h" tooltip="clock/utility/gpio.h">
+<persistable path="/clock/utility/gpio.h"/>
 </file>
-<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="bmp280.h" tooltip="clock/app/bmp280.h">
-<persistable path="/clock/app/bmp280.h"/>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="f10x16f.c" tooltip="clock/fonts/f10x16f.c">
+<persistable path="/clock/fonts/f10x16f.c"/>
+</file>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="f10x16f.h" tooltip="clock/fonts/f10x16f.h">
+<persistable path="/clock/fonts/f10x16f.h"/>
+</file>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="syscalls.c" tooltip="clock/components/C_library/syscalls.c">
+<persistable path="/clock/components/C_library/syscalls.c"/>
 </file>
 <file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="system_stm32f1xx.h" tooltip="clock/startup/system_stm32f1xx.h">
 <persistable path="/clock/startup/system_stm32f1xx.h"/>

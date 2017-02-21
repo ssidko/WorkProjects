@@ -64,7 +64,7 @@
       <Option name="org.coocox.codebugger.gdbjtag.core.autoDownload" value="0"/>
       <Option name="org.coocox.codebugger.gdbjtag.core.verify" value="1"/>
       <Option name="org.coocox.codebugger.gdbjtag.core.downloadFuction" value="Erase Effected"/>
-      <Option name="org.coocox.codebugger.gdbjtag.core.defaultAlgorithm" value="C:\Users\ssidko.EPOS_MAIN\AppData\Roaming\CooCox\CoIDE\config\flash\CooCox-Flash\CoIDE_STM32F1xx_MD_64K\STM32F10x_MD_64.elf"/>
+      <Option name="org.coocox.codebugger.gdbjtag.core.defaultAlgorithm" value="coocox-flash/coide_stm32f1xx_md_64k/stm32f10x_md_64.elf;"/>
     </DebugOption>
     <ExcludeFile/>
   </Target>

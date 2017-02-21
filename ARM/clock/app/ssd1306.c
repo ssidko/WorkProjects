@@ -61,9 +61,9 @@ void SSD1306_Init(uint32_t width, uint32_t height)
 	// Set Display start line
 	SPI_SendByte(SPI1, 0x40);
 	// Set Segment re-map
-	SPI_SendByte(SPI1, 0xA1);
+	SPI_SendByte(SPI1, 0xA0);
 	// Set COM Output Scan Direction
-	SPI_SendByte(SPI1, 0xC8);
+	SPI_SendByte(SPI1, 0xC0);
 	// Set COM Pins Hardware Configuration
 	SPI_SendByte(SPI1, 0xDA);
 	SPI_SendByte(SPI1, 0x02);

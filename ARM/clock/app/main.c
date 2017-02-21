@@ -95,7 +95,7 @@ int main(void)
 
     while(1)
     {
-    	LCD_TOGLE();
+    	LED_TOGLE();
     	Delay_ms(1000);
     	DemoApp1();
     }
