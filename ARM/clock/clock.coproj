@@ -105,8 +105,8 @@
     <File name="app/gpio.h" path="app/gpio.h" type="1"/>
     <File name="CMSIS/core/arm_const_structs.h" path="CMSIS/core/arm_const_structs.h" type="1"/>
     <File name="app/delay.h" path="app/delay.h" type="1"/>
-    <File name="startup/system_stm32f1xx.h" path="startup/system_stm32f1xx.h" type="1"/>
     <File name="CMSIS/core/core_cm0.h" path="CMSIS/core/core_cm0.h" type="1"/>
+    <File name="startup/system_stm32f1xx.h" path="startup/system_stm32f1xx.h" type="1"/>
     <File name="CMSIS/core/core_cmFunc.h" path="CMSIS/core/core_cmFunc.h" type="1"/>
     <File name="app/lcd.h" path="app/lcd.h" type="1"/>
     <File name="startup/startup_stm32f103xb.s" path="startup/startup_stm32f103xb.s" type="1"/>
@@ -123,8 +123,8 @@
     <File name="fonts/f10x16f.h" path="fonts/f10x16f.h" type="1"/>
     <File name="fonts/font_6x8.h" path="fonts/font_6x8.h" type="1"/>
     <File name="CMSIS/stm32f103x6.h" path="CMSIS/stm32f103x6.h" type="1"/>
-    <File name="fonts/f6x8m.c" path="fonts/f6x8m.c" type="1"/>
     <File name="app/hardware.h" path="app/hardware.h" type="1"/>
+    <File name="fonts/f6x8m.c" path="fonts/f6x8m.c" type="1"/>
     <File name="CMSIS/core/core_sc000.h" path="CMSIS/core/core_sc000.h" type="1"/>
   </Files>
   <Bookmarks/>

@@ -65,6 +65,11 @@ typedef struct {
 
 void DemoApp1(void);
 
+void RTC_Handler(void)
+{
+	LED_TOGLE();
+}
+
 int main(void)
 {
 	SystemCoreClockUpdate();
@@ -97,7 +102,7 @@ int main(void)
     {
     	LED_TOGLE();
     	Delay_ms(1000);
-    	DemoApp1();
+    	//DemoApp1();
     }
 }
 

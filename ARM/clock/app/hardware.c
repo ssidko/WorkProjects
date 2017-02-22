@@ -42,6 +42,31 @@ void HW_Init()
 	// TODO: RTC initialization
 	//
 
+	// Backup interface clock enable
+	RCC->APB1ENR |= RCC_APB1ENR_BKPEN;
+	// Power interface clock enable
+	RCC->APB1ENR |= RCC_APB1ENR_PWREN;
+
+	// Disable backup domain write protection
+	PWR->CR |= PWR_CR_DBP;
+
+	// Backup domain software reset
+	RCC->BDCR |= RCC_BDCR_BDRST;
+	RCC->BDCR &= !RCC_BDCR_BDRST;
+
+	// Enable LSE
+	RCC->BDCR |= RCC_BDCR_LSEON;
+	// Wait for LSE ready
+	while (!(RCC->BDCR & RCC_BDCR_LSERDY)) {}
+
+	RCC->BDCR &= ~RCC_BDCR_RTCSEL;
+	RCC->BDCR |= 0x01 << RCC_BDCR_RTCSEL_Pos; // 00 - No clock; 0x01 - LSE; 0x02 - LSI;0x03 - HSE;
+
+	// RTC clock enable
+	RCC->BDCR |= RCC_BDCR_RTCEN;
+
+	// after set valid ini- values enable interrupt
+	NVIC_EnableIRQ(RTC_IRQn);
 }
 
 int SPI1_Init(void)
