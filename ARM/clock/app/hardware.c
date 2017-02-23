@@ -65,7 +65,7 @@ void HW_Init()
 	// RTC clock enable
 	RCC->BDCR |= RCC_BDCR_RTCEN;
 
-	// after set valid ini- values enable interrupt
+	// after set valid init-values enable interrupt
 	NVIC_EnableIRQ(RTC_IRQn);
 }
 
