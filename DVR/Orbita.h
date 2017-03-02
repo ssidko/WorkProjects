@@ -6,6 +6,7 @@
 #include <BufferedFile.h>
 #include "Timestamp.h"
 #include "File.h"
+#include "utility.h"
 
 namespace Orbita
 {
@@ -151,6 +152,7 @@ namespace Orbita
 		void CloseAll(void);
 		void CloseFile(DWORD index);
 		void ToMkv(DWORD index);
+		void ToAvi(DWORD index);
 		bool CreateNewFile(FRAME_SEQUENCE &sequence);
 		bool Save(FRAME_SEQUENCE &sequence);
 

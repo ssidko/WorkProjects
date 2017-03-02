@@ -28,7 +28,7 @@ int Orbita::Main(const std::string &io_name, const std::string &out_dir)
 	sequence.Clear();
 
 	if (scanner.Open()) {
-		//scanner.SetPointer(17904529*512LL);
+		//scanner.SetPointer(4608931*512LL);
 		while (scanner.NextFrameSequence(sequence)) {
 			stor.Save(sequence);
 			sequence.Clear();
@@ -318,7 +318,7 @@ bool Orbita::Scanner::NextOneSecondsSequence(FRAME_SEQUENCE &sequence)
 
 Orbita::Storage::Storage(const std::string &out_directory) : directory(out_directory)
 {
-	max_file_size = 100 * 1024 * 1024;
+	max_file_size = 500 * 1024 * 1024;
 	mkvmerge_app_path = "D:\\Soft\\#RecoverySoft#\\mkvtoolnix\\mkvmerge.exe ";
 	files.resize(16, nullptr);
 }
@@ -335,7 +335,8 @@ void Orbita::Storage::CloseFile(DWORD index)
 	assert(index < files.size());
 
 	if (files[index]) {
-		ToMkv(index);
+		//ToMkv(index);
+		ToAvi(index);
 		files[index]->Close();
 		delete files[index];
 		files[index] = nullptr;
@@ -354,11 +355,24 @@ void Orbita::Storage::ToMkv(DWORD index)
 	system(cmd_line.c_str());
 }
 
+void Orbita::Storage::ToAvi(DWORD index)
+{
+	W32Lib::FileEx *file = files[index];
+
+	assert(file);
+
+	std::string raw_file_name = file->GetName();
+	std::string avi_file_name = raw_file_name + ".avi";
+	Convert2Avi(raw_file_name, avi_file_name);
+}
+
+// Convert2Avi
+
 bool Orbita::Storage::CreateNewFile(FRAME_SEQUENCE &sequence)
 {
 	DWORD channel = sequence.first_frame.channel;
 	std::string file_name;
-	file_name = directory + "\\" + std::to_string(sequence.first_frame.channel+1) + "--" + sequence.first_frame.timestamp.ToString() + "--" + std::to_string(sequence.first_frame.offset) + ".h264";
+	file_name = directory + /*"\\" +*/ std::to_string(sequence.first_frame.channel+1) + "--" + sequence.first_frame.timestamp.ToString() + "--" + std::to_string(sequence.first_frame.offset) + ".h264";
 
 	if (files[channel]) {
 		CloseFile(channel);

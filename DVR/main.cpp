@@ -113,9 +113,9 @@ int main(int argc, char *argv[])
 	QApplication a(argc, argv);
 	MainWindow w;
 
-	char buff[32] = { 0 };
+	//char buff[32] = { 0 };
 
-	MyPrintf(buff, sizeof(buff), "test %% %s %d %01d %10d %012", "str1", 137, "string");
+	//MyPrintf(buff, sizeof(buff), "test %% %s %d %01d %10d %012", "str1", 137, "string");
 	
 	w.show();
 	return a.exec();
