@@ -31,6 +31,7 @@ Thumbs.db
 *.sbr
 obj/
 ipch/
+.vs/
 [Rr]elease*/
 _ReSharper*/
 [Tt]est[Rr]esult*
