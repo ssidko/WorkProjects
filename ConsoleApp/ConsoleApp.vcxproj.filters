@@ -49,9 +49,6 @@
     <Filter Include="DirectShow">
       <UniqueIdentifier>{aa5a9ab9-3b77-45d1-8a8d-3f7d8a798db3}</UniqueIdentifier>
     </Filter>
-    <Filter Include="mp4\Zip">
-      <UniqueIdentifier>{5d73dee3-9abb-4d4c-b17d-f98349a02cb3}</UniqueIdentifier>
-    </Filter>
     <Filter Include="console">
       <UniqueIdentifier>{9f61ff89-f24e-48e0-a1e4-ceebd09d6497}</UniqueIdentifier>
     </Filter>
@@ -60,6 +57,9 @@
     </Filter>
     <Filter Include="dvr-h264\Ext">
       <UniqueIdentifier>{f946d98e-b06c-44e2-85b6-247a271f2c94}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Zip">
+      <UniqueIdentifier>{5d73dee3-9abb-4d4c-b17d-f98349a02cb3}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -82,7 +82,7 @@
       <Filter>CutTxt</Filter>
     </ClCompile>
     <ClCompile Include="ZipRec.cpp">
-      <Filter>mp4\Zip</Filter>
+      <Filter>Zip</Filter>
     </ClCompile>
     <ClCompile Include="tibun.cpp">
       <Filter>tibun</Filter>
@@ -162,7 +162,7 @@
       <Filter>CutTxt</Filter>
     </ClInclude>
     <ClInclude Include="ZipRec.h">
-      <Filter>mp4\Zip</Filter>
+      <Filter>Zip</Filter>
     </ClInclude>
     <ClInclude Include="tibun.h">
       <Filter>tibun</Filter>
