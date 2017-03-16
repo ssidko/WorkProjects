@@ -42,7 +42,7 @@ namespace Orbita
 		}
 	} HEADER;
 
-	typedef struct _HEADER_dc{
+	typedef struct _HEADER_dc {
 		HEADER header;
 		DWORD sign_2;			// "H264"
 		DWORD size;
@@ -62,7 +62,7 @@ namespace Orbita
 		BYTE unk_4[10];
 	} HEADER_0dc;
 
-	typedef struct _HEADER_wb{
+	typedef struct _HEADER_wb {
 		HEADER header;
 		WORD size_1;
 		WORD size_2;
