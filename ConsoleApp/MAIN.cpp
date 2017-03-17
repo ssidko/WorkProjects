@@ -18,6 +18,50 @@
 #include "sqliter.h"
 #include "mover.h"
 
+void recovery_41655()
+{
+	using namespace sqliter;
+
+	//const FIELD *field = NULL;
+	//const STRING_FIELD *str_field = NULL;
+	//const INTEGER_FIELD *int_field = NULL;
+
+	//multimap<time_t, string> messages;
+
+	std::map<ULONGLONG, std::pair<string, string>> map;
+
+	SQLiter db(_T("D:\\Work\\41655\\main.corrupt.db"));
+	FileEx out_file(_T("D:\\Work\\41655\\out.txt"));
+	int count = 0;
+	
+	if (db.Open() && out_file.Create()) {
+
+		int pages_count = db.PagesCount();
+		for (int i = 0; i < pages_count; i++) {
+
+			Page *page = db.GetPage(i);
+			if (page && page->Type() == kLeafTablePage) {
+
+				DWORD records_count = page->RecordsCount();
+				for (DWORD r = 0; r < records_count; r++) {
+					Record rec;
+					if (page->GetRecord(r, &rec)) {
+
+						int x = 0;
+
+					
+					}
+
+				}			
+			
+			} 		
+		
+		}
+
+	}
+
+}
+
 void recovery_38615()
 {
 	using namespace sqliter;
@@ -192,7 +236,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	//	mover::PrintUsage();
 	//}
 
-	
+	recovery_41655();
 	::system("pause");
 
 	return true;
