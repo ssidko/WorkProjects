@@ -50,7 +50,7 @@ def IsValidFileStructure(path):
                 frame_header = ReadFrameHeader(file)
                 while frame_header:
                     if frame_header.sign == 0x01ff:
-                        #print('Frame at: ', str(file.tell() - FRAME_HEADER_SIZE))
+                        # print('Frame at: ', str(file.tell() - FRAME_HEADER_SIZE))
                         file.seek(frame_header.size, 1)
                         frame_header = ReadFrameHeader(file)
                         continue
@@ -58,7 +58,7 @@ def IsValidFileStructure(path):
                         file.seek(-FRAME_HEADER_SIZE, 1)
                         footer = file.read(12)
                         if footer == b'\xFF\xFF\xFF\xFF\x01\x00\xEE\xFF\x10\x00\x00\x00':
-                            #print('Footer at: ', str(file.tell() - FRAME_HEADER_SIZE))
+                            # print('Footer at: ', str(file.tell() - FRAME_HEADER_SIZE))
                             return True
                     return False
 
@@ -68,7 +68,8 @@ def IsValidFileStructure(path):
 
     return False
 
-def ValidateAllFiles(path):
+
+def CheckAllFiles(path):
     for file_name in os.listdir(path):
         file_path = path + file_name
         if os.path.isdir(file_path):
@@ -79,19 +80,21 @@ def ValidateAllFiles(path):
                 pass
             else:
                 info = os.stat(file_path)
-                print("File: %s; Size: %d bytes; Type: %s; Integrity: CORRUPTED" % (file_path, info.st_size, FileType(file_path)))
+                print("File: %s; Size: %d bytes; Type: %s; Integrity: CORRUPTED" %
+                      (file_path, info.st_size, FileType(file_path)))
             pass
     pass
+
 
 def run(src_dir, dst_dir):
 
     if not os.path.exists(src_dir):
-        print("Source directory (%s) not exist" % (src_dir))
+        print("Source directory (%s) not exist" % src_dir)
         return
 
     if not os.path.exists(dst_dir):
         print('Destionation directory not exist')
-        print('Create destionation directory: "%s"' % (dst_dir))
+        print('Create destionation directory: "%s"' % dst_dir)
         os.mkdir(dst_dir)
         if os.path.exists(dst_dir):
             print('Destination directory created')
@@ -103,9 +106,9 @@ def run(src_dir, dst_dir):
 
     src_dir = NormalizeDirPath(src_dir)
 
-    #ValidateAllFiles(src_dir)
+    # ValidateAllFiles(src_dir)
 
-    #print(CMD_LINE_FORMAT.format(ffmpeg=APP, in_file=input_file, out_file=avi_file))
-    #os.system(CMD_LINE_FORMAT.format(ffmpeg=APP, in_file=input_file, out_file=avi_file))
+    # print(CMD_LINE_FORMAT.format(ffmpeg=APP, in_file=input_file, out_file=avi_file))
+    # os.system(CMD_LINE_FORMAT.format(ffmpeg=APP, in_file=input_file, out_file=avi_file))
 
     return
