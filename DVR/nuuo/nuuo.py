@@ -3,19 +3,21 @@ import struct
 import time
 from collections import namedtuple
 
-
 FFMPEG_APP = r"D:\Soft\ffmpeg\bin\ffmpeg.exe"
 MKVMERGE_APP = r" D:\Soft\#RecoverySoft#\mkvtoolnix\mkvmerge.exe"
 APP = FFMPEG_APP
-FFMPEG_CMD_FORMAT = r'{ffmpeg} -f mjpeg -i "{in_file}" -vcodec copy "{out_file}"'
+H264 = "h264"
+MJPEG = "mjpeg"
+FFMPEG_CMD_FORMAT = r'{ffmpeg} -f {vformat} -i "{in_file}" -vcodec copy "{out_file}"'
 MKVMERGE_CMD_FORMAT = r'{mkvmerge} -o "{out_file}" "{in_file}"'
-CMD_LINE_FORMAT = FFMPEG_CMD_FORMAT
 
-file_type  = {'h264': b'H264', 'mjpeg': b'NUMJ'}
+
+file_type = {'h264': b'H264', 'mjpeg': b'NUMJ'}
 
 FRAME_HEADER_SIZE = 12
 
 FrameHeader = namedtuple('FrameHeader', ['sign', 'flags', 'unk', 'size'])
+FramePtr = namedtuple('FramePtr', ['offset', 'unk'])
 
 
 def NormalizeDirPath(path):
@@ -42,9 +44,9 @@ def ReadFrameHeader(file):
 
 def IsValidFileStructure(path):
     try:
-        type = FileType(path)
-        if type != "unknown":
+        if FileType(path) != "unknown":
             with open(path, "rb") as file:
+                footer_offset = 0
                 # Skip file header
                 file.seek(64)
                 frame_header = ReadFrameHeader(file)
@@ -56,17 +58,45 @@ def IsValidFileStructure(path):
                         continue
                     if frame_header.sign == 0xffff:
                         file.seek(-FRAME_HEADER_SIZE, 1)
-                        footer = file.read(12)
+                        footer = file.read(FRAME_HEADER_SIZE)
                         if footer == b'\xFF\xFF\xFF\xFF\x01\x00\xEE\xFF\x10\x00\x00\x00':
                             # print('Footer at: ', str(file.tell() - FRAME_HEADER_SIZE))
-                            return True
+                            footer_offset = file.tell() - len(footer)
+                            break
                     return False
-
+                #
+                # Chack tail - table of frame pointers
+                #
+                file.seek(-4, os.SEEK_END)
+                table_size = struct.unpack("<I", file.read(4))[0]
+                file_size = os.stat(path).st_size
+                if footer_offset == (file_size - (0x4C + table_size * 8 + 4)):
+                    for i in range(table_size):
+                        file.seek(footer_offset + 0x4C + i * 8)
+                        frame_ptr = FramePtr._make(struct.unpack("<II", file.read(8)))
+                        file.seek(frame_ptr.offset)
+                        frame_header = ReadFrameHeader(file)
+                        if not frame_header or frame_header.sign != 0x01FF:
+                            return False
+                    return True
     except BaseException as exc:
         print("Error with file: ", path)
         print(exc)
-
     return False
+
+
+def SaveVideoData(src_file_path, dst_file_path):
+    with open(src_file_path, "rb") as src_file:
+        with open(dst_file_path, "wb") as dst_file:
+            src_file.seek(64)
+            frame_header = ReadFrameHeader(src_file)
+            while frame_header:
+                if frame_header.sign == 0x01ff:
+                    frame = src_file.read(frame_header.size)
+                    dst_file.write(frame)
+                    frame_header = ReadFrameHeader(src_file)
+                    continue
+                return
 
 
 def CheckAllFiles(path):
@@ -74,7 +104,7 @@ def CheckAllFiles(path):
         file_path = path + file_name
         if os.path.isdir(file_path):
             file_path = NormalizeDirPath(file_path)
-            ValidateAllFiles(file_path)
+            CheckAllFiles(file_path)
         else:
             if IsValidFileStructure(file_path):
                 pass
@@ -82,8 +112,52 @@ def CheckAllFiles(path):
                 info = os.stat(file_path)
                 print("File: %s; Size: %d bytes; Type: %s; Integrity: CORRUPTED" %
                       (file_path, info.st_size, FileType(file_path)))
-            pass
-    pass
+
+
+def RecoverAllFiles(src_dir, out_dir):
+
+    for file_name in os.listdir(src_dir):
+        file_path = src_dir + file_name
+        if os.path.isdir(file_path):
+            dir_path = NormalizeDirPath(file_path)
+            RecoverAllFiles(dir_path, out_dir)
+        else:
+            if len(file_name) != 31:
+                print("File:", file_path)
+                print("Invalid file name length (%d), must be 31" % len(file_name))
+                continue
+
+            # C00001S00A20160128162034809.dat
+            date = file_name[10:14] + "-" + file_name[14:16] + "-" + file_name[16:18]
+            time = file_name[18:20] + "-" + file_name[20:22] + "-" + file_name[22:24] + "," + file_name[24:27]
+            camera = file_name[1:6]
+
+            if IsValidFileStructure(file_path):
+
+                temp_file_path = out_dir + "temp.h264"
+                SaveVideoData(file_path, temp_file_path)
+
+                out_dir_path = "{dir}{date}\\C{cam}\\".format(dir=out_dir, date=date, cam=camera)
+                avi_file_path = "{dir}[{cam}]-[{date} {time}].avi".format(dir=out_dir_path, cam=camera, date=date, time=time)
+
+                os.makedirs(out_dir_path)
+                if not os.path.exists(out_dir_path):
+                    print("Error creating directory:", out_dir_path)
+                    return
+
+                video_format = FileType(file_path)
+                if video_format == 'h264':
+                    os.system(FFMPEG_CMD_FORMAT.format(ffmpeg=APP, vformat=H264, in_file=temp_file_path, out_file=avi_file_path))
+                elif video_format == 'mjpeg':
+                    os.system(FFMPEG_CMD_FORMAT.format(ffmpeg=APP, vformat=MJPEG, in_file=temp_file_path, out_file=avi_file_path))
+                else:
+                    return
+
+            else:
+                info = os.stat(file_path)
+                print("File: %s; Size: %d bytes; Type: %s; Integrity: CORRUPTED" %
+                      (file_path, info.st_size, FileType(file_path)))
+    return
 
 
 def run(src_dir, dst_dir):
@@ -93,22 +167,55 @@ def run(src_dir, dst_dir):
         return
 
     if not os.path.exists(dst_dir):
-        print('Destionation directory not exist')
-        print('Create destionation directory: "%s"' % dst_dir)
-        os.mkdir(dst_dir)
+        print('Destination directory not exist')
+        print('Create destination directory: "%s"' % dst_dir)
+        os.makedirs(dst_dir)
         if os.path.exists(dst_dir):
             print('Destination directory created')
         else:
-            print("Could not create destination directory")
+            print("Couldn`t create destination directory")
             return
 
-    src_dir = "E:\\41631"
+    # src_dir = r"E:\for_testing"
 
     src_dir = NormalizeDirPath(src_dir)
+    dst_dir = NormalizeDirPath(dst_dir)
 
-    # ValidateAllFiles(src_dir)
+    RecoverAllFiles(src_dir, dst_dir)
+
+    # C00001S00A20160128162034809.dat
+    # C00001 S00A 2016-01-28 16:20:34,809.dat
+    # src_file = r"F:\Root\DATA 3\20160128\C00001\C00001S00A20160128162034809.dat"
+    # dst_file = r"F:\tst.h264"
+    # if IsValidFileStructure(src_file):
+    #    SaveVideoData(src_file, dst_file)
+    # else:
+    #    print("File: '%s'" % src_file, "CORRUPTED")
+
+
+    # CheckAllFiles(src_dir)
 
     # print(CMD_LINE_FORMAT.format(ffmpeg=APP, in_file=input_file, out_file=avi_file))
     # os.system(CMD_LINE_FORMAT.format(ffmpeg=APP, in_file=input_file, out_file=avi_file))
 
     return
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
