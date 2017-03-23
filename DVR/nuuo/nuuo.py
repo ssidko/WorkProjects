@@ -1,4 +1,5 @@
 import os
+import sys
 import struct
 import time
 from collections import namedtuple
@@ -114,50 +115,51 @@ def CheckAllFiles(path):
                       (file_path, info.st_size, FileType(file_path)))
 
 
-def RecoverAllFiles(src_dir, out_dir):
-
-    for file_name in os.listdir(src_dir):
-        file_path = src_dir + file_name
-        if os.path.isdir(file_path):
-            dir_path = NormalizeDirPath(file_path)
-            RecoverAllFiles(dir_path, out_dir)
-        else:
-            if len(file_name) != 31:
-                print("File:", file_path)
-                print("Invalid file name length (%d), must be 31" % len(file_name))
-                continue
-
-            # C00001S00A20160128162034809.dat
-            date = file_name[10:14] + "-" + file_name[14:16] + "-" + file_name[16:18]
-            time = file_name[18:20] + "-" + file_name[20:22] + "-" + file_name[22:24] + "," + file_name[24:27]
-            camera = file_name[1:6]
-
-            if IsValidFileStructure(file_path):
-
-                temp_file_path = out_dir + "temp.h264"
-                SaveVideoData(file_path, temp_file_path)
-
-                out_dir_path = "{dir}{date}\\C{cam}\\".format(dir=out_dir, date=date, cam=camera)
-                avi_file_path = "{dir}[{cam}]-[{date} {time}].avi".format(dir=out_dir_path, cam=camera, date=date, time=time)
-
-                os.makedirs(out_dir_path)
-                if not os.path.exists(out_dir_path):
-                    print("Error creating directory:", out_dir_path)
-                    return
-
-                video_format = FileType(file_path)
-                if video_format == 'h264':
-                    os.system(FFMPEG_CMD_FORMAT.format(ffmpeg=APP, vformat=H264, in_file=temp_file_path, out_file=avi_file_path))
-                elif video_format == 'mjpeg':
-                    os.system(FFMPEG_CMD_FORMAT.format(ffmpeg=APP, vformat=MJPEG, in_file=temp_file_path, out_file=avi_file_path))
-                else:
-                    return
-
+def RecoverAllFiles(src_dir, out_dir, tmp_file_name):
+    try:
+        for file_name in os.listdir(src_dir):
+            file_path = src_dir + file_name
+            if os.path.isdir(file_path):
+                dir_path = NormalizeDirPath(file_path)
+                RecoverAllFiles(dir_path, out_dir, tmp_file_name)
             else:
-                info = os.stat(file_path)
-                print("File: %s; Size: %d bytes; Type: %s; Integrity: CORRUPTED" %
-                      (file_path, info.st_size, FileType(file_path)))
-    return
+                if len(file_name) != 31:
+                    print("File:", file_path)
+                    print("Invalid file name length (%d), must be 31" % len(file_name))
+                    continue
+
+                # C00001S00A20160128162034809.dat
+                date = file_name[10:14] + "-" + file_name[14:16] + "-" + file_name[16:18]
+                time = file_name[18:20] + "-" + file_name[20:22] + "-" + file_name[22:24] + "," + file_name[24:27]
+                camera = file_name[1:6]
+
+                if IsValidFileStructure(file_path):
+
+                    # temp_file_path = out_dir + "temp.h264"
+                    temp_file_path = out_dir + tmp_file_name
+                    SaveVideoData(file_path, temp_file_path)
+
+                    out_dir_path = "{dir}{date}\\C{cam}\\".format(dir=out_dir, date=date, cam=camera)
+                    avi_file_path = "{dir}[{cam}]-[{date} {time}].avi".format(dir=out_dir_path, cam=camera, date=date, time=time)
+
+                    if not os.path.exists(out_dir_path):
+                        os.makedirs(out_dir_path)
+
+                    video_format = FileType(file_path)
+                    if video_format == 'h264':
+                        os.system(FFMPEG_CMD_FORMAT.format(ffmpeg=APP, vformat=H264, in_file=temp_file_path, out_file=avi_file_path))
+                    elif video_format == 'mjpeg':
+                        os.system(FFMPEG_CMD_FORMAT.format(ffmpeg=APP, vformat=MJPEG, in_file=temp_file_path, out_file=avi_file_path))
+                    else:
+                        return
+
+                else:
+                    info = os.stat(file_path)
+                    print("File: %s; Size: %d bytes; Type: %s; Integrity: CORRUPTED" %
+                          (file_path, info.st_size, FileType(file_path)))
+
+    except BaseException as exc:
+        print(exc)
 
 
 def run(src_dir, dst_dir):
@@ -181,7 +183,10 @@ def run(src_dir, dst_dir):
     src_dir = NormalizeDirPath(src_dir)
     dst_dir = NormalizeDirPath(dst_dir)
 
-    RecoverAllFiles(src_dir, dst_dir)
+    # tmp_file_name = "temp.h264"
+    tmp_file_name = os.path.basename(os.path.normpath(src_dir)) + ".h264"
+
+    RecoverAllFiles(src_dir, dst_dir, tmp_file_name)
 
     # C00001S00A20160128162034809.dat
     # C00001 S00A 2016-01-28 16:20:34,809.dat
@@ -200,7 +205,20 @@ def run(src_dir, dst_dir):
 
     return
 
+print(sys.argv)
 
+if len(sys.argv) == 3:
+    dst_dir = NormalizeDirPath(sys.argv[1])
+    src_dir = NormalizeDirPath(sys.argv[2])
+    tmp_file_name = os.path.basename(os.path.normpath(src_dir)) + ".h264"
+
+    print('Start for dir:', src_dir)
+    print('destination:', dst_dir)
+    print('temp file name:', tmp_file_name)
+
+    run(src_dir, dst_dir)
+
+    print("Finished with:", src_dir)
 
 
 
