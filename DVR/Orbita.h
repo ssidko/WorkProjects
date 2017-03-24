@@ -155,7 +155,6 @@ namespace Orbita
 		void ToAvi(DWORD index);
 		bool CreateNewFile(FRAME_SEQUENCE &sequence);
 		bool Save(FRAME_SEQUENCE &sequence);
-
 	};
 
 	int Main(const std::string &io_name, const std::string &out_dir);
