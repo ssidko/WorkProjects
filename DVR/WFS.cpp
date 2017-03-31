@@ -104,7 +104,7 @@ int WFS::Main(void)
 
 int WFS::StartRecovery(const std::string &volume_name, const std::string &out_directory, const Timestamp &start_time, const Timestamp &end_time)
 {
-	std::string mkv_file_name;
+	std::string out_file_name;
 	std::string raw_file_name = out_directory + "out.dvr";
 
 	Scanner volum(volume_name);
@@ -133,7 +133,7 @@ int WFS::StartRecovery(const std::string &volume_name, const std::string &out_di
 
 			if (out_file == nullptr) {
 				//raw_file_name = out_dir_path + SequenceInfoString(sequence) + ".h264";
-				mkv_file_name = out_directory + SequenceInfoString(sequence) + ".avi";
+				out_file_name = out_directory + SequenceInfoString(sequence) + ".avi";
 				out_file = new W32Lib::FileEx(raw_file_name.data());
 				if (out_file) {
 					if (!out_file->Create()) {
@@ -149,7 +149,7 @@ int WFS::StartRecovery(const std::string &volume_name, const std::string &out_di
 				delete out_file;
 				out_file = nullptr;
 				//ConvertToMkv(raw_file_name, mkv_file_name);
-				Convert2Avi(raw_file_name, mkv_file_name);
+				Convert2Avi(raw_file_name, out_file_name);
 
 			}
 		}
@@ -158,7 +158,7 @@ int WFS::StartRecovery(const std::string &volume_name, const std::string &out_di
 			delete out_file;
 			out_file = nullptr;
 			//ConvertToMkv(raw_file_name, mkv_file_name);
-			Convert2Avi(raw_file_name, mkv_file_name);
+			Convert2Avi(raw_file_name, out_file_name);
 		}
 	}
 
