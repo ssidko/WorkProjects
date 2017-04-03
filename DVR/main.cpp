@@ -27,7 +27,7 @@ inline void _trace(char *format, ...)
 
 #include "ExtentRecovery.h"
 #include "FileRecordRecovery.h"
-#include "Timestamp.h"
+#include "dvr.h"
 #include "Hikvision.h"
 #include "WFS.h"
 #include "G2fdbVolume.h"

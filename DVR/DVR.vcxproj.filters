@@ -43,9 +43,6 @@
     <Filter Include="Utility">
       <UniqueIdentifier>{046a8a94-bdb5-4e60-a16b-494c178f818e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Core\WFS-h264">
-      <UniqueIdentifier>{b265e5f1-6847-45dd-badb-494390768be8}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Ext4ExtentRecovery">
       <UniqueIdentifier>{8022cb13-cfed-4022-97f3-cfc3cca7c529}</UniqueIdentifier>
     </Filter>
@@ -67,6 +64,12 @@
     <Filter Include="h264">
       <UniqueIdentifier>{e006dca7-9c78-44a2-b29b-6da3fb6bbcc5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Core\dcH264">
+      <UniqueIdentifier>{2d634ffb-0aad-459f-b3a7-f67fda14955e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\WFS">
+      <UniqueIdentifier>{b265e5f1-6847-45dd-badb-494390768be8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GeneratedFiles\Debug\moc_mainwindow.cpp">
@@ -82,9 +85,6 @@
       <Filter>GUI</Filter>
     </ClCompile>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Timestamp.cpp">
-      <Filter>Core</Filter>
-    </ClCompile>
     <ClCompile Include="File.cpp">
       <Filter>Utility</Filter>
     </ClCompile>
@@ -101,10 +101,10 @@
       <Filter>zfs</Filter>
     </ClCompile>
     <ClCompile Include="WFS.cpp">
-      <Filter>Core\WFS-h264</Filter>
+      <Filter>Core\WFS</Filter>
     </ClCompile>
     <ClCompile Include="WfsScanner.cpp">
-      <Filter>Core\WFS-h264</Filter>
+      <Filter>Core\WFS</Filter>
     </ClCompile>
     <ClCompile Include="WinConsole.cpp">
       <Filter>Utility</Filter>
@@ -158,6 +158,12 @@
       <Filter>h264</Filter>
     </ClCompile>
     <ClCompile Include="MyPrintf.cpp" />
+    <ClCompile Include="dcH264_OnDisk.cpp">
+      <Filter>Core\dcH264</Filter>
+    </ClCompile>
+    <ClCompile Include="dvr.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="mainwindow.ui">
@@ -173,9 +179,6 @@
   <ItemGroup>
     <ClInclude Include="GeneratedFiles\ui_mainwindow.h">
       <Filter>Generated Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Timestamp.h">
-      <Filter>Core</Filter>
     </ClInclude>
     <ClInclude Include="File.h">
       <Filter>Utility</Filter>
@@ -199,13 +202,13 @@
       <Filter>zfs</Filter>
     </ClInclude>
     <ClInclude Include="WFS.h">
-      <Filter>Core\WFS-h264</Filter>
+      <Filter>Core\WFS</Filter>
     </ClInclude>
     <ClInclude Include="WfsOnDisk.h">
-      <Filter>Core\WFS-h264</Filter>
+      <Filter>Core\WFS</Filter>
     </ClInclude>
     <ClInclude Include="WfsScanner.h">
-      <Filter>Core\WFS-h264</Filter>
+      <Filter>Core\WFS</Filter>
     </ClInclude>
     <ClInclude Include="WinConsole.h">
       <Filter>Utility</Filter>
@@ -265,6 +268,12 @@
       <Filter>h264</Filter>
     </ClInclude>
     <ClInclude Include="MyPrintf.h" />
+    <ClInclude Include="dcH264_OnDisk.h">
+      <Filter>Core\dcH264</Filter>
+    </ClInclude>
+    <ClInclude Include="dvr.h">
+      <Filter>Core</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="DVR.rc" />

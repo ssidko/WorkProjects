@@ -1,7 +1,7 @@
 #ifndef _DHFS_RECOVERY_H
 #define _DHFS_RECOVERY_H
 
-#include "Timestamp.h"
+#include "dvr.h"
 #include "DhfsVolume.h"
 #include "File.h"
 #include "utility.h"

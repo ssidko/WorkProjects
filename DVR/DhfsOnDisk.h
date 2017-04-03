@@ -2,7 +2,7 @@
 #define _FRAME_H
 
 #include <windows.h>
-#include "Timestamp.h"
+#include "dvr.h"
 #include "BufferedFile.h"
 #include <string>
 #include <vector>

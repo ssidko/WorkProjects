@@ -5,6 +5,7 @@
 
 #include <windows.h>
 #include <string>
+#include <vector>
 
 namespace dvr
 {
@@ -33,8 +34,20 @@ namespace dvr
 		bool operator==(const Timestamp &t);
 		ULONGLONG operator-(const Timestamp &t);
 	};
+
+	struct Frame {
+		LONGLONG offset;
+		DWORD camera;
+		Timestamp time;
+		std::vector<BYTE> buffer;
+	};
+
+	struct FrameSequence {
+		LONGLONG offset;
+		Timestamp start_time;
+		Timestamp end_time;
+		std::vector<BYTE> buffer;
+	};
 }
 
-
 #endif
-

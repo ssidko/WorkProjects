@@ -22,6 +22,7 @@ public:
 	BufferedFile(const std::string &file_name, size_t buffer_size = 0, LONGLONG size = 0);
 	~BufferedFile(void);
 	BOOL Open(void);
+	void Close(void);
 	LONGLONG Pointer(void);
 	void Pointer(LONGLONG &pointer);
 	BOOL SetPointer(const LONGLONG &new_pointer);

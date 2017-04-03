@@ -20,7 +20,7 @@ using namespace WFS;
 //	system(cmd_line.str().data());
 //}
 
-void NextFileName(FrameSequence &sequence)
+void NextFileName(WFS::FrameSequence &sequence)
 {
 
 }

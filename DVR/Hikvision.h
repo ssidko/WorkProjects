@@ -2,7 +2,7 @@
 #define _HIKVISION_H
 
 #include <string>
-#include "Timestamp.h"
+#include "dvr.h"
 #include "BufferedFile.h"
 #include "utility.h"
 

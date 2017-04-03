@@ -2,7 +2,7 @@
 #define _G2FDB_ONDISK_H
 
 #include "windows.h"
-#include "Timestamp.h"
+#include "dvr.h"
 
 //
 // DVR Infinity (example: NDR-X2416)

@@ -91,6 +91,7 @@
   <ItemGroup>
     <ClCompile Include="bitstream_reader.cpp" />
     <ClCompile Include="BufferedFile.cpp" />
+    <ClCompile Include="dcH264_OnDisk.cpp" />
     <ClCompile Include="DhfsRecovery.cpp" />
     <ClCompile Include="DhfsVolume.cpp" />
     <ClCompile Include="dvr1.cpp" />
@@ -121,7 +122,7 @@
     <ClCompile Include="Orbita.cpp" />
     <ClCompile Include="Raid5.cpp" />
     <ClCompile Include="TestWidget.cpp" />
-    <ClCompile Include="Timestamp.cpp" />
+    <ClCompile Include="dvr.cpp" />
     <ClCompile Include="utility.cpp" />
     <ClCompile Include="VDev.cpp" />
     <ClCompile Include="WFS.cpp" />
@@ -159,6 +160,7 @@
   <ItemGroup>
     <ClInclude Include="bitstream_reader.h" />
     <ClInclude Include="BufferedFile.h" />
+    <ClInclude Include="dcH264_OnDisk.h" />
     <ClInclude Include="DhfsRecovery.h" />
     <ClInclude Include="DhfsVolume.h" />
     <ClInclude Include="dvr1.h" />
@@ -180,7 +182,7 @@
     <ClInclude Include="TestWidget.h" />
     <ClInclude Include="utility.h" />
     <ClInclude Include="WfsOnDisk.h" />
-    <ClInclude Include="Timestamp.h" />
+    <ClInclude Include="dvr.h" />
     <ClInclude Include="VDev.h" />
     <ClInclude Include="WFS.h" />
     <ClInclude Include="WfsScanner.h" />

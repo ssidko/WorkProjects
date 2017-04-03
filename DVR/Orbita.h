@@ -4,7 +4,7 @@
 #include <windows.h>
 #include <string>
 #include <BufferedFile.h>
-#include "Timestamp.h"
+#include "dvr.h"
 #include "File.h"
 #include "utility.h"
 
@@ -158,7 +158,6 @@ namespace Orbita
 	};
 
 	int Main(const std::string &io_name, const std::string &out_dir);
-
 }
 
 #endif // _ORBITA_H

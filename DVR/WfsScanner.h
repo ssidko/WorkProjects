@@ -4,7 +4,7 @@
 #include <windows.h>
 #include <vector>
 
-#include "Timestamp.h"
+#include "dvr.h"
 
 #include "WfsOnDisk.h"
 #include "BufferedFile.h"

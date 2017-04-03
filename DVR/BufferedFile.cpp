@@ -34,6 +34,14 @@ BOOL BufferedFile::Open(void)
 	return io.Open(name.c_str());
 }
 
+void BufferedFile::Close(void)
+{
+	io_pointer = (0);
+	offset = (0);
+	readed = 0;
+	io.Close();
+}
+
 LONGLONG BufferedFile::Pointer(void)
 {
 	return ((LONGLONG)io_pointer + offset);
