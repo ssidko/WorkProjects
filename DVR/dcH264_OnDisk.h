@@ -24,12 +24,13 @@ namespace dcH264
 	struct FRAME_HEADER {
 		BYTE camera;				// ASCII '0' - '9'
 		BYTE flags;					// ASCII '0' - '9'
-		char type[2];				// 'dc', 'wb' ...
+		DWORD type;					// 'dc', 'wb' ...
 	};
 
 	struct FRAME_H264 {
 		FRAME_HEADER header;
-		char sign[4];				// 'H264'
+		DWORD sign;					// 'H264'
+		DWORD size;
 
 	};
 
