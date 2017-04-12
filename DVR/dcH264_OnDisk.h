@@ -20,18 +20,17 @@ namespace dcH264
 		BYTE seconds;
 		dvr::Timestamp Timestamp(void) { return dvr::Timestamp(2000 + year, month, day, hours, minutes, seconds); }
 	};
-		
+
 	struct FRAME_HEADER {
-		BYTE camera;				// ASCII '0' - '9'
-		BYTE flags;					// ASCII '0' - '9'
-		DWORD type;					// 'dc', 'wb' ...
+		char camera;				// ASCII '0' - '9'
+		char flags;					// ASCII '0' - '9'
+		WORD type;					// 'dc', 'wb' ...
 	};
 
 	struct FRAME_H264 {
 		FRAME_HEADER header;
 		DWORD sign;					// 'H264'
 		DWORD size;
-
 	};
 
 #pragma pack(pop)

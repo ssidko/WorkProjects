@@ -9,16 +9,14 @@ MKVMERGE_APP = r" D:\Soft\#RecoverySoft#\mkvtoolnix\mkvmerge.exe"
 APP = FFMPEG_APP
 H264 = "h264"
 MJPEG = "mjpeg"
-FFMPEG_CMD_FORMAT = r'{ffmpeg} -f {vformat} -i "{in_file}" -vcodec copy "{out_file}"'
+FFMPEG_CMD_FORMAT = r'{ffmpeg} -y -f {vformat} -i "{in_file}" -vcodec copy "{out_file}"'
 MKVMERGE_CMD_FORMAT = r'{mkvmerge} -o "{out_file}" "{in_file}"'
-
-
-file_type = {'h264': b'H264', 'mjpeg': b'NUMJ'}
 
 FRAME_HEADER_SIZE = 12
 
 FrameHeader = namedtuple('FrameHeader', ['sign', 'flags', 'unk', 'size'])
 FramePtr = namedtuple('FramePtr', ['offset', 'unk'])
+file_type = {'h264': b'H264', 'mjpeg': b'NUMJ'}
 
 
 def NormalizeDirPath(path):
@@ -178,56 +176,31 @@ def run(src_dir, dst_dir):
             print("Couldn`t create destination directory")
             return
 
-    # src_dir = r"E:\for_testing"
-
     src_dir = NormalizeDirPath(src_dir)
     dst_dir = NormalizeDirPath(dst_dir)
-
-    # tmp_file_name = "temp.h264"
     tmp_file_name = os.path.basename(os.path.normpath(src_dir)) + ".h264"
 
     RecoverAllFiles(src_dir, dst_dir, tmp_file_name)
 
-    # C00001S00A20160128162034809.dat
-    # C00001 S00A 2016-01-28 16:20:34,809.dat
-    # src_file = r"F:\Root\DATA 3\20160128\C00001\C00001S00A20160128162034809.dat"
-    # dst_file = r"F:\tst.h264"
-    # if IsValidFileStructure(src_file):
-    #    SaveVideoData(src_file, dst_file)
-    # else:
-    #    print("File: '%s'" % src_file, "CORRUPTED")
-
-
-    # CheckAllFiles(src_dir)
-
-    # print(CMD_LINE_FORMAT.format(ffmpeg=APP, in_file=input_file, out_file=avi_file))
-    # os.system(CMD_LINE_FORMAT.format(ffmpeg=APP, in_file=input_file, out_file=avi_file))
-
     return
 
-print(sys.argv)
+if __name__ == '__main__':
 
-if len(sys.argv) == 3:
-    dst_dir = NormalizeDirPath(sys.argv[1])
-    src_dir = NormalizeDirPath(sys.argv[2])
-    tmp_file_name = os.path.basename(os.path.normpath(src_dir)) + ".h264"
+    print(sys.argv)
+    if len(sys.argv) == 3:
+        dst_dir = NormalizeDirPath(sys.argv[1])
+        src_dir = NormalizeDirPath(sys.argv[2])
+        tmp_file_name = os.path.basename(os.path.normpath(src_dir)) + ".h264"
 
-    print('Start for dir:', src_dir)
-    print('destination:', dst_dir)
-    print('temp file name:', tmp_file_name)
+        print('Start for dir:', src_dir)
+        print('destination:', dst_dir)
+        print('temp file name:', tmp_file_name)
 
-    run(src_dir, dst_dir)
+        run(src_dir, dst_dir)
 
-    print("Finished with:", src_dir)
-
-
-
-
-
-
-
-
-
+        print("Finished with:", src_dir)
+    else:
+        print('Usage: <destination dir_path> <source dir_path>')
 
 
 
