@@ -70,6 +70,9 @@
     <Filter Include="Core\WFS">
       <UniqueIdentifier>{b265e5f1-6847-45dd-badb-494390768be8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="zfs\test">
+      <UniqueIdentifier>{1de86d4d-ecbe-434a-9ca6-5345143489f6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GeneratedFiles\Debug\moc_mainwindow.cpp">
@@ -163,6 +166,9 @@
     </ClCompile>
     <ClCompile Include="dvr.cpp">
       <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="zfs_test.cpp">
+      <Filter>zfs\test</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -273,6 +279,9 @@
     </ClInclude>
     <ClInclude Include="dvr.h">
       <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="zfs_test.h">
+      <Filter>zfs\test</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -63,19 +63,6 @@ public:
 	virtual ULONGLONG BlocksCount(void);
 };
 
-//int vdev_test(void)
-//{
-//	std::string dev_name = "D:\\doc\\Зразок заяви на відпустку щорічну (24 к д ).docx";
-//	DWORD block_size = 512;
-//	ULONGLONG blocks_count = 102400;
-//	BlockDevice dev(dev_name, 512, 102400);
-//	if (dev.Open()) {
-//		dev.SetPointer(0);
-//
-//	}
-//	return 0;
-//}
-
 class VDev
 {
 private:

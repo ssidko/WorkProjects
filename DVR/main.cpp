@@ -107,6 +107,7 @@ void ToHexString(uint8_t *buff, size_t count, std::string &str)
 }
 
 #include "MyPrintf.h"
+#include "zfs_test.h"
 
 int main(int argc, char *argv[])
 {
@@ -116,6 +117,8 @@ int main(int argc, char *argv[])
 	//char buff[32] = { 0 };
 
 	//MyPrintf(buff, sizeof(buff), "test %% %s %d %01d %10d %012", "str1", 137, "string");
+
+	zfs_test();
 
 	w.show();
 	return a.exec();

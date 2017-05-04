@@ -31,5 +31,5 @@ LONGLONG dcH264::Volume::Pointer(void)
 
 bool dcH264::Volume::ReadFrame(dvr::Frame &frame)
 {
-
+	return false;
 }

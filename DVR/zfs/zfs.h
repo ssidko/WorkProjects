@@ -48,7 +48,7 @@ typedef struct dva {
 	uint64_t	alloc_size:24;				/* allocated size in sectors (including RAID-Z parity and gang block headers) */
 	uint64_t	grid:8;						/* RAID-Z layout information (reserved for future use) */
 	uint64_t	vdev_id:32;					/* virtual device ID */
-	uint64_t	offset:31;					/* offset in sectors (512 bytes) */
+	uint64_t	offset:63;					/* offset in sectors (512 bytes) */
 	uint64_t	gang_flag:1;				/* gang block indicator */
 } dva_t;
 

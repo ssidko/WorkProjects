@@ -130,6 +130,7 @@
     <ClCompile Include="WinConsole.cpp" />
     <ClCompile Include="zfs\lzjb.cpp" />
     <ClCompile Include="zfs\ZPool.cpp" />
+    <ClCompile Include="zfs_test.cpp" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="mainwindow.h">
@@ -191,6 +192,7 @@
     <ClInclude Include="zfs\zfs.h" />
     <ClInclude Include="zfs\zfs_type.h" />
     <ClInclude Include="zfs\ZPool.h" />
+    <ClInclude Include="zfs_test.h" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="mainwindow.qrc">
