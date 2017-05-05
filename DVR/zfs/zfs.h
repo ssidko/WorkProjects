@@ -156,6 +156,40 @@ typedef struct dnode_phys {
 	};
 } dnode_phys_t;
 
+
+/*
+* Intent log header - this on disk structure holds fields to manage
+* the log.  All fields are 64 bit to easily handle cross architectures.
+*/
+typedef struct zil_header {
+	uint64_t zh_claim_txg;			/* txg in which log blocks were claimed */
+	uint64_t zh_replay_seq;			/* highest replayed sequence number */
+	blkptr_t zh_log;				/* log chain */
+	uint64_t zh_claim_blk_seq;		/* highest claimed block sequence number */
+	uint64_t zh_flags;				/* header flags */
+	uint64_t zh_claim_lr_seq;		/* highest claimed lr sequence number */
+	uint64_t zh_pad[3];
+} zil_header_t;
+
+#define	OBJSET_PHYS_SIZE 2048
+#define	OBJSET_OLD_PHYS_SIZE 1024
+
+#define	OBJSET_BUF_HAS_USERUSED(buf) \
+	(arc_buf_size(buf) > OBJSET_OLD_PHYS_SIZE)
+
+#define	OBJSET_FLAG_USERACCOUNTING_COMPLETE	(1ULL<<0)
+
+typedef struct objset_phys {
+	dnode_phys_t os_meta_dnode;
+	zil_header_t os_zil_header;
+	uint64_t os_type;
+	uint64_t os_flags;
+	char os_pad[OBJSET_PHYS_SIZE - sizeof(dnode_phys_t) * 3 -
+		sizeof(zil_header_t) - sizeof(uint64_t) * 2];
+	dnode_phys_t os_userused_dnode;
+	dnode_phys_t os_groupused_dnode;
+} objset_phys_t;
+
 #pragma pack(pop)
 
 #endif // _ZFS_H

@@ -1,28 +1,53 @@
 #include "zfs_test.h"
+#include <memory>
 
-
+#define VDEV_OFFSET			2048*512
 
 void zfs_test(void)
 {
 	W32Lib::FileEx io;
 
-	if (!io.Open("D:\\zol-0.6.1\\vdev0")) {
+	//if (!io.Open("D:\\zol-0.6.1\\vdev1")) {
+	if (!io.Open("J:\\VM\\zfs-flat.vmdk")) {
 		return;
 	}
 
 
-	unsigned long long offset = VDEV_DATA_OFFSET;
+	size_t size = sizeof(objset_phys_t);
 
-	io.SetPointer(400*512);
+	uberblock_t *ub = nullptr;
+	std::vector<unsigned char> ub_buff(1024, 0);
+	int max_tgx = 0;
+	int ub_idx = 0;
 
-	std::vector<unsigned char> buff(512, 0);
-	if (io.Read(buff.data(), buff.size())) {
-		uberblock *ub = (uberblock *)buff.data();
+	for (int i = 0; i < 128; ++i) {
 
-		int x = 0;
-		
+		io.SetPointer(VDEV_OFFSET + VDEV_LABEL_UBERBLOCKS_OFFSET + i*1024);
+		io.Read(ub_buff.data(), ub_buff.size());
+
+		ub = (uberblock_t *)ub_buff.data();
+		if (ub->magic == UBERBLOCK_MAGIC) {
+
+			if (ub->txg > max_tgx) {
+				max_tgx = ub->txg;
+				ub_idx = i;
+			}
+			
+			int x = 0;
+		}
+	
 	}
 
-	uberblock *ub = nullptr;
+	io.SetPointer(VDEV_OFFSET + VDEV_LABEL_UBERBLOCKS_OFFSET + ub_idx * 1024);
+	io.Read(ub_buff.data(), ub_buff.size());
 
+	ub = (uberblock_t *)ub_buff.data();
+
+
+	std::auto_ptr<objset_phys_t> objset(new objset_phys_t());
+
+	io.SetPointer(VDEV_OFFSET + VDEV_DATA_OFFSET + ub->rootbp.dva[0].offset * 512);
+	io.Read(&(*objset), sizeof(objset_phys_t));
+
+	int z = 0;
 }
