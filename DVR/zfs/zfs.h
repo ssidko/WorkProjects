@@ -6,6 +6,27 @@
 
 #pragma pack(push, 1)
 
+/*
+* We currently support block sizes from 512 bytes to 16MB.
+* The benefits of larger blocks, and thus larger IO, need to be weighed
+* against the cost of COWing a giant block to modify one byte, and the
+* large latency of reading or writing a large block.
+*
+* Note that although blocks up to 16MB are supported, the recordsize
+* property can not be set larger than zfs_max_recordsize (default 1MB).
+* See the comment near zfs_max_recordsize in dsl_dataset.c for details.
+*
+* Note that although the LSIZE field of the blkptr_t can store sizes up
+* to 32MB, the dnode's dn_datablkszsec can only store sizes up to
+* 32MB - 512 bytes.  Therefore, we limit SPA_MAXBLOCKSIZE to 16MB.
+*/
+#define	SPA_MINBLOCKSHIFT				9
+#define	SPA_OLD_MAXBLOCKSHIFT			17
+#define	SPA_MAXBLOCKSHIFT				24
+#define	SPA_MINBLOCKSIZE				(1ULL << SPA_MINBLOCKSHIFT)
+#define	SPA_OLD_MAXBLOCKSIZE			(1ULL << SPA_OLD_MAXBLOCKSHIFT)
+#define	SPA_MAXBLOCKSIZE				(1ULL << SPA_MAXBLOCKSHIFT)
+
 enum zio_checksum {
 	ZIO_CHECKSUM_INHERIT = 0,
 	ZIO_CHECKSUM_ON,
@@ -189,6 +210,30 @@ typedef struct objset_phys {
 	dnode_phys_t os_userused_dnode;
 	dnode_phys_t os_groupused_dnode;
 } objset_phys_t;
+
+/*
+* Embedded checksum
+*/
+#define	ZEC_MAGIC	0x210da7ab10c7a11ULL		// zio-data-block-tail
+
+typedef struct zio_eck {
+	uint64_t	zec_magic;			/* for validation, endianness	*/
+	zio_cksum_t	zec_cksum;			/* 256-bit checksum		*/
+} zio_eck_t;
+
+/*
+* Gang block headers are self-checksumming and contain an array
+* of block pointers.
+*/
+#define	SPA_GANGBLOCKSIZE	SPA_MINBLOCKSIZE
+#define	SPA_GBH_NBLKPTRS	((SPA_GANGBLOCKSIZE - sizeof (zio_eck_t)) / sizeof (blkptr_t))
+#define	SPA_GBH_FILLER		((SPA_GANGBLOCKSIZE - sizeof (zio_eck_t) - (SPA_GBH_NBLKPTRS * sizeof (blkptr_t))) / sizeof (uint64_t))
+
+typedef struct zio_gbh {
+	blkptr_t		zg_blkptr[SPA_GBH_NBLKPTRS];
+	uint64_t		zg_filler[SPA_GBH_FILLER];
+	zio_eck_t		zg_tail;
+} zio_gbh_phys_t;
 
 #pragma pack(pop)
 
