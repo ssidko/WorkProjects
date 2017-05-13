@@ -109,10 +109,25 @@ void ToHexString(uint8_t *buff, size_t count, std::string &str)
 #include "MyPrintf.h"
 #include "zfs_test.h"
 
+template<size_t n>
+class BlockDev
+{
+public:
+	enum {
+		block_size = n
+	};
+};
+
 int main(int argc, char *argv[])
 {
 	QApplication a(argc, argv);
 	MainWindow w;
+
+	BlockDev<512> dev;
+	BlockDev<2048> dev1;
+
+	size_t block_size = dev.block_size;
+	block_size = dev1.block_size;
 
 	//char buff[32] = { 0 };
 

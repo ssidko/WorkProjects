@@ -100,7 +100,7 @@ typedef struct blk_props_emb {
 } blk_props_emb_t;
 
 #define	SPA_DVAS_PER_BP		3				/* Number of DVAs in a bp */
-#define	SPA_BLKPTRSHIFT		7				/* blkptr_t is 128 bytes	*/
+#define	SPA_BLKPTRSHIFT		7				/* blkptr_t is 128 bytes */
 
 typedef struct blkptr {
 	dva_t		dva[SPA_DVAS_PER_BP];		/* Data Virtual Addresses */
