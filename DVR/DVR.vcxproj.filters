@@ -73,6 +73,9 @@
     <Filter Include="zfs\test">
       <UniqueIdentifier>{1de86d4d-ecbe-434a-9ca6-5345143489f6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="zfs\utils">
+      <UniqueIdentifier>{08482626-a950-47bd-bbdb-5c1391ccfbdb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GeneratedFiles\Debug\moc_mainwindow.cpp">
@@ -169,6 +172,9 @@
     </ClCompile>
     <ClCompile Include="zfs_test.cpp">
       <Filter>zfs\test</Filter>
+    </ClCompile>
+    <ClCompile Include="nvpair.cpp">
+      <Filter>zfs\utils</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -282,6 +288,9 @@
     </ClInclude>
     <ClInclude Include="zfs_test.h">
       <Filter>zfs\test</Filter>
+    </ClInclude>
+    <ClInclude Include="nvpair.h">
+      <Filter>zfs\utils</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
