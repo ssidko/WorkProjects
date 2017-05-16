@@ -26,6 +26,8 @@
 
 #pragma pack(push, 1)
 
+#define	NV_ALIGN4(x)		(((x) + 3) & ~3)
+
 struct nvlist_header {
 	char encoding;
 	char endian;
@@ -74,18 +76,30 @@ typedef enum {
 	DATA_TYPE_DOUBLE				// 0x21
 } data_type;
 
+enum ValueType {
+	kInteger,
+	kString,
+	kNVList
+};
+
+struct nvpair_base {
+	std::string name;
+};
+
 template<typename T>
 struct NVPair
 {
 	std::string name;
-	data_type type;
+	ValueType type;
 	T value;
 };
 
-class Reader
+class XdrReader
 {
 private:
 	std::vector<uint8_t> buffer;
 public:
-	Reader(uint8_t *buffer, size_t size) :  {}
+	XdrReader(uint8_t *buffer, size_t size) :  {}
 };
+
+bool DecodeXdrNvlist(uint8_t *buff, size_t size);
