@@ -82,24 +82,36 @@ enum ValueType {
 	kNVList
 };
 
-struct nvpair_base {
-	std::string name;
-};
-
-template<typename T>
-struct NVPair
+struct nvpair_base
 {
 	std::string name;
 	ValueType type;
-	T value;
+
+	nvpair_base(const std::string &name_, ValueType type_) : name(name_), type(type_) {}
+	virtual ~nvpair_base()
+	{
+		int x = 0;
+	}
 };
+
+template<typename T, ValueType vt>
+struct nvpair : public nvpair_base
+{
+	T value;
+	nvpair(const std::string &name_, const T &value_ = T()) : nvpair_base(name_, vt), value(value_) {}
+};
+
+typedef nvpair<int, kInteger> NVInteger;
+typedef nvpair<std::string, kString> NVString;
+typedef nvpair<std::list<nvpair_base *>, kNVList> NVList;
 
 class XdrReader
 {
 private:
 	std::vector<uint8_t> buffer;
 public:
-	XdrReader(uint8_t *buffer, size_t size) :  {}
+	XdrReader(uint8_t *buffer, size_t size) {}
 };
 
-bool DecodeXdrNvlist(uint8_t *buff, size_t size);
+bool DecodeXdrNVPair(uint8_t *buff, size_t size);
+bool DecodeXdrNVList(uint8_t *buff, size_t size);

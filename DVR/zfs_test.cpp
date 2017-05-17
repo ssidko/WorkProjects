@@ -11,9 +11,21 @@ void zfs_test(void)
 	if (!io.Open("J:\\VM\\zfs-flat.vmdk")) {
 		return;
 	}
+	
+	
+	
+	{
+		NVList list("vdev label");
 
+		nvpair_base *nv = new NVInteger("test pair", 20);
 
-	size_t size = sizeof(objset_phys_t);
+		list.value.push_back(nv);
+
+		nv = new NVString("test pair", "string value");
+
+		list.value.push_back(nv);
+	}
+
 
 	uberblock_t *ub = nullptr;
 	std::vector<unsigned char> ub_buff(1024, 0);

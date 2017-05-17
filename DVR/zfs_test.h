@@ -7,6 +7,8 @@
 #include "File.h"
 #include <vector>
 
+#include "nvpair.h"
+
 
 void zfs_test(void);
 
