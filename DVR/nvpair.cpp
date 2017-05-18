@@ -3,6 +3,8 @@
 
 #include <intrin.h> // for byte swap; exclusive for Visual C++
 
+#define MAX_VALUE_SIZE			2147483647
+
 bool DecodeXdrNVPair(uint8_t *buff, size_t size)
 {
 	assert(buff);
