@@ -1,5 +1,6 @@
 #include "zfs_test.h"
 #include <memory>
+#include <string>
 
 #define VDEV_OFFSET			2048*512
 
@@ -11,9 +12,7 @@ void zfs_test(void)
 	if (!io.Open("J:\\VM\\zfs-flat.vmdk")) {
 		return;
 	}
-	
-	
-	
+
 	{
 		NVList list("vdev label");
 

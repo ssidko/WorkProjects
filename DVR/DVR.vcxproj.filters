@@ -176,6 +176,9 @@
     <ClCompile Include="nvpair.cpp">
       <Filter>zfs\utils</Filter>
     </ClCompile>
+    <ClCompile Include="XdrReader.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="mainwindow.ui">
@@ -291,6 +294,9 @@
     </ClInclude>
     <ClInclude Include="nvpair.h">
       <Filter>zfs\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="XdrReader.h">
+      <Filter>Generated Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

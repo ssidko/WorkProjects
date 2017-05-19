@@ -1,4 +1,5 @@
-#pragma once
+#ifndef _NVPAIR_H
+#define _NVPAIR_H
 
 #include <list>
 #include <vector>
@@ -25,8 +26,6 @@
 */
 
 #pragma pack(push, 1)
-
-#define	NV_ALIGN4(x)		(((x) + 3) & ~3)
 
 struct nvlist_header {
 	char encoding;
@@ -77,7 +76,7 @@ typedef enum {
 } data_type;
 
 enum ValueType {
-	kInteger,
+	kInteger = 1,
 	kString,
 	kNVList
 };
@@ -105,13 +104,7 @@ typedef nvpair<int, kInteger> NVInteger;
 typedef nvpair<std::string, kString> NVString;
 typedef nvpair<std::list<nvpair_base *>, kNVList> NVList;
 
-class XdrReader
-{
-private:
-	std::vector<uint8_t> buffer;
-public:
-	XdrReader(uint8_t *buffer, size_t size) {}
-};
-
 bool DecodeXdrNVPair(uint8_t *buff, size_t size);
 bool DecodeXdrNVList(uint8_t *buff, size_t size);
+
+#endif // _NVPAIR_H

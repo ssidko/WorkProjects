@@ -1,21 +1,36 @@
 #include "nvpair.h"
+#include "XdrReader.h"
 #include <assert.h>
 
 #include <intrin.h> // for byte swap; exclusive for Visual C++
 
-#define MAX_VALUE_SIZE			2147483647
+#define MAX_VALUE_SIZE					2147483647
+#define	XDR_NVPAIR_MIN_SIZE				((size_t)(5 * 4))
+
 
 bool DecodeXdrNVPair(uint8_t *buff, size_t size)
 {
-	assert(buff);
-	assert(size);
+	assert(buff && size);
 
-	uint8_t *pos = buff;
+	if (size < XDR_NVPAIR_MIN_SIZE) {
+		return false;
+	}
 
-	size_t encode_size = _byteswap_ulong(((xdr_nvpair *)buff)->encoded_size);
-	size_t decode_size = _byteswap_ulong(((xdr_nvpair *)buff)->decoded_size);
-	size_t name_size = _byteswap_ulong(((xdr_nvpair *)buff)->name_size);
+	XdrReader xdr(buff, size);
 
+	try {
+
+		size_t encode_size = xdr.UInt32();
+		size_t decode_size = xdr.UInt32();
+		size_t name_size = xdr.UInt32();
+
+		std::string name = xdr.String();
+		uint32_t value_type = xdr.UInt32();
+	
+	
+	} catch (const std::out_of_range &ex) {
+		return false;	
+	}
 
 	return false;
 }
