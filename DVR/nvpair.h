@@ -3,6 +3,7 @@
 
 #include <list>
 #include <vector>
+#include "XdrReader.h"
 
 /*
 * XDR encoding functions
@@ -100,11 +101,11 @@ struct nvpair : public nvpair_base
 	nvpair(const std::string &name_, const T &value_ = T()) : nvpair_base(name_, vt), value(value_) {}
 };
 
-typedef nvpair<int, kInteger> NVInteger;
+typedef nvpair<unsigned long long, kInteger> NVInteger;
 typedef nvpair<std::string, kString> NVString;
 typedef nvpair<std::list<nvpair_base *>, kNVList> NVList;
 
-bool DecodeXdrNVPair(uint8_t *buff, size_t size);
+size_t DecodeXdrNVPair(XdrReader &xdr, nvpair_base *nvp);
 bool DecodeXdrNVList(uint8_t *buff, size_t size);
 
 #endif // _NVPAIR_H

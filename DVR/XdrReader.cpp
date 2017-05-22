@@ -4,18 +4,16 @@
 
 #include <intrin.h> // for byte swap; exclusive for Visual C++
 
-#define	ALIGN4(x)		(((x) + 3) & ~3)
-
 XdrReader::XdrReader(uint8_t * buffer, size_t size) : pos(buffer), avail_size(size)
 {
 	assert(buffer && size);
 }
 
-inline uint32_t XdrReader::UInt32(void)
+uint32_t XdrReader::UInt32(void)
 {
 	uint32_t val = 0;
 	if (avail_size >= 4) {
-		val = (int64_t)_byteswap_ulong(*(unsigned long *)pos);
+		val = (uint32_t)_byteswap_ulong(*(unsigned long *)pos);
 		pos += 4;
 		avail_size -= 4;
 	} else {
@@ -24,7 +22,7 @@ inline uint32_t XdrReader::UInt32(void)
 	return val;
 }
 
-inline int64_t XdrReader::Int64(void)
+int64_t XdrReader::Int64(void)
 {
 	int64_t val = 0;
 	if (avail_size >= 8) {

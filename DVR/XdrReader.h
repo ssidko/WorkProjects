@@ -4,6 +4,8 @@
 #include <stdint.h>
 #include <string>
 
+#define	ALIGN4(x)		(((x) + 3) & ~3)
+
 class XdrReader
 {
 private:
@@ -11,6 +13,7 @@ private:
 	size_t avail_size;
 public:
 	XdrReader(uint8_t *buffer, size_t size);
+	size_t Length(void) { return avail_size; }
 
 	//
 	// throw std::out_of_range("End of buffer");

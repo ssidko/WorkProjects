@@ -25,6 +25,13 @@ void zfs_test(void)
 		list.value.push_back(nv);
 	}
 
+	std::vector<unsigned char> nvlist_buff(112*1024, 0);
+
+	io.SetPointer(VDEV_OFFSET + 16*1024);
+	io.Read(nvlist_buff.data(), nvlist_buff.size());
+
+	DecodeXdrNVList(nvlist_buff.data(), nvlist_buff.size());
+
 
 	uberblock_t *ub = nullptr;
 	std::vector<unsigned char> ub_buff(1024, 0);
