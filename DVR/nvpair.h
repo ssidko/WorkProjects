@@ -99,6 +99,7 @@ struct nvpair : public nvpair_base
 typedef nvpair<bool, kBool> NVBool;
 typedef nvpair<unsigned long long, kInteger> NVInteger;
 typedef nvpair<std::string, kString> NVString;
+typedef nvpair<std::list<nvpair_base *>, kNVList> NVList;
 
 template<>
 struct nvpair<std::list<nvpair_base *>, kNVList> : public nvpair_base
@@ -111,8 +112,6 @@ struct nvpair<std::list<nvpair_base *>, kNVList> : public nvpair_base
 		}
 	}
 };
-
-typedef nvpair<std::list<nvpair_base *>, kNVList> NVList;
 
 size_t DecodeNVPair(XdrReader &xdr, nvpair_base *&nvp);
 size_t DecodeEmbeddedNVList(XdrReader &xdr, NVList &nvlist);

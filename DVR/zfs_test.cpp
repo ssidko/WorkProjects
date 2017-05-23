@@ -10,14 +10,15 @@ void zfs_test(void)
 	W32Lib::FileEx io;
 
 	//if (!io.Open("D:\\zol-0.6.1\\vdev1")) {
-	if (!io.Open("J:\\VM\\zfs-flat.vmdk")) {
+	if (!io.Open("d:\\work\\zfs-raidz\\vdev2")) {
+	//if (!io.Open("J:\\VM\\zfs-flat.vmdk")) {
 		return;
 	}
 
 	NVList nvlist("vdev label");
 	std::vector<unsigned char> nvlist_buff(112*1024, 0);
 
-	io.SetPointer(VDEV_OFFSET + VDEV_LABEL_NVLIST_OFFSET);
+	io.SetPointer(VDEV_LABEL_NVLIST_OFFSET);
 	io.Read(nvlist_buff.data(), nvlist_buff.size());
 
 	DecodeXdrNVList(nvlist, nvlist_buff.data() + 4, nvlist_buff.size());

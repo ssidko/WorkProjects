@@ -14,6 +14,7 @@ size_t DecodeNVPair(XdrReader &xdr, nvpair_base *&nvp)
 	}
 
 	nvp = nullptr;
+	NVList * nvlist = nullptr;
 
 	size_t encode_size = xdr.UInt32();
 	size_t decode_size = xdr.UInt32();
@@ -68,8 +69,15 @@ size_t DecodeNVPair(XdrReader &xdr, nvpair_base *&nvp)
 
 	case DATA_TYPE_NVLIST_ARRAY:
 
+		nvp = new NVList(name);
+
 		for (int i = 0; i < nelem; i++) {
+
+			nvlist = new NVList(name + "[" + std::to_string(i) + "]");
 		
+			(*(NVList *)nvp).pairs.push_back(nvlist);
+
+			nvp_size += DecodeEmbeddedNVList(xdr, *nvlist);
 		}
 
 		break;
@@ -107,10 +115,12 @@ size_t DecodeNVPair(XdrReader &xdr, nvpair_base *&nvp)
 	if (nvp_size == encode_size) {
 		assert(nvp);
 		return nvp_size;
+	} else {
+		assert(false);
 	}
 	
 
-	return false;
+	return 0;
 }
 
 size_t DecodeEmbeddedNVList(XdrReader &xdr, NVList &nvlist)
@@ -141,10 +151,13 @@ bool DecodeXdrNVList(NVList &nvlist, uint8_t *buff, size_t size)
 	assert(buff);
 	assert(size);
 
-	XdrReader xdr(buff, size);
-	nvpair_base *nvp = nullptr;
-
-	size_t sz = DecodeEmbeddedNVList(xdr, nvlist);
-
-	return false;
+	try {
+		XdrReader xdr(buff, size);
+		nvpair_base *nvp = nullptr;
+		size_t sz = DecodeEmbeddedNVList(xdr, nvlist);
+		return true;
+	}
+	catch (const std::exception &ex) {
+		return false;
+	}
 }
