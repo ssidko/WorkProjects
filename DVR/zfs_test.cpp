@@ -2,7 +2,8 @@
 #include <memory>
 #include <string>
 
-#define VDEV_OFFSET			2048*512
+#define VDEV_OFFSET						2048*512
+#define VDEV_LABEL_NVLIST_OFFSET		16*1024
 
 void zfs_test(void)
 {
@@ -13,24 +14,13 @@ void zfs_test(void)
 		return;
 	}
 
-	{
-		NVList list("vdev label");
-
-		nvpair_base *nv = new NVInteger("test pair", 20);
-
-		list.value.push_back(nv);
-
-		nv = new NVString("test pair", "string value");
-
-		list.value.push_back(nv);
-	}
-
+	NVList nvlist("vdev label");
 	std::vector<unsigned char> nvlist_buff(112*1024, 0);
 
-	io.SetPointer(VDEV_OFFSET + 16*1024);
+	io.SetPointer(VDEV_OFFSET + VDEV_LABEL_NVLIST_OFFSET);
 	io.Read(nvlist_buff.data(), nvlist_buff.size());
 
-	DecodeXdrNVList(nvlist_buff.data(), nvlist_buff.size());
+	DecodeXdrNVList(nvlist, nvlist_buff.data() + 4, nvlist_buff.size());
 
 
 	uberblock_t *ub = nullptr;

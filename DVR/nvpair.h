@@ -37,12 +37,6 @@ struct nvlist_header {
 	uint32_t flag;
 };
 
-struct xdr_nvpair {
-	uint32_t encoded_size;
-	uint32_t decoded_size;
-	uint32_t name_size;
-};
-
 #pragma pack(pop)
 
 typedef enum {
@@ -77,7 +71,8 @@ typedef enum {
 } data_type;
 
 enum ValueType {
-	kInteger = 1,
+	kBool = 1,
+	kInteger,
 	kString,
 	kNVList
 };
@@ -101,11 +96,27 @@ struct nvpair : public nvpair_base
 	nvpair(const std::string &name_, const T &value_ = T()) : nvpair_base(name_, vt), value(value_) {}
 };
 
+typedef nvpair<bool, kBool> NVBool;
 typedef nvpair<unsigned long long, kInteger> NVInteger;
 typedef nvpair<std::string, kString> NVString;
+
+template<>
+struct nvpair<std::list<nvpair_base *>, kNVList> : public nvpair_base
+{
+	std::list<nvpair_base *> pairs;
+	nvpair(const std::string &name_, const std::list<nvpair_base *> &nvlist = std::list<nvpair_base *>()) : nvpair_base(name_, kNVList), pairs(nvlist) {}
+	~nvpair() {
+		for (auto pair : pairs) {
+			delete pair;
+		}
+	}
+};
+
 typedef nvpair<std::list<nvpair_base *>, kNVList> NVList;
 
-size_t DecodeXdrNVPair(XdrReader &xdr, nvpair_base *nvp);
-bool DecodeXdrNVList(uint8_t *buff, size_t size);
+size_t DecodeNVPair(XdrReader &xdr, nvpair_base *&nvp);
+size_t DecodeEmbeddedNVList(XdrReader &xdr, NVList &nvlist);
+
+bool DecodeXdrNVList(NVList &nvlist, uint8_t *buff, size_t size);
 
 #endif // _NVPAIR_H
