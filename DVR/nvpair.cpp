@@ -68,18 +68,12 @@ size_t DecodeNVPair(XdrReader &xdr, nvpair_base *&nvp)
 		break;
 
 	case DATA_TYPE_NVLIST_ARRAY:
-
 		nvp = new NVList(name);
-
 		for (int i = 0; i < nelem; i++) {
-
-			nvlist = new NVList(name + "[" + std::to_string(i) + "]");
-		
+			nvlist = new NVList(name + "[" + std::to_string(i) + "]");		
 			(*(NVList *)nvp).pairs.push_back(nvlist);
-
 			nvp_size += DecodeEmbeddedNVList(xdr, *nvlist);
 		}
-
 		break;
 
 	case DATA_TYPE_BOOLEAN:

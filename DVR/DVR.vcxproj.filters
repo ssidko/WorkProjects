@@ -177,7 +177,7 @@
       <Filter>zfs\utils</Filter>
     </ClCompile>
     <ClCompile Include="XdrReader.cpp">
-      <Filter>Generated Files</Filter>
+      <Filter>zfs\utils</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -296,7 +296,7 @@
       <Filter>zfs\utils</Filter>
     </ClInclude>
     <ClInclude Include="XdrReader.h">
-      <Filter>Generated Files</Filter>
+      <Filter>zfs\utils</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
