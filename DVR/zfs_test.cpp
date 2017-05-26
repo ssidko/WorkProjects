@@ -1,6 +1,7 @@
 #include "zfs_test.h"
 #include <memory>
 #include <string>
+#include "sha256.h"
 
 #define VDEV_OFFSET						2048*512
 #define VDEV_LABEL_NVLIST_OFFSET		16*1024
@@ -14,42 +15,45 @@ void zfs_test(void)
 		return;
 	}
 
+	std::auto_ptr<uint8_t> vd_label_buff(new uint8_t[sizeof(vdev_label_t)]);
+	vdev_label_t *label = (vdev_label_t *)vd_label_buff.get();
+
 	NVList nvlist("vdev label");
-	std::vector<unsigned char> nvlist_buff(112*1024, 0);
 
-	io.SetPointer(VDEV_OFFSET + VDEV_LABEL_NVLIST_OFFSET);
-	io.Read(nvlist_buff.data(), nvlist_buff.size());
+	io.SetPointer(VDEV_OFFSET);
+	io.Read(vd_label_buff.get(), sizeof(vdev_label_t));
 
-	DecodeXdrNVList(nvlist, nvlist_buff.data() + 4, nvlist_buff.size());
+	if (label->vl_vdev_phys.vp_zbt.zec_magic != ZEC_MAGIC) {
+		// вай вай как не хорошо.
+		int x = 0;
+	}
 
+	zio_cksum_t old = label->vl_vdev_phys.vp_zbt.zec_cksum;
+	zio_cksum_t chksum = {0};
+
+	memset(&label->vl_vdev_phys.vp_zbt, 0x00, sizeof(label->vl_vdev_phys.vp_zbt));
+
+	zio_checksum_SHA256(&label->vl_vdev_phys, sizeof(label->vl_vdev_phys), &chksum);
+
+
+	DecodeXdrNVList(nvlist, (uint8_t *)label->vl_vdev_phys.vp_nvlist + 4, sizeof(label->vl_vdev_phys.vp_nvlist));
 
 	uberblock_t *ub = nullptr;
-	std::vector<unsigned char> ub_buff(1024, 0);
+
 	int max_tgx = 0;
 	int ub_idx = 0;
 
 	for (int i = 0; i < 128; ++i) {
-
-		io.SetPointer(VDEV_OFFSET + VDEV_LABEL_UBERBLOCKS_OFFSET + i*1024);
-		io.Read(ub_buff.data(), ub_buff.size());
-
-		ub = (uberblock_t *)ub_buff.data();
+		ub = (uberblock_t *)(label->vl_uberblock + i * 1024);
 		if (ub->magic == UBERBLOCK_MAGIC) {
-
 			if (ub->txg > max_tgx) {
 				max_tgx = ub->txg;
 				ub_idx = i;
-			}
-			
-			int x = 0;
-		}
-	
+			}			
+		}	
 	}
 
-	io.SetPointer(VDEV_OFFSET + VDEV_LABEL_UBERBLOCKS_OFFSET + ub_idx * 1024);
-	io.Read(ub_buff.data(), ub_buff.size());
-
-	ub = (uberblock_t *)ub_buff.data();
+	ub = (uberblock_t *)(label->vl_uberblock + ub_idx * 1024);
 
 
 	std::auto_ptr<objset_phys_t> objset(new objset_phys_t());
