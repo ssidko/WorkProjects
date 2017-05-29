@@ -31,9 +31,9 @@ void zfs_test(void)
 	zio_cksum_t old = label->vl_vdev_phys.vp_zbt.zec_cksum;
 	zio_cksum_t chksum = {0};
 
-	memset(&label->vl_vdev_phys.vp_zbt, 0x00, sizeof(label->vl_vdev_phys.vp_zbt));
+	//memset(&label->vl_vdev_phys.vp_nvlist, 0x00, sizeof(label->vl_vdev_phys.vp_zbt.zec_cksum));
 
-	zio_checksum_SHA256(&label->vl_vdev_phys, sizeof(label->vl_vdev_phys), &chksum);
+	zio_checksum_SHA256( &label->vl_vdev_phys.vp_nvlist, sizeof( label->vl_vdev_phys.vp_nvlist ), &chksum );
 
 
 	DecodeXdrNVList(nvlist, (uint8_t *)label->vl_vdev_phys.vp_nvlist + 4, sizeof(label->vl_vdev_phys.vp_nvlist));
