@@ -59,7 +59,28 @@ void zfs_test(void)
 	std::auto_ptr<objset_phys_t> objset(new objset_phys_t());
 
 	io.SetPointer(VDEV_OFFSET + VDEV_DATA_OFFSET + ub->rootbp.dva[0].offset * 512);
-	io.Read(&(*objset), sizeof(objset_phys_t));
+	io.Read(objset.get(), sizeof(objset_phys_t));
+
+	objset_phys_t *os = objset.get();
+
+	//
+	// Read object set array
+	//
+	uint64_t os_array_offset = os->os_meta_dnode.blk_ptr[0].dva[0].offset * 512;
+	std::vector<char> os_array(os->os_meta_dnode.blk_ptr[0].dva[0].alloc_size * 512, 0);
+
+	io.SetPointer(VDEV_OFFSET + VDEV_DATA_OFFSET + os_array_offset);
+	io.Read(os_array.data(), os_array.size());
+
+	size_t dn_count = os_array.size()/sizeof(dnode_phys_t);
+	dnode_phys_t *dnode = (dnode_phys_t *)os_array.data();
+
+	for (int i = 0; i < dn_count; ++i) {
+		
+		int x = 0;
+		dnode++;
+	
+	}
 
 	int z = 0;
 }
