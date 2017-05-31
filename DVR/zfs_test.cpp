@@ -6,12 +6,14 @@
 #define VDEV_OFFSET						2048*512
 #define VDEV_LABEL_NVLIST_OFFSET		16*1024
 
+bool ReadData(W32Lib::FileEx &io, blkptr_t &block_ptr, std::vector<char> &buffer);
+
 void zfs_test(void)
 {
 	W32Lib::FileEx io;
 
 	//if (!io.Open("D:\\zol-0.6.1\\vdev1")) {
-	if (!io.Open("J:\\VM\\zfs-flat.vmdk")) {
+	if (!io.Open("D:\\zfs\\zfs-flat.vmdk")) {
 		return;
 	}
 
@@ -74,13 +76,37 @@ void zfs_test(void)
 
 	size_t dn_count = os_array.size()/sizeof(dnode_phys_t);
 	dnode_phys_t *dnode = (dnode_phys_t *)os_array.data();
+	blkptr_t *bptr = (blkptr_t *)os_array.data();
 
-	for (int i = 0; i < dn_count; ++i) {
-		
-		int x = 0;
-		dnode++;
-	
+	size_t asz = 0;
+
+	for (int i = 0; i <= os->os_meta_dnode.max_blk_id; ++i) {
+		asz += bptr->dva[0].alloc_size;
+		bptr++;
 	}
+
+
+
 
 	int z = 0;
 }
+
+bool ReadBlock(W32Lib::FileEx &io, blkptr_t &blkptr, std::vector<char> &buffer)
+{
+	if (blkptr.props.embedded) {
+		//
+		// TODO:
+		//
+		assert(false);
+	}
+
+	if (!io.SetPointer(VDEV_OFFSET + VDEV_DATA_OFFSET + blkptr.dva[0].offset * 512)) {
+		return false;
+	}
+	size_t origin_size = buffer.size();
+	size_t block_size = blkptr.dva[0].alloc_size * 512;
+	buffer.resize(origin_size + block_size);
+	return io.Read(&buffer[origin_size], block_size);
+}
+
+

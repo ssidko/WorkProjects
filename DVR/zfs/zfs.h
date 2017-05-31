@@ -113,6 +113,14 @@ typedef struct blkptr {
 	zio_cksum_t	checksum;					/* 256-bit checksum */
 } blkptr_t;
 
+typedef struct blkptr_emb {
+	uint64_t		payload1[6];
+	blk_props_emb_t	props;
+	uint64_t		payload2[3];
+	uint64_t		log_birth;
+	uint64_t		payload3[5];
+} blkptr_emb_t;
+
 #define	UBERBLOCK_MAGIC		0x00bab10c		/* oo-ba-bloc! */
 #define	UBERBLOCK_SHIFT		10				/* up to 1K	*/
 
@@ -266,9 +274,9 @@ typedef struct vdev_label {
 * Size of label regions at the start and end of each leaf device.
 */
 #define	VDEV_LABEL_START_SIZE	(2 * sizeof (vdev_label_t) + VDEV_BOOT_SIZE)
-#define	VDEV_LABEL_END_SIZE	(2 * sizeof (vdev_label_t))
-#define	VDEV_LABELS		4
-#define	VDEV_BEST_LABEL		VDEV_LABELS
+#define	VDEV_LABEL_END_SIZE		(2 * sizeof (vdev_label_t))
+#define	VDEV_LABELS				4
+#define	VDEV_BEST_LABEL			VDEV_LABELS
 
 
 #pragma pack(pop)
