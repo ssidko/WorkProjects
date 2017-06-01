@@ -2,11 +2,12 @@
 #include <memory>
 #include <string>
 #include "sha256.h"
+#include "lz4.h"
 
 #define VDEV_OFFSET						2048*512
 #define VDEV_LABEL_NVLIST_OFFSET		16*1024
 
-bool ReadData(W32Lib::FileEx &io, blkptr_t &block_ptr, std::vector<char> &buffer);
+bool ReadBlock(W32Lib::FileEx &io, blkptr_t &blkptr, std::vector<char> &buffer);
 
 void zfs_test(void)
 {
@@ -80,12 +81,41 @@ void zfs_test(void)
 
 	size_t asz = 0;
 
+	bool result = false;
+	std::vector<char> mos_buff;
+
 	for (int i = 0; i <= os->os_meta_dnode.max_blk_id; ++i) {
+		bptr = (blkptr_t *)os_array.data() + i;
+		result = ReadBlock(io, *bptr, mos_buff);
 		asz += bptr->dva[0].alloc_size;
-		bptr++;
 	}
 
+	dn_count = mos_buff.size()/sizeof(dnode_phys_t);
 
+	for (int i = 0; i < dn_count; ++i) {
+		
+		dnode = (dnode_phys_t *)mos_buff.data() + i;
+		if (dnode->type == 0x01) {
+		
+			std::vector<char> buff;
+
+			bool res = ReadBlock(io, dnode->blk_ptr[0], buff);
+
+			int x = 0;
+		
+		}
+
+		if (dnode->type == 19) {
+
+			std::vector<char> buff;
+
+			bool res = ReadBlock(io, dnode->blk_ptr[0], buff);
+
+			int x = 0;
+
+		}
+		
+	}
 
 
 	int z = 0;
@@ -103,10 +133,49 @@ bool ReadBlock(W32Lib::FileEx &io, blkptr_t &blkptr, std::vector<char> &buffer)
 	if (!io.SetPointer(VDEV_OFFSET + VDEV_DATA_OFFSET + blkptr.dva[0].offset * 512)) {
 		return false;
 	}
+
+	int result = 0;
+	dnode_phys_t *dnode = nullptr;
 	size_t origin_size = buffer.size();
 	size_t block_size = blkptr.dva[0].alloc_size * 512;
-	buffer.resize(origin_size + block_size);
-	return io.Read(&buffer[origin_size], block_size);
+
+	std::vector<char> compressed_data;
+	void *dst = nullptr;
+
+	if (blkptr.props.compression == ZIO_COMPRESS_OFF) {
+		buffer.resize(origin_size + block_size);
+		dst = &buffer[origin_size];
+	} else {
+		compressed_data.resize(block_size);
+		dst = compressed_data.data();	
+	}
+	
+	if (!io.Read(dst, block_size)) {
+		return false;
+	}
+
+	switch (blkptr.props.compression) {
+	
+	case ZIO_COMPRESS_OFF:
+		return true;
+
+	case ZIO_COMPRESS_LZ4:
+
+		block_size = (blkptr.props.logical_size + 1) * 512;
+		buffer.resize(origin_size + block_size);
+		result = lz4_decompress_zfs(compressed_data.data(), &buffer[origin_size], compressed_data.size(), block_size, 0);
+
+		assert(result == 0);
+
+		return true;
+	
+	default :
+		assert(false);
+		return false;	
+	}
+
+
+	return false;
 }
 
 

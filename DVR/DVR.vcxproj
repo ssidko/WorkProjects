@@ -116,6 +116,7 @@
     <ClCompile Include="GetWidthheight.cpp" />
     <ClCompile Include="h264_ps.cpp" />
     <ClCompile Include="Hikvision.cpp" />
+    <ClCompile Include="lz4.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="mainwindow.cpp" />
     <ClCompile Include="MyPrintf.cpp" />
@@ -179,6 +180,7 @@
     <ClInclude Include="GetWidthheight.h" />
     <ClInclude Include="h264_ps.h" />
     <ClInclude Include="Hikvision.h" />
+    <ClInclude Include="lz4.h" />
     <ClInclude Include="MyPrintf.h" />
     <ClInclude Include="Ntfs.h" />
     <ClInclude Include="nvpair.h" />

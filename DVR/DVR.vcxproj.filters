@@ -185,6 +185,9 @@
     <ClCompile Include="sha256.cpp">
       <Filter>zfs\checksum</Filter>
     </ClCompile>
+    <ClCompile Include="lz4.cpp">
+      <Filter>zfs\compression</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="mainwindow.ui">
@@ -306,6 +309,9 @@
     </ClInclude>
     <ClInclude Include="sha256.h">
       <Filter>zfs\checksum</Filter>
+    </ClInclude>
+    <ClInclude Include="lz4.h">
+      <Filter>zfs\compression</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -1,6 +1,6 @@
 #include "lzjb.h"
 
-#define NBBY    8
+#define NBBY			8
 #define MATCH_BITS      6
 #define MATCH_MIN       3
 #define OFFSET_MASK     ((1 << (16 - MATCH_BITS)) - 1)
