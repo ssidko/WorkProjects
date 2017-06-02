@@ -13,5 +13,6 @@ typedef unsigned int			uint32_t;
 typedef long long				int64_t;
 typedef unsigned long long		uint64_t;
 
+typedef enum zfs_boolean { B_FALSE, B_TRUE } zfs_boolean_t;
 
 #endif // _ZFS_TYPE_H

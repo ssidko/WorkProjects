@@ -141,6 +141,13 @@ typedef struct uberblock {
 #define	DNODE_CORE_SIZE		64				/* 64 bytes for dnode sans blkptrs */
 #define	DN_MAX_BONUSLEN		(DNODE_SIZE - DNODE_CORE_SIZE - (1 << SPA_BLKPTRSHIFT))
 
+/* Is dn_used in bytes?  if not, it's in multiples of SPA_MINBLOCKSIZE */
+#define	DNODE_FLAG_USED_BYTES			(1<<0)
+#define	DNODE_FLAG_USERUSED_ACCOUNTED	(1<<1)
+
+/* Does dnode have a SA spill blkptr in bonus? */
+#define	DNODE_FLAG_SPILL_BLKPTR			(1<<2)
+
 typedef struct dnode_phys {
 	uint8_t		type;						/* dmu_object_type_t */
 	uint8_t		ind_blk_shift;				/* ln2(indirect block size) */

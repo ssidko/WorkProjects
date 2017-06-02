@@ -1,4 +1,5 @@
 #include "zfs_test.h"
+#include "dmu.h"
 #include <memory>
 #include <string>
 #include "sha256.h"
@@ -95,7 +96,8 @@ void zfs_test(void)
 	for (int i = 0; i < dn_count; ++i) {
 		
 		dnode = (dnode_phys_t *)mos_buff.data() + i;
-		if (dnode->type == 0x01) {
+		dmu_object_type obj_type = (dmu_object_type)dnode->type;
+		if (obj_type == 0x01) {
 		
 			std::vector<char> buff;
 
@@ -105,7 +107,7 @@ void zfs_test(void)
 		
 		}
 
-		if (dnode->type == 19) {
+		if (obj_type == 19) {
 
 			std::vector<char> buff;
 

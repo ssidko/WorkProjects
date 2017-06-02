@@ -313,6 +313,9 @@
     <ClInclude Include="lz4.h">
       <Filter>zfs\compression</Filter>
     </ClInclude>
+    <ClInclude Include="dmu.h">
+      <Filter>zfs</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="DVR.rc" />
