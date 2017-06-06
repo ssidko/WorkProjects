@@ -103,6 +103,13 @@ void zfs_test(void)
 
 			bool res = ReadBlock(io, dnode->blk_ptr[0], buff);
 
+
+			W32Lib::FileEx out;
+
+			if (out.Create("D:\\zfs\\mos.bin")) {
+				out.Write(buff.data(), buff.size());
+			}
+
 			int x = 0;
 		
 		}
