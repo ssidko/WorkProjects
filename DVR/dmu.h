@@ -141,4 +141,31 @@ typedef enum dmu_object_type {
 	DMU_OTN_ZAP_METADATA = DMU_OT(DMU_BSWAP_ZAP, B_TRUE),
 } dmu_object_type_t;
 
+/*
+* The names of zap entries in the DIRECTORY_OBJECT of the MOS.
+*/
+#define	DMU_POOL_DIRECTORY_OBJECT		1
+#define	DMU_POOL_CONFIG					"config"
+#define	DMU_POOL_FEATURES_FOR_WRITE		"features_for_write"
+#define	DMU_POOL_FEATURES_FOR_READ		"features_for_read"
+#define	DMU_POOL_FEATURE_DESCRIPTIONS	"feature_descriptions"
+#define	DMU_POOL_FEATURE_ENABLED_TXG	"feature_enabled_txg"
+#define	DMU_POOL_ROOT_DATASET			"root_dataset"
+#define	DMU_POOL_SYNC_BPOBJ				"sync_bplist"
+#define	DMU_POOL_ERRLOG_SCRUB			"errlog_scrub"
+#define	DMU_POOL_ERRLOG_LAST			"errlog_last"
+#define	DMU_POOL_SPARES					"spares"
+#define	DMU_POOL_DEFLATE				"deflate"
+#define	DMU_POOL_HISTORY				"history"
+#define	DMU_POOL_PROPS					"pool_props"
+#define	DMU_POOL_L2CACHE				"l2cache"
+#define	DMU_POOL_TMP_USERREFS			"tmp_userrefs"
+#define	DMU_POOL_DDT					"DDT-%s-%s-%s"
+#define	DMU_POOL_DDT_STATS				"DDT-statistics"
+#define	DMU_POOL_CREATION_VERSION		"creation_version"
+#define	DMU_POOL_SCAN					"scan"
+#define	DMU_POOL_FREE_BPOBJ				"free_bpobj"
+#define	DMU_POOL_BPTREE_OBJ				"bptree_obj"
+#define	DMU_POOL_EMPTY_BPOBJ			"empty_bpobj"
+
 #endif // _DMU_H

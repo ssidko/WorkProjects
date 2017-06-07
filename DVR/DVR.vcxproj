@@ -169,6 +169,7 @@
     <ClInclude Include="DhfsRecovery.h" />
     <ClInclude Include="DhfsVolume.h" />
     <ClInclude Include="dmu.h" />
+    <ClInclude Include="dsl.h" />
     <ClInclude Include="dvr1.h" />
     <ClInclude Include="ExtentRecovery.h" />
     <ClInclude Include="File.h" />

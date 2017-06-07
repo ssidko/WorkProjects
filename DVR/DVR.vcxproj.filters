@@ -316,6 +316,9 @@
     <ClInclude Include="dmu.h">
       <Filter>zfs</Filter>
     </ClInclude>
+    <ClInclude Include="dsl.h">
+      <Filter>zfs</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="DVR.rc" />

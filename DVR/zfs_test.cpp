@@ -1,5 +1,6 @@
 #include "zfs_test.h"
 #include "dmu.h"
+#include "dsl.h"
 #include <memory>
 #include <string>
 #include "sha256.h"
@@ -97,24 +98,31 @@ void zfs_test(void)
 		
 		dnode = (dnode_phys_t *)mos_buff.data() + i;
 		dmu_object_type obj_type = (dmu_object_type)dnode->type;
-		if (obj_type == 0x01) {
+
+		if (obj_type == DMU_OT_OBJECT_DIRECTORY) {
 		
 			std::vector<char> buff;
 
 			bool res = ReadBlock(io, dnode->blk_ptr[0], buff);
 
 
-			W32Lib::FileEx out;
+			//W32Lib::FileEx out;
 
-			if (out.Create("D:\\zfs\\mos.bin")) {
-				out.Write(buff.data(), buff.size());
-			}
+			//if (out.Create("D:\\zfs\\mos.bin")) {
+			//	out.Write(buff.data(), buff.size());
+			//}
 
 			int x = 0;
 		
-		}
+		} else if (obj_type == DMU_OT_DSL_DIR) {
 
-		if (obj_type == 19) {
+			dsl_dir_phys_t *dsl_dir = (dsl_dir_phys_t *)dnode->bonus;
+
+
+			int x = 0;
+		
+		
+		} else if (obj_type == 19) {
 
 			std::vector<char> buff;
 
