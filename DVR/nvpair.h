@@ -96,10 +96,10 @@ struct nvpair : public nvpair_base
 	nvpair(const std::string &name_, const T &value_ = T()) : nvpair_base(name_, vt), value(value_) {}
 };
 
-typedef nvpair<bool, kBool> NVBool;
-typedef nvpair<unsigned long long, kInteger> NVInteger;
-typedef nvpair<std::string, kString> NVString;
-typedef nvpair<std::list<nvpair_base *>, kNVList> NVList;
+typedef nvpair<bool, kBool>							NVBool;
+typedef nvpair<unsigned long long, kInteger>		NVInteger;
+typedef nvpair<std::string, kString>				NVString;
+typedef nvpair<std::list<nvpair_base *>, kNVList>	NVList;
 
 template<>
 struct nvpair<std::list<nvpair_base *>, kNVList> : public nvpair_base
