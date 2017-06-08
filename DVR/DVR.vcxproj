@@ -132,6 +132,7 @@
     <ClCompile Include="WfsScanner.cpp" />
     <ClCompile Include="WinConsole.cpp" />
     <ClCompile Include="XdrReader.cpp" />
+    <ClCompile Include="zap.cpp" />
     <ClCompile Include="zfs\lzjb.cpp" />
     <ClCompile Include="zfs\ZPool.cpp" />
     <ClCompile Include="zfs_test.cpp" />
@@ -198,6 +199,7 @@
     <ClInclude Include="WfsScanner.h" />
     <ClInclude Include="WinConsole.h" />
     <ClInclude Include="XdrReader.h" />
+    <ClInclude Include="zap.h" />
     <ClInclude Include="zfs\lzjb.h" />
     <ClInclude Include="zfs\zfs.h" />
     <ClInclude Include="zfs\zfs_type.h" />

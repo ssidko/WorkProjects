@@ -1,7 +1,7 @@
 #include "zfs_test.h"
-#include "dmu.h"
-#include "dsl.h"
+
 #include <memory>
+#include <map>
 #include <string>
 #include "sha256.h"
 #include "lz4.h"
@@ -33,12 +33,11 @@ void zfs_test(void)
 		int x = 0;
 	}
 
-	zio_cksum_t old = label->vl_vdev_phys.vp_zbt.zec_cksum;
-	zio_cksum_t chksum = {0};
+	//zio_cksum_t old = label->vl_vdev_phys.vp_zbt.zec_cksum;
+	//zio_cksum_t chksum = {0};
 
 	//memset(&label->vl_vdev_phys.vp_nvlist, 0x00, sizeof(label->vl_vdev_phys.vp_zbt.zec_cksum));
-
-	zio_checksum_SHA256( &label->vl_vdev_phys.vp_nvlist, sizeof( label->vl_vdev_phys.vp_nvlist ), &chksum );
+	//zio_checksum_SHA256( &label->vl_vdev_phys.vp_nvlist, sizeof( label->vl_vdev_phys.vp_nvlist ), &chksum );
 
 
 	DecodeXdrNVList(nvlist, (uint8_t *)label->vl_vdev_phys.vp_nvlist + 4, sizeof(label->vl_vdev_phys.vp_nvlist));
@@ -68,6 +67,7 @@ void zfs_test(void)
 
 	objset_phys_t *os = objset.get();
 
+
 	//
 	// Read object set array
 	//
@@ -94,6 +94,53 @@ void zfs_test(void)
 
 	dn_count = mos_buff.size()/sizeof(dnode_phys_t);
 
+
+	//
+	// Read MOS Object Directory
+	//
+	dnode = (dnode_phys_t *)mos_buff.data() + DMU_POOL_DIRECTORY_OBJECT;
+	assert(dnode->type == DMU_OT_OBJECT_DIRECTORY);
+
+	std::vector<char> zap_buff;
+	bool res = ReadBlock(io, dnode->blk_ptr[0], zap_buff);
+
+	std::map<std::string, uint64_t> mos_dir;
+	auto callback = [&mos_dir](const uint64_t &value, const char* name) {
+		mos_dir.emplace(std::string(name), value);
+	};
+	TraversingMicroZapEntries(zap_buff, callback);
+
+	//
+	// Read root_dataset
+	//
+	uint64_t root_dataset_obj = mos_dir[DMU_POOL_ROOT_DATASET];
+	assert(root_dataset_obj);
+
+	dnode = (dnode_phys_t *)mos_buff.data() + root_dataset_obj;
+	assert(dnode->type == DMU_OT_DSL_DIR);
+
+	dsl_dir_phys_t *dir = (dsl_dir_phys_t *)dnode->bonus;
+
+	dnode = (dnode_phys_t *)mos_buff.data() + dir->dd_child_dir_zapobj;
+
+	zap_buff.clear();
+	res = ReadBlock(io, dnode->blk_ptr[0], zap_buff);
+
+
+	dnode = (dnode_phys_t *)mos_buff.data() + dir->dd_head_dataset_obj;
+	assert(dnode->type == DMU_OT_DSL_DATASET);
+
+	dsl_dataset_phys_t *dataset = (dsl_dataset_phys_t *)dnode->bonus;
+
+
+
+
+	int x = 0;
+
+
+
+
+
 	for (int i = 0; i < dn_count; ++i) {
 		
 		dnode = (dnode_phys_t *)mos_buff.data() + i;
@@ -105,12 +152,13 @@ void zfs_test(void)
 
 			bool res = ReadBlock(io, dnode->blk_ptr[0], buff);
 
+			std::map<std::string, uint64_t> mos_dir;
 
-			//W32Lib::FileEx out;
+			auto callback = [&mos_dir](const uint64_t &value, const char* name) {
+				mos_dir.emplace(std::string(name), value);
+			};
 
-			//if (out.Create("D:\\zfs\\mos.bin")) {
-			//	out.Write(buff.data(), buff.size());
-			//}
+			TraversingMicroZapEntries(buff, callback);
 
 			int x = 0;
 		
@@ -144,6 +192,14 @@ bool ReadBlock(W32Lib::FileEx &io, blkptr_t &blkptr, std::vector<char> &buffer)
 		//
 		// TODO:
 		//
+
+		blk_props_emb_t *props = (blk_props_emb_t *)&blkptr.props;
+
+		if (props->physical_size <= 6*8) {
+			
+		
+		}
+
 		assert(false);
 	}
 

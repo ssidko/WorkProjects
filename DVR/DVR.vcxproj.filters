@@ -188,6 +188,9 @@
     <ClCompile Include="lz4.cpp">
       <Filter>zfs\compression</Filter>
     </ClCompile>
+    <ClCompile Include="zap.cpp">
+      <Filter>zfs</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="mainwindow.ui">
@@ -317,6 +320,9 @@
       <Filter>zfs</Filter>
     </ClInclude>
     <ClInclude Include="dsl.h">
+      <Filter>zfs</Filter>
+    </ClInclude>
+    <ClInclude Include="zap.h">
       <Filter>zfs</Filter>
     </ClInclude>
   </ItemGroup>
