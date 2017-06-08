@@ -136,96 +136,77 @@ void zfs_test(void)
 
 
 	int x = 0;
-
-
-
-
-
-	for (int i = 0; i < dn_count; ++i) {
-		
-		dnode = (dnode_phys_t *)mos_buff.data() + i;
-		dmu_object_type obj_type = (dmu_object_type)dnode->type;
-
-		if (obj_type == DMU_OT_OBJECT_DIRECTORY) {
-		
-			std::vector<char> buff;
-
-			bool res = ReadBlock(io, dnode->blk_ptr[0], buff);
-
-			std::map<std::string, uint64_t> mos_dir;
-
-			auto callback = [&mos_dir](const uint64_t &value, const char* name) {
-				mos_dir.emplace(std::string(name), value);
-			};
-
-			TraversingMicroZapEntries(buff, callback);
-
-			int x = 0;
-		
-		} else if (obj_type == DMU_OT_DSL_DIR) {
-
-			dsl_dir_phys_t *dsl_dir = (dsl_dir_phys_t *)dnode->bonus;
-
-
-			int x = 0;
-		
-		
-		} else if (obj_type == 19) {
-
-			std::vector<char> buff;
-
-			bool res = ReadBlock(io, dnode->blk_ptr[0], buff);
-
-			int x = 0;
-
-		}
-		
-	}
-
-
-	int z = 0;
 }
 
 bool ReadBlock(W32Lib::FileEx &io, blkptr_t &blkptr, std::vector<char> &buffer)
 {
+	int result = 0;
+	size_t data_size = 0;
+	size_t origin_size = buffer.size();
+	std::vector<char> compressed_data;
+	char *dst = nullptr;
+	char *src = (char *)&blkptr;
+	dnode_phys_t *dnode = nullptr;
+
 	if (blkptr.props.embedded) {
-		//
-		// TODO:
-		//
 
 		blk_props_emb_t *props = (blk_props_emb_t *)&blkptr.props;
 
-		if (props->physical_size <= 6*8) {
-			
-		
+		if (props->compression == ZIO_COMPRESS_OFF) {
+			data_size = props->logical_size;
+			buffer.resize(origin_size + data_size);
+			dst = &buffer[origin_size];
+		} else {
+			compressed_data.resize(props->physical_size);
+			dst = compressed_data.data();
+
+			data_size = props->logical_size; // + 1 ???
+			buffer.resize(origin_size + data_size);
 		}
 
-		assert(false);
-	}
+		assert(props->physical_size <= 6*8 + 3*8 + 5*8);
 
-	if (!io.SetPointer(VDEV_OFFSET + VDEV_DATA_OFFSET + blkptr.dva[0].offset * 512)) {
-		return false;
-	}
+		if (props->physical_size <= 6*8) {
+			memcpy(dst, src, props->physical_size);
+		} else {
+			memcpy(dst, src, 6*8);
+			if (props->physical_size <= 6*8 + 3*8) {
+				memcpy(&dst[6*8], &src[6*8 + 8], props->physical_size - 6*8);			
+			} else {
+				memcpy(&dst[6*8], &src[6*8 + 8], 3*8);
+				memcpy(&dst[6*8 + 3*8], &src[6*8 + 8 + 3*8 + 8], props->physical_size - 6*8 - 3*8);
+			}		
+		}
 
-	int result = 0;
-	dnode_phys_t *dnode = nullptr;
-	size_t origin_size = buffer.size();
-	size_t block_size = blkptr.dva[0].alloc_size * 512;
-
-	std::vector<char> compressed_data;
-	void *dst = nullptr;
-
-	if (blkptr.props.compression == ZIO_COMPRESS_OFF) {
-		buffer.resize(origin_size + block_size);
-		dst = &buffer[origin_size];
 	} else {
-		compressed_data.resize(block_size);
-		dst = compressed_data.data();	
-	}
-	
-	if (!io.Read(dst, block_size)) {
-		return false;
-	}
+
+		//
+		// TODO: Need validating dva.
+		//
+
+		if (!io.SetPointer(VDEV_OFFSET + VDEV_DATA_OFFSET + blkptr.dva[0].offset * 512)) {
+			return false;
+		}
+
+		data_size = blkptr.dva[0].alloc_size * 512;
+
+		if (blkptr.props.compression == ZIO_COMPRESS_OFF) {
+			buffer.resize(origin_size + data_size);
+			dst = &buffer[origin_size];
+		} else {
+			compressed_data.resize(data_size);
+			dst = compressed_data.data();
+
+			data_size = (blkptr.props.logical_size + 1) * 512;
+			buffer.resize(origin_size + data_size);
+		}
+
+		if (!io.Read(dst, data_size)) {
+			return false;
+		}
+
+	}	
+
 
 	switch (blkptr.props.compression) {
 	
@@ -234,9 +215,7 @@ bool ReadBlock(W32Lib::FileEx &io, blkptr_t &blkptr, std::vector<char> &buffer)
 
 	case ZIO_COMPRESS_LZ4:
 
-		block_size = (blkptr.props.logical_size + 1) * 512;
-		buffer.resize(origin_size + block_size);
-		result = lz4_decompress_zfs(compressed_data.data(), &buffer[origin_size], compressed_data.size(), block_size, 0);
+		result = lz4_decompress_zfs(compressed_data.data(), &buffer[origin_size], compressed_data.size(), data_size, 0);
 
 		assert(result == 0);
 
