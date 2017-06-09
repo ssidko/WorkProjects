@@ -2,6 +2,7 @@
 
 #include <memory>
 #include <map>
+#include <system_error>
 #include <string>
 #include "sha256.h"
 #include "lz4.h"
@@ -69,7 +70,7 @@ void zfs_test(void)
 
 
 	//
-	// Read object set array
+	// Read object set, dnode array
 	//
 	uint64_t os_array_offset = os->os_meta_dnode.blk_ptr[0].dva[0].offset * 512;
 	std::vector<char> os_array(os->os_meta_dnode.blk_ptr[0].dva[0].alloc_size * 512, 0);
@@ -105,10 +106,10 @@ void zfs_test(void)
 	bool res = ReadBlock(io, dnode->blk_ptr[0], zap_buff);
 
 	std::map<std::string, uint64_t> mos_dir;
-	auto callback = [&mos_dir](const uint64_t &value, const char* name) {
+	TraversingMicroZapEntries(zap_buff, 
+		[&mos_dir](const uint64_t &value, const char* name) {
 		mos_dir.emplace(std::string(name), value);
-	};
-	TraversingMicroZapEntries(zap_buff, callback);
+	});
 
 	//
 	// Read root_dataset
@@ -126,11 +127,31 @@ void zfs_test(void)
 	zap_buff.clear();
 	res = ReadBlock(io, dnode->blk_ptr[0], zap_buff);
 
+	std::map<std::string, uint64_t> root_dir;
+	TraversingMicroZapEntries(zap_buff, 
+		[&root_dir](const uint64_t &value, const char* name) {
+		root_dir.emplace(std::string(name), value);
+	});
+
 
 	dnode = (dnode_phys_t *)mos_buff.data() + dir->dd_head_dataset_obj;
 	assert(dnode->type == DMU_OT_DSL_DATASET);
 
 	dsl_dataset_phys_t *dataset = (dsl_dataset_phys_t *)dnode->bonus;
+
+
+	std::vector<char> tmp;
+
+	ReadBlock(io, dataset->ds_bp, tmp);
+
+	objset_phys_t root_ds_objset = *(objset_phys_t *)tmp.data();
+
+	tmp.clear();
+	ReadBlock(io, root_ds_objset.os_meta_dnode.blk_ptr[0], tmp);
+
+	blkptr_t blkptr = *(blkptr_t *)tmp.data();
+
+	//for ()
 
 
 
@@ -141,7 +162,7 @@ void zfs_test(void)
 bool ReadBlock(W32Lib::FileEx &io, blkptr_t &blkptr, std::vector<char> &buffer)
 {
 	int result = 0;
-	size_t data_size = 0;
+	size_t decompressed_data_size = 0;
 	size_t origin_size = buffer.size();
 	std::vector<char> compressed_data;
 	char *dst = nullptr;
@@ -152,16 +173,18 @@ bool ReadBlock(W32Lib::FileEx &io, blkptr_t &blkptr, std::vector<char> &buffer)
 
 		blk_props_emb_t *props = (blk_props_emb_t *)&blkptr.props;
 
+		size_t logical_size = props->logical_size + 1;
+		size_t physical_size = props->physical_size + 1;
+
 		if (props->compression == ZIO_COMPRESS_OFF) {
-			data_size = props->logical_size;
-			buffer.resize(origin_size + data_size);
+			buffer.resize(origin_size + logical_size);
 			dst = &buffer[origin_size];
 		} else {
-			compressed_data.resize(props->physical_size);
+			compressed_data.resize(physical_size);
 			dst = compressed_data.data();
 
-			data_size = props->logical_size; // + 1 ???
-			buffer.resize(origin_size + data_size);
+			decompressed_data_size = logical_size;
+			buffer.resize(origin_size + decompressed_data_size);
 		}
 
 		assert(props->physical_size <= 6*8 + 3*8 + 5*8);
@@ -188,7 +211,7 @@ bool ReadBlock(W32Lib::FileEx &io, blkptr_t &blkptr, std::vector<char> &buffer)
 			return false;
 		}
 
-		data_size = blkptr.dva[0].alloc_size * 512;
+		size_t data_size = blkptr.dva[0].alloc_size * 512;
 
 		if (blkptr.props.compression == ZIO_COMPRESS_OFF) {
 			buffer.resize(origin_size + data_size);
@@ -197,16 +220,14 @@ bool ReadBlock(W32Lib::FileEx &io, blkptr_t &blkptr, std::vector<char> &buffer)
 			compressed_data.resize(data_size);
 			dst = compressed_data.data();
 
-			data_size = (blkptr.props.logical_size + 1) * 512;
-			buffer.resize(origin_size + data_size);
+			decompressed_data_size = (blkptr.props.logical_size + 1) * 512;
+			buffer.resize(origin_size + decompressed_data_size);
 		}
 
 		if (!io.Read(dst, data_size)) {
 			return false;
 		}
-
 	}	
-
 
 	switch (blkptr.props.compression) {
 	
@@ -214,15 +235,12 @@ bool ReadBlock(W32Lib::FileEx &io, blkptr_t &blkptr, std::vector<char> &buffer)
 		return true;
 
 	case ZIO_COMPRESS_LZ4:
-
-		result = lz4_decompress_zfs(compressed_data.data(), &buffer[origin_size], compressed_data.size(), data_size, 0);
-
+		result = lz4_decompress_zfs(compressed_data.data(), &buffer[origin_size], compressed_data.size(), decompressed_data_size, 0);
 		assert(result == 0);
-
 		return true;
 	
 	default :
-		assert(false);
+		throw std::system_error(std::error_code(), "ReadBlock(): Unsupported compression.");
 		return false;	
 	}
 
