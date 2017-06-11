@@ -11,6 +11,7 @@
 #define VDEV_LABEL_NVLIST_OFFSET		16*1024
 
 bool ReadBlock(W32Lib::FileEx &io, blkptr_t &blkptr, std::vector<char> &buffer);
+bool ReadDataBlock(W32Lib::FileEx &io, dnode_phys_t &dnode, uint64_t block_num, std::vector<char> &buffer);
 
 void zfs_test(void)
 {
@@ -147,13 +148,16 @@ void zfs_test(void)
 	objset_phys_t root_ds_objset = *(objset_phys_t *)tmp.data();
 
 	tmp.clear();
-	ReadBlock(io, root_ds_objset.os_meta_dnode.blk_ptr[0], tmp);
+	ReadDataBlock(io, root_ds_objset.os_meta_dnode, 0, tmp);
 
-	blkptr_t blkptr = *(blkptr_t *)tmp.data();
+	size_t count = tmp.size() / sizeof(dnode_phys_t);
+	for (int i = 0; i < count; i++) {
+	
+		dnode = (dnode_phys_t *)tmp.data() + i;
+		dmu_object_type_t obj_type = (dmu_object_type_t)dnode->type;
 
-	//for ()
-
-
+		int x = 0;   	
+	}
 
 
 	int x = 0;
@@ -168,6 +172,8 @@ bool ReadBlock(W32Lib::FileEx &io, blkptr_t &blkptr, std::vector<char> &buffer)
 	char *dst = nullptr;
 	char *src = (char *)&blkptr;
 	dnode_phys_t *dnode = nullptr;
+
+	assert(blkptr.dva[0].gang_flag == 0);
 
 	if (blkptr.props.embedded) {
 
@@ -204,12 +210,8 @@ bool ReadBlock(W32Lib::FileEx &io, blkptr_t &blkptr, std::vector<char> &buffer)
 	} else {
 
 		//
-		// TODO: Need validating dva.
+		// TODO: Validating dva, and if need read as HOLE.
 		//
-
-		if (!io.SetPointer(VDEV_OFFSET + VDEV_DATA_OFFSET + blkptr.dva[0].offset * 512)) {
-			return false;
-		}
 
 		size_t data_size = blkptr.dva[0].alloc_size * 512;
 
@@ -222,6 +224,10 @@ bool ReadBlock(W32Lib::FileEx &io, blkptr_t &blkptr, std::vector<char> &buffer)
 
 			decompressed_data_size = (blkptr.props.logical_size + 1) * 512;
 			buffer.resize(origin_size + decompressed_data_size);
+		}
+
+		if (!io.SetPointer(VDEV_OFFSET + VDEV_DATA_OFFSET + blkptr.dva[0].offset * 512)) {
+			return false;
 		}
 
 		if (!io.Read(dst, data_size)) {
@@ -246,6 +252,48 @@ bool ReadBlock(W32Lib::FileEx &io, blkptr_t &blkptr, std::vector<char> &buffer)
 
 
 	return false;
+}
+
+#include <cmath>
+
+bool ReadDataBlock(W32Lib::FileEx &io, dnode_phys_t &dnode, uint64_t block_num, std::vector<char> &buffer)
+{
+	assert(dnode.nlevels);
+
+	size_t ptr_per_block = (1 << dnode.ind_blk_shift) / sizeof(blkptr_t);
+	size_t level = dnode.nlevels - 1;
+	size_t blkptr_idx = 0;
+	blkptr_t blkptr = {0};
+	uint64_t bnum = block_num;
+
+	std::vector<char> tmp;
+	tmp.reserve(dnode.data_blk_sz_sec * SPA_MINBLOCKSIZE);
+
+	uint64_t blocks_per_ptr = std::pow(ptr_per_block, level);
+	uint64_t blocks_per_level = blocks_per_ptr * dnode.nblk_ptr;
+
+	assert(block_num < blocks_per_level);
+
+	blkptr = dnode.blk_ptr[block_num / blocks_per_ptr];
+	do {
+		assert(blkptr.props.level == level);
+
+		tmp.clear();
+		ReadBlock(io, blkptr, tmp);
+
+		blocks_per_ptr = std::pow(ptr_per_block, level);
+
+		assert(bnum < blocks_per_ptr * ptr_per_block);
+
+		blkptr_idx = bnum / blocks_per_ptr;
+		bnum -= bnum % blocks_per_ptr;
+		blkptr = ((blkptr_t *)tmp.data())[blkptr_idx];
+
+	} while (--level);
+
+	assert(blkptr.props.level == 0);
+
+	return ReadBlock(io, blkptr, buffer);
 }
 
 
