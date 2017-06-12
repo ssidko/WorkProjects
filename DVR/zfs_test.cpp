@@ -6,7 +6,7 @@
 #include "sha256.h"
 #include "lz4.h"
 
-#define VDEV_OFFSET						0*2048*512
+#define VDEV_OFFSET						2048*512
 #define VDEV_LABEL_NVLIST_OFFSET		16*1024
 
 
@@ -15,8 +15,8 @@ void zfs_test(void)
 {
 	W32Lib::FileEx io;
 
-	if (!io.Open("D:\\zol-0.6.1\\vdev1")) {
-	//if (!io.Open("D:\\zfs\\zfs-flat.vmdk")) {
+	//if (!io.Open("D:\\zol-0.6.1\\vdev1")) {
+	if (!io.Open("D:\\zfs\\zfs-flat.vmdk")) {
 		return;
 	}
 
