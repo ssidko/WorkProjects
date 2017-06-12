@@ -1,24 +1,22 @@
 #include "zfs_test.h"
 
-#include <memory>
-#include <map>
+
 #include <system_error>
 #include <string>
 #include "sha256.h"
 #include "lz4.h"
 
-#define VDEV_OFFSET						2048*512
+#define VDEV_OFFSET						0*2048*512
 #define VDEV_LABEL_NVLIST_OFFSET		16*1024
 
-bool ReadBlock(W32Lib::FileEx &io, blkptr_t &blkptr, std::vector<char> &buffer);
-bool ReadDataBlock(W32Lib::FileEx &io, dnode_phys_t &dnode, uint64_t block_num, std::vector<char> &buffer);
+
 
 void zfs_test(void)
 {
 	W32Lib::FileEx io;
 
-	//if (!io.Open("D:\\zol-0.6.1\\vdev1")) {
-	if (!io.Open("D:\\zfs\\zfs-flat.vmdk")) {
+	if (!io.Open("D:\\zol-0.6.1\\vdev1")) {
+	//if (!io.Open("D:\\zfs\\zfs-flat.vmdk")) {
 		return;
 	}
 
@@ -68,6 +66,14 @@ void zfs_test(void)
 	io.Read(objset.get(), sizeof(objset_phys_t));
 
 	objset_phys_t *os = objset.get();
+
+
+
+	MetaObjecSet mos = { 0 };
+	ReadMOS(io, ub->rootbp, mos);
+
+
+
 
 
 	//
@@ -144,6 +150,8 @@ void zfs_test(void)
 	std::vector<char> tmp;
 
 	ReadBlock(io, dataset->ds_bp, tmp);
+
+	zfs_blkptr_verify(dataset->ds_bp);
 
 	objset_phys_t root_ds_objset = *(objset_phys_t *)tmp.data();
 
@@ -295,5 +303,122 @@ bool ReadDataBlock(W32Lib::FileEx &io, dnode_phys_t &dnode, uint64_t block_num, 
 
 	return ReadBlock(io, blkptr, buffer);
 }
+
+bool ObjectSet(W32Lib::FileEx & io, blkptr_t &blkptr)
+{
+	return false;
+}
+
+bool ReadMOS(W32Lib::FileEx & io, blkptr_t &blkptr, MetaObjecSet & mos)
+{
+	assert(blkptr.props.type == DMU_OT_OBJSET);
+
+	std::vector<char> buff;
+
+	if (ReadBlock(io, blkptr, buff)) {
+	
+		mos.objset = *(objset_phys_t *)buff.data();
+
+	
+		return true;
+	}
+
+	return false;
+}
+
+bool zfs_blkptr_verify(const blkptr_t &bp)
+{
+	bool result = true;
+	std::string description = "blkptr has: ";
+
+	if (!DMU_OT_IS_VALID(bp.props.type)) {
+		description += " Invalid DMU Object TYPE;";
+		result = false;
+	}
+
+	if (bp.props.checksum >= ZIO_CHECKSUM_FUNCTIONS ||
+		bp.props.checksum <= ZIO_CHECKSUM_ON) {
+		description += " Invalid CHECKSUM;";
+		result = false;
+	}
+
+	if (bp.props.checksum >= ZIO_COMPRESS_FUNCTIONS ||
+		bp.props.checksum <= ZIO_COMPRESS_ON) {		
+		description += " Invalid COMPRESS;";
+		result = false;
+	}
+
+	if (bp.props.logical_size > SPA_MAXBLOCKSIZE) {
+		description += "Invalid LSIZE;";
+	}
+
+	if (bp.props.physical_size > SPA_MAXBLOCKSIZE) {
+		description += "Invalid PSIZE;";
+		result = false;
+	}
+
+	if (bp.props.embedded) {
+		blk_props_emb_t *props = (blk_props_emb_t *)&bp.props;
+		if (props->type > NUM_BP_EMBEDDED_TYPES) {
+			description += " Invalid EMBEDDED TYPE;";
+			result = false;
+		}	
+	}
+
+	/*
+	* Pool-specific checks.
+	*
+	* Note: it would be nice to verify that the blk_birth and
+	* BP_PHYSICAL_BIRTH() are not too large.  However, spa_freeze()
+	* allows the birth time of log blocks (and dmu_sync()-ed blocks
+	* that are in the log) to be arbitrarily large.
+	*/
+
+	//for (int i = 0; i < BP_GET_NDVAS(bp); i++) {
+
+	//	uint64_t vdevid = DVA_GET_VDEV(&bp->blk_dva[i]);
+	//	vdev_t *vd;
+	//	uint64_t offset, asize;
+	//	if (vdevid >= spa->spa_root_vdev->vdev_children) {
+	//		zfs_panic_recover("blkptr at %p DVA %u has invalid "
+	//			"VDEV %llu",
+	//			bp, i, (longlong_t)vdevid);
+	//	}
+	//	vd = spa->spa_root_vdev->vdev_child[vdevid];
+	//	if (vd == NULL) {
+	//		zfs_panic_recover("blkptr at %p DVA %u has invalid "
+	//			"VDEV %llu",
+	//			bp, i, (longlong_t)vdevid);
+	//	}
+	//	if (vd->vdev_ops == &vdev_hole_ops) {
+	//		zfs_panic_recover("blkptr at %p DVA %u has hole "
+	//			"VDEV %llu",
+	//			bp, i, (longlong_t)vdevid);
+
+	//	}
+	//	if (vd->vdev_ops == &vdev_missing_ops) {
+	//		/*
+	//		* "missing" vdevs are valid during import, but we
+	//		* don't have their detailed info (e.g. asize), so
+	//		* we can't perform any more checks on them.
+	//		*/
+	//		continue;
+	//	}
+
+	//	offset = DVA_GET_OFFSET(&bp->blk_dva[i]);
+	//	asize = DVA_GET_ASIZE(&bp->blk_dva[i]);
+	//	if (BP_IS_GANG(bp))
+	//		asize = vdev_psize_to_asize(vd, SPA_GANGBLOCKSIZE);
+	//	if (offset + asize > vd->vdev_asize) {
+	//		zfs_panic_recover("blkptr at %p DVA %u has invalid "
+	//			"OFFSET %llu",
+	//			bp, i, (longlong_t)offset);
+	//	}
+	//}
+
+	return result;
+}
+
+
 
 

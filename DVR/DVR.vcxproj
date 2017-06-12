@@ -122,6 +122,7 @@
     <ClCompile Include="MyPrintf.cpp" />
     <ClCompile Include="nvpair.cpp" />
     <ClCompile Include="Orbita.cpp" />
+    <ClCompile Include="Pool.cpp" />
     <ClCompile Include="Raid5.cpp" />
     <ClCompile Include="sha256.cpp" />
     <ClCompile Include="TestWidget.cpp" />
@@ -134,7 +135,6 @@
     <ClCompile Include="XdrReader.cpp" />
     <ClCompile Include="zap.cpp" />
     <ClCompile Include="zfs\lzjb.cpp" />
-    <ClCompile Include="zfs\ZPool.cpp" />
     <ClCompile Include="zfs_test.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -188,8 +188,10 @@
     <ClInclude Include="Ntfs.h" />
     <ClInclude Include="nvpair.h" />
     <ClInclude Include="Orbita.h" />
+    <ClInclude Include="Pool.h" />
     <ClInclude Include="Raid5.h" />
     <ClInclude Include="sha256.h" />
+    <ClInclude Include="spa.h" />
     <ClInclude Include="TestWidget.h" />
     <ClInclude Include="utility.h" />
     <ClInclude Include="WfsOnDisk.h" />
@@ -203,7 +205,6 @@
     <ClInclude Include="zfs\lzjb.h" />
     <ClInclude Include="zfs\zfs.h" />
     <ClInclude Include="zfs\zfs_type.h" />
-    <ClInclude Include="zfs\ZPool.h" />
     <ClInclude Include="zfs_test.h" />
   </ItemGroup>
   <ItemGroup>

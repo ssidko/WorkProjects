@@ -42,11 +42,6 @@ using NVPair = std::pair<uint64_t, std::string>;
 using NVPairList = std::map<uint64_t, std::string>;
 
 bool MZapObjectToNVPairs(const std::vector<char> &mzap_obj, NVPairList &pairs);
-
-
 void TraversingMicroZapEntries(const std::vector<char> &mzap_obj, std::function<void(const uint64_t&, const char*)> callback);
-
-
-
 
 #endif // _ZAP_H

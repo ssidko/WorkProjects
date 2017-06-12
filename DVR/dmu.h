@@ -151,6 +151,10 @@ typedef enum dmu_objset_type {
 	DMU_OST_NUMTYPES
 } dmu_objset_type_t;
 
+#define	DMU_OT_IS_VALID(ot) (((ot) & DMU_OT_NEWTYPE) ? \
+	((ot) & DMU_OT_BYTESWAP_MASK) < DMU_BSWAP_NUMFUNCS : \
+	(ot) < DMU_OT_NUMTYPES)
+
 /*
 * The names of zap entries in the DIRECTORY_OBJECT of the MOS.
 */

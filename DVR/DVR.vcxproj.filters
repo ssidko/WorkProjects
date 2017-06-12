@@ -100,9 +100,6 @@
     <ClCompile Include="BufferedFile.cpp">
       <Filter>Utility</Filter>
     </ClCompile>
-    <ClCompile Include="zfs\ZPool.cpp">
-      <Filter>zfs</Filter>
-    </ClCompile>
     <ClCompile Include="zfs\lzjb.cpp">
       <Filter>zfs\compression</Filter>
     </ClCompile>
@@ -191,6 +188,9 @@
     <ClCompile Include="zap.cpp">
       <Filter>zfs</Filter>
     </ClCompile>
+    <ClCompile Include="Pool.cpp">
+      <Filter>zfs</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="mainwindow.ui">
@@ -220,9 +220,6 @@
       <Filter>zfs</Filter>
     </ClInclude>
     <ClInclude Include="zfs\zfs_type.h">
-      <Filter>zfs</Filter>
-    </ClInclude>
-    <ClInclude Include="zfs\ZPool.h">
       <Filter>zfs</Filter>
     </ClInclude>
     <ClInclude Include="VDev.h">
@@ -323,6 +320,12 @@
       <Filter>zfs</Filter>
     </ClInclude>
     <ClInclude Include="zap.h">
+      <Filter>zfs</Filter>
+    </ClInclude>
+    <ClInclude Include="Pool.h">
+      <Filter>zfs</Filter>
+    </ClInclude>
+    <ClInclude Include="spa.h">
       <Filter>zfs</Filter>
     </ClInclude>
   </ItemGroup>
