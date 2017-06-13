@@ -3,6 +3,7 @@
 
 #include <assert.h>
 #include "zfs_type.h"
+#include "vdev_label.h"
 #include "spa.h"
 
 
@@ -149,16 +150,6 @@ typedef struct objset_phys {
 } objset_phys_t;
 
 /*
-* Embedded checksum
-*/
-#define	ZEC_MAGIC	0x210da7ab10c7a11ULL		// zio-data-block-tail
-
-typedef struct zio_eck {
-	uint64_t	zec_magic;			/* for validation, endianness	*/
-	zio_cksum_t	zec_cksum;			/* 256-bit checksum		*/
-} zio_eck_t;
-
-/*
 * Gang block headers are self-checksumming and contain an array
 * of block pointers.
 */
@@ -172,41 +163,94 @@ typedef struct zio_gbh {
 	zio_eck_t		zg_tail;
 } zio_gbh_phys_t;
 
-#define	VDEV_PAD_SIZE		(8 << 10)				/*  8K */
-#define	VDEV_SKIP_SIZE		VDEV_PAD_SIZE * 2		/* 2 padding areas (vl_pad1 and vl_pad2) to skip */
-#define	VDEV_PHYS_SIZE		(112 << 10)
-#define	VDEV_UBERBLOCK_RING	(128 << 10)
-
-typedef struct vdev_phys {
-	char		vp_nvlist[VDEV_PHYS_SIZE - sizeof(zio_eck_t)];
-	zio_eck_t	vp_zbt;
-} vdev_phys_t;
-
-typedef struct vdev_label {
-	char		vl_pad1[VDEV_PAD_SIZE];				/*  8K */
-	char		vl_pad2[VDEV_PAD_SIZE];				/*  8K */
-	vdev_phys_t	vl_vdev_phys;						/* 112K	*/
-	char		vl_uberblock[VDEV_UBERBLOCK_RING];	/* 128K	*/
-} vdev_label_t;										/* 256K total */
-
-/* Offset of embedded boot loader region on each label */
-#define	VDEV_BOOT_OFFSET	(2 * sizeof (vdev_label_t))
-
-/*
-* Size of embedded boot loader region on each label.
-* The total size of the first two labels plus the boot area is 4MB.
-*/
-#define	VDEV_BOOT_SIZE		(7ULL << 19)			/* 3.5M */
-
-/*
-* Size of label regions at the start and end of each leaf device.
-*/
-#define	VDEV_LABEL_START_SIZE	(2 * sizeof (vdev_label_t) + VDEV_BOOT_SIZE)
-#define	VDEV_LABEL_END_SIZE		(2 * sizeof (vdev_label_t))
-#define	VDEV_LABELS				4
-#define	VDEV_BEST_LABEL			VDEV_LABELS
-
-
 #pragma pack(pop)
+
+/*
+* The following are configuration names used in the nvlist describing a pool's
+* configuration.
+*/
+#define	ZPOOL_CONFIG_VERSION			"version"
+#define	ZPOOL_CONFIG_POOL_NAME			"name"
+#define	ZPOOL_CONFIG_POOL_STATE			"state"
+#define	ZPOOL_CONFIG_POOL_TXG			"txg"
+#define	ZPOOL_CONFIG_POOL_GUID			"pool_guid"
+#define	ZPOOL_CONFIG_CREATE_TXG			"create_txg"
+#define	ZPOOL_CONFIG_TOP_GUID			"top_guid"
+#define	ZPOOL_CONFIG_VDEV_TREE			"vdev_tree"
+#define	ZPOOL_CONFIG_TYPE				"type"
+#define	ZPOOL_CONFIG_CHILDREN			"children"
+#define	ZPOOL_CONFIG_ID					"id"
+#define	ZPOOL_CONFIG_GUID				"guid"
+#define	ZPOOL_CONFIG_PATH				"path"
+#define	ZPOOL_CONFIG_DEVID				"devid"
+#define	ZPOOL_CONFIG_METASLAB_ARRAY		"metaslab_array"
+#define	ZPOOL_CONFIG_METASLAB_SHIFT		"metaslab_shift"
+#define	ZPOOL_CONFIG_ASHIFT				"ashift"
+#define	ZPOOL_CONFIG_ASIZE				"asize"
+#define	ZPOOL_CONFIG_DTL				"DTL"
+#define	ZPOOL_CONFIG_SCAN_STATS			"scan_stats"	/* not stored on disk */
+#define	ZPOOL_CONFIG_VDEV_STATS			"vdev_stats"	/* not stored on disk */
+#define	ZPOOL_CONFIG_WHOLE_DISK			"whole_disk"
+#define	ZPOOL_CONFIG_ERRCOUNT			"error_count"
+#define	ZPOOL_CONFIG_NOT_PRESENT		"not_present"
+#define	ZPOOL_CONFIG_SPARES				"spares"
+#define	ZPOOL_CONFIG_IS_SPARE			"is_spare"
+#define	ZPOOL_CONFIG_NPARITY			"nparity"
+#define	ZPOOL_CONFIG_HOSTID				"hostid"
+#define	ZPOOL_CONFIG_HOSTNAME			"hostname"
+#define	ZPOOL_CONFIG_LOADED_TIME		"initial_load_time"
+#define	ZPOOL_CONFIG_UNSPARE			"unspare"
+#define	ZPOOL_CONFIG_PHYS_PATH			"phys_path"
+#define	ZPOOL_CONFIG_IS_LOG				"is_log"
+#define	ZPOOL_CONFIG_L2CACHE			"l2cache"
+#define	ZPOOL_CONFIG_HOLE_ARRAY			"hole_array"
+#define	ZPOOL_CONFIG_VDEV_CHILDREN		"vdev_children"
+#define	ZPOOL_CONFIG_IS_HOLE			"is_hole"
+#define	ZPOOL_CONFIG_DDT_HISTOGRAM		"ddt_histogram"
+#define	ZPOOL_CONFIG_DDT_OBJ_STATS		"ddt_object_stats"
+#define	ZPOOL_CONFIG_DDT_STATS			"ddt_stats"
+#define	ZPOOL_CONFIG_SPLIT				"splitcfg"
+#define	ZPOOL_CONFIG_ORIG_GUID			"orig_guid"
+#define	ZPOOL_CONFIG_SPLIT_GUID			"split_guid"
+#define	ZPOOL_CONFIG_SPLIT_LIST			"guid_list"
+#define	ZPOOL_CONFIG_REMOVING			"removing"
+#define	ZPOOL_CONFIG_RESILVER_TXG		"resilver_txg"
+#define	ZPOOL_CONFIG_COMMENT			"comment"
+#define	ZPOOL_CONFIG_SUSPENDED			"suspended"		/* not stored on disk */
+#define	ZPOOL_CONFIG_TIMESTAMP			"timestamp"		/* not stored on disk */
+#define	ZPOOL_CONFIG_BOOTFS				"bootfs"		/* not stored on disk */
+#define	ZPOOL_CONFIG_MISSING_DEVICES	"missing_vdevs"	/* not stored on disk */
+#define	ZPOOL_CONFIG_LOAD_INFO			"load_info"		/* not stored on disk */
+#define	ZPOOL_CONFIG_REWIND_INFO		"rewind_info"	/* not stored on disk */
+#define	ZPOOL_CONFIG_UNSUP_FEAT			"unsup_feat"	/* not stored on disk */
+#define	ZPOOL_CONFIG_ENABLED_FEAT		"enabled_feat"	/* not stored on disk */
+#define	ZPOOL_CONFIG_CAN_RDONLY			"can_rdonly"	/* not stored on disk */
+#define	ZPOOL_CONFIG_FEATURES_FOR_READ	"features_for_read"
+#define	ZPOOL_CONFIG_FEATURE_STATS		"feature_stats"	/* not stored on disk */
+#define	ZPOOL_CONFIG_ERRATA				"errata"		/* not stored on disk */
+
+/*
+* The persistent vdev state is stored as separate values rather than a single
+* 'vdev_state' entry.  This is because a device can be in multiple states, such
+* as offline and degraded.
+*/
+#define	ZPOOL_CONFIG_OFFLINE			"offline"
+#define	ZPOOL_CONFIG_FAULTED			"faulted"
+#define	ZPOOL_CONFIG_DEGRADED			"degraded"
+#define	ZPOOL_CONFIG_REMOVED			"removed"
+#define	ZPOOL_CONFIG_FRU				"fru"
+#define	ZPOOL_CONFIG_AUX_STATE			"aux_state"
+
+#define	VDEV_TYPE_ROOT					"root"
+#define	VDEV_TYPE_MIRROR				"mirror"
+#define	VDEV_TYPE_REPLACING				"replacing"
+#define	VDEV_TYPE_RAIDZ					"raidz"
+#define	VDEV_TYPE_DISK					"disk"
+#define	VDEV_TYPE_FILE					"file"
+#define	VDEV_TYPE_MISSING				"missing"
+#define	VDEV_TYPE_HOLE					"hole"
+#define	VDEV_TYPE_SPARE					"spare"
+#define	VDEV_TYPE_LOG					"log"
+#define	VDEV_TYPE_L2CACHE				"l2cache"
 
 #endif // _ZFS_H

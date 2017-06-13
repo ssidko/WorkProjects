@@ -28,6 +28,16 @@ typedef struct zio_cksum {
 	uint64_t	word[4];
 } zio_cksum_t;
 
+/*
+* Embedded checksum
+*/
+#define	ZEC_MAGIC	0x210da7ab10c7a11ULL		// zio-data-block-tail
+
+typedef struct zio_eck {
+	uint64_t	zec_magic;			/* for validation, endianness	*/
+	zio_cksum_t	zec_cksum;			/* 256-bit checksum		*/
+} zio_eck_t;
+
 typedef struct dva {
 	uint64_t	alloc_size : 24;			/* allocated size in sectors (including RAID-Z parity and gang block headers) */
 	uint64_t	grid : 8;					/* RAID-Z layout information (reserved for future use) */

@@ -6,7 +6,7 @@
 #include "sha256.h"
 #include "lz4.h"
 
-#define VDEV_OFFSET						0*2048*512
+#define VDEV_OFFSET						2048*512
 #define VDEV_LABEL_NVLIST_OFFSET		16*1024
 
 
@@ -15,8 +15,8 @@ void zfs_test(void)
 {
 	W32Lib::FileEx io;
 
-	if (!io.Open("D:\\zol-0.6.1\\vdev1")) {
-	//if (!io.Open("D:\\zfs\\zfs-flat.vmdk")) {
+	//if (!io.Open("D:\\zol-0.6.1\\vdev1")) {
+	if (!io.Open("D:\\zfs\\zfs-flat.vmdk")) {
 		return;
 	}
 
@@ -60,112 +60,64 @@ void zfs_test(void)
 	ub = (uberblock_t *)(label->vl_uberblock + ub_idx * 1024);
 
 
-	std::auto_ptr<objset_phys_t> objset(new objset_phys_t());
-
-	io.SetPointer(VDEV_OFFSET + VDEV_DATA_OFFSET + ub->rootbp.dva[0].offset * 512);
-	io.Read(objset.get(), sizeof(objset_phys_t));
-
-	objset_phys_t *os = objset.get();
-
-
-
 	MetaObjecSet mos = { 0 };
 	ReadMOS(io, ub->rootbp, mos);
 
+	Dataset root_dataset = { 0 };
+	ReadDataset(io, mos.objset, mos.root_dataset_obj);
 
-
-
-
-	//
-	// Read object set, dnode array
-	//
-	uint64_t os_array_offset = os->os_meta_dnode.blk_ptr[0].dva[0].offset * 512;
-	std::vector<char> os_array(os->os_meta_dnode.blk_ptr[0].dva[0].alloc_size * 512, 0);
-
-	io.SetPointer(VDEV_OFFSET + VDEV_DATA_OFFSET + os_array_offset);
-	io.Read(os_array.data(), os_array.size());
-
-	size_t dn_count = os_array.size()/sizeof(dnode_phys_t);
-	dnode_phys_t *dnode = (dnode_phys_t *)os_array.data();
-	blkptr_t *bptr = (blkptr_t *)os_array.data();
-
-	size_t asz = 0;
-
-	bool result = false;
-	std::vector<char> mos_buff;
-
-	for (int i = 0; i <= os->os_meta_dnode.max_blk_id; ++i) {
-		bptr = (blkptr_t *)os_array.data() + i;
-		result = ReadBlock(io, *bptr, mos_buff);
-		asz += bptr->dva[0].alloc_size;
-	}
-
-	dn_count = mos_buff.size()/sizeof(dnode_phys_t);
-
-
-	//
-	// Read MOS Object Directory
-	//
-	dnode = (dnode_phys_t *)mos_buff.data() + DMU_POOL_DIRECTORY_OBJECT;
-	assert(dnode->type == DMU_OT_OBJECT_DIRECTORY);
-
+	
 	std::vector<char> zap_buff;
-	bool res = ReadBlock(io, dnode->blk_ptr[0], zap_buff);
 
-	std::map<std::string, uint64_t> mos_dir;
-	TraversingMicroZapEntries(zap_buff, 
-		[&mos_dir](const uint64_t &value, const char* name) {
-		mos_dir.emplace(std::string(name), value);
-	});
 
 	//
 	// Read root_dataset
 	//
-	uint64_t root_dataset_obj = mos_dir[DMU_POOL_ROOT_DATASET];
-	assert(root_dataset_obj);
+	//uint64_t root_dataset_obj = mos_dir[DMU_POOL_ROOT_DATASET];
+	//assert(root_dataset_obj);
 
-	dnode = (dnode_phys_t *)mos_buff.data() + root_dataset_obj;
-	assert(dnode->type == DMU_OT_DSL_DIR);
+	//dnode = (dnode_phys_t *)mos_buff.data() + root_dataset_obj;
+	//assert(dnode->type == DMU_OT_DSL_DIR);
 
-	dsl_dir_phys_t *dir = (dsl_dir_phys_t *)dnode->bonus;
+	//dsl_dir_phys_t *dir = (dsl_dir_phys_t *)dnode->bonus;
 
-	dnode = (dnode_phys_t *)mos_buff.data() + dir->dd_child_dir_zapobj;
+	//dnode = (dnode_phys_t *)mos_buff.data() + dir->dd_child_dir_zapobj;
 
-	zap_buff.clear();
-	res = ReadBlock(io, dnode->blk_ptr[0], zap_buff);
+	//zap_buff.clear();
+	//res = ReadBlock(io, dnode->blk_ptr[0], zap_buff);
 
-	std::map<std::string, uint64_t> root_dir;
-	TraversingMicroZapEntries(zap_buff, 
-		[&root_dir](const uint64_t &value, const char* name) {
-		root_dir.emplace(std::string(name), value);
-	});
-
-
-	dnode = (dnode_phys_t *)mos_buff.data() + dir->dd_head_dataset_obj;
-	assert(dnode->type == DMU_OT_DSL_DATASET);
-
-	dsl_dataset_phys_t *dataset = (dsl_dataset_phys_t *)dnode->bonus;
+	//std::map<std::string, uint64_t> root_dir;
+	//TraversingMicroZapEntries(zap_buff, 
+	//	[&root_dir](const uint64_t &value, const char* name) {
+	//	root_dir.emplace(std::string(name), value);
+	//});
 
 
-	std::vector<char> tmp;
+	//dnode = (dnode_phys_t *)mos_buff.data() + dir->dd_head_dataset_obj;
+	//assert(dnode->type == DMU_OT_DSL_DATASET);
 
-	ReadBlock(io, dataset->ds_bp, tmp);
+	//dsl_dataset_phys_t *dataset = (dsl_dataset_phys_t *)dnode->bonus;
 
-	zfs_blkptr_verify(dataset->ds_bp);
 
-	objset_phys_t root_ds_objset = *(objset_phys_t *)tmp.data();
+	//std::vector<char> tmp;
 
-	tmp.clear();
-	ReadDataBlock(io, root_ds_objset.os_meta_dnode, 0, tmp);
+	//ReadBlock(io, dataset->ds_bp, tmp);
 
-	size_t count = tmp.size() / sizeof(dnode_phys_t);
-	for (int i = 0; i < count; i++) {
-	
-		dnode = (dnode_phys_t *)tmp.data() + i;
-		dmu_object_type_t obj_type = (dmu_object_type_t)dnode->type;
+	//zfs_blkptr_verify(dataset->ds_bp);
 
-		int x = 0;   	
-	}
+	//objset_phys_t root_ds_objset = *(objset_phys_t *)tmp.data();
+
+	//tmp.clear();
+	//ReadDataBlock(io, root_ds_objset.os_meta_dnode, 0, tmp);
+
+	//size_t count = tmp.size() / sizeof(dnode_phys_t);
+	//for (int i = 0; i < count; i++) {
+	//
+	//	dnode = (dnode_phys_t *)tmp.data() + i;
+	//	dmu_object_type_t obj_type = (dmu_object_type_t)dnode->type;
+
+	//	int x = 0;   	
+	//}
 
 
 	int x = 0;
@@ -234,7 +186,7 @@ bool ReadBlock(W32Lib::FileEx &io, blkptr_t &blkptr, std::vector<char> &buffer)
 			buffer.resize(origin_size + decompressed_data_size);
 		}
 
-		if (!io.SetPointer(VDEV_OFFSET + VDEV_DATA_OFFSET + blkptr.dva[0].offset * 512)) {
+		if (!io.SetPointer(VDEV_OFFSET + VDEV_LABEL_START_SIZE + blkptr.dva[0].offset * 512)) {
 			return false;
 		}
 
@@ -283,7 +235,7 @@ bool ReadDataBlock(W32Lib::FileEx &io, dnode_phys_t &dnode, uint64_t block_num, 
 	assert(block_num < blocks_per_level);
 
 	blkptr = dnode.blk_ptr[block_num / blocks_per_ptr];
-	do {
+	while (level) {
 		assert(blkptr.props.level == level);
 
 		tmp.clear();
@@ -296,34 +248,80 @@ bool ReadDataBlock(W32Lib::FileEx &io, dnode_phys_t &dnode, uint64_t block_num, 
 		blkptr_idx = bnum / blocks_per_ptr;
 		bnum -= bnum % blocks_per_ptr;
 		blkptr = ((blkptr_t *)tmp.data())[blkptr_idx];
-
-	} while (--level);
+		level--;
+	}
 
 	assert(blkptr.props.level == 0);
 
 	return ReadBlock(io, blkptr, buffer);
 }
 
-bool ObjectSet(W32Lib::FileEx & io, blkptr_t &blkptr)
+bool ReadDataset(W32Lib::FileEx &io, std::vector<dnode_phys_t> objset, uint64_t os_object)
 {
+	assert(os_object < objset.size());
+
+	dnode_phys_t *ds_dnode = &objset[os_object];
+	assert(ds_dnode->type == DMU_OT_DSL_DIR);
+	assert(ds_dnode->bonus_type == DMU_OT_DSL_DIR);
+
+
+
+
+	dsl_dir_phys_t *dir = (dsl_dir_phys_t *)objset[os_object].bonus;
+
+	dsl_dataset_phys_t *dataset = (dsl_dataset_phys_t *)objset[dir->dd_head_dataset_obj].bonus;
+
+
 	return false;
 }
 
-bool ReadMOS(W32Lib::FileEx & io, blkptr_t &blkptr, MetaObjecSet & mos)
+bool ReadMOS(W32Lib::FileEx & io, blkptr_t &blkptr, MetaObjecSet &mos)
 {
 	assert(blkptr.props.type == DMU_OT_OBJSET);
 
 	std::vector<char> buff;
-
-	if (ReadBlock(io, blkptr, buff)) {
+	if (!ReadBlock(io, blkptr, buff)) {
+		return false;
+	}
 	
-		mos.objset = *(objset_phys_t *)buff.data();
-
-	
-		return true;
+	if (((objset_phys_t *)buff.data())->os_type != DMU_OST_META) {
+		return false;
 	}
 
-	return false;
+	mos.objset_phys = *(objset_phys_t *)buff.data();
+
+	buff.clear();
+	for (int i = 0; i <= mos.objset_phys.os_meta_dnode.max_blk_id; i++) {
+		if (!ReadDataBlock(io, mos.objset_phys.os_meta_dnode, i, buff)) {
+			return false;
+		}
+	}
+
+	mos.objset.resize(buff.size()/sizeof(dnode_phys_t));
+	std::memcpy(mos.objset.data(), buff.data(), mos.objset.size() * sizeof(dnode_phys_t));
+
+	dnode_phys_t *obj_dir_dnode = &mos.objset[DMU_POOL_DIRECTORY_OBJECT];
+	if (obj_dir_dnode->type != DMU_OT_OBJECT_DIRECTORY) {
+		return false;
+	}
+
+	buff.clear();
+	for (int i = 0; i <= obj_dir_dnode->max_blk_id; i++) {
+		if (!ReadDataBlock(io, *obj_dir_dnode, i, buff)) {
+			return false;
+		}
+	}
+
+	std::map<std::string, uint64_t> &object_dir = mos.object_dir;
+	TraversingMicroZapEntries(buff,
+		[&mos](const uint64_t &value, const char* name) {
+		if (std::strcmp(name, DMU_POOL_ROOT_DATASET) == 0) {
+			mos.root_dataset_obj = value;
+		}
+		mos.object_dir.emplace(std::string(name), value);
+	});
+
+	return true;
 }
 
 bool zfs_blkptr_verify(const blkptr_t &bp)

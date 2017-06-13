@@ -328,6 +328,9 @@
     <ClInclude Include="spa.h">
       <Filter>zfs</Filter>
     </ClInclude>
+    <ClInclude Include="vdev_label.h">
+      <Filter>zfs</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="DVR.rc" />
