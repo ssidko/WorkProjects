@@ -30,9 +30,9 @@ struct MetaObjecSet {
 
 struct Dataset {
 	Dataset *parent;
-	objset_phys_t objset;
-	std::vector<dnode_phys_t> dnodes;
-	std::map<uint64_t, std::string> dir;
+	objset_phys_t objset_phys;
+	std::vector<dnode_phys_t> objset;
+	std::map<std::string, uint64_t> child_dir;
 };
 
 
@@ -41,7 +41,7 @@ bool zfs_blkptr_verify(const blkptr_t &bp);
 bool ReadBlock(W32Lib::FileEx &io, blkptr_t &blkptr, std::vector<char> &buffer);
 bool ReadDataBlock(W32Lib::FileEx &io, dnode_phys_t &dnode, uint64_t block_num, std::vector<char> &buffer);
 
-bool ReadDataset(W32Lib::FileEx &io, std::vector<dnode_phys_t> objset, uint64_t os_object);
+bool ReadDataset(W32Lib::FileEx &io, std::vector<dnode_phys_t> objset, uint64_t os_object, Dataset &dataset);
 bool ReadMOS(W32Lib::FileEx &io, blkptr_t &blkptr, MetaObjecSet &mos);
 
 void zfs_test(void);
