@@ -16,7 +16,7 @@ void zfs_test(void)
 	W32Lib::FileEx io;
 
 	//if (!io.Open("D:\\zol-0.6.1\\vdev1")) {
-	if (!io.Open("D:\\zfs\\zfs-flat.vmdk")) {
+	if (!io.Open("D:\\zfs\\zfs-pool-flat.vmdk")) {
 		return;
 	}
 
@@ -223,8 +223,8 @@ bool ReadDataBlock(W32Lib::FileEx &io, dnode_phys_t &dnode, uint64_t block_num, 
 	size_t ptr_per_block = (1 << dnode.ind_blk_shift) / sizeof(blkptr_t);
 	size_t level = dnode.nlevels - 1;
 	size_t blkptr_idx = 0;
-	blkptr_t blkptr = {0};
-	uint64_t bnum = block_num;
+	//blkptr_t blkptr = {0};
+	//uint64_t bnum = block_num;
 
 	std::vector<char> tmp;
 	tmp.reserve(dnode.data_blk_sz_sec * SPA_MINBLOCKSIZE);
@@ -233,21 +233,29 @@ bool ReadDataBlock(W32Lib::FileEx &io, dnode_phys_t &dnode, uint64_t block_num, 
 	uint64_t blocks_per_level = blocks_per_ptr * dnode.nblk_ptr;
 
 	assert(block_num < blocks_per_level);
+	assert(block_num <= dnode.max_blk_id);
 
-	blkptr = dnode.blk_ptr[block_num / blocks_per_ptr];
+	blkptr_t blkptr = dnode.blk_ptr[block_num / blocks_per_ptr];
+	uint64_t bnum = block_num % blocks_per_ptr;
+
 	while (level) {
+
 		assert(blkptr.props.level == level);
 
 		tmp.clear();
 		ReadBlock(io, blkptr, tmp);
 
-		blocks_per_ptr = std::pow(ptr_per_block, level);
+		if (level == 1) {
+			assert(bnum < ptr_per_block);
+			blkptr_idx = bnum;
+		} else {
+			blocks_per_ptr = std::pow(ptr_per_block, level);
+			blkptr_idx = bnum / blocks_per_ptr;
+			bnum = bnum % blocks_per_ptr;		
+		}
 
-		assert(bnum < blocks_per_ptr * ptr_per_block);
-
-		blkptr_idx = bnum / blocks_per_ptr;
-		bnum -= bnum % blocks_per_ptr;
 		blkptr = ((blkptr_t *)tmp.data())[blkptr_idx];
+
 		level--;
 	}
 
@@ -355,8 +363,15 @@ bool ReadDataset(W32Lib::FileEx &io, std::vector<dnode_phys_t> objset, uint64_t 
 		}
 	}
 
+
+	//W32Lib::FileEx fat_zap;
+	//if (fat_zap.Create("D:\\zfs\\fat_zat.bin")) {
+	//	fat_zap.Write(buff.data(), buff.size());
+	//}
+
+
 	std::map<std::string, uint64_t> root_dir;
-	TraversingMicroZapEntries(buff,
+	TraversingFatZapEntries(buff,
 		[&root_dir](const uint64_t &value, const char* name) {
 		root_dir.emplace(std::string(name), value);
 	});
