@@ -56,6 +56,8 @@ void TraversingFatZapEntries(const std::vector<char> &zap_obj, std::function<voi
 	assert(zap_phys->zap_magic == ZAP_MAGIC);
 
 
+	size_t size = sizeof(zap_phys_t);
+
 
 	int x = 0;
 }
