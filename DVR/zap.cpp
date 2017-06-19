@@ -48,16 +48,3 @@ void TraversingMicroZapEntries(const std::vector<char> &mzap_obj, std::function<
 
 }
 
-void TraversingFatZapEntries(const std::vector<char> &zap_obj, std::function<void(const uint64_t&, const char*)> callback)
-{
-	zap_phys_t *zap_phys = (zap_phys_t *)zap_obj.data();
-
-	assert(zap_phys->zap_block_type == ZBT_HEADER);
-	assert(zap_phys->zap_magic == ZAP_MAGIC);
-
-
-	size_t size = sizeof(zap_phys_t);
-
-
-	int x = 0;
-}

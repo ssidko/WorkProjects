@@ -21,6 +21,7 @@
 #define	MZAP_ENT_LEN				64
 #define	MZAP_NAME_LEN				(MZAP_ENT_LEN - 8 - 4 - 2)
 #define MZAP_HEADER_SIZE			(8 * sizeof(uint64_t))				// 128 byte 
+#define	MZAP_MAX_BLKSZ				1 << 17								// SPA_OLD_MAXBLOCKSIZE
 
 #pragma pack(push, 1)
 
@@ -180,13 +181,10 @@ typedef union zap_leaf_chunk {
 
 #pragma pack(pop)
 
-
 using NVPair = std::pair<uint64_t, std::string>;
 using NVPairList = std::map<uint64_t, std::string>;
 
 bool MZapObjectToNVPairs(const std::vector<char> &mzap_obj, NVPairList &pairs);
 void TraversingMicroZapEntries(const std::vector<char> &mzap_obj, std::function<void(const uint64_t&, const char*)> callback);
-
-void TraversingFatZapEntries(const std::vector<char> &zap_obj, std::function<void(const uint64_t&, const char*)> callback);
 
 #endif // _ZAP_H

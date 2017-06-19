@@ -46,4 +46,6 @@ bool ReadMOS(W32Lib::FileEx &io, blkptr_t &blkptr, MetaObjecSet &mos);
 
 void zfs_test(void);
 
+void TraversingFatZapEntries(W32Lib::FileEx &io, dnode_phys_t &dnode, std::function<void(const uint64_t&, const char*)> callback);
+
 #endif // _ZFS_TEST_H

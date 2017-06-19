@@ -70,54 +70,7 @@ void zfs_test(void)
 	std::vector<char> zap_buff;
 
 
-	//
-	// Read root_dataset
-	//
-	//uint64_t root_dataset_obj = mos_dir[DMU_POOL_ROOT_DATASET];
-	//assert(root_dataset_obj);
 
-	//dnode = (dnode_phys_t *)mos_buff.data() + root_dataset_obj;
-	//assert(dnode->type == DMU_OT_DSL_DIR);
-
-	//dsl_dir_phys_t *dir = (dsl_dir_phys_t *)dnode->bonus;
-
-	//dnode = (dnode_phys_t *)mos_buff.data() + dir->dd_child_dir_zapobj;
-
-	//zap_buff.clear();
-	//res = ReadBlock(io, dnode->blk_ptr[0], zap_buff);
-
-	//std::map<std::string, uint64_t> root_dir;
-	//TraversingMicroZapEntries(zap_buff, 
-	//	[&root_dir](const uint64_t &value, const char* name) {
-	//	root_dir.emplace(std::string(name), value);
-	//});
-
-
-	//dnode = (dnode_phys_t *)mos_buff.data() + dir->dd_head_dataset_obj;
-	//assert(dnode->type == DMU_OT_DSL_DATASET);
-
-	//dsl_dataset_phys_t *dataset = (dsl_dataset_phys_t *)dnode->bonus;
-
-
-	//std::vector<char> tmp;
-
-	//ReadBlock(io, dataset->ds_bp, tmp);
-
-	//zfs_blkptr_verify(dataset->ds_bp);
-
-	//objset_phys_t root_ds_objset = *(objset_phys_t *)tmp.data();
-
-	//tmp.clear();
-	//ReadDataBlock(io, root_ds_objset.os_meta_dnode, 0, tmp);
-
-	//size_t count = tmp.size() / sizeof(dnode_phys_t);
-	//for (int i = 0; i < count; i++) {
-	//
-	//	dnode = (dnode_phys_t *)tmp.data() + i;
-	//	dmu_object_type_t obj_type = (dmu_object_type_t)dnode->type;
-
-	//	int x = 0;   	
-	//}
 
 
 	int x = 0;
@@ -522,6 +475,25 @@ bool zfs_blkptr_verify(const blkptr_t &bp)
 	return result;
 }
 
+void TraversingFatZapEntries(W32Lib::FileEx &io, dnode_phys_t &dnode, std::function<void(const uint64_t&, const char*)> callback)
+{
+	std::vector<char> buffer;
+	buffer.reserve(dnode.data_blk_sz_sec * SPA_MINBLOCKSIZE);
 
+	if (!ReadDataBlock(io, dnode, 0, buffer)) {
+		return;
+	}
+
+	zap_phys_t *zap_phys = (zap_phys_t *)buffer.data();
+
+	assert(zap_phys->zap_block_type == ZBT_HEADER);
+	assert(zap_phys->zap_magic == ZAP_MAGIC);
+
+
+	size_t size = sizeof(zap_phys_t);
+
+
+	int x = 0;
+}
 
 
