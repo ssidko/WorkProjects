@@ -324,7 +324,7 @@ bool ReadDataset(W32Lib::FileEx &io, std::vector<dnode_phys_t> objset, uint64_t 
 
 
 	std::map<std::string, uint64_t> root_dir;
-	TraversingFatZapEntries(buff,
+	TraversingFatZapEntries(io, root_dnode, 
 		[&root_dir](const uint64_t &value, const char* name) {
 		root_dir.emplace(std::string(name), value);
 	});
@@ -475,19 +475,37 @@ bool zfs_blkptr_verify(const blkptr_t &bp)
 	return result;
 }
 
-void TraversingFatZapEntries(W32Lib::FileEx &io, dnode_phys_t &dnode, std::function<void(const uint64_t&, const char*)> callback)
+bool TraversingFatZapEntries(W32Lib::FileEx &io, dnode_phys_t &dnode, std::function<void(const uint64_t&, const char*)> callback)
 {
 	std::vector<char> buffer;
 	buffer.reserve(dnode.data_blk_sz_sec * SPA_MINBLOCKSIZE);
 
-	if (!ReadDataBlock(io, dnode, 0, buffer)) {
-		return;
-	}
+	if (!ReadDataBlock(io, dnode, 0, buffer)) { return false; }
 
-	zap_phys_t *zap_phys = (zap_phys_t *)buffer.data();
+	zap_phys_t zap_phys = *(zap_phys_t *)buffer.data();
 
-	assert(zap_phys->zap_block_type == ZBT_HEADER);
-	assert(zap_phys->zap_magic == ZAP_MAGIC);
+	if (zap_phys.block_type != ZBT_HEADER) { return false;	}
+	if (zap_phys.magic != ZAP_MAGIC) { return false; }
+
+	//
+	// На данный момент реализовна поддержка только встроенной таблици указателей
+	//
+
+	assert(zap_phys.ptrtbl.start_blk == 0);
+	assert(zap_phys.ptrtbl.num_blks == 0);
+
+	buffer.clear();
+	if (!ReadDataBlock(io, dnode, 1, buffer)) { return false; }
+
+	zap_leaf_phys leaf = *(zap_leaf_phys *)buffer.data();
+
+	assert(leaf.hdr.block_type == ZBT_LEAF);
+	assert(leaf.hdr.magic == ZAP_LEAF_MAGIC);
+
+	size_t num_hash_entries = ZAP_LEAF_HASH_NUMENTRIES(0x0E);
+	size_t num_chunks = ZAP_LEAF_NUMCHUNKS(0x0E);
+
+	zap_leaf_chunk *chunk = (zap_leaf_chunk *)(buffer.data() + );
 
 
 	size_t size = sizeof(zap_phys_t);
