@@ -497,15 +497,16 @@ bool TraversingFatZapEntries(W32Lib::FileEx &io, dnode_phys_t &dnode, std::funct
 	buffer.clear();
 	if (!ReadDataBlock(io, dnode, 1, buffer)) { return false; }
 
-	zap_leaf_phys leaf = *(zap_leaf_phys *)buffer.data();
+	zap_leaf_phys *leaf = (zap_leaf_phys *)buffer.data();
 
-	assert(leaf.hdr.block_type == ZBT_LEAF);
-	assert(leaf.hdr.magic == ZAP_LEAF_MAGIC);
+	assert(leaf->hdr.block_type == ZBT_LEAF);
+	assert(leaf->hdr.magic == ZAP_LEAF_MAGIC);
 
 	size_t num_hash_entries = ZAP_LEAF_HASH_NUMENTRIES(0x0E);
 	size_t num_chunks = ZAP_LEAF_NUMCHUNKS(0x0E);
 
-	zap_leaf_chunk *chunk = (zap_leaf_chunk *)(buffer.data() + );
+	zap_leaf_chunk *chunk = nullptr;
+	zap_leaf_chunk *chunks = (zap_leaf_chunk *)(buffer.data() + 2 * ZAP_LEAF_CHUNKSIZE + 2 * num_hash_entries);
 
 
 	size_t size = sizeof(zap_phys_t);

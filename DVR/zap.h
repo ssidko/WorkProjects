@@ -134,7 +134,7 @@ typedef struct zap_leaf_phys {
 		uint16_t freelist;			/* chunk head of free list */
 		uint8_t flags;				/* ZLF_* flags */
 		uint8_t pad2[11];
-	} hdr;							/* 2 24-byte chunks */
+	} hdr;							/* 2*24-byte chunks */
 
 	/*
 	* The header is followed by a hash table with
@@ -162,7 +162,7 @@ typedef union zap_leaf_chunk {
 		uint8_t value_intlen;		/* size of value's ints */
 		uint16_t next;				/* next entry in hash chain */
 		uint16_t name_chunk;		/* first chunk of the name */
-		uint16_t name_numints;		/* ints in name (incl null) */
+		uint16_t name_length;		/* ints in name (incl null) */
 		uint16_t value_chunk;		/* first chunk of the value */
 		uint16_t value_numints;		/* value length in ints */
 		uint32_t cd;				/* collision differentiator */
