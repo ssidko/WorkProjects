@@ -475,10 +475,20 @@ bool zfs_blkptr_verify(const blkptr_t &bp)
 	return result;
 }
 
+int ByteSizeToShiftSize(uint64_t byte_size)
+{
+	for (size_t shift = 0; shift < sizeof(uint64_t) * 8; shift++) {
+		if (byte_size & (uint64_t)1) { return shift; }
+		byte_size >>= 1;
+	}
+	return -1;
+}
+
 bool TraversingFatZapEntries(W32Lib::FileEx &io, dnode_phys_t &dnode, std::function<void(const uint64_t&, const char*)> callback)
 {
+	size_t block_size = dnode.data_blk_sz_sec * SPA_MINBLOCKSIZE;
 	std::vector<char> buffer;
-	buffer.reserve(dnode.data_blk_sz_sec * SPA_MINBLOCKSIZE);
+	buffer.reserve(block_size);
 
 	if (!ReadDataBlock(io, dnode, 0, buffer)) { return false; }
 
@@ -494,19 +504,29 @@ bool TraversingFatZapEntries(W32Lib::FileEx &io, dnode_phys_t &dnode, std::funct
 	assert(zap_phys.ptrtbl.start_blk == 0);
 	assert(zap_phys.ptrtbl.num_blks == 0);
 
-	buffer.clear();
-	if (!ReadDataBlock(io, dnode, 1, buffer)) { return false; }
+	size_t block_size_shift = ByteSizeToShiftSize(block_size);
+	size_t num_hash_entries = ZAP_LEAF_HASH_NUMENTRIES(block_size_shift);
+	size_t num_chunks = ZAP_LEAF_NUMCHUNKS(block_size_shift);
 
-	zap_leaf_phys *leaf = (zap_leaf_phys *)buffer.data();
+	std::vector<char> leaf_buffer;
+	leaf_buffer.reserve(block_size);
 
-	assert(leaf->hdr.block_type == ZBT_LEAF);
-	assert(leaf->hdr.magic == ZAP_LEAF_MAGIC);
+	for (int block = 1; block <= dnode.max_blk_id; block++) {
+	
+		leaf_buffer.clear();
+		if (!ReadDataBlock(io, dnode, 1, leaf_buffer)) { return false; }
+	
+		zap_leaf_phys *leaf = (zap_leaf_phys *)buffer.data();
 
-	size_t num_hash_entries = ZAP_LEAF_HASH_NUMENTRIES(0x0E);
-	size_t num_chunks = ZAP_LEAF_NUMCHUNKS(0x0E);
+		assert(leaf->hdr.block_type == ZBT_LEAF);
+		assert(leaf->hdr.magic == ZAP_LEAF_MAGIC);
 
-	zap_leaf_chunk *chunk = nullptr;
-	zap_leaf_chunk *chunks = (zap_leaf_chunk *)(buffer.data() + 2 * ZAP_LEAF_CHUNKSIZE + 2 * num_hash_entries);
+
+
+		zap_leaf_chunk *chunk = nullptr;
+		zap_leaf_chunk *chunks = (zap_leaf_chunk *)(buffer.data() + 2 * ZAP_LEAF_CHUNKSIZE + 2 * num_hash_entries);
+		
+	}
 
 
 	size_t size = sizeof(zap_phys_t);
