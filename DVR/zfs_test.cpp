@@ -477,9 +477,11 @@ bool zfs_blkptr_verify(const blkptr_t &bp)
 
 int ByteSizeToShiftSize(uint64_t byte_size)
 {
-	for (size_t shift = 0; shift < sizeof(uint64_t) * 8; shift++) {
-		if (byte_size & (uint64_t)1) { return shift; }
-		byte_size >>= 1;
+	if (byte_size) {
+		for (size_t shift = 0; shift < sizeof(uint64_t) * 8; shift++) {
+			if (byte_size & (uint64_t)1) { return shift; }
+			byte_size >>= 1;
+		}
 	}
 	return -1;
 }
@@ -527,13 +529,24 @@ bool TraversingFatZapEntries(W32Lib::FileEx &io, dnode_phys_t &dnode, std::funct
 
 		for (int i = 0; i < num_hash_entries; i++) {
 
-			if (leaf->hash[i] != CHAIN_END) {
+			if ((leaf->hash[i] != CHAIN_END) && (leaf->hash[i] < num_chunks)) {
 			
 				zap_leaf_chunk *entry = &chunks[leaf->hash[i]];
 				if (entry->entry.type != ZAP_CHUNK_ENTRY) {				
 					break;
 				}
 
+				if (entry->entry.name_chunk >= num_chunks) {
+					break;
+				}
+
+
+
+
+
+				if (entry->entry.value_chunk >= num_chunks) {
+					break;
+				}
 
 
 				int x = 0;
