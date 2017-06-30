@@ -531,20 +531,39 @@ bool TraversingFatZapEntries(W32Lib::FileEx &io, dnode_phys_t &dnode, std::funct
 
 			if ((leaf->hash[i] != CHAIN_END) && (leaf->hash[i] < num_chunks)) {
 			
-				zap_leaf_chunk *entry = &chunks[leaf->hash[i]];
-				if (entry->entry.type != ZAP_CHUNK_ENTRY) {				
+				zap_leaf_chunk::zap_leaf_entry *entry = (zap_leaf_chunk::zap_leaf_entry *)&chunks[leaf->hash[i]];
+				if (entry->type != ZAP_CHUNK_ENTRY) {
+					break;
+				}
+				if (entry->name_length > ZAP_MAXNAMELEN) {
+					break;
+				}
+				if ((entry->value_intlen != 1) || (entry->value_intlen != 2) || (entry->value_intlen != 4) || (entry->value_intlen != 8)) {
+					break;
+				}
+				if (entry->value_intlen * entry->value_numints > ZAP_MAXVALUELEN) {
 					break;
 				}
 
-				if (entry->entry.name_chunk >= num_chunks) {
+
+				std::string name = "";
+				size_t name_len = entry->name_length;
+				name.reserve(ZAP_MAXNAMELEN);
+				if (entry->name_chunk >= num_chunks) {
 					break;
 				}
 
+				zap_leaf_chunk::zap_leaf_array *array = (zap_leaf_chunk::zap_leaf_array *)&chunks[i];
+				if (array->type != ZAP_CHUNK_ARRAY) {
+					break;
+				}
+
+				array->array;
 
 
 
 
-				if (entry->entry.value_chunk >= num_chunks) {
+				if (entry->value_chunk >= num_chunks) {
 					break;
 				}
 
