@@ -525,7 +525,7 @@ bool TraversingFatZapEntries(W32Lib::FileEx &io, dnode_phys_t &dnode, std::funct
 		}
 
 		zap_leaf_chunk *chunk = nullptr;
-		zap_leaf_chunk *chunks = (zap_leaf_chunk *)(buffer.data() + 2 * ZAP_LEAF_CHUNKSIZE + 2 * num_hash_entries);
+		zap_leaf_chunk *chunks = (zap_leaf_chunk *)(leaf_buffer.data() + 2 * ZAP_LEAF_CHUNKSIZE + 2 * num_hash_entries);
 
 		for (int i = 0; i < num_hash_entries; i++) {
 
@@ -538,30 +538,42 @@ bool TraversingFatZapEntries(W32Lib::FileEx &io, dnode_phys_t &dnode, std::funct
 				if (entry->name_length > ZAP_MAXNAMELEN) {
 					break;
 				}
-				if ((entry->value_intlen != 1) || (entry->value_intlen != 2) || (entry->value_intlen != 4) || (entry->value_intlen != 8)) {
+				if ((entry->value_intlen != 1) && (entry->value_intlen != 2) && (entry->value_intlen != 4) && (entry->value_intlen != 8)) {
 					break;
 				}
 				if (entry->value_intlen * entry->value_numints > ZAP_MAXVALUELEN) {
 					break;
 				}
 
-
 				std::string name = "";
-				size_t name_len = entry->name_length;
 				name.reserve(ZAP_MAXNAMELEN);
+				size_t name_len = entry->name_length;
 				if (entry->name_chunk >= num_chunks) {
 					break;
 				}
 
-				zap_leaf_chunk::zap_leaf_array *array = (zap_leaf_chunk::zap_leaf_array *)&chunks[i];
-				if (array->type != ZAP_CHUNK_ARRAY) {
-					break;
+				zap_leaf_chunk::zap_leaf_array *array = (zap_leaf_chunk::zap_leaf_array *)&chunks[entry->name_chunk];
+
+				while (name_len) {
+					
+					if (array->type != ZAP_CHUNK_ARRAY) {
+						break;
+					}
+
+					if (name_len > ZAP_LEAF_ARRAY_BYTES) {
+						name += std::string((const char *)array->array, ZAP_LEAF_ARRAY_BYTES);
+						name_len -= ZAP_LEAF_ARRAY_BYTES;
+						if (array->next < num_chunks) {
+							array = (zap_leaf_chunk::zap_leaf_array *)&chunks[array->next];
+						} else {
+							break;
+						}
+					} else {
+						name += std::string((const char *)array->array, name_len);
+						break;
+					}
+
 				}
-
-				array->array;
-
-
-
 
 				if (entry->value_chunk >= num_chunks) {
 					break;
