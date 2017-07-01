@@ -575,6 +575,9 @@ bool TraversingFatZapEntries(W32Lib::FileEx &io, dnode_phys_t &dnode, std::funct
 
 				}
 
+
+
+
 				if (entry->value_chunk >= num_chunks) {
 					break;
 				}
