@@ -33,6 +33,7 @@ struct Dataset {
 	objset_phys_t objset_phys;
 	std::vector<dnode_phys_t> objset;
 	std::map<std::string, uint64_t> child_dir;
+	std::map<std::string, uint64_t> root_dir;
 };
 
 
@@ -46,6 +47,6 @@ bool ReadMOS(W32Lib::FileEx &io, blkptr_t &blkptr, MetaObjecSet &mos);
 
 void zfs_test(void);
 
-bool TraversingFatZapEntries(W32Lib::FileEx &io, dnode_phys_t &dnode, std::function<void(const uint64_t&, const char*)> callback);
+bool TraversingFatZapEntries(W32Lib::FileEx &io, dnode_phys_t &dnode, std::function<bool(const uint64_t&, const char*)> callback);
 
 #endif // _ZFS_TEST_H

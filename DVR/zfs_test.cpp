@@ -1,5 +1,5 @@
 #include "zfs_test.h"
-
+#include <intrin.h>
 
 #include <system_error>
 #include <string>
@@ -65,12 +65,8 @@ void zfs_test(void)
 
 	Dataset root_dataset = { 0 };
 	ReadDataset(io, mos.objset, mos.root_dataset_obj, root_dataset);
-
 	
 	std::vector<char> zap_buff;
-
-
-
 
 
 	int x = 0;
@@ -323,10 +319,11 @@ bool ReadDataset(W32Lib::FileEx &io, std::vector<dnode_phys_t> objset, uint64_t 
 	//}
 
 
-	std::map<std::string, uint64_t> root_dir;
+	//std::map<std::string, uint64_t> root_dir;
 	TraversingFatZapEntries(io, root_dnode, 
-		[&root_dir](const uint64_t &value, const char* name) {
-		root_dir.emplace(std::string(name), value);
+		[&dataset](const uint64_t &value, const char* name) {
+		dataset.root_dir.emplace(std::string(name), value);
+		return true;
 	});
 
 
@@ -486,7 +483,7 @@ int ByteSizeToShiftSize(uint64_t byte_size)
 	return -1;
 }
 
-bool TraversingFatZapEntries(W32Lib::FileEx &io, dnode_phys_t &dnode, std::function<void(const uint64_t&, const char*)> callback)
+bool TraversingFatZapEntries(W32Lib::FileEx &io, dnode_phys_t &dnode, std::function<bool(const uint64_t&, const char*)> callback)
 {
 	size_t block_size = dnode.data_blk_sz_sec * SPA_MINBLOCKSIZE;
 	std::vector<char> buffer;
@@ -521,10 +518,9 @@ bool TraversingFatZapEntries(W32Lib::FileEx &io, dnode_phys_t &dnode, std::funct
 		zap_leaf_phys *leaf = (zap_leaf_phys *)leaf_buffer.data();
 
 		if ((leaf->hdr.block_type != ZBT_LEAF) || (leaf->hdr.magic != ZAP_LEAF_MAGIC)) {
-			break;
+			continue;
 		}
 
-		zap_leaf_chunk *chunk = nullptr;
 		zap_leaf_chunk *chunks = (zap_leaf_chunk *)(leaf_buffer.data() + 2 * ZAP_LEAF_CHUNKSIZE + 2 * num_hash_entries);
 
 		for (int i = 0; i < num_hash_entries; i++) {
@@ -532,63 +528,91 @@ bool TraversingFatZapEntries(W32Lib::FileEx &io, dnode_phys_t &dnode, std::funct
 			if ((leaf->hash[i] != CHAIN_END) && (leaf->hash[i] < num_chunks)) {
 			
 				zap_leaf_chunk::zap_leaf_entry *entry = (zap_leaf_chunk::zap_leaf_entry *)&chunks[leaf->hash[i]];
-				if (entry->type != ZAP_CHUNK_ENTRY) {
-					break;
-				}
-				if (entry->name_length > ZAP_MAXNAMELEN) {
-					break;
-				}
-				if ((entry->value_intlen != 1) && (entry->value_intlen != 2) && (entry->value_intlen != 4) && (entry->value_intlen != 8)) {
-					break;
-				}
-				if (entry->value_intlen * entry->value_numints > ZAP_MAXVALUELEN) {
-					break;
-				}
-
-				std::string name = "";
-				name.reserve(ZAP_MAXNAMELEN);
-				size_t name_len = entry->name_length;
-				if (entry->name_chunk >= num_chunks) {
-					break;
-				}
-
-				zap_leaf_chunk::zap_leaf_array *array = (zap_leaf_chunk::zap_leaf_array *)&chunks[entry->name_chunk];
-
-				while (name_len) {
-					
-					if (array->type != ZAP_CHUNK_ARRAY) {
-						break;
+				while (entry != nullptr) {
+					if (entry->type != ZAP_CHUNK_ENTRY) {
+						continue;
+					}
+					if (entry->name_length > ZAP_MAXNAMELEN) {
+						continue;
+					}
+					if ((entry->value_intlen != 1) && (entry->value_intlen != 2) && (entry->value_intlen != 4) && (entry->value_intlen != 8)) {
+						continue;
+					}
+					if (entry->value_intlen * entry->value_numints > ZAP_MAXVALUELEN) {
+						continue;
 					}
 
-					if (name_len > ZAP_LEAF_ARRAY_BYTES) {
-						name += std::string((const char *)array->array, ZAP_LEAF_ARRAY_BYTES);
-						name_len -= ZAP_LEAF_ARRAY_BYTES;
-						if (array->next < num_chunks) {
-							array = (zap_leaf_chunk::zap_leaf_array *)&chunks[array->next];
-						} else {
+					std::string name = "";
+					name.reserve(ZAP_MAXNAMELEN);
+					size_t name_len = entry->name_length;
+					if (entry->name_chunk >= num_chunks) {
+						continue;
+					}
+
+					zap_leaf_chunk::zap_leaf_array *chunk_array = (zap_leaf_chunk::zap_leaf_array *)&chunks[entry->name_chunk];
+
+					while (name_len) {
+						if (chunk_array->type != ZAP_CHUNK_ARRAY) {
 							break;
 						}
-					} else {
-						name += std::string((const char *)array->array, name_len);
+						if (name_len > ZAP_LEAF_ARRAY_BYTES) {
+							name += std::string((const char *)chunk_array->array, ZAP_LEAF_ARRAY_BYTES);
+							name_len -= ZAP_LEAF_ARRAY_BYTES;
+							if ((chunk_array->next == CHAIN_END) || (chunk_array->next > num_chunks)) {
+								break;
+							}
+							chunk_array = (zap_leaf_chunk::zap_leaf_array *)&chunks[chunk_array->next];
+						} else {
+							name += std::string((const char *)chunk_array->array, name_len);
+							break;
+						}
+					}
+
+					//
+					// Судя с коментов в сорцах, value может быть массивом, но как и зачем непанятна.
+					// Пока реализую поддержку только одного значения. 
+					//
+					assert(entry->value_numints == 1);
+
+					if (entry->value_chunk >= num_chunks) {
 						break;
 					}
 
+					chunk_array = (zap_leaf_chunk::zap_leaf_array *)&chunks[entry->value_chunk];
+					if (chunk_array->type != ZAP_CHUNK_ARRAY) {
+						break;
+					}
+
+					uint64_t value = 0;
+					switch (entry->value_intlen) {
+					case 1:
+						value = *(uint8_t *)chunk_array->array;
+						break;
+					case 2:
+						value = _byteswap_ushort(*(uint16_t *)chunk_array->array);
+						break;
+					case 4:
+						value = _byteswap_ulong(*(uint32_t *)chunk_array->array);
+						break;
+					case 8:
+						value = _byteswap_uint64(*(uint64_t *)chunk_array->array);
+						break;
+					default:
+						break;
+					}
+
+					if (!callback(value, name.c_str())) {
+						return true;
+					}
+										
+					if ((entry->next != CHAIN_END) && (entry->next < num_chunks)) {
+						entry = (zap_leaf_chunk::zap_leaf_entry *)&chunks[entry->next];
+					} else {
+						entry = nullptr;
+					}
 				}
-
-				if (entry->value_chunk >= num_chunks) {
-					break;
-				}
-
-
-				int x = 0;
-			
 			}		
-		
 		}
-		
 	}
-
 	return true;
 }
-
-
