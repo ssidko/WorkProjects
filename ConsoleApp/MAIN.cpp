@@ -216,6 +216,8 @@ void recovery_38615()
 	
 }
 
+#include "crc32.h"
+
 int _tmain(int argc, _TCHAR* argv[])
 {
 	//std::cout << std::endl << "---=== Physical Drives ===---" << std::endl;
@@ -225,18 +227,9 @@ int _tmain(int argc, _TCHAR* argv[])
 	//std::cout << std::endl << "---=== COM Ports ===---" << std::endl;
 	//EnumerateDevicesInterfaces(&GUID_DEVINTERFACE_COMPORT);
 
-	//recovery_38615();
 
-	double result = 2 + 6 * -5 / 3 * 5;
 
-	//if (argc >= 3) {
-	//	mover_main(argv[1], argv[2]);		 
-	//}
-	//else {
-	//	mover::PrintUsage();
-	//}
 
-	recovery_41655();
 	::system("pause");
 
 	return true;

@@ -141,6 +141,7 @@
     <ClCompile Include="Volume.cpp">
       <Filter>dvr-h264\Ext</Filter>
     </ClCompile>
+    <ClCompile Include="crc32.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Calc.h">
@@ -245,6 +246,7 @@
       <Filter>dvr-h264\Ext</Filter>
     </ClInclude>
     <ClInclude Include="afxres.h" />
+    <ClInclude Include="crc32.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="ConsoleApp.rc" />
