@@ -112,6 +112,7 @@
     <ClCompile Include="h264_1.cpp" />
     <ClCompile Include="mxf.cpp" />
     <ClCompile Include="PlaChecker.cpp" />
+    <ClCompile Include="RarRecovery.cpp" />
     <ClCompile Include="smart.cpp" />
     <ClCompile Include="RAIDTools.cpp" />
     <ClCompile Include="sqliter.cpp" />
@@ -149,6 +150,8 @@
     <ClInclude Include="mxf.h" />
     <ClInclude Include="NtfsOnDiskStructures.h" />
     <ClInclude Include="PlaChecker.h" />
+    <ClInclude Include="rar.h" />
+    <ClInclude Include="RarRecovery.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="smart.h" />
     <ClInclude Include="RAIDTools.h" />

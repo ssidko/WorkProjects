@@ -216,7 +216,7 @@ void recovery_38615()
 	
 }
 
-#include "crc32.h"
+#include "RarRecovery.h"
 
 int _tmain(int argc, _TCHAR* argv[])
 {
@@ -228,7 +228,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	//EnumerateDevicesInterfaces(&GUID_DEVINTERFACE_COMPORT);
 
 
-
+	RarRecovery("D:\\Src\\vmfs.rar", "E:\\42366\\Result\\vmfs.rar");
 
 
 	::system("pause");

@@ -5,6 +5,8 @@
 #include <stdio.h>
 #include <string.h>
 
-uint32_t crc32buf(const char *buf, size_t len);
+#define FINAL 0xffffffff
+
+uint32_t crc32(const uint8_t *buf, size_t size, uint32_t start_crc = 0);
 
 #endif // _CRC32_H

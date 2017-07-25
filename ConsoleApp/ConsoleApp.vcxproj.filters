@@ -61,6 +61,9 @@
     <Filter Include="Zip">
       <UniqueIdentifier>{5d73dee3-9abb-4d4c-b17d-f98349a02cb3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="RarRecovery">
+      <UniqueIdentifier>{3f3cac1b-b13c-4b0b-b2e9-005019657452}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Calc.cpp">
@@ -141,7 +144,12 @@
     <ClCompile Include="Volume.cpp">
       <Filter>dvr-h264\Ext</Filter>
     </ClCompile>
-    <ClCompile Include="crc32.cpp" />
+    <ClCompile Include="crc32.cpp">
+      <Filter>RarRecovery</Filter>
+    </ClCompile>
+    <ClCompile Include="RarRecovery.cpp">
+      <Filter>RarRecovery</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Calc.h">
@@ -246,7 +254,15 @@
       <Filter>dvr-h264\Ext</Filter>
     </ClInclude>
     <ClInclude Include="afxres.h" />
-    <ClInclude Include="crc32.h" />
+    <ClInclude Include="crc32.h">
+      <Filter>RarRecovery</Filter>
+    </ClInclude>
+    <ClInclude Include="RarRecovery.h">
+      <Filter>RarRecovery</Filter>
+    </ClInclude>
+    <ClInclude Include="rar.h">
+      <Filter>RarRecovery</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="ConsoleApp.rc" />
