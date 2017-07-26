@@ -1,13 +1,16 @@
 #ifndef _RAR_RECOVERY_H
 #define _RAR_RECOVERY_H
 
-
-#include "rar.h"
+#include <windows.h>
+#include <tchar.h>
+#include <iostream>
 #include <string>
+#include "rar.h"
 
-//#define ARCH_APP_PATH			".\7z.exe"
-//#define ARCH_APP_PATH			" D:\\GitHub\\7z\\7z.exe"
+#define CMD_ARG_SOURCE_FILE			1
+#define CMD_ARG_OUT_FILE			2
 
+int RarRecoveryMain(int argc, _TCHAR* argv[]);
 int RarRecovery(const std::string &arch_path, const std::string &out_arch_path);
 
 #endif // _RAR_RECOVERY_H

@@ -226,12 +226,10 @@ int _tmain(int argc, _TCHAR* argv[])
 	//EnumerateDevicesInterfaces(&GUID_DEVINTERFACE_CDROM);
 	//std::cout << std::endl << "---=== COM Ports ===---" << std::endl;
 	//EnumerateDevicesInterfaces(&GUID_DEVINTERFACE_COMPORT);
+	
+	RarRecoveryMain(argc, argv);
 
-
-	RarRecovery("D:\\Src\\vmfs.rar", "E:\\42366\\Result\\vmfs.rar");
-
-
-	::system("pause");
+	//::system("pause");
 
 	return true;
 }
