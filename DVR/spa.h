@@ -34,55 +34,55 @@ typedef struct zio_cksum {
 #define	ZEC_MAGIC	0x210da7ab10c7a11ULL		// zio-data-block-tail
 
 typedef struct zio_eck {
-	uint64_t	zec_magic;			/* for validation, endianness	*/
-	zio_cksum_t	zec_cksum;			/* 256-bit checksum		*/
+	uint64_t	zec_magic;						/* for validation, endianness	*/
+	zio_cksum_t	zec_cksum;						/* 256-bit checksum		*/
 } zio_eck_t;
 
 typedef struct dva {
-	uint64_t	alloc_size : 24;			/* allocated size in sectors (including RAID-Z parity and gang block headers) */
-	uint64_t	grid : 8;					/* RAID-Z layout information (reserved for future use) */
-	uint64_t	vdev_id : 32;				/* virtual device ID */
-	uint64_t	offset : 63;				/* offset in sectors (512 bytes) */
-	uint64_t	gang_flag : 1;				/* gang block indicator */
+	uint64_t	alloc_size : 24;				/* allocated size in sectors (including RAID-Z parity and gang block headers) */
+	uint64_t	grid : 8;						/* RAID-Z layout information (reserved for future use) */
+	uint64_t	vdev_id : 32;					/* virtual device ID */
+	uint64_t	offset : 63;					/* offset in sectors (512 bytes) */
+	uint64_t	gang_flag : 1;					/* gang block indicator */
 } dva_t;
 
 typedef struct blk_props {
-	uint64_t	logical_size : 16;			/* logical size */
-	uint64_t	physical_size : 16;			/* physical size (after compression) */
-	uint64_t	compression : 7;			/* compression function */
-	uint64_t	embedded : 1;				/* blkptr_t contains embedded data (see below) blk_props_emb_t */
-	uint64_t	checksum : 8;				/* checksum function */
-	uint64_t	type : 8;					/* DMU object type */
-	uint64_t	level : 5;					/* level of indirection */
-	uint64_t	encryption : 1;				/* encryption (on version 30, which is not supported) */
-	uint64_t	dedup : 1;					/* deduplication */
-	uint64_t	byteorder : 1;				/* byteorder (endianness)*/
+	uint64_t	logical_size : 16;				/* logical size */
+	uint64_t	physical_size : 16;				/* physical size (after compression) */
+	uint64_t	compression : 7;				/* compression function */
+	uint64_t	embedded : 1;					/* blkptr_t contains embedded data (see below) blk_props_emb_t */
+	uint64_t	checksum : 8;					/* checksum function */
+	uint64_t	type : 8;						/* DMU object type */
+	uint64_t	level : 5;						/* level of indirection */
+	uint64_t	encryption : 1;					/* encryption (on version 30, which is not supported) */
+	uint64_t	dedup : 1;						/* deduplication */
+	uint64_t	byteorder : 1;					/* byteorder (endianness)*/
 } blk_props_t;
 
 typedef struct blk_props_emb {
-	uint64_t	logical_size : 25;			/* logical size */
-	uint64_t	physical_size : 7;			/* physical size (after compression) */
-	uint64_t	compression : 7;			/* compression function */
-	uint64_t	embedded : 1;				/* set to one */
-	uint64_t	etype : 8;					/* how to interpret embedded data (BP_EMBEDDED_TYPE_*) */
-	uint64_t	type : 8;					/* DMU object type */
-	uint64_t	level : 5;					/* level of indirection */
-	uint64_t	encryption : 1;				/* encryption (on version 30, which is not supported) */
-	uint64_t	dedup : 1;					/* deduplication */
-	uint64_t	byteorder : 1;				/* byteorder (endianness)*/
+	uint64_t	logical_size : 25;				/* logical size */
+	uint64_t	physical_size : 7;				/* physical size (after compression) */
+	uint64_t	compression : 7;				/* compression function */
+	uint64_t	embedded : 1;					/* set to one */
+	uint64_t	etype : 8;						/* how to interpret embedded data (BP_EMBEDDED_TYPE_*) */
+	uint64_t	type : 8;						/* DMU object type */
+	uint64_t	level : 5;						/* level of indirection */
+	uint64_t	encryption : 1;					/* encryption (on version 30, which is not supported) */
+	uint64_t	dedup : 1;						/* deduplication */
+	uint64_t	byteorder : 1;					/* byteorder (endianness)*/
 } blk_props_emb_t;
 
-#define	SPA_DVAS_PER_BP		3				/* Number of DVAs in a bp */
-#define	SPA_BLKPTRSHIFT		7				/* blkptr_t is 128 bytes */
+#define	SPA_DVAS_PER_BP		3					/* Number of DVAs in a bp */
+#define	SPA_BLKPTRSHIFT		7					/* blkptr_t is 128 bytes */
 
 typedef struct blkptr {
-	dva_t		dva[SPA_DVAS_PER_BP];		/* Data Virtual Addresses */
-	blk_props_t	props;						/* size, compression, type, etc */
-	uint64_t	padding[2];					/* Extra space for the future */
-	uint64_t	phys_birth;					/* txg of block allocation; zero if same as logical birth txg */
-	uint64_t	log_birth;					/* transaction group in which the block was logically born */
-	uint64_t	fill;						/* fill count */
-	zio_cksum_t	checksum;					/* 256-bit checksum */
+	dva_t		dva[SPA_DVAS_PER_BP];			/* Data Virtual Addresses */
+	blk_props_t	props;							/* size, compression, type, etc */
+	uint64_t	padding[2];						/* Extra space for the future */
+	uint64_t	phys_birth;						/* txg of block allocation; zero if same as logical birth txg */
+	uint64_t	log_birth;						/* transaction group in which the block was logically born */
+	uint64_t	fill;							/* fill count */
+	zio_cksum_t	checksum;						/* 256-bit checksum */
 } blkptr_t;
 
 typedef struct blkptr_emb {
@@ -98,7 +98,7 @@ typedef struct blkptr_emb {
 
 typedef enum bp_embedded_type {
 	BP_EMBEDDED_TYPE_DATA,
-	BP_EMBEDDED_TYPE_RESERVED, /* Reserved for an unintegrated feature. */
+	BP_EMBEDDED_TYPE_RESERVED,					/* Reserved for an unintegrated feature. */
 	NUM_BP_EMBEDDED_TYPES = BP_EMBEDDED_TYPE_RESERVED
 } bp_embedded_type_t;
 
