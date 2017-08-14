@@ -8,8 +8,7 @@
 
 namespace dcH264
 {
-#pragma pack (push)
-#pragma pack (1)
+#pragma pack(push, 1)
 
 	struct TIMESTAMP {
 		BYTE year;
@@ -22,18 +21,46 @@ namespace dcH264
 	};
 
 	struct FRAME_HEADER {
-		char camera;				// ASCII '0' - '9'
-		char flags;					// ASCII '0' - '9'
-		WORD type;					// 'dc', 'wb' ...
-	};
+		uint8_t camera;							// ASCII '0' - '9'
+		uint8_t subtype;						// ASCII '0' - '9'
+		uint16_t frame_type;					// 'dc', 'wb' ...
 
-	struct FRAME_H264 {
-		FRAME_HEADER header;
-		DWORD sign;					// 'H264'
-		DWORD size;
+		union {
+			struct FRAME_DC {
+				uint32_t signature;				// 'H264'
+				uint32_t payload_size;
+				uint8_t unknown[12];
+
+				union {
+					struct {
+						enum { kHeaderSize = 32 };
+						TIMESTAMP timestamp;
+						uint8_t padding[2];
+						uint8_t payload[1];
+					} subtype_0;
+
+					struct {
+						enum { kHeaderSize = 24 };
+						uint8_t payload[1];
+					} subtype_1;
+				};
+			} dc;
+
+			struct FRAME_WB {
+				enum { kHeaderSize = 20 };
+				uint8_t size_1;
+				uint8_t size_2;
+			} wb;
+		};		
 	};
 
 #pragma pack(pop)
+
+	class FrameReader
+	{
+	public:
+
+	};
 
 	class Volume
 	{
@@ -51,6 +78,8 @@ namespace dcH264
 
 		bool ReadFrame(dvr::Frame &frame);
 	};
+
+	int main(void);
 }
 
 #endif // _DCH264_ONDISK_H

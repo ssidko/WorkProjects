@@ -49,9 +49,9 @@ Orbita::Scanner::~Scanner()
 
 void Orbita::Scanner::AlignIoPointer(void)
 {
+	LONGLONG align = 8;
 	LONGLONG offset = io.Pointer();
-	LONGLONG offset_mask = 7;
-	offset = (offset & offset_mask) ? ((offset & ~offset_mask) + 8) : offset;
+	offset = (offset + (align -1)) & ~(align - 1);
 	io.SetPointer(offset);
 }
 
@@ -112,7 +112,6 @@ DWORD Orbita::Scanner::FrameDataSize(HEADER *header)
 		size = 0;
 	}
 	return size;
-
 }
 
 Timestamp Orbita::Scanner::FrameTimestamp(HEADER *header)

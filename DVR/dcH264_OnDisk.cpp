@@ -33,3 +33,12 @@ bool dcH264::Volume::ReadFrame(dvr::Frame &frame)
 {
 	return false;
 }
+
+int dcH264::main(void)
+{
+	FRAME_HEADER hdr = {0};
+
+	size_t header_size = hdr.dc.subtype_00.kHeaderSize;
+
+	return 0;
+}
