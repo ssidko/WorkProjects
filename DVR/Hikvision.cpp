@@ -7,6 +7,7 @@
 #include <iostream>
 #include <ios>
 #include <assert.h>
+#include "dcH264_OnDisk.h"
 
 bool HIKV::FRAME_HEADER::IsValid(void)
 {

@@ -191,6 +191,9 @@
     <ClCompile Include="Pool.cpp">
       <Filter>zfs</Filter>
     </ClCompile>
+    <ClCompile Include="dcH264_Reader.cpp">
+      <Filter>Core\dcH264</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="mainwindow.ui">
@@ -330,6 +333,9 @@
     </ClInclude>
     <ClInclude Include="vdev_label.h">
       <Filter>zfs</Filter>
+    </ClInclude>
+    <ClInclude Include="dcH264_Reader.h">
+      <Filter>Core\dcH264</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -2,9 +2,7 @@
 #define _DCH264_ONDISK_H
 
 #include <windows.h>
-#include <string>
 #include "dvr.h"
-#include "BufferedFile.h"
 
 namespace dcH264
 {
@@ -36,50 +34,30 @@ namespace dcH264
 						enum { kHeaderSize = 32 };
 						TIMESTAMP timestamp;
 						uint8_t padding[2];
-						uint8_t payload[1];
 					} subtype_0;
 
 					struct {
 						enum { kHeaderSize = 24 };
-						uint8_t payload[1];
 					} subtype_1;
 				};
 			} dc;
 
 			struct FRAME_WB {
-				enum { kHeaderSize = 20 };
-				uint8_t size_1;
-				uint8_t size_2;
+				enum { kHeaderSize = 8 };
+				uint16_t size_1;
+				uint16_t size_2;
 			} wb;
-		};		
+		};
+
+		bool IsValid(void);
+		size_t HeaderSize(void);
+		size_t PayloadSize(void);
+		size_t FrameSize(void);
+		uint8_t *Payload(void);
 	};
 
 #pragma pack(pop)
 
-	class FrameReader
-	{
-	public:
-
-	};
-
-	class Volume
-	{
-	private:
-		BufferedFile io;
-	public:
-		Volume(std::string &file_name);
-		~Volume();
-
-		bool Open(void);
-		void Close(void);
-
-		void SetPointer(const LONGLONG &new_pointer);
-		LONGLONG Pointer(void);
-
-		bool ReadFrame(dvr::Frame &frame);
-	};
-
-	int main(void);
 }
 
 #endif // _DCH264_ONDISK_H
