@@ -77,3 +77,21 @@ ULONGLONG dvr::Timestamp::operator-( const Timestamp &t )
 {
 	return (this->Seconds() - t.Seconds());
 }
+
+void dvr::Frame::Clear(void)
+{
+	offset = 0;
+	camera = 0;
+	time.Clear();
+	buffer.clear();
+}
+
+void dvr::FrameSequence::Clear(void)
+{
+	offset = 0;
+	camera = 0;
+	frames_count = 0;
+	start_time.Clear();
+	end_time.Clear();
+	buffer.clear();
+}

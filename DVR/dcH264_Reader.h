@@ -14,7 +14,12 @@ namespace dcH264
 		~Reader() = default;
 
 		bool Open();
+
+		bool SetOffset(const LONGLONG &offset);
+		LONGLONG Offset(void);
+
 		bool ReadFrame(const LONGLONG &offset, std::vector<uint8_t> &buffer);
+		bool ReadFrameSequence(std::vector<uint8_t> &buffer);
 
 	private:
 		BufferedFile io;

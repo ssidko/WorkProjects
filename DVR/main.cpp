@@ -30,7 +30,7 @@ inline void _trace(char *format, ...)
 #include "dvr.h"
 #include "Hikvision.h"
 #include "WFS.h"
-#include "dcH264_OnDisk.h"
+#include "dcH264_Reader.h"
 #include "G2fdbVolume.h"
 #include "utility.h"
 #include "G2fdbRecovery.h"

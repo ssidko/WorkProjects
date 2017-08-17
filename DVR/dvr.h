@@ -40,13 +40,19 @@ namespace dvr
 		DWORD camera;
 		Timestamp time;
 		std::vector<BYTE> buffer;
+
+		void Clear(void);
 	};
 
 	struct FrameSequence {
 		LONGLONG offset;
+		DWORD camera;
+		size_t frames_count;
 		Timestamp start_time;
 		Timestamp end_time;
 		std::vector<BYTE> buffer;
+		
+		void Clear(void);
 	};
 }
 
