@@ -12,12 +12,12 @@ namespace dvr
 	class Timestamp
 	{
 	public:
-		WORD year;
-		BYTE month;
-		BYTE day;
-		BYTE hours;
-		BYTE minutes;
-		BYTE seconds;
+		WORD year = 0;
+		BYTE month = 0;
+		BYTE day = 0;
+		BYTE hours = 0;
+		BYTE minutes = 0;
+		BYTE seconds = 0;
 
 		Timestamp(WORD year_ = 0, BYTE month_ = 0, BYTE day_ = 0, BYTE hours_ = 0, BYTE mins_ = 0, BYTE sec_ = 0);
 		void Clear(void);
@@ -36,20 +36,20 @@ namespace dvr
 	};
 
 	struct Frame {
-		LONGLONG offset;
-		DWORD camera;
-		Timestamp time;
+		LONGLONG offset = 0;
+		DWORD camera = 0;
+		dvr::Timestamp time;
 		std::vector<BYTE> buffer;
 
 		void Clear(void);
 	};
 
 	struct FrameSequence {
-		LONGLONG offset;
-		DWORD camera;
-		size_t frames_count;
-		Timestamp start_time;
-		Timestamp end_time;
+		LONGLONG offset = 0;
+		DWORD camera = 0;
+		size_t frames_count = 0;
+		dvr::Timestamp start_time;
+		dvr::Timestamp end_time;
 		std::vector<BYTE> buffer;
 		
 		void Clear(void);

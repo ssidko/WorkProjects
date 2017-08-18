@@ -68,5 +68,5 @@ size_t dcH264::FRAME_HEADER::FrameSize(void)
 uint8_t *dcH264::FRAME_HEADER::Payload(void)
 {
 	assert(this->IsValid());
-	return (uint8_t *)this + (ptrdiff_t)this->HeaderSize();
+	return (uint8_t *)((ptrdiff_t)this + (ptrdiff_t)this->HeaderSize());
 }

@@ -18,8 +18,8 @@ namespace dcH264
 		bool SetOffset(const LONGLONG &offset);
 		LONGLONG Offset(void);
 
-		bool ReadFrame(const LONGLONG &offset, std::vector<uint8_t> &buffer);
-		bool ReadFrameSequence(std::vector<uint8_t> &buffer);
+		bool ReadFrame(dvr::Frame &frame);
+		bool ReadFrameSequence(dvr::FrameSequence &sequence);
 
 	private:
 		BufferedFile io;

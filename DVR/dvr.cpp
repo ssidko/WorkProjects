@@ -95,3 +95,4 @@ void dvr::FrameSequence::Clear(void)
 	end_time.Clear();
 	buffer.clear();
 }
+

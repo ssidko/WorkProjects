@@ -6,13 +6,23 @@ using namespace dcH264;
 int dcH264::main(void)
 {
 	FRAME_HEADER *hdr = nullptr;
+	dvr::Frame frame;
 	LONGLONG disk_size = 1953525168ll * 512ll;
 
 	Reader reader("\\\\.\\PhysicalDrive2", disk_size);
 	if (reader.Open()) {
 
 		std::vector<uint8_t> frame_buffer;
-		bool result = reader.ReadFrame(0x6C71A83780, frame_buffer);
+		reader.SetOffset(0x6C71A83780);
+		if (reader.ReadFrame(frame)) {
+			hdr = (FRAME_HEADER *)&frame.buffer[0];
+
+			auto paylad = hdr->Payload();
+
+			int x = 0;
+		
+		
+		}
 		int x = 0;
 	}
 
@@ -43,28 +53,25 @@ LONGLONG dcH264::Reader::Offset(void)
 	return io.Pointer();
 }
 
-bool dcH264::Reader::ReadFrame(const LONGLONG &offset, std::vector<uint8_t> &buffer)
+bool dcH264::Reader::ReadFrame(dvr::Frame &frame)
 {
 	FRAME_HEADER *hdr = nullptr;
 
-	if (!io.SetPointer(offset)) {
-		return false;
-	}
-
-	buffer.clear();
+	frame.Clear();
+	frame.offset = io.Pointer();
 
 	//
 	// Read FRAME_HEADER
 	//
 
-	buffer.resize(sizeof(FRAME_HEADER));	
-	hdr = (FRAME_HEADER *)&buffer[0];
+	frame.buffer.resize(sizeof(FRAME_HEADER));
+	hdr = (FRAME_HEADER *)&frame.buffer[0];
 
-	if (buffer.size() != io.Read(&buffer[0], buffer.size())) {
-		return false;
+	if (sizeof(FRAME_HEADER) != io.Read(&frame.buffer[0], sizeof(FRAME_HEADER))) {
+		goto _error;
 	}
 	if (!hdr->IsValid()) {
-		return false;
+		goto _error;
 	}
 
 	//
@@ -73,13 +80,13 @@ bool dcH264::Reader::ReadFrame(const LONGLONG &offset, std::vector<uint8_t> &buf
 	
 	size_t frame_size = hdr->FrameSize();
 
-	buffer.resize(frame_size);
-	hdr = (FRAME_HEADER *)&buffer[0];
+	frame.buffer.resize(frame_size);
+	hdr = (FRAME_HEADER *)&frame.buffer[0];
 
 	if (frame_size > sizeof(FRAME_HEADER)) {		
 		size_t tail_size = frame_size - sizeof(FRAME_HEADER);
-		if (tail_size != io.Read(&buffer[sizeof(FRAME_HEADER)], tail_size)) {
-			return false;
+		if (tail_size != io.Read(&frame.buffer[sizeof(FRAME_HEADER)], tail_size)) {
+			goto _error;
 		}		
 	}
 
@@ -87,9 +94,90 @@ bool dcH264::Reader::ReadFrame(const LONGLONG &offset, std::vector<uint8_t> &buf
 	// Align file pointer.
 	//
 
-	if (!io.SetPointer(Align(offset + frame_size, 8))) {
-		return false;
+	if (!io.SetPointer(Align(frame.offset + frame_size, 8))) {
+		goto _error;
+	}
+
+	frame.camera = hdr->camera - '0';
+	if ((hdr->frame_type == 'cd') && (hdr->subtype == '0')) {
+		frame.time = hdr->dc.subtype_0.timestamp.Timestamp();		
 	}
 
 	return true;
+
+_error:
+	frame.Clear();
+	return false;
+}
+
+bool AppendFrameToSequence(dvr::FrameSequence &sequence, dvr::Frame &frame)
+{
+	FRAME_HEADER *header = (FRAME_HEADER *)&frame.buffer[0];
+
+	if (sequence.frames_count == 0) {
+		sequence.camera = frame.camera;
+	}
+
+	if (sequence.camera == frame.camera) {
+	
+		if (frame.time.Seconds()) {
+		
+		
+		
+		
+		}
+
+
+
+		size_t old_size = sequence.buffer.size();
+		sequence.buffer.resize(old_size + header->PayloadSize());
+		std::memcpy(&sequence.buffer[old_size], header->Payload(), header->PayloadSize());
+	}
+
+	return false;
+}
+
+bool dcH264::Reader::ReadFrameSequence(dvr::FrameSequence &sequence)
+{
+	dvr::Frame frame;
+	FRAME_HEADER *header = nullptr;
+
+	sequence.Clear();
+
+	if (ReadFrame(frame)) {
+
+		header = (FRAME_HEADER *)&frame.buffer[0];
+
+		sequence.offset = frame.offset;
+		sequence.camera = frame.camera;
+		sequence.frames_count += 1;
+		sequence.start_time = frame.time;
+		sequence.end_time = frame.time;
+
+		sequence.buffer.resize(header->PayloadSize());
+		std::memcpy(&sequence.buffer[0], header->Payload(), header->PayloadSize());
+	
+		while (ReadFrame(frame)) {
+
+			header = (FRAME_HEADER *)&frame.buffer[0];
+
+			if (frame.time.Seconds()) {
+				
+				if (sequence.start_time.Seconds == 0) {
+					sequence.start_time = frame.time;
+				}
+						
+			
+			}
+
+
+			size_t old_size = sequence.buffer.size();
+			sequence.buffer.resize(old_size + header->PayloadSize());
+			std::memcpy(&sequence.buffer[old_size], header->Payload(), header->PayloadSize());
+
+		}
+	}
+
+
+	return sequence.frames_count ? true : false;
 }
