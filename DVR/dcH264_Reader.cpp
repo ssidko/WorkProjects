@@ -116,6 +116,7 @@ bool AppendFrameToSequence(dvr::FrameSequence &sequence, dvr::Frame &frame)
 
 	if (sequence.frames_count == 0) {
 		sequence.camera = frame.camera;
+		sequence.offset = frame.offset;
 	}
 
 	if (sequence.camera == frame.camera) {
@@ -127,7 +128,7 @@ bool AppendFrameToSequence(dvr::FrameSequence &sequence, dvr::Frame &frame)
 		
 		}
 
-
+		sequence.frames_count++;
 
 		size_t old_size = sequence.buffer.size();
 		sequence.buffer.resize(old_size + header->PayloadSize());
@@ -137,7 +138,7 @@ bool AppendFrameToSequence(dvr::FrameSequence &sequence, dvr::Frame &frame)
 	return false;
 }
 
-bool dcH264::Reader::ReadFrameSequence(dvr::FrameSequence &sequence)
+bool dcH264::Reader::ReadFrameSequence(dvr::FrameSequence &sequence, size_t max_size)
 {
 	dvr::Frame frame;
 	FRAME_HEADER *header = nullptr;
@@ -166,7 +167,6 @@ bool dcH264::Reader::ReadFrameSequence(dvr::FrameSequence &sequence)
 				if (sequence.start_time.Seconds == 0) {
 					sequence.start_time = frame.time;
 				}
-						
 			
 			}
 

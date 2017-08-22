@@ -19,7 +19,7 @@ namespace dcH264
 		LONGLONG Offset(void);
 
 		bool ReadFrame(dvr::Frame &frame);
-		bool ReadFrameSequence(dvr::FrameSequence &sequence);
+		bool ReadFrameSequence(dvr::FrameSequence &sequence, size_t max_size = 512*1024*1024);
 
 	private:
 		BufferedFile io;
