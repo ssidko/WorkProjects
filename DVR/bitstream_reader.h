@@ -1,6 +1,7 @@
 #pragma once
 
 #include <stdint.h>
+#include <stdexcept> 
 
 class bitstream_reader
 {
@@ -10,6 +11,7 @@ public:
 		: data_(data)
 		, size_(size)
 		, current_data_(data)
+		, last_byte_(data + size - 1)
 		, current_bit_(0)
 	{
 	}
@@ -18,17 +20,18 @@ public:
 		: data_(other.data_)
 		, size_(other.size_)
 		, current_data_(other.current_data_)
+		, last_byte_(other.last_byte_)
 		, current_bit_(other.current_bit_)
 	{
 	}
 
-	bitstream_reader(const bitstream_reader& other, const uint8_t* data)
-		: data_(data)
-		, size_(other.size_)
-		, current_data_(data + (other.current_data_ - other.data_))
-		, current_bit_(other.current_bit_)
-	{
-	}
+	//bitstream_reader(const bitstream_reader& other, const uint8_t* data)
+	//	: data_(data)
+	//	, size_(other.size_)
+	//	, current_data_(data + (other.current_data_ - other.data_))
+	//	, current_bit_(other.current_bit_)
+	//{
+	//}
 
 	size_t bits_available()
 	{
@@ -139,6 +142,9 @@ public:
 
 	uint32_t get_bit()
 	{
+		if (current_data_ > last_byte_) {
+			throw std::out_of_range("");
+		}
 		return ((*current_data_) >> (7 - current_bit_)) & 1;
 	}
 
@@ -155,8 +161,8 @@ public:
 		current_bit_ += 1;
 		if (current_bit_ > 7)
 		{
-		current_bit_ = 0;
-		current_data_ += 1;
+			current_bit_ = 0;
+			current_data_ += 1;
 		}
 	}
 
@@ -165,5 +171,6 @@ private:
 	size_t size_;
 	
 	const uint8_t* current_data_;
+	const uint8_t* last_byte_;
 	size_t current_bit_;
 };

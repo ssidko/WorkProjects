@@ -1,6 +1,7 @@
 #include "DhfsRecovery.h"
 #include "utility.h"
 #include <cassert>
+#include <experimental/filesystem>
 
 
 int DHFS::StartRecovery(const std::string & dvr_volume, const uint64_t &offset, const std::string & out_directory, const dvr::Timestamp & start_time, const dvr::Timestamp & end_time)
@@ -19,7 +20,9 @@ int DHFS::StartRecovery(const std::string & dvr_volume, const uint64_t &offset, 
 
 	if (volume.Open() && storage.Open()) {
 
-		volume.SetPointer(offset);
+		if (!volume.SetPointer(offset)) {
+			return -1;
+		}
 
 		while (volume.FindAndReadFrameSequence(sequence, max_sequence_size)) {
 			//storage.SaveFrameSequence(sequence);
@@ -171,9 +174,12 @@ void DHFS::Storage::ConvertVideoFile(VFile &file)
 	std::string out_file_name = string_format("%s%s\\CAM-%02u\\%s.avi",
 		base_directory.c_str(), file.StartTime().Date().c_str(), file.Camera(), file.Description().c_str());
 
-	//MoveFileA(file_name.c_str(), out_file_name.c_str());
-
 	Convert2Avi(file_name, out_file_name);
+
+	if (!std::experimental::filesystem::exists(out_file_name.c_str())) {
+		out_file_name += ".h264";
+		MoveFileA(file_name.c_str(), out_file_name.c_str());
+	}
 }
 
 bool DHFS::Storage::SaveFrameSequence(FrameSequence & sequence)

@@ -236,16 +236,20 @@ bool DHFS::GetWidthAndHeight(Frame &frame, size_t &width, size_t &height)
 	while (frame.data.size() >= (offset + start_prefix_size)) {
 		start_prefix = (uint32_t *)&frame.data[offset];
 		if (*start_prefix == 0x01000000) {
-		
-			bitstream_reader bs(&frame.data[offset + start_prefix_size], frame.data.size() - (offset + start_prefix_size));
 
-			int forbidden_zero_bit = bs.f(1);
-			int nal_ref_idc = bs.u(2);
-			int nal_unit_type = bs.u(5);
+			try {
+				bitstream_reader bs(&frame.data[offset + start_prefix_size], frame.data.size() - (offset + start_prefix_size));
 
-			if (nal_unit_type == 7) {
-				h264_GetWidthHeight(bs, width, height);
-				return (width && height);
+				int forbidden_zero_bit = bs.f(1);
+				int nal_ref_idc = bs.u(2);
+				int nal_unit_type = bs.u(5);
+
+				if (nal_unit_type == 7) {
+					h264_GetWidthHeight(bs, width, height);
+					return (width && height);
+				}			
+			} catch (const std::out_of_range& ex) {
+				return false;
 			}		
 		}
 		offset++;
