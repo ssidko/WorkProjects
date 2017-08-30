@@ -58,7 +58,7 @@ namespace DHFS
 		bool SaveFrameSequenceEx(FrameSequence &sequence, LONGLONG max_delta_time);
 	};
 
-	int StartRecovery(const std::string &dvr_volume, const std::string &out_directory, const dvr::Timestamp &start_time = dvr::Timestamp(), const dvr::Timestamp &end_time = dvr::Timestamp());
+	int StartRecovery(const std::string &dvr_volume, const uint64_t &offset, const std::string &out_directory, const dvr::Timestamp &start_time = dvr::Timestamp(), const dvr::Timestamp &end_time = dvr::Timestamp());
 
 }
 

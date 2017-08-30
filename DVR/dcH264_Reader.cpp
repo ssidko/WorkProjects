@@ -164,7 +164,7 @@ bool dcH264::Reader::ReadFrameSequence(dvr::FrameSequence &sequence, size_t max_
 
 			if (frame.time.Seconds()) {
 				
-				if (sequence.start_time.Seconds == 0) {
+				if (sequence.start_time.Seconds() == 0) {
 					sequence.start_time = frame.time;
 				}
 			

@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "utility.h"
+#include "version.h"
 
 //#include "dhfs.h"
 #include "G2fdbRecovery.h"
@@ -18,7 +19,27 @@
 #define G2FDB_ID_STRING					"G2FDb"
 #define DCH264_ID_STRING				"dcH264"
 
-#define MAIN_WINDOW_TITLE				"DVR"
+#define APP_NAME						"DVR"
+
+class QUInt64Validator : public QValidator
+{
+private:
+	int64_t value;
+public:
+	QUInt64Validator(QObject * parent = 0) : QValidator(parent) {}
+	~QUInt64Validator() {}
+	void fixup(QString &input) const override {}
+	State validate(QString &input, int &pos) const override
+	{
+		bool ok = false;
+		uint64_t value = static_cast<uint64_t>(input.toULongLong(&ok, 10));
+		if (ok) {
+			return QValidator::Acceptable;
+		} else {
+			return QValidator::Invalid;
+		}
+	}
+};
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 {
@@ -48,13 +69,22 @@ QString MainWindow::SizeToString(uint64_t size)
 
 void MainWindow::Initialize(void)
 {
-	this->setWindowTitle(MAIN_WINDOW_TITLE);
+	InitWindowTitle();
 	InitializeDvrTypeComboBox();
 	UpdateDrivesComboBox();
+
+	ui.Offset_lineEdit->setValidator(new QUInt64Validator(this));
 
 	QObject::connect(ui.Start_pushButton, &QPushButton::clicked, this, &MainWindow::OnStart);
 	QObject::connect(ui.SelectOutFolder_pushButton, &QPushButton::clicked, this, &MainWindow::OnSelectOutDirectory);
 	QObject::connect(ui.SelectInputFile_pushButton, &QPushButton::clicked, this, &MainWindow::OnSelectInputFile);
+}
+
+void MainWindow::InitWindowTitle(void)
+{
+	QString title = "";
+	title.sprintf("%s  [ver: %d.%d.%d]", APP_NAME, AppVersion::kRelease, AppVersion::kMajor, AppVersion::kMinor);
+	this->setWindowTitle(title);
 }
 
 void MainWindow::InitializeDvrTypeComboBox(void)
@@ -97,6 +127,8 @@ void MainWindow::OnStart(void)
 
 	dvr_type = ui.DvrType_comboBox->currentText();
 
+	uint64_t offset = static_cast<uint64_t>(ui.Offset_lineEdit->text().toULongLong());
+
 	if (ui.InputFile_lineEdit->isEnabled()) {
 		io_name = ui.InputFile_lineEdit->text();
 		if (io_name.isEmpty()) {
@@ -113,14 +145,14 @@ void MainWindow::OnStart(void)
 
 	if (!dvr_type.isEmpty() && !io_name.isEmpty() && !out_directory.isEmpty()) {
 
-		QString title = MAIN_WINDOW_TITLE;
+		QString title = APP_NAME;
 		title +=" -- In progress";
 
 		this->setWindowTitle(title);
 
 		if (dvr_type == DHFS_ID_STRING) {
 			//DHFS::StartRecovering(io_name.toStdString(), out_directory.toStdString());
-			DHFS::StartRecovery(io_name.toStdString(), out_directory.toStdString());
+			DHFS::StartRecovery(io_name.toStdString(), offset, out_directory.toStdString());
 		} else if (dvr_type == G2FDB_ID_STRING) {
 			G2FDB::StartRecovery(io_name.toStdString(), out_directory.toStdString());
 		} else if (dvr_type == HIKVISION_ID_STRING) {		
@@ -131,7 +163,7 @@ void MainWindow::OnStart(void)
 			Orbita::Main(io_name.toStdString(), out_directory.toStdString());
 		}
 
-		title = MAIN_WINDOW_TITLE;
+		title = APP_NAME;
 		title += " -- Finished";
 
 		this->setWindowTitle(title);

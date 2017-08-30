@@ -337,6 +337,7 @@
     <ClInclude Include="dcH264_Reader.h">
       <Filter>Core\dcH264</Filter>
     </ClInclude>
+    <ClInclude Include="version.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="DVR.rc" />

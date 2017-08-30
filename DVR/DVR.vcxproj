@@ -197,6 +197,7 @@
     <ClInclude Include="TestWidget.h" />
     <ClInclude Include="utility.h" />
     <ClInclude Include="vdev_label.h" />
+    <ClInclude Include="version.h" />
     <ClInclude Include="WfsOnDisk.h" />
     <ClInclude Include="dvr.h" />
     <ClInclude Include="VDev.h" />

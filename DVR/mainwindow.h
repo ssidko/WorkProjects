@@ -18,6 +18,7 @@ public:
 	~MainWindow();
 
 	void Initialize(void);
+	void InitWindowTitle(void);
 	void InitializeDvrTypeComboBox(void);
 	void UpdateDrivesComboBox(void);
 

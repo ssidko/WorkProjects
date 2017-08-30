@@ -10,19 +10,19 @@
     <x>0</x>
     <y>0</y>
     <width>366</width>
-    <height>356</height>
+    <height>391</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
     <width>366</width>
-    <height>356</height>
+    <height>391</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
     <width>16777215</width>
-    <height>356</height>
+    <height>391</height>
    </size>
   </property>
   <property name="windowTitle">
@@ -38,7 +38,7 @@
    <property name="maximumSize">
     <size>
      <width>16777215</width>
-     <height>16777215</height>
+     <height>387</height>
     </size>
    </property>
    <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -107,7 +107,7 @@
       <property name="maximumSize">
        <size>
         <width>16777215</width>
-        <height>72</height>
+        <height>16777215</height>
        </size>
       </property>
       <property name="title">
@@ -227,6 +227,34 @@
            </property>
            <property name="text">
             <string>...</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_10">
+         <item>
+          <widget class="QLabel" name="label_3">
+           <property name="text">
+            <string>Offset      </string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="Offset_lineEdit">
+           <property name="text">
+            <string>0</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_4">
+           <property name="text">
+            <string>bytes </string>
            </property>
           </widget>
          </item>

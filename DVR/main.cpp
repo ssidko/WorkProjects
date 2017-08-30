@@ -115,7 +115,7 @@ int main(int argc, char *argv[])
 	QApplication a(argc, argv);
 	MainWindow w;
 
-	dcH264::main();
+	//dcH264::main();
 
 	//zfs_test();
 

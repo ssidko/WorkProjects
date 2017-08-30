@@ -3,7 +3,7 @@
 #include <cassert>
 
 
-int DHFS::StartRecovery(const std::string & dvr_volume, const std::string & out_directory, const dvr::Timestamp & start_time, const dvr::Timestamp & end_time)
+int DHFS::StartRecovery(const std::string & dvr_volume, const uint64_t &offset, const std::string & out_directory, const dvr::Timestamp & start_time, const dvr::Timestamp & end_time)
 {
 	LONGLONG file_size = FileSize(dvr_volume);
 	if (!file_size) {
@@ -18,6 +18,8 @@ int DHFS::StartRecovery(const std::string & dvr_volume, const std::string & out_
 	size_t max_sequence_size = 100 * 1024 * 1024;
 
 	if (volume.Open() && storage.Open()) {
+
+		volume.SetPointer(offset);
 
 		while (volume.FindAndReadFrameSequence(sequence, max_sequence_size)) {
 			//storage.SaveFrameSequence(sequence);
