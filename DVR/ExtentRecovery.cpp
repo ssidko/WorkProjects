@@ -1,4 +1,5 @@
 #include "ExtentRecovery.h"
+#include <vector>
 #include <sstream>
 
 ext4::ExtentSaver::ExtentSaver(const std::string &result_out_dir, const std::string &ext_volume_file, const LONGLONG &ext_volume_offset, DWORD ext_block_size) :
@@ -36,7 +37,9 @@ bool ext4::ExtentSaver::NextExtentBlock(LONGLONG &block_num)
 
 	SetPointer(current_block);
 	while (io.Read(buff, block_size) == block_size) {
-		if ((extent_block->header.magic == EXTENT_HEADER_MAGIC) && (extent_block->header.max == max_extents_in_block) && (extent_block->header.entries <= max_extents_in_block)) {
+		if ((extent_block->header.magic == EXTENT_HEADER_MAGIC) &&
+			(extent_block->header.max == max_extents_in_block) &&
+			(extent_block->header.entries <= max_extents_in_block)) {
 			result = true;
 			block_num = current_block;
 			current_block++;
@@ -59,14 +62,17 @@ bool ext4::ExtentSaver::SaveToFile(const LONGLONG &block_num, W32Lib::FileEx *ou
 		return false;
 	}
 	
-	BYTE *block_buff = new BYTE[block_size];
+	std::vector<BYTE> buffer(block_size, 0);
+	BYTE *block_buff = &buffer[0];
 	EXTENT_BLOCK *extent_block = (EXTENT_BLOCK *)block_buff;
 
-	if (io.Read(block_buff, block_size) != block_size) {
+	if (io.Read(&buffer[0], buffer.size()) != buffer.size()) {
 		return false;
 	}
 
-	if ((extent_block->header.magic != EXTENT_HEADER_MAGIC) || (extent_block->header.max != max_extents_in_block) || (extent_block->header.entries > max_extents_in_block)) {
+	if ((extent_block->header.magic != EXTENT_HEADER_MAGIC) ||
+		(extent_block->header.max != max_extents_in_block) ||
+		(extent_block->header.entries > max_extents_in_block)) {
 		return false;
 	}
 
