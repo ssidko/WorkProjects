@@ -110,10 +110,99 @@ void ToHexString(uint8_t *buff, size_t count, std::string &str)
 #include "MyPrintf.h"
 #include "zfs_test.h"
 
+
+class Point
+{
+private:
+	int x, y;
+	char *buff;
+public:
+	enum {
+		BuffSize = 512
+	};
+
+	Point() : buff(nullptr)
+	{
+		x = 0;
+		y = 0;
+		buff = new char[BuffSize];
+	}
+
+	Point(Point& point)
+	{
+		x = point.x;
+		y = point.y;
+		buff = new char[BuffSize];
+		std::memcpy(buff, point.buff, Point::BuffSize);
+	}
+
+	Point(Point&& point)
+	{
+		x = point.x;
+		y = point.y;
+		buff = point.buff;
+		point.buff = nullptr;
+	}
+
+	Point(int x_, int y_) : buff(nullptr)
+	{
+		x = x_;
+		y = y_;
+		buff = new char[BuffSize];
+	}
+
+	Point& operator=(Point&& point)
+	{
+		this->x = point.x;
+		this->y = point.y;
+
+		if (buff) {
+			delete[] buff;
+		}
+		
+		buff = point.buff;
+		point.buff = nullptr;
+		return *this;
+	}
+
+	Point& operator=(Point& point)
+	{
+		this->x = point.x;
+		this->y = point.y;
+
+		if (buff == nullptr) {
+			buff = new char[BuffSize];
+		}
+
+		std::memcpy(buff, point.buff, BuffSize);
+		return *this;
+	}
+
+	~Point()
+	{
+		x = 0;
+		y = 0;
+		if (buff) {
+			delete[] buff;
+			buff = nullptr;
+		}
+	}
+};
+
+Point MakePoint(void)
+{
+	Point p(10, 15);
+	return p;
+}
+
 int main(int argc, char *argv[])
 {
 	QApplication a(argc, argv);
 	MainWindow w;
+
+	Point a1;
+	a1 = MakePoint();
+
 
 	//dcH264::main();
 
