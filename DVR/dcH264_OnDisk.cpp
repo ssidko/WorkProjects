@@ -3,7 +3,7 @@
 
 bool dcH264::FRAME_HEADER::IsValid(void)
 {
-	if ((camera < '0') && (camera > '9')) {
+	if ((camera < '0') || (camera > '9')) {
 		return false;
 	}
 
