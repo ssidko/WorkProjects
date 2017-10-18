@@ -50,8 +50,7 @@ bool IsValidFileHeader(rar::FILE_HEADER *header)
 			if (header->compressed_size > header->uncompressed_size) {
 				return false;
 			}
-		}
-		else {
+		} else {
 			if (header->compressed_size != 0) {
 				return false;
 			}
@@ -158,12 +157,10 @@ int RarRecoveryMain(int argc, _TCHAR* argv[])
 
 		if (RarRecovery(arch_path, out_path) == 0) {
 			std::cout << "Finished. RAR restored\n";
-		}
-		else {
+		} else {
 			std::cout << "Finished. Failed to restore the RAR archive.\n";
 		}
-	}
-	else {
+	} else {
 		std::cout << "USAGE:  rarec <src_arch_path> <out_arch_path>\n";
 	}
 	return 0;
