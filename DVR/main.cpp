@@ -115,40 +115,31 @@ class Point
 {
 private:
 	int x, y;
-	char *buff;
 public:
-	enum {
-		BuffSize = 512
-	};
+	//Point() : x(0), y(0) 
+	//{
 
-	Point() : buff(nullptr)
-	{
-		x = 0;
-		y = 0;
-		buff = new char[BuffSize];
-	}
+	//}
 
 	Point(Point& point)
 	{
 		x = point.x;
 		y = point.y;
-		buff = new char[BuffSize];
-		std::memcpy(buff, point.buff, Point::BuffSize);
+		std::cout << "construct by Point(Point&) from lvalue" << std::endl;
 	}
 
 	Point(Point&& point)
 	{
 		x = point.x;
 		y = point.y;
-		buff = point.buff;
-		point.buff = nullptr;
+		std::cout << "construct by Point(Point&&) from rvalue" << std::endl;
 	}
 
-	Point(int x_, int y_) : buff(nullptr)
+	Point(int x_, int y_)
 	{
 		x = x_;
 		y = y_;
-		buff = new char[BuffSize];
+		std::cout << "construct by Point(int x, int y)" << std::endl;
 	}
 
 	Point& operator=(Point&& point)
@@ -156,12 +147,6 @@ public:
 		this->x = point.x;
 		this->y = point.y;
 
-		if (buff) {
-			delete[] buff;
-		}
-		
-		buff = point.buff;
-		point.buff = nullptr;
 		return *this;
 	}
 
@@ -170,11 +155,6 @@ public:
 		this->x = point.x;
 		this->y = point.y;
 
-		if (buff == nullptr) {
-			buff = new char[BuffSize];
-		}
-
-		std::memcpy(buff, point.buff, BuffSize);
 		return *this;
 	}
 
@@ -182,10 +162,6 @@ public:
 	{
 		x = 0;
 		y = 0;
-		if (buff) {
-			delete[] buff;
-			buff = nullptr;
-		}
 	}
 };
 
@@ -195,13 +171,23 @@ Point MakePoint(void)
 	return p;
 }
 
+template<typename T, typename ... Args>
+T fabric(Args & ... args)
+{
+	return T(args ...);
+}
+
 int main(int argc, char *argv[])
 {
 	QApplication a(argc, argv);
 	MainWindow w;
 
-	Point a1;
-	a1 = MakePoint();
+	//Point a1(10, 20);
+	//a1 = MakePoint();
+
+	Point src(3, 2);
+
+	Point pt = fabric<Point>(src);
 
 
 	//dcH264::main();
