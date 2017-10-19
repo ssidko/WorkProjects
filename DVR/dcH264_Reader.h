@@ -18,6 +18,7 @@ namespace dcH264
 		bool SetOffset(const LONGLONG &offset);
 		LONGLONG Offset(void);
 
+		bool FindNextFrame();
 		bool ReadFrame(dvr::Frame &frame);
 		bool ReadFrameSequence(dvr::FrameSequence &sequence, size_t max_size = 512*1024*1024);
 

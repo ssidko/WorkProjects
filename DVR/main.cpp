@@ -111,86 +111,12 @@ void ToHexString(uint8_t *buff, size_t count, std::string &str)
 #include "zfs_test.h"
 
 
-class Point
-{
-private:
-	int x, y;
-public:
-	//Point() : x(0), y(0) 
-	//{
-
-	//}
-
-	Point(Point& point)
-	{
-		x = point.x;
-		y = point.y;
-		std::cout << "construct by Point(Point&) from lvalue" << std::endl;
-	}
-
-	Point(Point&& point)
-	{
-		x = point.x;
-		y = point.y;
-		std::cout << "construct by Point(Point&&) from rvalue" << std::endl;
-	}
-
-	Point(int x_, int y_)
-	{
-		x = x_;
-		y = y_;
-		std::cout << "construct by Point(int x, int y)" << std::endl;
-	}
-
-	Point& operator=(Point&& point)
-	{
-		this->x = point.x;
-		this->y = point.y;
-
-		return *this;
-	}
-
-	Point& operator=(Point& point)
-	{
-		this->x = point.x;
-		this->y = point.y;
-
-		return *this;
-	}
-
-	~Point()
-	{
-		x = 0;
-		y = 0;
-	}
-};
-
-Point MakePoint(void)
-{
-	Point p(10, 15);
-	return p;
-}
-
-template<typename T, typename ... Args>
-T fabric(Args & ... args)
-{
-	return T(args ...);
-}
-
 int main(int argc, char *argv[])
 {
 	QApplication a(argc, argv);
 	MainWindow w;
 
-	//Point a1(10, 20);
-	//a1 = MakePoint();
-
-	Point src(3, 2);
-
-	Point pt = fabric<Point>(src);
-
-
-	//dcH264::main();
+	dcH264::main();
 
 	//zfs_test();
 
