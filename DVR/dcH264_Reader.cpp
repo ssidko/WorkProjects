@@ -9,15 +9,14 @@ int dcH264::main(void)
 {
 	FRAME_HEADER *hdr = nullptr;
 	dvr::Frame frame;
-
 	std::string drive_name = "\\\\.\\PhysicalDrive0";
 	LONGLONG disk_size = GetPhysicalDriveSize(drive_name);
 	LONGLONG start_offset = 16046629LL * 512;
+
 	Reader reader(drive_name, disk_size);
 	if (reader.Open()) {
 
 		size_t max_frame_size = 0;
-		std::vector<uint8_t> frame_buffer;
 		reader.SetOffset(start_offset);
 		
 		while (reader.FindNextFrame()) {
