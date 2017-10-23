@@ -39,7 +39,7 @@ namespace dvr
 		LONGLONG offset = 0;
 		DWORD camera = 0;
 		dvr::Timestamp time;
-		std::vector<BYTE> buffer;
+		std::vector<uint8_t> buffer;
 
 		void Clear(void);
 	};
@@ -50,7 +50,7 @@ namespace dvr
 		size_t frames_count = 0;
 		dvr::Timestamp start_time;
 		dvr::Timestamp end_time;
-		std::vector<BYTE> buffer;
+		std::vector<uint8_t> buffer;
 		
 		void Clear(void);
 	};

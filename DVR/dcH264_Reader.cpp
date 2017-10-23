@@ -1,5 +1,6 @@
 #include "dcH264_Reader.h"
 #include <assert.h>
+#include <algorithm>
 #include "utility.h"
 
 using namespace dcH264;
@@ -8,7 +9,6 @@ int dcH264::main(void)
 {
 	FRAME_HEADER *hdr = nullptr;
 	dvr::Frame frame;
-	//LONGLONG disk_size = 1953525168ll * 512ll;
 
 	std::string drive_name = "\\\\.\\PhysicalDrive0";
 	LONGLONG disk_size = GetPhysicalDriveSize(drive_name);
@@ -16,6 +16,7 @@ int dcH264::main(void)
 	Reader reader(drive_name, disk_size);
 	if (reader.Open()) {
 
+		size_t max_frame_size = 0;
 		std::vector<uint8_t> frame_buffer;
 		reader.SetOffset(start_offset);
 		
@@ -23,17 +24,16 @@ int dcH264::main(void)
 		
 			LONGLONG frame_offset = reader.Offset();
 			LONGLONG last_frame_offset = frame_offset;
-			LONGLONG max_frame_size = 0;
-
+			size_t last_frame_size = 0;
 
 			try {
 			
 				while (reader.ReadFrame(frame)) {
+					max_frame_size = std::max<size_t>(last_frame_size, max_frame_size);
 					last_frame_offset = frame.offset;
-					max_frame_size = frame.buffer.size() > max_frame_size ? frame.buffer.size() : max_frame_size;
+					last_frame_size = frame.buffer.size();
 					int x = 0;
 				}
-
 
 				reader.SetOffset(last_frame_offset + 1);
 
@@ -144,6 +144,16 @@ bool dcH264::Reader::ReadFrame(dvr::Frame &frame)
 		}		
 	}
 
+	if (hdr->frame_type == 'cd') {
+		if (hdr->PayloadSize() < 4) {
+			goto _error;
+		}
+		uint32_t *start_prefix = (uint32_t *)hdr->Payload();
+		if (*start_prefix != 0x1000000) {
+			goto _error;
+		}		
+	}
+
 	//
 	// Align file pointer.
 	//
@@ -231,7 +241,6 @@ bool dcH264::Reader::ReadFrameSequence(dvr::FrameSequence &sequence, size_t max_
 
 		}
 	}
-
 
 	return sequence.frames_count ? true : false;
 }
