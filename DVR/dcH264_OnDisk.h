@@ -15,7 +15,8 @@ namespace dcH264
 		BYTE hours;
 		BYTE minutes;
 		BYTE seconds;
-		dvr::Timestamp Timestamp(void) { return dvr::Timestamp(2000 + year, month, day, hours, minutes, seconds); }
+		dvr::Timestamp Timestamp(void);
+		bool IsValid(void);
 	};
 
 	struct FRAME_HEADER {

@@ -7,6 +7,7 @@
 
 namespace dcH264 
 {
+
 	class Reader
 	{
 	public:
@@ -18,15 +19,17 @@ namespace dcH264
 		bool SetOffset(const LONGLONG &offset);
 		LONGLONG Offset(void);
 
-		bool FindNextFrame();
+		bool GoToNextFrame();
 		bool ReadFrame(dvr::Frame &frame);
-		bool ReadFrameSequence(dvr::FrameSequence &sequence, size_t max_size = 512*1024*1024);
+		bool ReadFrameSequence(dvr::FrameSequence &sequence, size_t max_size = 32*1024*1024);
 
 	private:
 		BufferedFile io;
 	};
 
 	int main(void);
+	void AppendFirstFrame(dvr::FrameSequence &sequence, dvr::Frame &frame);
+	void AppendFrame(dvr::FrameSequence &sequence, dvr::Frame &frame);
 }
 
 #endif // _DCH264_READER_H

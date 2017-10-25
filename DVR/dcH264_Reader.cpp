@@ -19,7 +19,7 @@ int dcH264::main(void)
 		size_t max_frame_size = 0;
 		reader.SetOffset(start_offset);
 		
-		while (reader.FindNextFrame()) {
+		while (reader.GoToNextFrame()) {
 		
 			LONGLONG frame_offset = reader.Offset();
 			LONGLONG last_frame_offset = frame_offset;
@@ -73,7 +73,7 @@ LONGLONG dcH264::Reader::Offset(void)
 	return io.Pointer();
 }
 
-bool dcH264::Reader::FindNextFrame()
+bool dcH264::Reader::GoToNextFrame()
 {
 	const size_t chunk_size = 512;
 	std::vector<uint8_t> buffer(chunk_size, 0x00);
@@ -124,12 +124,21 @@ bool dcH264::Reader::ReadFrame(dvr::Frame &frame)
 		goto _error;
 	}
 
+	frame.camera = hdr->camera - '0';
+	if ((hdr->frame_type == 'cd') && (hdr->subtype == '0')) {
+		if (hdr->dc.subtype_0.timestamp.IsValid()) {
+			frame.time = hdr->dc.subtype_0.timestamp.Timestamp();
+		} else {
+			goto _error;
+		}
+	}
+
 	//
 	// Read FRAME_PAYLOAD
 	//
 	
 	size_t frame_size = hdr->FrameSize();
-	if (frame_size > 0xFFFFFF) {
+	if (frame_size == 0 || frame_size > 0xFFFFFF) {
 		goto _error;
 	}
 
@@ -154,16 +163,11 @@ bool dcH264::Reader::ReadFrame(dvr::Frame &frame)
 	}
 
 	//
-	// Align file pointer.
+	// Align file pointer to 8 byte.
 	//
 
 	if (!io.SetPointer(Align(frame.offset + frame_size, 8))) {
 		goto _error;
-	}
-
-	frame.camera = hdr->camera - '0';
-	if ((hdr->frame_type == 'cd') && (hdr->subtype == '0')) {
-		frame.time = hdr->dc.subtype_0.timestamp.Timestamp();		
 	}
 
 	return true;
@@ -173,73 +177,52 @@ _error:
 	return false;
 }
 
-bool AppendFrameToSequence(dvr::FrameSequence &sequence, dvr::Frame &frame)
-{
-	FRAME_HEADER *header = (FRAME_HEADER *)&frame.buffer[0];
-
-	if (sequence.frames_count == 0) {
-		sequence.camera = frame.camera;
-		sequence.offset = frame.offset;
-	}
-
-	if (sequence.camera == frame.camera) {
-	
-		if (frame.time.Seconds()) {
-		
-		
-		
-		
-		}
-
-		sequence.frames_count++;
-
-		size_t old_size = sequence.buffer.size();
-		sequence.buffer.resize(old_size + header->PayloadSize());
-		std::memcpy(&sequence.buffer[old_size], header->Payload(), header->PayloadSize());
-	}
-
-	return false;
-}
-
 bool dcH264::Reader::ReadFrameSequence(dvr::FrameSequence &sequence, size_t max_size)
 {
 	dvr::Frame frame;
-	FRAME_HEADER *header = nullptr;
 
-	sequence.Clear();
-
-	if (ReadFrame(frame)) {
-
-		header = (FRAME_HEADER *)&frame.buffer[0];
-
-		sequence.offset = frame.offset;
-		sequence.camera = frame.camera;
-		sequence.frames_count += 1;
-		sequence.start_time = frame.time;
-		sequence.end_time = frame.time;
-
-		sequence.buffer.resize(header->PayloadSize());
-		std::memcpy(&sequence.buffer[0], header->Payload(), header->PayloadSize());
-	
-		while (ReadFrame(frame)) {
-
-			header = (FRAME_HEADER *)&frame.buffer[0];
-
-			if (frame.time.Seconds()) {
+	while (GoToNextFrame()) {
+		if (ReadFrame(frame)) {
+			AppendFirstFrame(sequence, frame);
+			while (ReadFrame(frame)) {
+			
+			
+				if (sequence.camera == frame.camera) {
 				
-				if (sequence.start_time.Seconds() == 0) {
-					sequence.start_time = frame.time;
+					AppendFrame(sequence, frame);
 				}
+			
 			
 			}
 
 
-			size_t old_size = sequence.buffer.size();
-			sequence.buffer.resize(old_size + header->PayloadSize());
-			std::memcpy(&sequence.buffer[old_size], header->Payload(), header->PayloadSize());
-
 		}
+	
 	}
 
+
+
 	return sequence.frames_count ? true : false;
+}
+
+void dcH264::AppendFirstFrame(dvr::FrameSequence & sequence, dvr::Frame & frame)
+{
+	sequence.Clear();
+	sequence.offset = frame.offset;
+	sequence.camera = frame.camera;
+	AppendFrame(sequence, frame);
+}
+
+void dcH264::AppendFrame(dvr::FrameSequence & sequence, dvr::Frame & frame)
+{
+	sequence.frames_count += 1;
+	if (frame.time) {
+		if (!sequence.start_time) {
+			sequence.start_time = frame.time;
+		} 
+		sequence.end_time = frame.time;
+	}
+	FRAME_HEADER *header = (FRAME_HEADER *)&frame.buffer[0];
+	sequence.buffer.resize(header->PayloadSize());
+	std::memcpy(&sequence.buffer[0], header->Payload(), header->PayloadSize());
 }

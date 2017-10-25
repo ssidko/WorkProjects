@@ -33,6 +33,7 @@ namespace dvr
 		bool operator<=(const Timestamp &t);
 		bool operator==(const Timestamp &t);
 		ULONGLONG operator-(const Timestamp &t);
+		operator bool(void);
 	};
 
 	struct Frame {

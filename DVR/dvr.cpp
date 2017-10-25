@@ -3,7 +3,12 @@
 #include <cctype>
 
 dvr::Timestamp::Timestamp(WORD year_, BYTE month_, BYTE day_, BYTE hours_, BYTE mins_, BYTE sec_) :
-	year(year_), month(month_), day(day_), hours(hours_), minutes(mins_), seconds(sec_)
+	year(year_),
+	month(month_),
+	day(day_),
+	hours(hours_),
+	minutes(mins_),
+	seconds(sec_)
 {
 }
 
@@ -76,6 +81,11 @@ bool dvr::Timestamp::operator==( const Timestamp &t )
 ULONGLONG dvr::Timestamp::operator-( const Timestamp &t )
 {
 	return (this->Seconds() - t.Seconds());
+}
+
+dvr::Timestamp::operator bool(void)
+{
+	return year ? true : false;
 }
 
 void dvr::Frame::Clear(void)

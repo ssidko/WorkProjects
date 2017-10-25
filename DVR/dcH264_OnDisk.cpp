@@ -70,3 +70,29 @@ uint8_t *dcH264::FRAME_HEADER::Payload(void)
 	assert(this->IsValid());
 	return (uint8_t *)((ptrdiff_t)this + (ptrdiff_t)this->HeaderSize());
 }
+
+dvr::Timestamp dcH264::TIMESTAMP::Timestamp(void)
+{
+	//
+	// ВАЖНО: мы должны вернуть проинициализированный dvr::Timestamp только в том
+	// случае если мы сами проинициализированы, иначе мы должны вернуть пустой dvr::Timestamp
+	//
+
+	if (month && day) {
+		return dvr::Timestamp(2000 + year, month, day, hours, minutes, seconds);
+	} else {
+		return dvr::Timestamp();
+	}
+}
+
+bool dcH264::TIMESTAMP::IsValid(void)
+{
+	if (month != 0 && month <= 12) {
+		if (day != 0 && day <= 31) {
+			if (hours < 24 && minutes < 60 && seconds < 60) {
+				return true;
+			}
+		}
+	}
+	return false;
+}
