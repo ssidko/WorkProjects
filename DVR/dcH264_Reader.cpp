@@ -17,6 +17,7 @@ int dcH264::main(void)
 	if (reader.Open()) {
 
 		size_t max_frame_size = 0;
+		size_t min_frame_size = 1000000;
 		reader.SetOffset(start_offset);
 		
 		while (reader.GoToNextFrame()) {
@@ -28,7 +29,10 @@ int dcH264::main(void)
 			try {
 			
 				while (reader.ReadFrame(frame)) {
-					max_frame_size = std::max<size_t>(last_frame_size, max_frame_size);
+					if (last_frame_size) {
+						max_frame_size = std::max<size_t>(last_frame_size, max_frame_size);
+						min_frame_size = std::min<size_t>(last_frame_size, min_frame_size);
+					}
 					last_frame_offset = frame.offset;
 					last_frame_size = frame.buffer.size();
 					int x = 0;
@@ -138,7 +142,7 @@ bool dcH264::Reader::ReadFrame(dvr::Frame &frame)
 	//
 	
 	size_t frame_size = hdr->FrameSize();
-	if (frame_size == 0 || frame_size > 0xFFFFFF) {
+	if (frame_size > 0xFFFFFF) {
 		goto _error;
 	}
 
@@ -156,8 +160,12 @@ bool dcH264::Reader::ReadFrame(dvr::Frame &frame)
 		if (hdr->PayloadSize() < 4) {
 			goto _error;
 		}
-		uint32_t *start_prefix = (uint32_t *)hdr->Payload();
-		if (*start_prefix != 0x1000000) {
+
+		uint32_t start_prefix_code = *(uint32_t *)hdr->Payload();	
+		//
+		// start_prefix_code can be x00x00x00x01 or x00x00x01
+		//
+		if (start_prefix_code != 0x01000000 && (start_prefix_code & 0x00FFFFFF) != 0x00010000) {
 			goto _error;
 		}		
 	}
