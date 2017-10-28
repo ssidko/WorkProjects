@@ -19,6 +19,12 @@ namespace dcH264
 		bool IsValid(void);
 	};
 
+	enum class FrameType {
+		unknown = 0,
+		dc		= 'cd',
+		wb		= 'bw',
+	};
+
 	struct FRAME_HEADER {
 		uint8_t camera;							// ASCII '0' - '9'
 		uint8_t subtype;						// ASCII '0' - '9'
