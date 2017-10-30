@@ -188,30 +188,29 @@ _error:
 bool dcH264::Reader::ReadFrameSequence(dvr::FrameSequence &sequence, size_t max_size)
 {
 	dvr::Frame frame;
-	LONGLONG offset = 0;
+	LONGLONG prev_frame_offset = 0;
 
 	while (GoToNextFrame()) {
-		offset = io.Pointer();
 		if (ReadFrame(frame)) {
 			AppendFirstFrame(sequence, frame);
+			prev_frame_offset = frame.offset;
 			while (ReadFrame(frame)) {
 			
 			
 				if (sequence.camera == frame.camera) {
 				
 					AppendFrame(sequence, frame);
-				}
-			
+				}			
 			
 			}
 
 
 		}
-		io.SetPointer(offset + 1);
+		io.SetPointer(prev_frame_offset + 1);
 	
 	}
 
-	return sequence.frames_count ? true : false;
+	return false;
 }
 
 void dcH264::AppendFirstFrame(dvr::FrameSequence & sequence, dvr::Frame & frame)
