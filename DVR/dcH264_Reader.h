@@ -25,6 +25,7 @@ namespace dcH264
 
 	private:
 		BufferedFile io;
+		dvr::Frame tmp_frame;
 	};
 
 	int main(void);

@@ -9,6 +9,7 @@ int dcH264::main(void)
 {
 	FRAME_HEADER *hdr = nullptr;
 	dvr::Frame frame;
+	std::string out_dir = "F:\\43035\\";
 	std::string drive_name = "\\\\.\\PhysicalDrive0";
 	LONGLONG disk_size = GetPhysicalDriveSize(drive_name);
 	LONGLONG start_offset = 16046629LL * 512;
@@ -16,36 +17,23 @@ int dcH264::main(void)
 	Reader reader(drive_name, disk_size);
 	if (reader.Open()) {
 
+		dvr::FrameSequence sequence;
+
 		size_t max_frame_size = 0;
-		size_t min_frame_size = 1000000;
+		size_t min_frame_size = -1;
 		reader.SetOffset(start_offset);
 		
-		while (reader.GoToNextFrame()) {
-		
-			LONGLONG frame_offset = reader.Offset();
-			LONGLONG last_frame_offset = frame_offset;
-			size_t last_frame_size = 0;
-
-			try {
-			
-				while (reader.ReadFrame(frame)) {
-					if (last_frame_size) {
-						max_frame_size = std::max<size_t>(last_frame_size, max_frame_size);
-						min_frame_size = std::min<size_t>(last_frame_size, min_frame_size);
-					}
-					last_frame_offset = frame.offset;
-					last_frame_size = frame.buffer.size();
-					int x = 0;
-				}
-
-				reader.SetOffset(last_frame_offset + 1);
-
-			} catch (std::exception& ex) {
-
-				int x = 0;
-				
-			}		
-		
+		while (reader.ReadFrameSequence(sequence)) {
+			/*
+			int x = 0;
+			std::string file_name = std::to_string(sequence.camera) + " -=- " +  sequence.start_time.ToString() + " -- " + sequence.end_time.ToString() + " -=- " + std::to_string((long long)sequence.offset)  +".h264";
+			std::string file_path = out_dir + file_name;
+			W32Lib::FileEx out_file(file_path.c_str());
+			if (out_file.Create()) {
+			out_file.Write(sequence.buffer.data(), sequence.buffer.size());
+			}
+			int y = 0;			
+			*/
 		}
 
 	}
@@ -187,27 +175,59 @@ _error:
 
 bool dcH264::Reader::ReadFrameSequence(dvr::FrameSequence &sequence, size_t max_size)
 {
-	dvr::Frame frame;
-	LONGLONG prev_frame_offset = 0;
+	size_t trusted_size = 0;
+	LONGLONG last_frame_offset = 0;
 
 	while (GoToNextFrame()) {
-		if (ReadFrame(frame)) {
-			AppendFirstFrame(sequence, frame);
-			prev_frame_offset = frame.offset;
-			while (ReadFrame(frame)) {
-			
-			
-				if (sequence.camera == frame.camera) {
+		last_frame_offset = io.Pointer();
+		if (ReadFrame(tmp_frame)) {
+
+			AppendFirstFrame(sequence, tmp_frame);
+			last_frame_offset = tmp_frame.offset;
+			trusted_size = 0;
+
+			while (ReadFrame(tmp_frame)) {
 				
-					AppendFrame(sequence, frame);
-				}			
+				last_frame_offset = tmp_frame.offset;
+				trusted_size = sequence.buffer.size();
 			
+				if (sequence.buffer.size() + tmp_frame.buffer.size() > max_size) {
+					break;
+				}
+				if (sequence.camera != tmp_frame.camera) {
+					break;
+				}
+				if (tmp_frame.time && sequence.end_time) {
+					if (tmp_frame.time < sequence.end_time) {
+						break;
+					}
+				}
+
+				AppendFrame(sequence, tmp_frame);
+
 			}
 
+			//
+			// Если последний фрейм был прочитан успешно необходимо файловый указатель
+			// установить на него чтобы он был прочитан последующим чтением.
+			//
+			if (tmp_frame.buffer.size()) {
+				io.SetPointer(last_frame_offset);			
+			} else {
+				io.SetPointer(last_frame_offset + 1);
+			}
 
-		}
-		io.SetPointer(prev_frame_offset + 1);
-	
+			if (sequence.frames_count > 2) {
+				// 
+				// Отбрасываем последний фрейм т.к. в большинстве случаев он повреждён.
+				//
+				//sequence.frames_count -= 1;
+				//sequence.buffer.resize(trusted_size);
+				return true;			
+			}
+		} else {
+			io.SetPointer(last_frame_offset + 1);
+		}			
 	}
 
 	return false;
@@ -231,7 +251,19 @@ void dcH264::AppendFrame(dvr::FrameSequence & sequence, dvr::Frame & frame)
 		} 
 		sequence.end_time = frame.time;
 	}
+	size_t origin_size = sequence.buffer.size();
 	FRAME_HEADER *header = (FRAME_HEADER *)&frame.buffer[0];
-	sequence.buffer.resize(header->PayloadSize());
-	std::memcpy(&sequence.buffer[0], header->Payload(), header->PayloadSize());
+
+
+	//
+	// Save without header
+	// 
+	//sequence.buffer.resize(origin_size + header->PayloadSize());
+	//std::memcpy(&sequence.buffer[origin_size], header->Payload(), header->PayloadSize());
+
+	//
+	// Save with header
+	// 
+	sequence.buffer.resize(origin_size + frame.buffer.size());
+	std::memcpy(&sequence.buffer[origin_size], frame.buffer.data(), frame.buffer.size());
 }
