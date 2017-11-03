@@ -24,16 +24,16 @@ int dcH264::main(void)
 		reader.SetOffset(start_offset);
 		
 		while (reader.ReadFrameSequence(sequence)) {
-			/*
+			
 			int x = 0;
 			std::string file_name = std::to_string(sequence.camera) + " -=- " +  sequence.start_time.ToString() + " -- " + sequence.end_time.ToString() + " -=- " + std::to_string((long long)sequence.offset)  +".h264";
 			std::string file_path = out_dir + file_name;
 			W32Lib::FileEx out_file(file_path.c_str());
 			if (out_file.Create()) {
-			out_file.Write(sequence.buffer.data(), sequence.buffer.size());
+				out_file.Write(sequence.buffer.data(), sequence.buffer.size());
 			}
 			int y = 0;			
-			*/
+			
 		}
 
 	}
@@ -221,8 +221,8 @@ bool dcH264::Reader::ReadFrameSequence(dvr::FrameSequence &sequence, size_t max_
 				// 
 				// Отбрасываем последний фрейм т.к. в большинстве случаев он повреждён.
 				//
-				//sequence.frames_count -= 1;
-				//sequence.buffer.resize(trusted_size);
+				sequence.frames_count -= 1;
+				sequence.buffer.resize(trusted_size);
 				return true;			
 			}
 		} else {
