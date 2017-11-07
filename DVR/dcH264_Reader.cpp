@@ -22,17 +22,61 @@ int dcH264::main(void)
 		size_t max_frame_size = 0;
 		size_t min_frame_size = -1;
 		reader.SetOffset(start_offset);
+
+		const size_t cam_id = 5;
+		const LONGLONG file_max_size = 50 * 1024 * 1024;
+		W32Lib::FileEx *out_file = nullptr;
+		dvr::Timestamp last_timestamp;
 		
 		while (reader.ReadFrameSequence(sequence)) {
+
+			if (sequence.camera == cam_id) {
+				
+				if (out_file) {
+					if (out_file->GetSize() >= file_max_size) {
+						delete out_file;
+						out_file = nullptr;
+					}
+				}
 			
-			int x = 0;
-			std::string file_name = std::to_string(sequence.camera) + " -=- " +  sequence.start_time.ToString() + " -- " + sequence.end_time.ToString() + " -=- " + std::to_string((long long)sequence.offset)  +".h264";
-			std::string file_path = out_dir + file_name;
-			W32Lib::FileEx out_file(file_path.c_str());
-			if (out_file.Create()) {
-				out_file.Write(sequence.buffer.data(), sequence.buffer.size());
-			}
-			int y = 0;			
+				if (out_file == nullptr) {
+					std::string file_name = std::to_string(sequence.camera) + " -=- " + sequence.start_time.ToString() + " -=- " + std::to_string((long long)sequence.offset) + ".h264";
+					std::string file_path = out_dir + file_name;
+					out_file = new W32Lib::FileEx(file_path.c_str());
+					if (!out_file->Create()) {
+						throw std::exception();
+					}
+				}
+
+				if (sequence.start_time) {
+					if (!last_timestamp) {
+						last_timestamp = sequence.end_time;
+					} else {					
+						if (sequence.end_time < last_timestamp) {
+							throw std::exception();						
+						}
+						last_timestamp = sequence.end_time;
+					}
+				}
+
+				out_file->Write(sequence.buffer.data(), sequence.buffer.size());
+
+			
+			
+			} else {
+
+				//int x = 0;
+				//std::string file_name = std::to_string(sequence.camera) + " -=- " + sequence.start_time.ToString() + " -- " + sequence.end_time.ToString() + " -=- " + std::to_string((long long)sequence.offset) + ".h264";
+				//std::string file_path = out_dir + file_name;
+				//W32Lib::FileEx out_file(file_path.c_str());
+				//if (out_file.Create()) {
+				//	out_file.Write(sequence.buffer.data(), sequence.buffer.size());
+				//}
+				//int y = 0;
+
+				continue;
+
+			}		
 			
 		}
 
@@ -258,12 +302,12 @@ void dcH264::AppendFrame(dvr::FrameSequence & sequence, dvr::Frame & frame)
 	//
 	// Save without header
 	// 
-	//sequence.buffer.resize(origin_size + header->PayloadSize());
-	//std::memcpy(&sequence.buffer[origin_size], header->Payload(), header->PayloadSize());
+	sequence.buffer.resize(origin_size + header->PayloadSize());
+	std::memcpy(&sequence.buffer[origin_size], header->Payload(), header->PayloadSize());
 
 	//
 	// Save with header
 	// 
-	sequence.buffer.resize(origin_size + frame.buffer.size());
-	std::memcpy(&sequence.buffer[origin_size], frame.buffer.data(), frame.buffer.size());
+	//sequence.buffer.resize(origin_size + frame.buffer.size());
+	//std::memcpy(&sequence.buffer[origin_size], frame.buffer.data(), frame.buffer.size());
 }

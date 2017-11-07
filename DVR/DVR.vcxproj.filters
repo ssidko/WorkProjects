@@ -194,6 +194,9 @@
     <ClCompile Include="dcH264_Reader.cpp">
       <Filter>Core\dcH264</Filter>
     </ClCompile>
+    <ClCompile Include="dcH264_Recovery.cpp">
+      <Filter>Core\dcH264</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="mainwindow.ui">
@@ -338,6 +341,9 @@
       <Filter>Core\dcH264</Filter>
     </ClInclude>
     <ClInclude Include="version.h" />
+    <ClInclude Include="dcH264_Recovery.h">
+      <Filter>Core\dcH264</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="DVR.rc" />

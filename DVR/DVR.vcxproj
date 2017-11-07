@@ -93,6 +93,7 @@
     <ClCompile Include="BufferedFile.cpp" />
     <ClCompile Include="dcH264_OnDisk.cpp" />
     <ClCompile Include="dcH264_Reader.cpp" />
+    <ClCompile Include="dcH264_Recovery.cpp" />
     <ClCompile Include="DhfsRecovery.cpp" />
     <ClCompile Include="DhfsVolume.cpp" />
     <ClCompile Include="dvr1.cpp" />
@@ -169,6 +170,7 @@
     <ClInclude Include="BufferedFile.h" />
     <ClInclude Include="dcH264_OnDisk.h" />
     <ClInclude Include="dcH264_Reader.h" />
+    <ClInclude Include="dcH264_Recovery.h" />
     <ClInclude Include="DhfsRecovery.h" />
     <ClInclude Include="DhfsVolume.h" />
     <ClInclude Include="dmu.h" />
