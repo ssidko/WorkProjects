@@ -53,7 +53,8 @@ int dcH264::main(void)
 						last_timestamp = sequence.end_time;
 					} else {					
 						if (sequence.end_time < last_timestamp) {
-							throw std::exception();						
+							continue;
+							// throw std::exception();						
 						}
 						last_timestamp = sequence.end_time;
 					}
