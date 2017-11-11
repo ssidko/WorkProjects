@@ -33,14 +33,14 @@ namespace dcH264 {
 	class VideoStorage
 	{
 	public:
-		VideoStorage(const std::string &dir_path);
+		VideoStorage(const std::string &storage_dir_path);
 		~VideoStorage();
 		bool Open(void);
 		void Close();
 		bool SaveSequence(const dvr::FrameSequence &sequence);
 	
 	private:
-		std::string base_dir_path;
+		std::string storage_path;
 	};
 
 	void StartRecovery(void);
