@@ -110,7 +110,6 @@ void ToHexString(uint8_t *buff, size_t count, std::string &str)
 #include "MyPrintf.h"
 #include "zfs_test.h"
 
-
 int main(int argc, char *argv[])
 {
 	QApplication a(argc, argv);

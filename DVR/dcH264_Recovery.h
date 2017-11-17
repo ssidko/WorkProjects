@@ -7,7 +7,8 @@
 #include "dcH264_Reader.h"
 #include "dvr.h"
 
-namespace dcH264 {
+namespace dcH264
+{
 
 	class VideoFile
 	{
@@ -38,7 +39,7 @@ namespace dcH264 {
 		bool Open(void);
 		void Close();
 		bool SaveSequence(const dvr::FrameSequence &sequence);
-	
+
 	private:
 		std::string storage_path;
 	};
