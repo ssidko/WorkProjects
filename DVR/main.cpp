@@ -110,6 +110,28 @@ void ToHexString(uint8_t *buff, size_t count, std::string &str)
 #include "MyPrintf.h"
 #include "zfs_test.h"
 
+template<typename TestedType, typename Arg, typename ... Args>
+bool TestExistense(void)
+{
+	if (std::is_same<TestedType, Arg>::value) {
+		return true;
+	} else if (TestExistense<TestedType, Args...>()) {
+		return true;
+	} else {
+		return false;
+	}
+}
+
+template<typename ... Args>
+class TypeList {
+public:
+	template<typename T>
+	bool InList() 
+	{
+		return TestExistense<T, Args...>();	
+	}
+};
+
 int main(int argc, char *argv[])
 {
 	QApplication a(argc, argv);
@@ -117,6 +139,8 @@ int main(int argc, char *argv[])
 
 	dcH264::main();
 
+	TypeList<int, bool, float> types;
+	bool result = types.InList<float>();
 	//zfs_test();
 
 	w.show();
