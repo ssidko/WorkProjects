@@ -65,6 +65,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FreeFolders", "FreeFolders\
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MyLib", "MyLib\MyLib.vcxproj", "{B5D0A23D-84F4-4930-9BBC-EAFA8C7A3194}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ntfs", "ntfs\ntfs.vcxproj", "{DA39F50F-CB17-465E-950B-FD0E10D3D610}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -241,6 +243,14 @@ Global
 		{B5D0A23D-84F4-4930-9BBC-EAFA8C7A3194}.Release|Win32.ActiveCfg = Release|Win32
 		{B5D0A23D-84F4-4930-9BBC-EAFA8C7A3194}.Release|Win32.Build.0 = Release|Win32
 		{B5D0A23D-84F4-4930-9BBC-EAFA8C7A3194}.Release|x64.ActiveCfg = Release|Win32
+		{DA39F50F-CB17-465E-950B-FD0E10D3D610}.Debug|Win32.ActiveCfg = Debug|Win32
+		{DA39F50F-CB17-465E-950B-FD0E10D3D610}.Debug|Win32.Build.0 = Debug|Win32
+		{DA39F50F-CB17-465E-950B-FD0E10D3D610}.Debug|x64.ActiveCfg = Debug|x64
+		{DA39F50F-CB17-465E-950B-FD0E10D3D610}.Debug|x64.Build.0 = Debug|x64
+		{DA39F50F-CB17-465E-950B-FD0E10D3D610}.Release|Win32.ActiveCfg = Release|Win32
+		{DA39F50F-CB17-465E-950B-FD0E10D3D610}.Release|Win32.Build.0 = Release|Win32
+		{DA39F50F-CB17-465E-950B-FD0E10D3D610}.Release|x64.ActiveCfg = Release|x64
+		{DA39F50F-CB17-465E-950B-FD0E10D3D610}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
