@@ -5,6 +5,8 @@
 #include <fstream>
 #include "ntfs.h"
 #include "ByteStream.h"
+#include <zlib.h>
+#include <iostream>
 
 typedef struct {
 	uint64_t start_lcn;
@@ -134,11 +136,202 @@ bool DecodeRunlist(uint8_t *buff, size_t buff_size, run_list &extents)
 	return false;
 }
 
+#define CHUNK_SIZE	512*512
+
+/* Компрессия */
+bool compress_file(FILE *src, FILE *dst)
+{
+	uint8_t inbuff[CHUNK_SIZE];
+	uint8_t outbuff[CHUNK_SIZE];
+	z_stream stream = { 0 };
+
+	if (deflateInit(&stream, Z_BEST_SPEED) != Z_OK)
+	{
+		fprintf(stderr, "deflateInit(...) failed!\n");
+		return false;
+	}
+
+	int flush;
+	do {
+		stream.avail_in = fread(inbuff, 1, CHUNK_SIZE, src);
+		if (ferror(src))
+		{
+			fprintf(stderr, "fread(...) failed!\n");
+			deflateEnd(&stream);
+			return false;
+		}
+
+		flush = feof(src) ? Z_FINISH : Z_NO_FLUSH;
+		stream.next_in = inbuff;
+
+		do {
+			stream.avail_out = CHUNK_SIZE;
+			stream.next_out = outbuff;
+			deflate(&stream, flush);
+			uint32_t nbytes = CHUNK_SIZE - stream.avail_out;
+
+			if (fwrite(outbuff, 1, nbytes, dst) != nbytes || ferror(dst))
+			{
+				fprintf(stderr, "fwrite(...) failed!\n");
+				deflateEnd(&stream);
+				return false;
+			}
+		} while (stream.avail_out == 0);
+	} while (flush != Z_FINISH);
+
+	deflateEnd(&stream);
+	return true;
+}
+
+/* Декомпрессия */
+bool decompress_file(FILE *src, FILE *dst)
+{
+	uint8_t inbuff[CHUNK_SIZE] = {0};
+	uint8_t outbuff[CHUNK_SIZE] = {0};
+	z_stream stream = { 0 };
+	bool eof = false;
+
+	int result = Z_OK;
+	//int result = inflateInit(&stream);
+	//if (result != Z_OK)
+	//{
+	//	fprintf(stderr, "inflateInit(...) failed!\n");
+	//	return false;
+	//}
+
+	fpos_t prev_pos = 0;
+	fpos_t pos = 0;
+	fgetpos(src, &pos);
+
+	do {
+
+		z_stream stream = { 0 };
+		result = inflateInit(&stream);
+		if (result != Z_OK)
+		{
+			fprintf(stderr, "inflateInit(...) failed!\n");
+			return false;
+		}
+
+		do {
+			stream.avail_in = fread(inbuff, 1, CHUNK_SIZE, src);
+			if (ferror(src))
+			{
+				fprintf(stderr, "fread(...) failed!\n");
+				inflateEnd(&stream);
+				return false;
+			}
+
+			if (stream.avail_in == 0) {
+				eof = true;
+				break;
+			}
+
+			stream.next_in = inbuff;
+
+			do {
+				stream.avail_out = CHUNK_SIZE;
+				stream.next_out = outbuff;
+				result = inflate(&stream, Z_NO_FLUSH);
+				if (result == Z_NEED_DICT || result == Z_DATA_ERROR ||
+					result == Z_MEM_ERROR)
+				{
+					fprintf(stderr, "inflate(...) failed: %d\n", result);
+					fgetpos(src, &pos);
+					std::cout << stream.msg << std::endl;
+					std::cout << "Pos: " << std::to_string(pos) << std::endl;
+					inflateEnd(&stream);
+					return false;
+				}
+
+				uint32_t nbytes = CHUNK_SIZE - stream.avail_out;
+
+				if (fwrite(outbuff, 1, nbytes, dst) != nbytes || ferror(dst))
+				{
+					fprintf(stderr, "fwrite(...) failed!\n");
+					inflateEnd(&stream);
+					return false;
+				}
+			} while (stream.avail_out == 0);
+		} while (result != Z_STREAM_END);
+
+		prev_pos = pos;
+		pos += stream.total_in + 8;
+		fsetpos(src, &pos);
+
+		inflateEnd(&stream);
+	
+	} while (!eof);
+
+
+	//inflateEnd(&stream);
+	return result == Z_STREAM_END;
+}
+
+#include "File.h"
+#include <exception>
+#include <memory>
+
+std::unique_ptr<W32Lib::FileEx> CreateNewFile(std::string &dir)
+{
+	static size_t file_counter = 0;
+	std::string out_file_name = dir + std::to_string(file_counter++) + ".bin";
+	std::unique_ptr<W32Lib::FileEx> out_file(new W32Lib::FileEx(out_file_name.c_str()));
+	if (!out_file->Create()) {
+		throw std::runtime_error("Error create out file");
+	}
+	return out_file;
+}
+
+bool ReadChunk(W32Lib::FileEx &io, std::vector<uint8_t> &buffer)
+{
+
+	return false;
+}
+
 int _tmain(int argc, _TCHAR* argv[])
 {
+
+
+	FILE * src = fopen("E:\\43410\\examles\\Win8Backup_full_b1_s1_v1.tib", "rb");
+	FILE * dst = fopen("F:\\out.bin", "wb");
+
+	//compress_file(src, dst);
+	fseek(src, 32 + 8, SEEK_SET);
+	//fseek(src, 0x1003a6d6, SEEK_SET);	
+
+	fpos_t pos = 0;
+
+	decompress_file(src, dst);
+
+	fclose(src);
+	fclose(dst);
+
+	std::string tib_file_name = "E:\\43410\\examles\\Win8Backup_full_b1_s1_v1.tib";
+	std::string out_folder = "F:\\43410\\out\\";
+	
+	W32Lib::FileEx tib_file(tib_file_name.c_str());
+	if (tib_file.Open()) {
+		
+		ULONGLONG separator = 0xffffffffffffffff;
+		LONGLONG offset = 0;
+		size_t readed = 0;
+
+		std::vector<uint8_t> uncompressed(CHUNK_SIZE, 0);
+		std::vector<uint8_t> compressed(CHUNK_SIZE, 0);
+	
+		while (offset = tib_file.Find((BYTE *)&separator, sizeof(separator))) {
+		
+			std::unique_ptr<W32Lib::FileEx> out_file = CreateNewFile(out_folder);
+		
+		}
+
+	}
+
+
 	attr_list attributes;
-	std::string attr_list_file = "d:\\MyProjects\\examles\\attr_list.bin";
-	std::string mft_file = "d:\\MyProjects\\examles\\MFT.bin";
+	std::string attr_list_file = "D:\\Work\\43410\\attr_list.bin";
+	std::string mft_file = "D:\\Work\\43410\\MFT.bin";
 
 	ReadAttributeListFromFile(attr_list_file, attributes);
 
