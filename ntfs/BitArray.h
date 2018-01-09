@@ -8,14 +8,16 @@
 class BitArray
 {
 public:
-	BitArray();
+	BitArray(std::vector<uint8_t>&& buffer, size_t number_of_bits);
 	~BitArray();
 
-	uint8_t *Data(void);
-	size_t SizeInBytes(void);
+	bool GetBit(size_t index);
+	void SetBit(size_t index);
+	void ClearBit(size_t index);
 
 private:
 	std::vector<uint8_t> buff;
+	size_t size;
 };
 
 #endif // _BIT_ARRAY_H
