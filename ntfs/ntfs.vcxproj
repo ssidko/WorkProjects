@@ -145,6 +145,7 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BitArray.h" />
     <ClInclude Include="ByteStream.h" />
     <ClInclude Include="File.h" />
     <ClInclude Include="ntfs.h" />
@@ -152,6 +153,7 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="BitArray.cpp" />
     <ClCompile Include="ByteStream.cpp" />
     <ClCompile Include="File.cpp" />
     <ClCompile Include="main.cpp" />
