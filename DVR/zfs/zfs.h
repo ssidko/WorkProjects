@@ -63,6 +63,9 @@ typedef struct uberblock {
 #define	DNODE_CORE_SIZE		64				/* 64 bytes for dnode sans blkptrs */
 #define	DN_MAX_BONUSLEN		(DNODE_SIZE - DNODE_CORE_SIZE - (1 << SPA_BLKPTRSHIFT))
 
+#define	DN_MIN_INDBLKSHIFT	10	/* 1k */
+#define	DN_MAX_INDBLKSHIFT	14	/* 16k */
+
 /* Is dn_used in bytes?  if not, it's in multiples of SPA_MINBLOCKSIZE */
 #define	DNODE_FLAG_USED_BYTES			(1<<0)
 #define	DNODE_FLAG_USERUSED_ACCOUNTED	(1<<1)

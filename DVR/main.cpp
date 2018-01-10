@@ -131,7 +131,7 @@ int main(int argc, char *argv[])
 
 	//dcH264::main();
 
-	//zfs_test();
+	zfs_test();
 
 	w.show();
 	return a.exec();

@@ -9,6 +9,53 @@
 #define VDEV_OFFSET						2048*512
 #define VDEV_LABEL_NVLIST_OFFSET		16*1024
 
+bool ReadObjectData(W32Lib::FileEx &io, dnode_phys_t &dnode, std::vector<char> &buffer);
+
+
+bool IsValidDnode(dnode_phys_t *dnode)
+{
+	if (dnode->type == DMU_OT_NONE) {
+		return false;
+	}
+
+	if (dnode->type >= DMU_OT_NUMTYPES) {	
+		switch(dnode->type) {		
+		case DMU_OTN_UINT8_DATA:
+		case DMU_OTN_UINT8_METADATA:
+		case DMU_OTN_UINT16_DATA:
+		case DMU_OTN_UINT16_METADATA:
+		case DMU_OTN_UINT32_DATA:
+		case DMU_OTN_UINT32_METADATA:
+		case DMU_OTN_UINT64_DATA:
+		case DMU_OTN_UINT64_METADATA:
+		case DMU_OTN_ZAP_DATA:
+		case DMU_OTN_ZAP_METADATA:
+			break;
+		default:
+			return false;
+		}	
+	}
+
+	if (dnode->ind_blk_shift < DN_MIN_INDBLKSHIFT) return false;
+	if (dnode->ind_blk_shift > 17) return false; // 128 Kb
+
+	if (dnode->nlevels == 0) return false;
+	if (dnode->nlevels > 6) return false;
+
+	if (dnode->nblk_ptr > 3) return false;
+
+	if (dnode->checksum >= ZIO_CHECKSUM_FUNCTIONS) return false;
+	if (dnode->compress >= ZIO_COMPRESS_FUNCTIONS) return false;
+
+	if (dnode->bonus_len > DN_MAX_BONUSLEN) return false;	
+
+	if (dnode->pad2[0] != 0x00) return false;
+	if (dnode->pad2[1] != 0x00) return false;
+	if (dnode->pad2[2] != 0x00) return false;
+	if (dnode->pad2[3] != 0x00) return false;
+
+	return true;
+}
 
 
 void zfs_test(void)
@@ -66,6 +113,19 @@ void zfs_test(void)
 	Dataset root_dataset = { 0 };
 	ReadDataset(io, mos.objset, mos.root_dataset_obj, root_dataset);
 	
+
+	int object_id = 0x0f;
+
+	std::vector<char> file_data;
+	bool res = ReadObjectData(io, root_dataset.objset[object_id], file_data);
+
+	res = IsValidDnode(&root_dataset.objset[object_id]);
+
+	W32Lib::FileEx out("f:\\bonus.bin");
+	if (out.Create()) {
+		out.Write(root_dataset.objset[object_id].bonus, root_dataset.objset[object_id].bonus_len);
+	}
+
 	std::vector<char> zap_buff;
 
 
@@ -211,6 +271,17 @@ bool ReadDataBlock(W32Lib::FileEx &io, dnode_phys_t &dnode, uint64_t block_num, 
 	assert(blkptr.props.level == 0);
 
 	return ReadBlock(io, blkptr, buffer);
+}
+
+bool ReadObjectData(W32Lib::FileEx &io, dnode_phys_t &dnode, std::vector<char> &buffer)
+{
+	buffer.clear();
+	for (int i = 0; i <= dnode.max_blk_id; i++) {
+		if (!ReadDataBlock(io, dnode, i, buffer)) {
+			return false;
+		}
+	}
+	return true;
 }
 
 bool ReadDataset(W32Lib::FileEx &io, std::vector<dnode_phys_t> objset, uint64_t os_object, Dataset &dataset)
