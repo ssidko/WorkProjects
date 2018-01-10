@@ -289,9 +289,14 @@ bool ReadChunk(W32Lib::FileEx &io, std::vector<uint8_t> &buffer)
 	return false;
 }
 
+#include "BitArray.h"
+
 int _tmain(int argc, _TCHAR* argv[])
 {
 
+	std::vector<uint8_t> buffer(100, 0x33);
+
+	BitArray bitmap(std::move(buffer));
 
 	FILE * src = fopen("E:\\43410\\examles\\Win8Backup_full_b1_s1_v1.tib", "rb");
 	FILE * dst = fopen("F:\\out.bin", "wb");

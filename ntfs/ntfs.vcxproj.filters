@@ -33,9 +33,7 @@
     <ClInclude Include="File.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="BitArray.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
+    <ClInclude Include="BitArray.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -48,8 +46,6 @@
     <ClCompile Include="File.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="BitArray.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
+    <ClCompile Include="BitArray.cpp" />
   </ItemGroup>
 </Project>
