@@ -3,14 +3,27 @@
 
 #include <system_error>
 #include <string>
+#include <cmath>
 #include "sha256.h"
+#include "flatcher.h"
 #include "lz4.h"
 
 #define VDEV_OFFSET						2048*512
 #define VDEV_LABEL_NVLIST_OFFSET		16*1024
+#define SECTOR_SIZE_SHIFT				9
+#define SECTOR_SIZE						(1 << SECTOR_SIZE_SHIFT)
 
-bool ReadObjectData(W32Lib::FileEx &io, dnode_phys_t &dnode, std::vector<char> &buffer);
+#define	ZIO_CHECKSUM_EQUAL(zc1, zc2) \
+	(0 == (((zc1).word[0] - (zc2).word[0]) | \
+	((zc1).word[1] - (zc2).word[1]) | \
+	((zc1).word[2] - (zc2).word[2]) | \
+	((zc1).word[3] - (zc2).word[3])))
 
+bool CompareChecksum(zio_cksum_t &chksum_1, zio_cksum_t &chksum_2)
+{
+	return (chksum_1.word[0] == chksum_2.word[0]) && (chksum_1.word[1] == chksum_2.word[1]) && 
+		   (chksum_1.word[2] == chksum_2.word[2]) && (chksum_1.word[3] == chksum_2.word[3]);
+}
 
 bool IsValidDnode(dnode_phys_t *dnode)
 {
@@ -18,22 +31,8 @@ bool IsValidDnode(dnode_phys_t *dnode)
 		return false;
 	}
 
-	if (dnode->type >= DMU_OT_NUMTYPES) {	
-		switch(dnode->type) {		
-		case DMU_OTN_UINT8_DATA:
-		case DMU_OTN_UINT8_METADATA:
-		case DMU_OTN_UINT16_DATA:
-		case DMU_OTN_UINT16_METADATA:
-		case DMU_OTN_UINT32_DATA:
-		case DMU_OTN_UINT32_METADATA:
-		case DMU_OTN_UINT64_DATA:
-		case DMU_OTN_UINT64_METADATA:
-		case DMU_OTN_ZAP_DATA:
-		case DMU_OTN_ZAP_METADATA:
-			break;
-		default:
-			return false;
-		}	
+	if (!DMU_OT_IS_VALID(dnode->type)) {
+		return false;
 	}
 
 	if (dnode->ind_blk_shift < DN_MIN_INDBLKSHIFT) return false;
@@ -44,8 +43,67 @@ bool IsValidDnode(dnode_phys_t *dnode)
 
 	if (dnode->nblk_ptr > 3) return false;
 
-	if (dnode->checksum >= ZIO_CHECKSUM_FUNCTIONS) return false;
-	if (dnode->compress >= ZIO_COMPRESS_FUNCTIONS) return false;
+	for (size_t i = 0; i < dnode->nblk_ptr; i++) {
+
+		if (dnode->blk_ptr[i].props.embedded) {
+			if (!zfs_blkptr_verify(dnode->blk_ptr[i])) return false;
+		} else if (dnode->blk_ptr[i].dva[0].alloc_size) {
+			if (!zfs_blkptr_verify(dnode->blk_ptr[i])) return false;
+		}
+
+	}
+
+	if (dnode->checksum >= ZIO_CHECKSUM_FUNCTIONS) {
+		return false;
+	}
+
+	if (dnode->compress >= ZIO_COMPRESS_FUNCTIONS) {
+		return false;
+	}
+
+	//	Is dn_used in bytes?  if not, it's in multiples of SPA_MINBLOCKSIZE
+	//#define	DNODE_FLAG_USED_BYTES			(1<<0)
+	//#define	DNODE_FLAG_USERUSED_ACCOUNTED	(1<<1)
+	//
+	//	Does dnode have a SA spill blkptr in bonus?
+	//#define	DNODE_FLAG_SPILL_BLKPTR			(1<<2)
+
+	if (dnode->flags > 7) {
+		return false;
+	}
+
+	if (dnode->nblk_ptr == 1) {
+		if (dnode->bonus_type == DMU_OT_NONE) {
+			return false;
+		}
+
+		if (!DMU_OT_IS_VALID(dnode->bonus_type)) {
+			return false;
+		}
+
+		if (dnode->bonus_len == 0) {
+			return false;
+		}
+	}
+
+	if (dnode->bonus_type) {
+		if (!DMU_OT_IS_VALID(dnode->bonus_type)) {
+			return false;
+		}
+
+		if (dnode->bonus_len == 0) {
+			return false;
+		}	
+	}
+	if (dnode->bonus_len) {
+		if (dnode->bonus_type == DMU_OT_NONE) {
+			return false;
+		}
+		if (!DMU_OT_IS_VALID(dnode->bonus_type)) {
+			return false;
+		}
+	}
+
 
 	if (dnode->bonus_len > DN_MAX_BONUSLEN) return false;	
 
@@ -54,7 +112,55 @@ bool IsValidDnode(dnode_phys_t *dnode)
 	if (dnode->pad2[2] != 0x00) return false;
 	if (dnode->pad2[3] != 0x00) return false;
 
+	if (dnode->pad3[0] != 0x00) return false;
+	if (dnode->pad3[1] != 0x00) return false;
+	if (dnode->pad3[2] != 0x00) return false;
+	if (dnode->pad3[3] != 0x00) return false;
+
 	return true;
+}
+
+void zfs_dnode_recovery(void)
+{
+	//std::string file_name = "D:\\zfs\\zfs-pool-flat.vmdk";
+	std::string file_name = "\\\\.\\PhysicalDrive5";
+	W32Lib::FileEx io;
+	if (io.Open(file_name.c_str())) {
+
+		size_t buff_size = 256* SECTOR_SIZE;
+		std::vector<char> buffer(buff_size, 0x00);
+
+		ULONGLONG offset = 0 * 512;
+		ULONGLONG dnode_offset;
+		size_t readed = 0;
+		dnode_phys_t *dnode = nullptr;
+
+		io.SetPointer(offset);
+
+		while (readed = io.Read(buffer.data(), buffer.size())) {
+			
+			size_t sectors = readed >> SECTOR_SIZE_SHIFT;
+
+			for (size_t i = 0; i < sectors; i++) {			
+				dnode = (dnode_phys_t *)&buffer[i*SECTOR_SIZE];
+				if (IsValidDnode(dnode)) {				
+					dnode_offset = offset + i*SECTOR_SIZE;
+					if (dnode->type == DMU_OT_PLAIN_FILE_CONTENTS || dnode->type == DMU_OT_ZVOL) {
+					
+						int x = 0;
+						x++;
+					
+					}				
+				}			
+			}
+
+			offset += readed;
+		
+		}
+
+
+	}
+
 }
 
 
@@ -112,21 +218,34 @@ void zfs_test(void)
 
 	Dataset root_dataset = { 0 };
 	ReadDataset(io, mos.objset, mos.root_dataset_obj, root_dataset);
+
+
+	bool res = false;
+	dnode_phys *dnode = nullptr;
+	for (size_t i = 1; i < root_dataset.objset.size(); i++) {
+		dnode = &root_dataset.objset[i];
+		res = IsValidDnode(dnode);
+		if (!res) {		
+			int x = 0;
+			x++;
+		}
+	
+	}
 	
 
 	int object_id = 0x0f;
 
 	std::vector<char> file_data;
-	bool res = ReadObjectData(io, root_dataset.objset[object_id], file_data);
+	res = ReadObjectData(io, root_dataset.objset[object_id], file_data);
 
 	res = IsValidDnode(&root_dataset.objset[object_id]);
 
-	W32Lib::FileEx out("f:\\bonus.bin");
-	if (out.Create()) {
-		out.Write(root_dataset.objset[object_id].bonus, root_dataset.objset[object_id].bonus_len);
-	}
+	//W32Lib::FileEx out("f:\\bonus.bin");
+	//if (out.Create()) {
+	//	out.Write(root_dataset.objset[object_id].bonus, root_dataset.objset[object_id].bonus_len);
+	//}
 
-	std::vector<char> zap_buff;
+	//std::vector<char> zap_buff;
 
 
 	int x = 0;
@@ -137,6 +256,7 @@ bool ReadBlock(W32Lib::FileEx &io, blkptr_t &blkptr, std::vector<char> &buffer)
 	int result = 0;
 	size_t decompressed_data_size = 0;
 	size_t origin_size = buffer.size();
+	size_t readed_size = 0;
 	std::vector<char> compressed_data;
 	char *dst = nullptr;
 	char *src = (char *)&blkptr;
@@ -176,6 +296,8 @@ bool ReadBlock(W32Lib::FileEx &io, blkptr_t &blkptr, std::vector<char> &buffer)
 			}		
 		}
 
+		readed_size = props->physical_size;
+
 	} else {
 
 		//
@@ -183,6 +305,8 @@ bool ReadBlock(W32Lib::FileEx &io, blkptr_t &blkptr, std::vector<char> &buffer)
 		//
 
 		size_t data_size = blkptr.dva[0].alloc_size * 512;
+
+		readed_size = data_size;
 
 		if (blkptr.props.compression == ZIO_COMPRESS_OFF) {
 			buffer.resize(origin_size + data_size);
@@ -202,7 +326,36 @@ bool ReadBlock(W32Lib::FileEx &io, blkptr_t &blkptr, std::vector<char> &buffer)
 		if (!io.Read(dst, data_size)) {
 			return false;
 		}
-	}	
+	}
+
+	zio_cksum_t calculated_chksum = { 0 };
+
+	switch (blkptr.props.checksum) {
+	case ZIO_CHECKSUM_OFF:
+		break;
+
+	case ZIO_CHECKSUM_ON:
+	case ZIO_CHECKSUM_ZILOG:
+	case ZIO_CHECKSUM_FLETCHER_2:
+		fletcher_2_native(dst, readed_size, &calculated_chksum);
+		break;
+
+	case ZIO_CHECKSUM_ZILOG2:
+	case ZIO_CHECKSUM_FLETCHER_4:
+		fletcher_4_native(dst, readed_size, &calculated_chksum);
+		break;
+
+	case ZIO_CHECKSUM_LABEL:
+	case ZIO_CHECKSUM_GANG_HEADER:
+	case ZIO_CHECKSUM_SHA256:
+		zio_checksum_SHA256(dst, readed_size, &calculated_chksum);
+		break;
+
+	default:
+		break;	
+	}
+
+	bool chksum_ok = ZIO_CHECKSUM_EQUAL(blkptr.checksum, calculated_chksum);
 
 	switch (blkptr.props.compression) {
 	
@@ -219,11 +372,8 @@ bool ReadBlock(W32Lib::FileEx &io, blkptr_t &blkptr, std::vector<char> &buffer)
 		return false;	
 	}
 
-
 	return false;
 }
-
-#include <cmath>
 
 bool ReadDataBlock(W32Lib::FileEx &io, dnode_phys_t &dnode, uint64_t block_num, std::vector<char> &buffer)
 {
@@ -460,14 +610,7 @@ bool zfs_blkptr_verify(const blkptr_t &bp)
 		result = false;
 	}
 
-	if (bp.props.checksum >= ZIO_CHECKSUM_FUNCTIONS ||
-		bp.props.checksum <= ZIO_CHECKSUM_ON) {
-		description += " Invalid CHECKSUM;";
-		result = false;
-	}
-
-	if (bp.props.checksum >= ZIO_COMPRESS_FUNCTIONS ||
-		bp.props.checksum <= ZIO_COMPRESS_ON) {		
+	if (bp.props.compression >= ZIO_COMPRESS_FUNCTIONS ) {
 		description += " Invalid COMPRESS;";
 		result = false;
 	}
@@ -483,10 +626,18 @@ bool zfs_blkptr_verify(const blkptr_t &bp)
 
 	if (bp.props.embedded) {
 		blk_props_emb_t *props = (blk_props_emb_t *)&bp.props;
-		if (props->type > NUM_BP_EMBEDDED_TYPES) {
+		if (props->etype > NUM_BP_EMBEDDED_TYPES) {
 			description += " Invalid EMBEDDED TYPE;";
 			result = false;
-		}	
+		}
+		if (props->physical_size > 6 * 8 + 3 * 8 + 5 * 8) {
+			result = false;
+		}
+	} else {
+		if (bp.props.checksum >= ZIO_CHECKSUM_FUNCTIONS) {
+			description += " Invalid CHECKSUM;";
+			result = false;
+		}
 	}
 
 	/*

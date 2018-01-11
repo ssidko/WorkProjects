@@ -197,6 +197,9 @@
     <ClCompile Include="dcH264_Recovery.cpp">
       <Filter>Core\dcH264</Filter>
     </ClCompile>
+    <ClCompile Include="flatcher.cpp">
+      <Filter>zfs\checksum</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="mainwindow.ui">
@@ -343,6 +346,9 @@
     <ClInclude Include="version.h" />
     <ClInclude Include="dcH264_Recovery.h">
       <Filter>Core\dcH264</Filter>
+    </ClInclude>
+    <ClInclude Include="flatcher.h">
+      <Filter>zfs\checksum</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

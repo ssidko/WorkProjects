@@ -55,13 +55,13 @@
 #define	sigma0(x)	(Rot32(x, 7) ^ Rot32(x, 18) ^ ((x) >> 3))
 #define	sigma1(x)	(Rot32(x, 17) ^ Rot32(x, 19) ^ ((x) >> 10))
 
-#define	ZIO_SET_CHECKSUM(zcp, w0, w1, w2, w3)	\
-{						\
-	(zcp)->word[0] = w0;			\
-	(zcp)->word[1] = w1;			\
-	(zcp)->word[2] = w2;			\
-	(zcp)->word[3] = w3;			\
-}
+//#define	ZIO_SET_CHECKSUM(zcp, w0, w1, w2, w3)	\
+//{						\
+//	(zcp)->word[0] = w0;			\
+//	(zcp)->word[1] = w1;			\
+//	(zcp)->word[2] = w2;			\
+//	(zcp)->word[3] = w3;			\
+//}
 
 static const uint32_t SHA256_K[64] = {
 	0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5,

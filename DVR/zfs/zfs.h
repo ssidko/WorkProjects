@@ -9,6 +9,14 @@
 
 #pragma pack(push, 1)
 
+/*
+* Macros to reverse byte order
+*/
+#define	BSWAP_8(x)	((x) & 0xff)
+#define	BSWAP_16(x)	((BSWAP_8(x) << 8) | BSWAP_8((x) >> 8))
+#define	BSWAP_32(x)	((BSWAP_16(x) << 16) | BSWAP_16((x) >> 16))
+#define	BSWAP_64(x)	((BSWAP_32(x) << 32) | BSWAP_32((x) >> 32))
+
 enum zio_checksum {
 	ZIO_CHECKSUM_INHERIT = 0,
 	ZIO_CHECKSUM_ON,
@@ -22,6 +30,14 @@ enum zio_checksum {
 	ZIO_CHECKSUM_ZILOG2,
 	ZIO_CHECKSUM_FUNCTIONS
 };
+
+#define	ZIO_SET_CHECKSUM(zcp, w0, w1, w2, w3)	\
+{						\
+	(zcp)->word[0] = w0;			\
+	(zcp)->word[1] = w1;			\
+	(zcp)->word[2] = w2;			\
+	(zcp)->word[3] = w3;			\
+}
 
 enum zio_compress {
 	ZIO_COMPRESS_INHERIT = 0,

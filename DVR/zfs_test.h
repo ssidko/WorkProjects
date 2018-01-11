@@ -36,16 +36,20 @@ struct Dataset {
 	std::map<std::string, uint64_t> root_dir;
 };
 
-
+inline bool CompareChecksum(zio_cksum_t &chksum_1, zio_cksum_t &chksum_2);
 bool zfs_blkptr_verify(const blkptr_t &bp);
 
 bool ReadBlock(W32Lib::FileEx &io, blkptr_t &blkptr, std::vector<char> &buffer);
 bool ReadDataBlock(W32Lib::FileEx &io, dnode_phys_t &dnode, uint64_t block_num, std::vector<char> &buffer);
+bool ReadObjectData(W32Lib::FileEx &io, dnode_phys_t &dnode, std::vector<char> &buffer);
 
 bool ReadDataset(W32Lib::FileEx &io, std::vector<dnode_phys_t> objset, uint64_t os_object, Dataset &dataset);
 bool ReadMOS(W32Lib::FileEx &io, blkptr_t &blkptr, MetaObjecSet &mos);
 
+bool IsValidDnode(dnode_phys_t *dnode);
+
 void zfs_test(void);
+void zfs_dnode_recovery(void);
 
 bool TraversingFatZapEntries(W32Lib::FileEx &io, dnode_phys_t &dnode, std::function<bool(const uint64_t&, const char*)> callback);
 
