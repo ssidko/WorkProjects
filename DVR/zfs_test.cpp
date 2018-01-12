@@ -9,7 +9,9 @@
 #include "lz4.h"
 #include "lzjb.h"
 
-#define VDEV_OFFSET						4194432*512ULL
+//#define VDEV_OFFSET						323510272*512ULL
+#define VDEV_OFFSET						124880896*512ULL
+//#define VDEV_OFFSET						2048*512ULL
 #define VDEV_LABEL_NVLIST_OFFSET		16*1024
 #define SECTOR_SIZE_SHIFT				9
 #define SECTOR_SIZE						(1 << SECTOR_SIZE_SHIFT)
@@ -165,7 +167,8 @@ void zfs_dnode_recovery(void)
 void zfs_test(void)
 {
 	W32Lib::FileEx io;
-	std::string volume_file_name = "F:\\vm\\zfs-with-zvol-flat";
+	//std::string volume_file_name = "D:\\zfs\\zfs-pool-flat.vmdk";
+	std::string volume_file_name = "\\\\.\\PhysicalDrive6";
 	if (!io.Open(volume_file_name.c_str())) {
 		return;
 	}
@@ -209,6 +212,8 @@ void zfs_test(void)
 
 	ub = (uberblock_t *)(label->vl_uberblock + ub_idx * 1024);
 
+	//vdev_sector_size = 1 << 0x0C;
+
 
 	MetaObjecSet mos = { 0 };
 	ReadMOS(io, ub->rootbp, mos);
@@ -222,11 +227,10 @@ void zfs_test(void)
 	for (size_t i = 1; i < root_dataset.objset.size(); i++) {
 		dnode = &root_dataset.objset[i];
 		res = IsValidDnode(dnode);
-		if (!res) {		
+		if (!res) {
 			int x = 0;
 			x++;
-		}
-	
+		}	
 	}
 	
 
@@ -246,6 +250,17 @@ void zfs_test(void)
 
 
 	int x = 0;
+}
+
+bool IsHole(const blkptr_t &bp)
+{
+	uint64_t *word = (uint64_t *)&bp.dva[0];
+	if (!bp.props.embedded) {
+		if ((word[0] == 0) && (word[1] == 0)) {
+			return true;
+		}
+	}
+	return false;
 }
 
 bool ReadBlock(W32Lib::FileEx &io, blkptr_t &blkptr, std::vector<char> &buffer)
@@ -301,27 +316,37 @@ bool ReadBlock(W32Lib::FileEx &io, blkptr_t &blkptr, std::vector<char> &buffer)
 		// TODO: Validating dva, and if need read as HOLE.
 		//
 
-		size_t data_size = blkptr.dva[0].alloc_size * 512;
+		size_t data_size = 0;
 
-		readed_size = data_size;
-
-		if (blkptr.props.compression == ZIO_COMPRESS_OFF) {
+		if (IsHole(blkptr)) {
+			data_size = (blkptr.props.logical_size + 1) * vdev_sector_size;
 			buffer.resize(origin_size + data_size);
-			dst = &buffer[origin_size];
+			std::memset(&buffer[origin_size], 0x00, data_size);		
+			return true;
 		} else {
-			compressed_data.resize(data_size);
-			dst = compressed_data.data();
+			data_size = blkptr.dva[0].alloc_size * vdev_sector_size;
 
-			decompressed_data_size = (blkptr.props.logical_size + 1) * 512;
-			buffer.resize(origin_size + decompressed_data_size);
-		}
+			readed_size = data_size;
 
-		if (!io.SetPointer(VDEV_OFFSET + VDEV_LABEL_START_SIZE + blkptr.dva[0].offset * 512)) {
-			return false;
-		}
+			if (blkptr.props.compression == ZIO_COMPRESS_OFF) {
+				buffer.resize(origin_size + data_size);
+				dst = &buffer[origin_size];
+			}
+			else {
+				compressed_data.resize(data_size);
+				dst = compressed_data.data();
 
-		if (!io.Read(dst, data_size)) {
-			return false;
+				decompressed_data_size = (blkptr.props.logical_size + 1) * vdev_sector_size;
+				buffer.resize(origin_size + decompressed_data_size);
+			}
+
+			if (!io.SetPointer(VDEV_OFFSET + VDEV_LABEL_START_SIZE + blkptr.dva[0].offset * vdev_sector_size)) {
+				return false;
+			}
+
+			if (!io.Read(dst, data_size)) {
+				return false;
+			}		
 		}
 	}
 

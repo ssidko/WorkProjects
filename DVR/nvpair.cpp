@@ -111,8 +111,7 @@ size_t DecodeNVPair(XdrReader &xdr, nvpair_base *&nvp)
 		return nvp_size;
 	} else {
 		assert(false);
-	}
-	
+	}	
 
 	return 0;
 }

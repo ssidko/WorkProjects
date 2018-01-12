@@ -124,6 +124,14 @@ void ToHexString(uint8_t *buff, size_t count, std::string &str)
 //};
 
 
+enum class ValType {
+	unknown,
+	integer,
+	boolean,
+	string,
+
+};
+
 int main(int argc, char *argv[])
 {
 	QApplication a(argc, argv);

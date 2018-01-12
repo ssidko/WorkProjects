@@ -37,6 +37,7 @@ struct Dataset {
 };
 
 bool zfs_blkptr_verify(const blkptr_t &bp);
+bool IsHole(const blkptr_t &bp);
 
 bool ReadBlock(W32Lib::FileEx &io, blkptr_t &blkptr, std::vector<char> &buffer);
 bool ReadDataBlock(W32Lib::FileEx &io, dnode_phys_t &dnode, uint64_t block_num, std::vector<char> &buffer);
