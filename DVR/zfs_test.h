@@ -36,7 +36,6 @@ struct Dataset {
 	std::map<std::string, uint64_t> root_dir;
 };
 
-inline bool CompareChecksum(zio_cksum_t &chksum_1, zio_cksum_t &chksum_2);
 bool zfs_blkptr_verify(const blkptr_t &bp);
 
 bool ReadBlock(W32Lib::FileEx &io, blkptr_t &blkptr, std::vector<char> &buffer);

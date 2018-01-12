@@ -7,23 +7,21 @@
 #include "sha256.h"
 #include "flatcher.h"
 #include "lz4.h"
+#include "lzjb.h"
 
-#define VDEV_OFFSET						2048*512
+#define VDEV_OFFSET						4194432*512ULL
 #define VDEV_LABEL_NVLIST_OFFSET		16*1024
 #define SECTOR_SIZE_SHIFT				9
 #define SECTOR_SIZE						(1 << SECTOR_SIZE_SHIFT)
 
-#define	ZIO_CHECKSUM_EQUAL(zc1, zc2) \
-	(0 == (((zc1).word[0] - (zc2).word[0]) | \
-	((zc1).word[1] - (zc2).word[1]) | \
-	((zc1).word[2] - (zc2).word[2]) | \
-	((zc1).word[3] - (zc2).word[3])))
+size_t vdev_sector_size = SECTOR_SIZE;
 
-bool CompareChecksum(zio_cksum_t &chksum_1, zio_cksum_t &chksum_2)
+inline bool	ChecksumEqual(zio_cksum &zc1, zio_cksum &zc2)
 {
-	return (chksum_1.word[0] == chksum_2.word[0]) && (chksum_1.word[1] == chksum_2.word[1]) && 
-		   (chksum_1.word[2] == chksum_2.word[2]) && (chksum_1.word[3] == chksum_2.word[3]);
+	return 	(0 == ( ((zc1).word[0] - (zc2).word[0]) | ((zc1).word[1] - (zc2).word[1]) |
+		((zc1).word[2] - (zc2).word[2]) | ((zc1).word[3] - (zc2).word[3])) );
 }
+
 
 bool IsValidDnode(dnode_phys_t *dnode)
 {
@@ -167,9 +165,8 @@ void zfs_dnode_recovery(void)
 void zfs_test(void)
 {
 	W32Lib::FileEx io;
-
-	//if (!io.Open("D:\\zol-0.6.1\\vdev1")) {
-	if (!io.Open("D:\\zfs\\zfs-pool-flat.vmdk")) {
+	std::string volume_file_name = "F:\\vm\\zfs-with-zvol-flat";
+	if (!io.Open(volume_file_name.c_str())) {
 		return;
 	}
 
@@ -355,11 +352,15 @@ bool ReadBlock(W32Lib::FileEx &io, blkptr_t &blkptr, std::vector<char> &buffer)
 		break;	
 	}
 
-	bool chksum_ok = ZIO_CHECKSUM_EQUAL(blkptr.checksum, calculated_chksum);
+	bool chksum_ok = ChecksumEqual(blkptr.checksum, calculated_chksum);
 
 	switch (blkptr.props.compression) {
 	
 	case ZIO_COMPRESS_OFF:
+		return true;
+
+	case ZIO_COMPRESS_LZJB:
+		result = lzjb_decompress(compressed_data.data(), &buffer[origin_size], compressed_data.size(), decompressed_data_size, 0);
 		return true;
 
 	case ZIO_COMPRESS_LZ4:
