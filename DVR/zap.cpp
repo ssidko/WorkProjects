@@ -26,7 +26,7 @@ bool MZapObjectToNVPairs(const std::vector<char> &mzap_obj, NVPairList &pairs)
 	return true;
 }
 
-void TraversingMicroZapEntries(const std::vector<char> &mzap_obj, std::function<void(const uint64_t&, const char*)> callback)
+bool TraversingMicroZapEntries(const std::vector<char> &mzap_obj, std::function<bool(const uint64_t&, const char*)> callback)
 {
 	mzap_phys_t *mzap = (mzap_phys_t *)mzap_obj.data();
 	mzap_ent_phys_t *entry = (mzap_ent_phys_t *)&mzap_obj[sizeof(mzap_phys_t)];
@@ -42,9 +42,12 @@ void TraversingMicroZapEntries(const std::vector<char> &mzap_obj, std::function<
 			continue;
 		}
 
-		callback(entry->mze_value, entry->mze_name);
+		if (!callback(entry->mze_value, entry->mze_name)) {
+			return true;
+		}
 
 	}
+	return true;
 
 }
 

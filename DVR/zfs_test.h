@@ -51,6 +51,7 @@ bool IsValidDnode(dnode_phys_t *dnode);
 void zfs_test(void);
 void zfs_dnode_recovery(void);
 
+bool TraversingZapObject(W32Lib::FileEx &io, dnode_phys_t &dnode, std::function<bool(const uint64_t&, const char*)> callback);
 bool TraversingFatZapEntries(W32Lib::FileEx &io, dnode_phys_t &dnode, std::function<bool(const uint64_t&, const char*)> callback);
 
 #endif // _ZFS_TEST_H

@@ -10,7 +10,7 @@
 #include "lzjb.h"
 
 //#define VDEV_OFFSET						323510272*512ULL
-#define VDEV_OFFSET						124880896*512ULL
+#define VDEV_OFFSET						323510272*512ULL
 //#define VDEV_OFFSET						2048*512ULL
 #define VDEV_LABEL_NVLIST_OFFSET		16*1024
 #define SECTOR_SIZE_SHIFT				9
@@ -168,7 +168,7 @@ void zfs_test(void)
 {
 	W32Lib::FileEx io;
 	//std::string volume_file_name = "D:\\zfs\\zfs-pool-flat.vmdk";
-	std::string volume_file_name = "\\\\.\\PhysicalDrive6";
+	std::string volume_file_name = "\\\\.\\PhysicalDrive4";
 	if (!io.Open(volume_file_name.c_str())) {
 		return;
 	}
@@ -481,6 +481,7 @@ bool ReadDataset(W32Lib::FileEx &io, std::vector<dnode_phys_t> objset, uint64_t 
 	TraversingMicroZapEntries(buff,
 		[&child_dir](const uint64_t &value, const char* name) {
 		child_dir.emplace(std::string(name), value);
+		return true;
 	});
 
 
@@ -501,6 +502,7 @@ bool ReadDataset(W32Lib::FileEx &io, std::vector<dnode_phys_t> objset, uint64_t 
 	TraversingMicroZapEntries(buff,
 		[&props](const uint64_t &value, const char* name) {
 		props.emplace(std::string(name), value);
+		return true;
 	});
 
 
@@ -508,7 +510,7 @@ bool ReadDataset(W32Lib::FileEx &io, std::vector<dnode_phys_t> objset, uint64_t 
 	// Read Dataset`s objset
 	//
 	dnode_phys_t &active_dataset_dnode = objset[dir_phys->dd_head_dataset_obj];
-	assert(active_dataset_dnode.type == DMU_OT_DSL_DATASET);
+	assert(active_dataset_dnode.bonus_type == DMU_OT_DSL_DATASET);
 	dsl_dataset_phys_t *dataset_phys = (dsl_dataset_phys_t *)active_dataset_dnode.bonus;
 
 
@@ -518,7 +520,7 @@ bool ReadDataset(W32Lib::FileEx &io, std::vector<dnode_phys_t> objset, uint64_t 
 	objset_phys_t ds_objset = *(objset_phys_t *)buff.data();
 
 	buff.clear();
-	for (int i = 0; i <= props_dnode.max_blk_id; i++) {
+	for (int i = 0; i <= ds_objset.os_meta_dnode.max_blk_id; i++) {
 		if (!ReadDataBlock(io, ds_objset.os_meta_dnode, i, buff)) {
 			return false;
 		}
@@ -544,6 +546,7 @@ bool ReadDataset(W32Lib::FileEx &io, std::vector<dnode_phys_t> objset, uint64_t 
 	TraversingMicroZapEntries(buff,
 		[&master_node_attr](const uint64_t &value, const char* name) {
 		master_node_attr.emplace(std::string(name), value);
+		return false;
 	});
 
 	//
@@ -602,26 +605,42 @@ bool ReadMOS(W32Lib::FileEx & io, blkptr_t &blkptr, MetaObjecSet &mos)
 	mos.objset.resize(buff.size()/sizeof(dnode_phys_t));
 	std::memcpy(mos.objset.data(), buff.data(), mos.objset.size() * sizeof(dnode_phys_t));
 
-	dnode_phys_t *obj_dir_dnode = &mos.objset[DMU_POOL_DIRECTORY_OBJECT];
-	if (obj_dir_dnode->type != DMU_OT_OBJECT_DIRECTORY) {
+	dnode_phys_t &obj_dir_dnode = mos.objset[DMU_POOL_DIRECTORY_OBJECT];
+	if (obj_dir_dnode.type != DMU_OT_OBJECT_DIRECTORY) {
 		return false;
 	}
 
-	buff.clear();
-	for (int i = 0; i <= obj_dir_dnode->max_blk_id; i++) {
-		if (!ReadDataBlock(io, *obj_dir_dnode, i, buff)) {
-			return false;
-		}
-	}
+	//buff.clear();
+	//for (int i = 0; i <= obj_dir_dnode.max_blk_id; i++) {
+	//	if (!ReadDataBlock(io, obj_dir_dnode, i, buff)) {
+	//		return false;
+	//	}
+	//}
 
-	std::map<std::string, uint64_t> &object_dir = mos.object_dir;
-	TraversingMicroZapEntries(buff,
+	//W32Lib::FileEx fat_zap;
+	//if (fat_zap.Create("D:\\zfs\\fat_zap.bin")) {
+	//	fat_zap.Write(buff.data(), buff.size());
+	//}
+
+	//std::map<std::string, uint64_t> &object_dir = mos.object_dir;
+	//TraversingMicroZapEntries(buff,
+	//	[&mos](const uint64_t &value, const char* name) {
+	//	if (std::strcmp(name, DMU_POOL_ROOT_DATASET) == 0) {
+	//		mos.root_dataset_obj = value;
+	//	}
+	//	mos.object_dir.emplace(std::string(name), value);
+	//	return true;
+	//});
+
+	TraversingZapObject(io, obj_dir_dnode,
 		[&mos](const uint64_t &value, const char* name) {
 		if (std::strcmp(name, DMU_POOL_ROOT_DATASET) == 0) {
 			mos.root_dataset_obj = value;
 		}
 		mos.object_dir.emplace(std::string(name), value);
+		return true;
 	});
+
 
 	return true;
 }
@@ -729,6 +748,32 @@ int ByteSizeToShiftSize(uint64_t byte_size)
 		}
 	}
 	return -1;
+}
+
+bool TraversingZapObject(W32Lib::FileEx &io, dnode_phys_t &dnode, std::function<bool(const uint64_t&, const char*)> callback)
+{
+	std::vector<char> buffer;
+	buffer.reserve(dnode.data_blk_sz_sec*SPA_MINBLOCKSIZE);
+
+	if (!ReadDataBlock(io, dnode, 0, buffer)) {
+		return false;
+	}
+
+	zap_phys *zap_hdr = (zap_phys *)buffer.data();
+
+	if (zap_hdr->block_type == ZBT_MICRO) {	
+		buffer.clear();
+		for (int i = 0; i <= dnode.max_blk_id; i++) {
+			if (!ReadDataBlock(io, dnode, i, buffer)) {
+				return false;
+			}
+		}
+		return TraversingMicroZapEntries(buffer, callback);
+	} else if ((zap_hdr->block_type == ZBT_HEADER) && (zap_hdr->magic == ZAP_MAGIC)) {
+		return TraversingFatZapEntries(io, dnode, callback);	
+	}
+
+	return false;
 }
 
 bool TraversingFatZapEntries(W32Lib::FileEx &io, dnode_phys_t &dnode, std::function<bool(const uint64_t&, const char*)> callback)
