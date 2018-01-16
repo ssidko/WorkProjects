@@ -123,7 +123,7 @@ bool IsValidDnode(dnode_phys_t *dnode)
 void zfs_dnode_recovery(void)
 {
 	//std::string file_name = "D:\\zfs\\zfs-pool-flat.vmdk";
-	std::string file_name = "\\\\.\\PhysicalDrive5";
+	std::string file_name = "\\\\.\\PhysicalDrive0";
 	W32Lib::FileEx io;
 	if (io.Open(file_name.c_str())) {
 
@@ -153,14 +153,9 @@ void zfs_dnode_recovery(void)
 					}				
 				}			
 			}
-
-			offset += readed;
-		
+			offset += readed;		
 		}
-
-
 	}
-
 }
 
 
@@ -168,7 +163,7 @@ void zfs_test(void)
 {
 	W32Lib::FileEx io;
 	//std::string volume_file_name = "D:\\zfs\\zfs-pool-flat.vmdk";
-	std::string volume_file_name = "\\\\.\\PhysicalDrive4";
+	std::string volume_file_name = "\\\\.\\PhysicalDrive0";
 	if (!io.Open(volume_file_name.c_str())) {
 		return;
 	}
