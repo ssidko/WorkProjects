@@ -12,6 +12,7 @@
 
 int RarRecoveryMain(int argc, _TCHAR* argv[]);
 int RarRecovery(const std::string &arch_path, const std::string &out_arch_path);
+void ExamineFile(const std::string &arch_path);
 
 #endif // _RAR_RECOVERY_H
 

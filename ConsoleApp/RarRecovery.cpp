@@ -165,3 +165,52 @@ int RarRecoveryMain(int argc, _TCHAR* argv[])
 	}
 	return 0;
 }
+
+
+void ExamineFile(const std::string &arch_path)
+{
+	W32Lib::FileEx io(arch_path.c_str());
+	if (!io.Open()) {
+		return;
+	}
+
+	rar::FILE_HEADER hdr = { 0 };
+
+	LONGLONG offset = 20;
+
+	size_t sz = sizeof(rar::FILE_HEADER);
+	
+
+	while (true) {
+		
+
+		io.SetPointer(offset);
+		io.Read(&hdr, sizeof(hdr));
+
+
+		if (IsValidFileHeader(&hdr)) {
+
+			size_t block_size = 0;
+
+			if (hdr.type == rar::BlockType::FileHeader) {
+				offset += hdr.header_size + hdr.compressed_size;
+			} else {
+				int x = 0;
+			}
+
+
+		
+			int y = 0;
+		} else {
+			int x = 0;
+			
+		}
+		
+	
+	
+	}
+
+
+
+
+}

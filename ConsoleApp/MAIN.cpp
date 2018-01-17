@@ -228,6 +228,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	//EnumerateDevicesInterfaces(&GUID_DEVINTERFACE_COMPORT);
 	
 	RarRecoveryMain(argc, argv);
+	ExamineFile("D:\\Soft\\#RecoverySoft#\\X-Ways\\xw_forensics170.rar");
 
 	//::system("pause");
 
