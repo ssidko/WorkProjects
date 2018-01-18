@@ -110,28 +110,6 @@ void ToHexString(uint8_t *buff, size_t count, std::string &str)
 #include "MyPrintf.h"
 #include "zfs_test.h"
 
-//template<>
-//struct Test {
-//	bool value = false;
-//
-//};
-
-
-//template<typename FirstType, typename ... RestTypes>
-//struct IsHasFloat
-//{
-//	constexpr enum { value = std::is_same<float, FirstType>::value | IsHasFloat<RestTypes...>::value };
-//};
-
-
-enum class ValType {
-	unknown,
-	integer,
-	boolean,
-	string,
-
-};
-
 int main(int argc, char *argv[])
 {
 	QApplication a(argc, argv);
