@@ -16,8 +16,6 @@
 #define SECTOR_SIZE_SHIFT				9
 #define SECTOR_SIZE						(1 << SECTOR_SIZE_SHIFT)
 
-size_t vdev_sector_size = SECTOR_SIZE;
-
 inline bool	ChecksumEqual(zio_cksum &zc1, zio_cksum &zc2)
 {
 	return 	(0 == ( ((zc1).word[0] - (zc2).word[0]) | ((zc1).word[1] - (zc2).word[1]) |
@@ -314,12 +312,12 @@ bool ReadBlock(W32Lib::FileEx &io, blkptr_t &blkptr, std::vector<char> &buffer)
 		size_t data_size = 0;
 
 		if (IsHole(blkptr)) {
-			data_size = (blkptr.props.logical_size + 1) * vdev_sector_size;
+			data_size = (blkptr.props.logical_size + 1) * SPA_MINBLOCKSHIFT;
 			buffer.resize(origin_size + data_size);
 			std::memset(&buffer[origin_size], 0x00, data_size);		
 			return true;
 		} else {
-			data_size = blkptr.dva[0].alloc_size * vdev_sector_size;
+			data_size = blkptr.dva[0].alloc_size * SPA_MINBLOCKSHIFT;
 
 			readed_size = data_size;
 
@@ -331,11 +329,11 @@ bool ReadBlock(W32Lib::FileEx &io, blkptr_t &blkptr, std::vector<char> &buffer)
 				compressed_data.resize(data_size);
 				dst = compressed_data.data();
 
-				decompressed_data_size = (blkptr.props.logical_size + 1) * vdev_sector_size;
+				decompressed_data_size = (blkptr.props.logical_size + 1) * SPA_MINBLOCKSHIFT;
 				buffer.resize(origin_size + decompressed_data_size);
 			}
 
-			if (!io.SetPointer(VDEV_OFFSET + VDEV_LABEL_START_SIZE + blkptr.dva[0].offset * vdev_sector_size)) {
+			if (!io.SetPointer(VDEV_OFFSET + VDEV_LABEL_START_SIZE + blkptr.dva[0].offset * SPA_MINBLOCKSHIFT)) {
 				return false;
 			}
 
@@ -450,6 +448,59 @@ bool ReadDataBlock(W32Lib::FileEx &io, dnode_phys_t &dnode, uint64_t block_num, 
 	assert(blkptr.props.level == 0);
 
 	return ReadBlock(io, blkptr, buffer);
+}
+
+
+int64_t ReadDataBlock2(W32Lib::FileEx &io, dnode_phys_t &dnode, uint64_t block_num, std::vector<char> &buffer)
+{
+	assert(dnode.nlevels);
+	assert(dnode.nblk_ptr);
+	assert(dnode.nlevels == dnode.blk_ptr[0].props.level + 1);
+	assert(block_num <= dnode.max_blk_id);
+
+	size_t level = dnode.nlevels - 1;
+	size_t indblock_size = 1 << dnode.ind_blk_shift;
+	size_t pointers_per_indblock = (indblock_size) / sizeof(blkptr_t);
+	size_t blocks_per_pointer = std::pow(pointers_per_indblock, level);
+
+	assert(dnode.max_blk_id < blocks_per_pointer * dnode.nblk_ptr);
+
+	std::vector<char> indblock_buffer;
+	indblock_buffer.reserve(indblock_size);
+
+	size_t pointer_index = block_num / blocks_per_pointer;
+	uint64_t bnum = block_num % blocks_per_pointer;
+
+	blkptr_t blkptr = dnode.blk_ptr[pointer_index];
+
+	while (level) {
+
+		assert(blkptr.props.level == level);
+
+		indblock_buffer.clear();
+		if (!ReadBlock(io, blkptr, indblock_buffer)) {
+			return -1;
+		}
+
+		blocks_per_pointer = std::pow(pointers_per_indblock, level);
+
+		pointer_index = bnum / blocks_per_pointer;
+		bnum = bnum % blocks_per_pointer;
+
+		blkptr = ((blkptr_t *)indblock_buffer.data())[pointer_index];
+		
+		level--;
+	
+	}
+
+	assert(blkptr.props.level == 0);
+
+	size_t origin_size = buffer.size();
+	if (ReadBlock(io, blkptr, buffer)) {
+		return buffer.size() - origin_size;
+	}
+
+	return -1;
 }
 
 bool ReadObjectData(W32Lib::FileEx &io, dnode_phys_t &dnode, std::vector<char> &buffer)
