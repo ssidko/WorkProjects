@@ -481,6 +481,9 @@ int64_t ReadDataBlock2(W32Lib::FileEx &io, dnode_phys_t &dnode, uint64_t block_n
 		if (!ReadBlock(io, blkptr, indblock_buffer)) {
 			return -1;
 		}
+		assert(indblock_buffer.size() == indblock_size);
+
+		level--;
 
 		blocks_per_pointer = std::pow(pointers_per_indblock, level);
 
@@ -488,8 +491,6 @@ int64_t ReadDataBlock2(W32Lib::FileEx &io, dnode_phys_t &dnode, uint64_t block_n
 		bnum = bnum % blocks_per_pointer;
 
 		blkptr = ((blkptr_t *)indblock_buffer.data())[pointer_index];
-		
-		level--;
 	
 	}
 
