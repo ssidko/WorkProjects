@@ -130,7 +130,7 @@ void zfs_dnode_recovery(void)
 		size_t buff_size = 256* SECTOR_SIZE;
 		std::vector<char> buffer(buff_size, 0x00);
 
-		ULONGLONG offset = 0 * 512;
+		ULONGLONG offset = VDEV_OFFSET + 0x400000;
 		ULONGLONG dnode_offset;
 		size_t readed = 0;
 		dnode_phys_t *dnode = nullptr;
@@ -209,12 +209,12 @@ void zfs_test(void)
 
 	//vdev_sector_size = 1 << 0x0C;
 
-
+	bool result = false;
 	MetaObjecSet mos = { 0 };
-	ReadMOS(io, ub->rootbp, mos);
+	result = ReadMOS(io, ub->rootbp, mos);
 
 	Dataset root_dataset = { 0 };
-	ReadDataset(io, mos.objset, mos.root_dataset_obj, root_dataset);
+	result = ReadDataset(io, mos.objset, mos.root_dataset_obj, root_dataset);
 
 
 	bool res = false;
@@ -345,6 +345,7 @@ bool ReadBlock(W32Lib::FileEx &io, blkptr_t &blkptr, std::vector<char> &buffer)
 		}
 	}
 
+	bool checksummed = false;
 	zio_cksum_t calculated_chksum = { 0 };
 
 	switch (blkptr.props.checksum) {
@@ -355,24 +356,31 @@ bool ReadBlock(W32Lib::FileEx &io, blkptr_t &blkptr, std::vector<char> &buffer)
 	case ZIO_CHECKSUM_ZILOG:
 	case ZIO_CHECKSUM_FLETCHER_2:
 		fletcher_2_native(dst, readed_size, &calculated_chksum);
+		checksummed = true;
 		break;
 
 	case ZIO_CHECKSUM_ZILOG2:
 	case ZIO_CHECKSUM_FLETCHER_4:
 		fletcher_4_native(dst, readed_size, &calculated_chksum);
+		checksummed = true;
 		break;
 
 	case ZIO_CHECKSUM_LABEL:
 	case ZIO_CHECKSUM_GANG_HEADER:
 	case ZIO_CHECKSUM_SHA256:
 		zio_checksum_SHA256(dst, readed_size, &calculated_chksum);
+		checksummed = true;
 		break;
 
 	default:
 		break;	
 	}
 
-	bool chksum_ok = ChecksumEqual(blkptr.checksum, calculated_chksum);
+	if (checksummed) {
+		assert(ChecksumEqual(blkptr.checksum, calculated_chksum));
+	}
+
+	//bool chksum_ok = ChecksumEqual(blkptr.checksum, calculated_chksum);
 
 	switch (blkptr.props.compression) {
 	
@@ -515,7 +523,14 @@ bool ReadDataset(W32Lib::FileEx &io, std::vector<dnode_phys_t> objset, uint64_t 
 	objset_phys_t ds_objset = *(objset_phys_t *)buff.data();
 
 	buff.clear();
+
+	if (!ReadDataBlock(io, ds_objset.os_meta_dnode, 0x80, buff)) {
+		return false;
+	}
+
+
 	for (int i = 0; i <= ds_objset.os_meta_dnode.max_blk_id; i++) {
+	//for (int i = 0; i <= 0; i++) {
 		if (!ReadDataBlock(io, ds_objset.os_meta_dnode, i, buff)) {
 			return false;
 		}
@@ -541,7 +556,7 @@ bool ReadDataset(W32Lib::FileEx &io, std::vector<dnode_phys_t> objset, uint64_t 
 	TraversingMicroZapEntries(buff,
 		[&master_node_attr](const uint64_t &value, const char* name) {
 		master_node_attr.emplace(std::string(name), value);
-		return false;
+		return true;
 	});
 
 	//
@@ -550,29 +565,51 @@ bool ReadDataset(W32Lib::FileEx &io, std::vector<dnode_phys_t> objset, uint64_t 
 	dnode_phys_t root_dnode = dataset.objset[master_node_attr["ROOT"]];
 	assert(root_dnode.type == DMU_OT_DIRECTORY_CONTENTS);
 
-	buff.clear();
-	for (int i = 0; i <= root_dnode.max_blk_id; i++) {
-		if (!ReadDataBlock(io, root_dnode, i, buff)) {
-			return false;
-		}
-	}
-
-
-	//W32Lib::FileEx fat_zap;
-	//if (fat_zap.Create("D:\\zfs\\fat_zat.bin")) {
-	//	fat_zap.Write(buff.data(), buff.size());
-	//}
-
-
-	//std::map<std::string, uint64_t> root_dir;
-	TraversingFatZapEntries(io, root_dnode, 
+	TraversingZapObject(io, root_dnode,
 		[&dataset](const uint64_t &value, const char* name) {
 		dataset.root_dir.emplace(std::string(name), value);
 		return true;
 	});
 
 
-	return false;
+	//
+	// read "NFS" dir
+	// 
+
+	std::map<std::string, uint64_t> nfs_dir;
+	dnode_phys_t nfs_dnode = dataset.objset[dataset.root_dir["NFS"] & 0x00FFFFFFFFFFFFFF];
+	assert(root_dnode.type == DMU_OT_DIRECTORY_CONTENTS);
+
+	TraversingZapObject(io, nfs_dnode,
+		[&nfs_dir](const uint64_t &value, const char* name) {
+		nfs_dir.emplace(std::string(name), value);
+		return true;
+	});
+
+
+
+	std::map<std::string, uint64_t> nfs2_dir;
+	dnode_phys_t nfs2_dnode = dataset.objset[dataset.root_dir["NFS2"] & 0x00FFFFFFFFFFFFFF];
+	assert(root_dnode.type == DMU_OT_DIRECTORY_CONTENTS);
+
+	TraversingZapObject(io, nfs2_dnode,
+		[&nfs2_dir](const uint64_t &value, const char* name) {
+		nfs2_dir.emplace(std::string(name), value);
+		return true;
+	});
+
+	std::map<std::string, uint64_t> archive_dir;
+	dnode_phys_t archive_dnode = dataset.objset[dataset.root_dir["archive"] & 0x00FFFFFFFFFFFFFF];
+	assert(root_dnode.type == DMU_OT_DIRECTORY_CONTENTS);
+
+	TraversingZapObject(io, archive_dnode,
+		[&archive_dir](const uint64_t &value, const char* name) {
+		archive_dir.emplace(std::string(name), value);
+		return true;
+	});
+
+
+	return true;
 }
 
 bool ReadMOS(W32Lib::FileEx & io, blkptr_t &blkptr, MetaObjecSet &mos)
@@ -592,9 +629,15 @@ bool ReadMOS(W32Lib::FileEx & io, blkptr_t &blkptr, MetaObjecSet &mos)
 
 	buff.clear();
 	for (int i = 0; i <= mos.objset_phys.os_meta_dnode.max_blk_id; i++) {
+		size_t buff_size = buff.size();
 		if (!ReadDataBlock(io, mos.objset_phys.os_meta_dnode, i, buff)) {
 			return false;
 		}
+		size_t readed = buff.size() - buff_size;
+		if (readed == 0) {
+			int x = 0;
+		}
+
 	}
 
 	mos.objset.resize(buff.size()/sizeof(dnode_phys_t));
