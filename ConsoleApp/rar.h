@@ -45,7 +45,7 @@ namespace rar {
 		uint8_t type;
 		uint16_t flags;
 		uint16_t block_size;
-		// uint16_t add_size;
+		// uint32_t add_size;
 	};
 
 	//
