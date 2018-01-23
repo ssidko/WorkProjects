@@ -162,7 +162,7 @@ void SaveDataToFile(W32Lib::FileEx &io, dnode_phys_t &dnode, std::string out_fil
 	W32Lib::FileEx out_file(out_file_path.c_str());
 
 	if (out_file.Create()) {
-		
+
 		size_t readed = 0;
 		size_t data_block_size = dnode.data_blk_sz_sec * SPA_MINBLOCKSIZE;
 		std::vector<char> buffer;
@@ -180,6 +180,8 @@ void SaveDataToFile(W32Lib::FileEx &io, dnode_phys_t &dnode, std::string out_fil
 	
 	}
 }
+
+#include "ZfsObjectDataSaver.h"
 
 void zfs_test(void)
 {
@@ -264,7 +266,12 @@ void zfs_test(void)
 		uint64_t object_id = entry.second & 0x00FFFFFFFFFFFFFF;
 		dnode_phys_t dnode = root_dataset.objset[object_id];
 		if (dnode.type == DMU_OT_PLAIN_FILE_CONTENTS) {
+
 			std::string file_path = out_dir + name;
+
+			ZfsObjectDataSaver saver(io, dnode, file_path);
+			int result = saver.Run();
+
 			SaveDataToFile(io, dnode, file_path);		
 		}
 	}

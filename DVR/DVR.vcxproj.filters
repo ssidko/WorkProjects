@@ -200,6 +200,9 @@
     <ClCompile Include="flatcher.cpp">
       <Filter>zfs\checksum</Filter>
     </ClCompile>
+    <ClCompile Include="ZfsObjectDataSaver.cpp">
+      <Filter>zfs\test</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="mainwindow.ui">
@@ -349,6 +352,9 @@
     </ClInclude>
     <ClInclude Include="flatcher.h">
       <Filter>zfs\checksum</Filter>
+    </ClInclude>
+    <ClInclude Include="ZfsObjectDataSaver.h">
+      <Filter>zfs\test</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

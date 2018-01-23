@@ -137,6 +137,7 @@
     <ClCompile Include="WinConsole.cpp" />
     <ClCompile Include="XdrReader.cpp" />
     <ClCompile Include="zap.cpp" />
+    <ClCompile Include="ZfsObjectDataSaver.cpp" />
     <ClCompile Include="zfs\lzjb.cpp" />
     <ClCompile Include="zfs_test.cpp" />
   </ItemGroup>
@@ -210,6 +211,7 @@
     <ClInclude Include="WinConsole.h" />
     <ClInclude Include="XdrReader.h" />
     <ClInclude Include="zap.h" />
+    <ClInclude Include="ZfsObjectDataSaver.h" />
     <ClInclude Include="zfs\lzjb.h" />
     <ClInclude Include="zfs\zfs.h" />
     <ClInclude Include="zfs\zfs_type.h" />
