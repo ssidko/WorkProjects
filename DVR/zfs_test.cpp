@@ -156,6 +156,30 @@ void zfs_dnode_recovery(void)
 	}
 }
 
+void SaveDataToFile(W32Lib::FileEx &io, dnode_phys_t &dnode, std::string out_file_path)
+{
+
+	W32Lib::FileEx out_file(out_file_path.c_str());
+
+	if (out_file.Create()) {
+		
+		size_t readed = 0;
+		size_t data_block_size = dnode.data_blk_sz_sec * SPA_MINBLOCKSIZE;
+		std::vector<char> buffer;
+		buffer.reserve(data_block_size);
+		for (uint64_t i = 0; i <= dnode.max_blk_id; i++) {
+			
+			buffer.clear();
+			readed = ReadDataBlock2(io, dnode, i, buffer);
+			if (readed != data_block_size) {			
+				buffer.resize(data_block_size);				
+			}
+			out_file.Write(buffer.data(), data_block_size);
+
+		}
+	
+	}
+}
 
 void zfs_test(void)
 {
@@ -215,33 +239,38 @@ void zfs_test(void)
 	result = ReadDataset(io, mos.objset, mos.root_dataset_obj, root_dataset);
 
 
-	bool res = false;
-	dnode_phys *dnode = nullptr;
-	for (size_t i = 1; i < root_dataset.objset.size(); i++) {
-		dnode = &root_dataset.objset[i];
-		res = IsValidDnode(dnode);
-		if (!res) {
-			int x = 0;
-			x++;
-		}	
-	}
+
+	//
+	// Recovery 43558
+	//
 	
+	std::string out_dir = "F:\\43558\\";
+	std::vector<char> buff;
+	size_t readed = 0;
 
-	int object_id = 0x0f;
+	std::map<std::string, uint64_t> vhd_dir;
+	dnode_phys_t vhd_dir_dnode = root_dataset.objset[0x0998];
+	assert(vhd_dir_dnode.type == DMU_OT_DIRECTORY_CONTENTS);
 
-	std::vector<char> file_data;
-	res = ReadObjectData(io, root_dataset.objset[object_id], file_data);
-
-	res = IsValidDnode(&root_dataset.objset[object_id]);
-
-	//W32Lib::FileEx out("f:\\bonus.bin");
-	//if (out.Create()) {
-	//	out.Write(root_dataset.objset[object_id].bonus, root_dataset.objset[object_id].bonus_len);
-	//}
-
-	//std::vector<char> zap_buff;
+	TraversingZapObject(io, vhd_dir_dnode,
+		[&vhd_dir](const uint64_t &value, const char* name) {
+		vhd_dir.emplace(std::string(name), value);
+		return true;
+	});
 
 
+	for (auto &entry : vhd_dir) {		
+		std::string name = entry.first;
+		uint64_t object_id = entry.second & 0x00FFFFFFFFFFFFFF;
+		dnode_phys_t dnode = root_dataset.objset[object_id];
+		if (dnode.type == DMU_OT_PLAIN_FILE_CONTENTS) {
+			std::string file_path = out_dir + name;
+			SaveDataToFile(io, dnode, file_path);		
+		}
+	}
+
+
+	
 	int x = 0;
 }
 
@@ -266,8 +295,6 @@ bool ReadBlock(W32Lib::FileEx &io, blkptr_t &blkptr, std::vector<char> &buffer)
 	char *dst = nullptr;
 	char *src = (char *)&blkptr;
 	dnode_phys_t *dnode = nullptr;
-
-	assert(blkptr.dva[0].gang_flag == 0);
 
 	if (blkptr.props.embedded) {
 
@@ -306,18 +333,19 @@ bool ReadBlock(W32Lib::FileEx &io, blkptr_t &blkptr, std::vector<char> &buffer)
 	} else {
 
 		//
-		// TODO: Validating dva, and if need read as HOLE.
+		// TODO: reading gang block.
 		//
+		assert(blkptr.dva[0].gang_flag == 0);
 
 		size_t data_size = 0;
 
 		if (IsHole(blkptr)) {
-			data_size = (blkptr.props.logical_size + 1) * SPA_MINBLOCKSHIFT;
+			data_size = (blkptr.props.logical_size + 1) * SPA_MINBLOCKSIZE;
 			buffer.resize(origin_size + data_size);
 			std::memset(&buffer[origin_size], 0x00, data_size);		
 			return true;
 		} else {
-			data_size = blkptr.dva[0].alloc_size * SPA_MINBLOCKSHIFT;
+			data_size = blkptr.dva[0].alloc_size * SPA_MINBLOCKSIZE;
 
 			readed_size = data_size;
 
@@ -329,11 +357,11 @@ bool ReadBlock(W32Lib::FileEx &io, blkptr_t &blkptr, std::vector<char> &buffer)
 				compressed_data.resize(data_size);
 				dst = compressed_data.data();
 
-				decompressed_data_size = (blkptr.props.logical_size + 1) * SPA_MINBLOCKSHIFT;
+				decompressed_data_size = (blkptr.props.logical_size + 1) * SPA_MINBLOCKSIZE;
 				buffer.resize(origin_size + decompressed_data_size);
 			}
 
-			if (!io.SetPointer(VDEV_OFFSET + VDEV_LABEL_START_SIZE + blkptr.dva[0].offset * SPA_MINBLOCKSHIFT)) {
+			if (!io.SetPointer(VDEV_OFFSET + VDEV_LABEL_START_SIZE + blkptr.dva[0].offset * SPA_MINBLOCKSIZE)) {
 				return false;
 			}
 
@@ -460,8 +488,9 @@ int64_t ReadDataBlock2(W32Lib::FileEx &io, dnode_phys_t &dnode, uint64_t block_n
 
 	size_t level = dnode.nlevels - 1;
 	size_t indblock_size = 1 << dnode.ind_blk_shift;
+	size_t data_block_size = dnode.data_blk_sz_sec << SPA_MINBLOCKSHIFT;
 	size_t pointers_per_indblock = (indblock_size) / sizeof(blkptr_t);
-	size_t blocks_per_pointer = std::pow(pointers_per_indblock, level);
+	uint64_t blocks_per_pointer = std::pow((uint64_t)pointers_per_indblock, (uint64_t)level);
 
 	assert(dnode.max_blk_id < blocks_per_pointer * dnode.nblk_ptr);
 
@@ -474,6 +503,11 @@ int64_t ReadDataBlock2(W32Lib::FileEx &io, dnode_phys_t &dnode, uint64_t block_n
 	blkptr_t blkptr = dnode.blk_ptr[pointer_index];
 
 	while (level) {
+
+		if(IsHole(blkptr)) {
+			buffer.resize(buffer.size() + data_block_size);
+			return data_block_size;
+		}
 
 		assert(blkptr.props.level == level);
 
@@ -571,19 +605,14 @@ bool ReadDataset(W32Lib::FileEx &io, std::vector<dnode_phys_t> objset, uint64_t 
 
 	buff.clear();
 	ReadBlock(io, dataset_phys->ds_bp, buff);
-
 	objset_phys_t ds_objset = *(objset_phys_t *)buff.data();
 
+	int64_t readed = 0;
+
 	buff.clear();
-
-	if (!ReadDataBlock(io, ds_objset.os_meta_dnode, 0x80, buff)) {
-		return false;
-	}
-
-
 	for (int i = 0; i <= ds_objset.os_meta_dnode.max_blk_id; i++) {
-	//for (int i = 0; i <= 0; i++) {
-		if (!ReadDataBlock(io, ds_objset.os_meta_dnode, i, buff)) {
+		readed = ReadDataBlock2(io, ds_objset.os_meta_dnode, i, buff);
+		if (readed == -1) {
 			return false;
 		}
 	}
@@ -623,44 +652,6 @@ bool ReadDataset(W32Lib::FileEx &io, std::vector<dnode_phys_t> objset, uint64_t 
 		return true;
 	});
 
-
-	//
-	// read "NFS" dir
-	// 
-
-	std::map<std::string, uint64_t> nfs_dir;
-	dnode_phys_t nfs_dnode = dataset.objset[dataset.root_dir["NFS"] & 0x00FFFFFFFFFFFFFF];
-	assert(root_dnode.type == DMU_OT_DIRECTORY_CONTENTS);
-
-	TraversingZapObject(io, nfs_dnode,
-		[&nfs_dir](const uint64_t &value, const char* name) {
-		nfs_dir.emplace(std::string(name), value);
-		return true;
-	});
-
-
-
-	std::map<std::string, uint64_t> nfs2_dir;
-	dnode_phys_t nfs2_dnode = dataset.objset[dataset.root_dir["NFS2"] & 0x00FFFFFFFFFFFFFF];
-	assert(root_dnode.type == DMU_OT_DIRECTORY_CONTENTS);
-
-	TraversingZapObject(io, nfs2_dnode,
-		[&nfs2_dir](const uint64_t &value, const char* name) {
-		nfs2_dir.emplace(std::string(name), value);
-		return true;
-	});
-
-	std::map<std::string, uint64_t> archive_dir;
-	dnode_phys_t archive_dnode = dataset.objset[dataset.root_dir["archive"] & 0x00FFFFFFFFFFFFFF];
-	assert(root_dnode.type == DMU_OT_DIRECTORY_CONTENTS);
-
-	TraversingZapObject(io, archive_dnode,
-		[&archive_dir](const uint64_t &value, const char* name) {
-		archive_dir.emplace(std::string(name), value);
-		return true;
-	});
-
-
 	return true;
 }
 
@@ -679,17 +670,16 @@ bool ReadMOS(W32Lib::FileEx & io, blkptr_t &blkptr, MetaObjecSet &mos)
 
 	mos.objset_phys = *(objset_phys_t *)buff.data();
 
+	//
+	// Чтитаем первые 32-е dnode.
+	//
+	size_t dnode_count = mos.objset_phys.os_meta_dnode.max_blk_id <= 32 ? mos.objset_phys.os_meta_dnode.max_blk_id : 32;
 	buff.clear();
-	for (int i = 0; i <= mos.objset_phys.os_meta_dnode.max_blk_id; i++) {
-		size_t buff_size = buff.size();
-		if (!ReadDataBlock(io, mos.objset_phys.os_meta_dnode, i, buff)) {
-			return false;
-		}
-		size_t readed = buff.size() - buff_size;
-		if (readed == 0) {
+	for (int i = 0; i < dnode_count; i++) {
+		int64_t readed = ReadDataBlock2(io, mos.objset_phys.os_meta_dnode, i, buff);
+		if (readed != mos.objset_phys.os_meta_dnode.data_blk_sz_sec * SPA_MINBLOCKSIZE) {
 			int x = 0;
 		}
-
 	}
 
 	mos.objset.resize(buff.size()/sizeof(dnode_phys_t));
@@ -699,28 +689,6 @@ bool ReadMOS(W32Lib::FileEx & io, blkptr_t &blkptr, MetaObjecSet &mos)
 	if (obj_dir_dnode.type != DMU_OT_OBJECT_DIRECTORY) {
 		return false;
 	}
-
-	//buff.clear();
-	//for (int i = 0; i <= obj_dir_dnode.max_blk_id; i++) {
-	//	if (!ReadDataBlock(io, obj_dir_dnode, i, buff)) {
-	//		return false;
-	//	}
-	//}
-
-	//W32Lib::FileEx fat_zap;
-	//if (fat_zap.Create("D:\\zfs\\fat_zap.bin")) {
-	//	fat_zap.Write(buff.data(), buff.size());
-	//}
-
-	//std::map<std::string, uint64_t> &object_dir = mos.object_dir;
-	//TraversingMicroZapEntries(buff,
-	//	[&mos](const uint64_t &value, const char* name) {
-	//	if (std::strcmp(name, DMU_POOL_ROOT_DATASET) == 0) {
-	//		mos.root_dataset_obj = value;
-	//	}
-	//	mos.object_dir.emplace(std::string(name), value);
-	//	return true;
-	//});
 
 	TraversingZapObject(io, obj_dir_dnode,
 		[&mos](const uint64_t &value, const char* name) {

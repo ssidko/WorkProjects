@@ -41,6 +41,7 @@ bool IsHole(const blkptr_t &bp);
 
 bool ReadBlock(W32Lib::FileEx &io, blkptr_t &blkptr, std::vector<char> &buffer);
 bool ReadDataBlock(W32Lib::FileEx &io, dnode_phys_t &dnode, uint64_t block_num, std::vector<char> &buffer);
+int64_t ReadDataBlock2(W32Lib::FileEx &io, dnode_phys_t &dnode, uint64_t block_num, std::vector<char> &buffer);
 bool ReadObjectData(W32Lib::FileEx &io, dnode_phys_t &dnode, std::vector<char> &buffer);
 
 bool ReadDataset(W32Lib::FileEx &io, std::vector<dnode_phys_t> objset, uint64_t os_object, Dataset &dataset);
@@ -53,5 +54,7 @@ void zfs_dnode_recovery(void);
 
 bool TraversingZapObject(W32Lib::FileEx &io, dnode_phys_t &dnode, std::function<bool(const uint64_t&, const char*)> callback);
 bool TraversingFatZapEntries(W32Lib::FileEx &io, dnode_phys_t &dnode, std::function<bool(const uint64_t&, const char*)> callback);
+
+void SaveDataToFile(W32Lib::FileEx &io, dnode_phys_t &dnode, std::string out_file_path);
 
 #endif // _ZFS_TEST_H
