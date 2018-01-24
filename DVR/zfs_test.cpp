@@ -187,7 +187,7 @@ void zfs_test(void)
 {
 	W32Lib::FileEx io;
 	//std::string volume_file_name = "D:\\zfs\\zfs-pool-flat.vmdk";
-	std::string volume_file_name = "\\\\.\\PhysicalDrive0";
+	std::string volume_file_name = "\\\\.\\PhysicalDrive1";
 	if (!io.Open(volume_file_name.c_str())) {
 		return;
 	}
@@ -246,7 +246,7 @@ void zfs_test(void)
 	// Recovery 43558
 	//
 	
-	std::string out_dir = "F:\\43558\\";
+	std::string out_dir = "F:\\43558\\v3\\";
 	std::vector<char> buff;
 	size_t readed = 0;
 
@@ -260,6 +260,48 @@ void zfs_test(void)
 		return true;
 	});
 
+	vhd_dir.erase("28548ee1-ffbf-4b2a-a399-f6ad34e2190b.vhd");
+	vhd_dir.erase("27fc4259-4f66-4a30-a969-a8c5e542677f.vhd");
+	vhd_dir.erase("25ea76a3-a87a-48f6-9578-6c481fc2a8be.vhd");
+	vhd_dir.erase("26d82b9a-791f-407d-b66a-778a0c7db9d5.vhd");
+	vhd_dir.erase("2422362c-bfde-4d79-b33c-ce55ae664bb9.vhd");
+	vhd_dir.erase("22b37058-25e7-4e17-a544-ce8c5cd60c30.vhd");
+	vhd_dir.erase("223b9e88-22f7-4bab-a5a3-5d3ec45813f3.vhd");
+	vhd_dir.erase("2219a8ad-05d2-4752-9537-a566f8dfc9e0.vhd");
+	vhd_dir.erase("21e54f46-36d5-436d-9546-1dd168fbaf80.vhd");
+	vhd_dir.erase("1e617fe3-e8d5-4e98-9bab-031b16178379.vhd");
+	vhd_dir.erase("21836121-c1a5-4a71-bc85-877159d3a85c.vhd");
+	vhd_dir.erase("1baed32f-4fe8-4661-9577-981c368ac4e1.vhd");
+	vhd_dir.erase("1c7e4132-0da5-4ae2-aab4-0c8d50b3a717.vhd");
+	vhd_dir.erase("17c0ab48-78b0-4dde-9f27-63da9dbbc26e.vhd");
+	vhd_dir.erase("19b397f6-272f-4cdc-a4a6-ed83249a96b8.vhd");
+	vhd_dir.erase("16e70995-83b0-480b-a323-a08ae9224d9e.vhd");
+	vhd_dir.erase("14fb9dd4-486b-44c6-9ff4-c77982a799b3.vhd");
+	vhd_dir.erase("10ecdace-5e51-403f-a8d9-9c9829c6dfb4.vhd");
+	vhd_dir.erase("13a8548a-e90e-43fc-b126-82c81b9c9f90.vhd");
+	vhd_dir.erase("13b2593f-687e-444d-9afd-185e99c8cbb1.vhd");
+	vhd_dir.erase("122d843c-5e6d-4c95-a338-4585265cddb4.vhd");
+	vhd_dir.erase("0ed1a7f6-b352-4ebd-ac6f-32e6f369a97c.vhd");
+	vhd_dir.erase("0d845c88-11b9-45d8-99dd-e682dec99863.vhd");
+	vhd_dir.erase("0d7714cd-b948-4be9-b126-26a902499bcb.vhd");
+	vhd_dir.erase("0d58f567-b4de-40f2-9b77-fd2ccd43d490.vhd");
+	vhd_dir.erase("0b844046-1988-4505-b69d-a5af29d31b12.vhd");
+	vhd_dir.erase("0a05cea4-dca5-4160-98e4-6d14b4808c18.vhd");
+	vhd_dir.erase("09c944c3-db07-4a4a-8af9-0e6d01d46467.vhd");
+	vhd_dir.erase("098b7d80-8374-4dbe-ab05-df8909e353be.vhd");
+	vhd_dir.erase("0973b9c1-05ed-41a9-8d33-f17e1a35ebf4.vhd");
+	vhd_dir.erase("08977e50-0a99-48af-9f92-e8edcce692bb.vhd");
+	vhd_dir.erase("07a3a704-ffd4-481b-9e01-d5ea4b1af9d8.vhd");
+	vhd_dir.erase("02df7eee-fa24-40ae-84d9-173b2a73cfdc.vhd");
+	vhd_dir.erase("03a06a35-80db-49e7-9931-6dc9aed44d53.vhd");
+	vhd_dir.erase("04a3c239-a854-421c-92a7-5fd266c8c5d0.vhd");
+	vhd_dir.erase("06aaaf12-0736-47bd-8abf-f5d21ac0c66d.vhd");
+	vhd_dir.erase("034a1127-1c8f-433e-b48e-735f5fb9b5d8.vhd");
+	vhd_dir.erase("02b41b1e-8ca8-441c-a0d5-366d3666dc79.vhd");
+	vhd_dir.erase("02af08c4-a5c1-4c17-9f8c-071d075259b3.vhd");
+	vhd_dir.erase("01e7093a-d5d3-43f1-aa9c-d7ca10cb34d4.vhd");
+	vhd_dir.erase("01fc7485-00aa-4109-a80e-f90d5536db6c.vhd");
+	vhd_dir.erase("002ecd5c-6078-47ac-a860-c7f17f97f898.vhd");
 
 	for (auto &entry : vhd_dir) {		
 		std::string name = entry.first;
@@ -272,7 +314,7 @@ void zfs_test(void)
 			ZfsObjectDataSaver saver(io, dnode, file_path);
 			int result = saver.Run();
 
-			SaveDataToFile(io, dnode, file_path);		
+			//SaveDataToFile(io, dnode, file_path);		
 		}
 	}
 

@@ -36,12 +36,12 @@ int ZfsObjectDataSaver::Run()
 	uint64_t full = blocks_count / blocks_per_pointer;
 	assert(full <= pointers_per_indblock);
 	for (int i = 0; i < full; i++) {
-		SaveBlocks(dnode.blk_ptr[i], blocks_per_pointer, level - 1);
+		SaveBlocks(dnode.blk_ptr[i], blocks_per_pointer, level);
 	}
 
-	uint64_t remainder = blocks_count & blocks_per_pointer;
+	uint64_t remainder = blocks_count % blocks_per_pointer;
 	if (remainder) {
-		SaveBlocks(dnode.blk_ptr[full], remainder, level - 1);
+		SaveBlocks(dnode.blk_ptr[full], remainder, level);
 	}
 
 	return 0;
@@ -73,19 +73,22 @@ bool ZfsObjectDataSaver::SaveBlocks(blkptr_t & blkptr, uint64_t blocks_count, si
 			if (!ReadBlock(io, *bp, data_buff)) {
 				return false;
 			}
-			assert(data_buff.size() == data_block_size);
+			if (data_buff.size() != data_block_size);
+			{
+				data_buff.resize(data_block_size);
+			}
 			out_file.Write(data_buff.data(), data_block_size);		
 		}
 		return true;	
 
 	} else {	
 		uint64_t full = blocks_count / blocks_per_pointer;
-		assert(full < pointers_per_indblock);
+		assert(full <= pointers_per_indblock);
 		for (int i = 0; i < full; i++) {
 			bp = &((blkptr_t *)pointers_buff.data())[i];
 			SaveBlocks(*bp, blocks_per_pointer, level - 1);
 		}
-		uint64_t remainder = blocks_count & blocks_per_pointer;
+		uint64_t remainder = blocks_count % blocks_per_pointer;
 		if (remainder) {
 			bp = &((blkptr_t *)pointers_buff.data())[full];
 			SaveBlocks(*bp, remainder, level - 1);
