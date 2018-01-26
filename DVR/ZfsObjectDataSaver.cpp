@@ -29,19 +29,31 @@ int ZfsObjectDataSaver::Run()
 
 	assert(level == dnode.blk_ptr[0].props.level);
 
-	size_t pointers_per_level = dnode.nblk_ptr;
-	uint64_t blocks_count = dnode.max_blk_id + 1;
-	uint64_t blocks_per_pointer = std::pow((uint64_t)pointers_per_indblock, (uint64_t)level);
+	if (level == 0) {
+		std::vector<char> buff;
+		for (int i = 0; i < dnode.nblk_ptr; i++) {
+			buff.clear();
+			size_t expected_data_size = dnode.blk_ptr[i].props.embedded ? dnode.blk_ptr[i].props.logical_size + 1 : data_block_size;
+			if (!ReadBlock(io, dnode.blk_ptr[i], buff)) {
+				buff.resize(expected_data_size);
+			}
+			out_file.Write(buff.data(), buff.size());
+		}
+	} else {	
+		size_t pointers_per_level = dnode.nblk_ptr;
+		uint64_t blocks_count = dnode.max_blk_id + 1;
+		uint64_t blocks_per_pointer = std::pow((uint64_t)pointers_per_indblock, (uint64_t)level);
 
-	uint64_t full = blocks_count / blocks_per_pointer;
-	assert(full <= pointers_per_indblock);
-	for (int i = 0; i < full; i++) {
-		SaveBlocks(dnode.blk_ptr[i], blocks_per_pointer, level);
-	}
+		uint64_t full = blocks_count / blocks_per_pointer;
+		assert(full <= pointers_per_indblock);
+		for (int i = 0; i < full; i++) {
+			SaveBlocks(dnode.blk_ptr[i], blocks_per_pointer, level);
+		}
 
-	uint64_t remainder = blocks_count % blocks_per_pointer;
-	if (remainder) {
-		SaveBlocks(dnode.blk_ptr[full], remainder, level);
+		uint64_t remainder = blocks_count % blocks_per_pointer;
+		if (remainder) {
+			SaveBlocks(dnode.blk_ptr[full], remainder, level);
+		}	
 	}
 
 	return 0;
