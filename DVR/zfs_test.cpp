@@ -9,9 +9,7 @@
 #include "lz4.h"
 #include "lzjb.h"
 
-//#define VDEV_OFFSET						323510272*512ULL
 #define VDEV_OFFSET						323510272*512ULL
-//#define VDEV_OFFSET						2048*512ULL
 #define VDEV_LABEL_NVLIST_OFFSET		16*1024
 #define SECTOR_SIZE_SHIFT				9
 #define SECTOR_SIZE						(1 << SECTOR_SIZE_SHIFT)
