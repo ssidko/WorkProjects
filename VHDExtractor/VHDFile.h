@@ -21,7 +21,7 @@ typedef struct _VHD_FOOTER {
 	DWORD version;
 	LONGLONG data_offset;
 	DWORD time_stamp;
-	BYTE creator_app[4];
+	BYTE creator_app[4]; // Creation time - seconds since January 1, 2000 12:00:00 AM in UTC/GMT. Unix timestamp + 946684800.
 	DWORD creator_ver;
 	BYTE creator_os[4];
 	LONGLONG original_size;
