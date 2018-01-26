@@ -25,17 +25,17 @@
     <Filter Include="Other">
       <UniqueIdentifier>{7e9ab791-ff04-4704-ac84-16c01c1edf24}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Form Files\Generated Files">
+    <Filter Include="Generated Files">
       <UniqueIdentifier>{71ED8ED8-ACB9-4CE9-BBE1-E00B30144E11}</UniqueIdentifier>
       <Extensions>moc;h;cpp</Extensions>
       <SourceControlFiles>False</SourceControlFiles>
     </Filter>
-    <Filter Include="Form Files\Generated Files\Debug">
+    <Filter Include="Generated Files\Debug">
       <UniqueIdentifier>{614ee7d5-d44f-4ad0-b0cc-f42e5a738f43}</UniqueIdentifier>
       <Extensions>cpp;moc</Extensions>
       <SourceControlFiles>False</SourceControlFiles>
     </Filter>
-    <Filter Include="Form Files\Generated Files\Release">
+    <Filter Include="Generated Files\Release">
       <UniqueIdentifier>{87e49ade-52b4-4cf1-b9f8-30c04413e04c}</UniqueIdentifier>
       <Extensions>cpp;moc</Extensions>
       <SourceControlFiles>False</SourceControlFiles>
@@ -43,13 +43,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GeneratedFiles\Debug\moc_MainWindow.cpp">
-      <Filter>Form Files\Generated Files\Debug</Filter>
+      <Filter>Generated Files\Debug</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\Release\moc_MainWindow.cpp">
-      <Filter>Form Files\Generated Files\Release</Filter>
+      <Filter>Generated Files\Release</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\qrc_MainWindow.cpp">
-      <Filter>Form Files\Generated Files</Filter>
+      <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MainWindow.cpp">
@@ -68,10 +68,10 @@
       <Filter>Core</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\Debug\moc_DiskImageExtractor.cpp">
-      <Filter>Form Files\Generated Files\Debug</Filter>
+      <Filter>Generated Files\Debug</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\Release\moc_DiskImageExtractor.cpp">
-      <Filter>Form Files\Generated Files\Release</Filter>
+      <Filter>Generated Files\Release</Filter>
     </ClCompile>
     <ClCompile Include="DiskImageExtractor.cpp">
       <Filter>Core</Filter>
@@ -85,14 +85,14 @@
     <ClCompile Include="Fat.cpp">
       <Filter>Other</Filter>
     </ClCompile>
-    <ClCompile Include="VHDInfoDialog.cpp">
-      <Filter>Form Files\Generated Files</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\Debug\moc_VHDInfoDialog.cpp">
-      <Filter>Form Files\Generated Files\Debug</Filter>
+      <Filter>Generated Files\Debug</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\Release\moc_VHDInfoDialog.cpp">
-      <Filter>Form Files\Generated Files\Release</Filter>
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="VHDInfoDialog.cpp">
+      <Filter>GUI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -112,12 +112,12 @@
       <Filter>Form Files</Filter>
     </CustomBuild>
     <CustomBuild Include="VHDInfoDialog.h">
-      <Filter>Form Files\Generated Files</Filter>
+      <Filter>GUI</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GeneratedFiles\ui_MainWindow.h">
-      <Filter>Form Files\Generated Files</Filter>
+      <Filter>Generated Files</Filter>
     </ClInclude>
     <ClInclude Include="VHDFile.h">
       <Filter>Core</Filter>
@@ -147,7 +147,7 @@
       <Filter>Other</Filter>
     </ClInclude>
     <ClInclude Include="GeneratedFiles\ui_VhdInfoDialog.h">
-      <Filter>Form Files\Generated Files</Filter>
+      <Filter>Generated Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

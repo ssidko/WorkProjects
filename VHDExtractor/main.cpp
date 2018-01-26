@@ -51,17 +51,13 @@ typedef struct _DVR_DATE {
 
 int main(int argc, char *argv[])
 {
-	//VHDFile file(QString::fromLocal8Bit("K:\\testing-ntfs.vhd"));
-	//if (file.Open()) {
-	//
-	//
+	//VHDFile file(QString::fromLocal8Bit("F:\\43558\\Result\\NFS\\940156d5-765c-b1dc-8dfd-7b077363f15a\\c9bbbc14-e172-4542-a007-131c404437fa.vhd"));
+	//if (file.Open()) {	
+	//	size_t block_size = file.BlockSize();
+	//	size_t used = file.UsedEntriesInBAT();
+	//	size_t size = used*block_size;
 	//	int x = 0;
 	//}
-
-	DWORD raw = 0x3e8879ed;
-	//DWORD raw = 0x3e000000;
-	DVR_DATE *date = (DVR_DATE *)&raw;
-
 
 	QApplication a(argc, argv);
 	//MainWindow w;
