@@ -43,9 +43,7 @@
     <ClCompile Include="mainwindow.cpp">
       <Filter>GUI</Filter>
     </ClCompile>
-    <ClCompile Include="File.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
+    <ClCompile Include="File.cpp" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="mainwindow.ui">
@@ -62,9 +60,7 @@
     <ClInclude Include="GeneratedFiles\ui_mainwindow.h">
       <Filter>Generated Files</Filter>
     </ClInclude>
-    <ClInclude Include="File.h">
-      <Filter>Generated Files</Filter>
-    </ClInclude>
+    <ClInclude Include="File.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="1CV7Recovery.rc">

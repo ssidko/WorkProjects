@@ -4,7 +4,23 @@
 #include <vector>
 #include "File.h"
 
-bool FindAndSaveAllExtents()
+enum class DataType {
+	Unknown = 0,
+	DbfBegin,
+	DbfEnd,
+	DbfRecords,
+	DbfFields,
+	DbfFieldsAndRecords,
+};
+
+DataType WhatKindOfDataInBlock()
+{
+
+
+	return DataType::Unknown;
+}
+
+bool FindAndSaveAllDbfFragments()
 {
 	std::string file_name = "F:\\43693\\vhd\\1CServ_Backup.vhdx.decryptor@cock.li";
 	std::string out_dir = "F:\\43693\\recovery\\extents";
@@ -36,7 +52,7 @@ int main(int argc, char *argv[])
 	QApplication a(argc, argv);
 	MainWindow w;
 
-	bool result = FindAndSaveAllExtents();
+	bool result = FindAndSaveAllDbfFragments();
 
 	w.show();
 	return a.exec();
