@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include "File.h"
+#include "dbf.h"
 
 enum class DataType {
 	Unknown = 0,
@@ -13,7 +14,22 @@ enum class DataType {
 	DbfFieldsAndRecords,
 };
 
-DataType WhatKindOfDataInBlock()
+void TestDbfFile(void)
+{
+	W32Lib::FileEx io("F:\\43693\\DB examples\\BUCC\\SC12610.DBF");
+	if (io.Open()) {
+		
+		using namespace dbf;
+
+		dbf::header_t hdr;
+		io.Read(&hdr, sizeof(hdr));
+
+		int x = 0;
+	
+	}	
+}
+
+DataType DataTypeInBlock()
 {
 
 
@@ -51,6 +67,8 @@ int main(int argc, char *argv[])
 {
 	QApplication a(argc, argv);
 	MainWindow w;
+
+	TestDbfFile();
 
 	bool result = FindAndSaveAllDbfFragments();
 
