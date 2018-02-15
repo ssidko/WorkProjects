@@ -4,6 +4,7 @@
 #include <vector>
 #include "File.h"
 #include "dbf.h"
+#include <assert.h>
 
 enum class DataType {
 	Unknown = 0,
@@ -23,6 +24,40 @@ void TestDbfFile(void)
 
 		dbf::header_t hdr;
 		io.Read(&hdr, sizeof(hdr));
+
+
+		size_t fields_count = (hdr.header_size / 32) - 1;
+		assert(hdr.header_size % 32 == 1);
+
+		std::vector<field_descriptor_t> fields;
+		fields.resize(fields_count);
+
+		io.Read(fields.data(), fields.size() * sizeof(field_descriptor_t));
+
+
+		std::vector<uint8_t> buff(hdr.record_size);
+		for (int i = 0; i < hdr.records_count; i++) {
+			
+			io.SetPointer((int64_t)hdr.header_size + (int64_t)(i * hdr.record_size));
+			io.Read(buff.data(), buff.size());
+			
+			std::vector<std::string> record(fields_count);
+			
+			char *fld_ptr = (char *)buff.data() + 1;
+			for (int f = 0; f < fields_count; f++) {
+			
+				record[f] = std::string(fld_ptr, fields[f].size);
+				fld_ptr += fields[f].size;
+			
+			}
+
+
+			int xx = 0;
+		
+		}
+
+
+
 
 		int x = 0;
 	
