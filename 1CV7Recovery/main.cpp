@@ -36,7 +36,7 @@ bool IsValidDbfHeader(dbf::header_t &hdr)
 	if (hdr.header_size < 32 * 2 + 1) return false;
 	if (hdr.header_size % 32 != 1) return false;
 
-	if (hdr.record_size <= 1) return false;
+	if (hdr.record_size < 2) return false;
 
 	if (hdr.reserved_1 != 0x00) return false;
 	for (const auto &val: hdr.reserved_2) {
@@ -49,6 +49,9 @@ bool IsValidDbfHeader(dbf::header_t &hdr)
 			return false;
 		}
 	}
+
+	if (hdr.transaction_incomplete_flag != 0) return false;
+	if (hdr.encryption_flag != 0) return false;
 
 	return true;
 }
@@ -78,6 +81,8 @@ void TestDbfFile(void)
 
 		dbf::header_t hdr;
 		io.Read(&hdr, sizeof(hdr));
+
+		bool result = IsValidDbfHeader(hdr);
 
 
 		size_t fields_count = (hdr.header_size / 32) - 1;
@@ -148,7 +153,7 @@ int main(int argc, char *argv[])
 	QApplication a(argc, argv);
 	MainWindow w;
 
-	//TestDbfFile();
+	TestDbfFile();
 
 	bool result = FindAndSaveAllDbfFragments();
 

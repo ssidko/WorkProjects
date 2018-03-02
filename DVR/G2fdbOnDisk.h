@@ -52,7 +52,7 @@ namespace G2FDB
 		WORD width;
 		WORD height;
 		WORD str_length;
-		BYTE string[91];
+		BYTE string[91];					// camera description or user comment
 		BYTE unk_5[32];
 	};
 
