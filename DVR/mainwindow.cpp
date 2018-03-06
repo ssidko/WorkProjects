@@ -9,6 +9,9 @@
 #include "WFS.h"
 #include "Orbita.h"
 
+// DVR Property forms
+#include "G2FDbPropertyForm.h"
+
 #include <QDir>
 #include <QFileDialog>
 #include <QDateTimeEdit>
@@ -41,7 +44,10 @@ public:
 	}
 };
 
-MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
+MainWindow::MainWindow(QWidget *parent) : 
+	QMainWindow(parent),
+	property_form(nullptr),
+	current_dvr_type("")
 {
 	ui.setupUi(this);
 	Initialize();
@@ -70,7 +76,6 @@ QString MainWindow::SizeToString(uint64_t size)
 void MainWindow::Initialize(void)
 {
 	InitWindowTitle();
-	InitializeDvrTypeComboBox();
 	UpdateDrivesComboBox();
 
 	ui.Offset_lineEdit->setValidator(new QUInt64Validator(this));
@@ -78,6 +83,9 @@ void MainWindow::Initialize(void)
 	QObject::connect(ui.Start_pushButton, &QPushButton::clicked, this, &MainWindow::OnStart);
 	QObject::connect(ui.SelectOutFolder_pushButton, &QPushButton::clicked, this, &MainWindow::OnSelectOutDirectory);
 	QObject::connect(ui.SelectInputFile_pushButton, &QPushButton::clicked, this, &MainWindow::OnSelectInputFile);
+
+	QObject::connect(ui.DvrType_comboBox, &QComboBox::currentTextChanged, this, &MainWindow::SetDvrType);
+	InitializeDvrTypeComboBox();
 }
 
 void MainWindow::InitWindowTitle(void)
@@ -108,6 +116,34 @@ void MainWindow::UpdateDrivesComboBox(void)
 		item_text += SizeToString(drive_size);
 
 		ui.Drives_comboBox->addItem(item_text);
+	}
+}
+
+void MainWindow::SetDvrType(const QString &dvr_type)
+{
+	if (current_dvr_type != dvr_type) {
+		current_dvr_type = dvr_type;
+
+		if (property_form) {
+			delete property_form;
+			property_form = nullptr;
+			ui.centralWidget->adjustSize();
+			this->adjustSize();
+		}
+
+		if (dvr_type == G2FDB_ID_STRING) {
+
+			property_form = new G2FDbPropertyForm(this);
+			property_form->show();
+
+			QSize size = this->size();
+			QSize prop_size = property_form->size();
+			this->resize(size.width(), size.height() + property_form->size().height());
+			//this->setMinimumSize(this->size());
+
+			ui.main_verticalLayout->insertWidget(1, property_form);
+
+		}	
 	}
 }
 

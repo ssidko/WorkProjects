@@ -79,6 +79,11 @@
     <Filter Include="zfs\checksum">
       <UniqueIdentifier>{e6e2a860-75d4-4e73-8384-6ba43cad1a86}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h</Extensions>
+      <ParseFiles>true</ParseFiles>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GeneratedFiles\Debug\moc_mainwindow.cpp">
@@ -203,6 +208,15 @@
     <ClCompile Include="ZfsObjectDataSaver.cpp">
       <Filter>zfs\test</Filter>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_G2FDbPropertyForm.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_G2FDbPropertyForm.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="G2FDbPropertyForm.cpp">
+      <Filter>GUI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="mainwindow.ui">
@@ -213,6 +227,12 @@
     </CustomBuild>
     <CustomBuild Include="mainwindow.h">
       <Filter>GUI</Filter>
+    </CustomBuild>
+    <CustomBuild Include="G2FDbPropertyForm.h">
+      <Filter>GUI</Filter>
+    </CustomBuild>
+    <CustomBuild Include="G2FDbPropertyForm.ui">
+      <Filter>GUI\Form Files</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
@@ -355,6 +375,12 @@
     </ClInclude>
     <ClInclude Include="ZfsObjectDataSaver.h">
       <Filter>zfs\test</Filter>
+    </ClInclude>
+    <ClInclude Include="GeneratedFiles\ui_G2FDbPropertyForm.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DvrRecovery.h">
+      <Filter>Core</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

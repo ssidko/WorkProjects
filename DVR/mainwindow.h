@@ -10,6 +10,8 @@ class MainWindow : public QMainWindow
 
 private:
 	Ui::MainWindowClass ui;
+	QWidget *property_form;
+	QString current_dvr_type;
 
 	QString SizeToString(uint64_t size);
 
@@ -27,6 +29,7 @@ public slots:
 	void OnStart(void);
 	QString OnSelectOutDirectory(void);
 	QString OnSelectInputFile(void);
+	void SetDvrType(const QString &dvr_type);
 
 };
 

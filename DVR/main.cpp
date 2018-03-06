@@ -116,8 +116,9 @@ int main(int argc, char *argv[])
 	MainWindow w;
 
 	//dcH264::main();
-
-	zfs_test();
-	//zfs_dnode_recovery();	w.show();
+	//zfs_test();
+	//zfs_dnode_recovery();
+	
+	w.show();
 	return a.exec();
 }
