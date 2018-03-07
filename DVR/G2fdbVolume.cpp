@@ -81,15 +81,15 @@ size_t G2FDB::G2fdbVolume::SignatureOffset(void)
 
 bool G2FDB::G2fdbVolume::IsValidFrameHeader(const FRAME_HEADER &header)
 {
-	if (header.signature_2 != FRAME_HEADER_SIGNATURE_2) {
+	if (header.signature != FRAME_HEADER_SIGNATURE) {
 		return false;
 	}
 
-	if (header.str_length > sizeof(FRAME_HEADER::string)) {
+	if (header.str_length > sizeof(FRAME_HEADER::camera_name)) {
 		return false;
 	}
 
-	size_t len = strnlen_s((char *)header.string, sizeof(header.string));
+	size_t len = strnlen_s((char *)header.camera_name, sizeof(header.camera_name));
 	if (len != header.str_length) {
 		return false;
 	}
@@ -134,7 +134,7 @@ bool G2FDB::G2fdbVolume::ReadFrame(Frame &frame)
 		if (IsValidFrameHeader(*header)) {	
 
 			frame.offset = offset;
-			frame.camera = header->camera + 1;
+			frame.camera = header->camera_id + 1;
 			header->time.Timestamp(frame.time);
 
 			data_size = header->data_size;

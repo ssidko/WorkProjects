@@ -1,3 +1,5 @@
+#include "Validators.h"
+
 #include "mainwindow.h"
 #include "utility.h"
 #include "version.h"
@@ -23,26 +25,6 @@
 #define DCH264_ID_STRING				"dcH264"
 
 #define APP_NAME						"DVR"
-
-class QUInt64Validator : public QValidator
-{
-private:
-	int64_t value;
-public:
-	QUInt64Validator(QObject * parent = 0) : QValidator(parent) {}
-	~QUInt64Validator() {}
-	void fixup(QString &input) const override {}
-	State validate(QString &input, int &pos) const override
-	{
-		bool ok = false;
-		uint64_t value = static_cast<uint64_t>(input.toULongLong(&ok, 10));
-		if (ok) {
-			return QValidator::Acceptable;
-		} else {
-			return QValidator::Invalid;
-		}
-	}
-};
 
 MainWindow::MainWindow(QWidget *parent) : 
 	QMainWindow(parent),
@@ -109,12 +91,10 @@ void MainWindow::UpdateDrivesComboBox(void)
 	std::list<std::string> drives;
 	EnumeratePhysicalDrives([&drives](const std::string &drive_name) {drives.push_back(drive_name);});
 	for (auto drive_name : drives) {
-
 		LONGLONG drive_size = GetPhysicalDriveSize(drive_name);
 		QString item_text = drive_name.c_str();
 		item_text += "; ";
 		item_text += SizeToString(drive_size);
-
 		ui.Drives_comboBox->addItem(item_text);
 	}
 }

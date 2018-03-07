@@ -185,7 +185,6 @@
     <ClInclude Include="dmu.h" />
     <ClInclude Include="dsl.h" />
     <ClInclude Include="dvr1.h" />
-    <ClInclude Include="DvrRecovery.h" />
     <ClInclude Include="ExtentRecovery.h" />
     <ClInclude Include="File.h" />
     <ClInclude Include="FileRecordRecovery.h" />
@@ -220,6 +219,7 @@
     <ClInclude Include="spa.h" />
     <ClInclude Include="TestWidget.h" />
     <ClInclude Include="utility.h" />
+    <ClInclude Include="Validators.h" />
     <ClInclude Include="vdev_label.h" />
     <ClInclude Include="version.h" />
     <ClInclude Include="WfsOnDisk.h" />

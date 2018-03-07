@@ -36,23 +36,22 @@ namespace G2FDB
 	};
 
 #define FRAME_HEADER_SIZE					((DWORD)0xA1)
-#define FRAME_HEADER_SIGNATURE_1			((DWORD)0x00000002)
-#define FRAME_HEADER_SIGNATURE_2			((DWORD)0x03419F7D)
+#define FRAME_HEADER_SIGNATURE				((DWORD)0x03419F7D)
 
 	struct FRAME_HEADER {
-		DWORD signature;					// FRAME_HEADER_SIGNATURE_1 (0x00000002)
+		DWORD flags;
 		TIMESTAMP time;						 
 		DWORD unk_1;
-		DWORD signature_2;					// FRAME_HEADER_SIGNATURE_2 may be signature
+		DWORD signature;					// FRAME_HEADER_SIGNATURE may be signature
 		DWORD data_size;
 		DWORD unk_3;
-		WORD camera;
+		WORD camera_id;
 		WORD unk_4;
 		DWORD frame_offset;
 		WORD width;
 		WORD height;
 		WORD str_length;
-		BYTE string[91];					// camera description or user comment
+		char camera_name[91];
 		BYTE unk_5[32];
 	};
 

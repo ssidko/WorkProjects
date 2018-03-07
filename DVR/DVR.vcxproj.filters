@@ -379,8 +379,8 @@
     <ClInclude Include="GeneratedFiles\ui_G2FDbPropertyForm.h">
       <Filter>Generated Files</Filter>
     </ClInclude>
-    <ClInclude Include="DvrRecovery.h">
-      <Filter>Core</Filter>
+    <ClInclude Include="Validators.h">
+      <Filter>GUI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

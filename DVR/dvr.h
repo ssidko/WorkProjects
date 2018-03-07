@@ -36,6 +36,15 @@ namespace dvr
 		operator bool(void);
 	};
 
+	struct RecoveryTask {
+		std::string io_name;
+		uint64_t io_offset;
+		uint64_t io_size;
+		std::string output_dir;
+		dvr::Timestamp start_time;
+		dvr::Timestamp end_time;
+	};
+
 	struct Frame {
 		LONGLONG offset = 0;
 		DWORD camera = 0;
