@@ -43,7 +43,7 @@ namespace G2FDB
 		TIMESTAMP time;						 
 		DWORD unk_1;
 		DWORD signature;					// FRAME_HEADER_SIGNATURE may be signature
-		DWORD data_size;
+		DWORD payload_size;
 		DWORD unk_3;
 		WORD camera_id;
 		WORD unk_4;

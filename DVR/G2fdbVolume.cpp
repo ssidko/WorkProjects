@@ -94,7 +94,7 @@ bool G2FDB::G2fdbVolume::IsValidFrameHeader(const FRAME_HEADER &header)
 		return false;
 	}
 
-	if (header.data_size > 128 * 1024) {	
+	if (header.payload_size > 128 * 1024) {	
 		return false;
 	}
 
@@ -137,7 +137,7 @@ bool G2FDB::G2fdbVolume::ReadFrame(Frame &frame)
 			frame.camera = header->camera_id + 1;
 			header->time.Timestamp(frame.time);
 
-			data_size = header->data_size;
+			data_size = header->payload_size;
 			frame.data.resize(FRAME_HEADER_SIZE + data_size);
 
 			if (data_size == io.Read(&frame.data[FRAME_HEADER_SIZE], data_size)) {
