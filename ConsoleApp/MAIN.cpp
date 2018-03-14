@@ -217,6 +217,7 @@ void recovery_38615()
 }
 
 #include "RarRecovery.h"
+#include "ZipRec.h"
 
 int _tmain(int argc, _TCHAR* argv[])
 {
@@ -227,7 +228,12 @@ int _tmain(int argc, _TCHAR* argv[])
 	//std::cout << std::endl << "---=== COM Ports ===---" << std::endl;
 	//EnumerateDevicesInterfaces(&GUID_DEVINTERFACE_COMPORT);
 	
-	RarRecoveryMain(argc, argv);
+	//RarRecoveryMain(argc, argv);
+
+	//ZipRec_Main(argc, argv);
+
+	TestZipRec();
+
 	//ExamineFile("D:\\Soft\\#RecoverySoft#\\X-Ways\\xw_forensics170.rar");
 
 	//::system("pause");

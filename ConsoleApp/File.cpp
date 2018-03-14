@@ -279,7 +279,7 @@ BOOL FileEx::Rename(const char *new_name)
 		return FALSE;
 }
 
-#define BUFFER_SIZE		(DWORD)8*512
+#define BUFFER_SIZE		(DWORD)128*512
 
 LONGLONG FileEx::Find(BYTE *str, DWORD size)
 {

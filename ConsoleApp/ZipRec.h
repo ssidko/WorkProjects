@@ -7,6 +7,8 @@
 #define DIGITAL_SIGNATURE_SIGN				(DWORD)0x05054b50 
 #define END_CDIRECTORY_RECORD_SIGN			(DWORD)0x06054b50
 
+#define LOCAL_FILE_HEADER_SIZE				(uint32_t)30 
+
 #pragma pack(1)
 
 typedef struct _LOCAL_FILE_HEADER_32 {
@@ -22,6 +24,8 @@ typedef struct _LOCAL_FILE_HEADER_32 {
 	WORD name_len;							// file name length
 	WORD extra_field_len;					// extra field length
 	BYTE file_name[1];						// file name (variable size)
+
+	bool isHasDataDescriptor() { return (flag & (1 << 3)) != 0; }
 } LOCAL_FILE_HEADER_32;
 
 typedef struct _DATA_DESCRIPTOR_32 {
@@ -95,5 +99,6 @@ public:
 	void Clean();
 };
 
-int ExtractArchive(FileEx *archive, TCHAR *out_dir);
+int ExtractArchive(FileEx *archive, const TCHAR *out_dir);
 int ZipRec_Main(int argc, _TCHAR* argv[]);
+int TestZipRec(void);
