@@ -25,7 +25,7 @@ typedef struct _LOCAL_FILE_HEADER_32 {
 	WORD extra_field_len;					// extra field length
 	BYTE file_name[1];						// file name (variable size)
 
-	bool isHasDataDescriptor() { return (flag & (1 << 3)) != 0; }
+	bool DataDescriptorPresent() { return (flag & (1 << 3)) != 0; }
 } LOCAL_FILE_HEADER_32;
 
 typedef struct _DATA_DESCRIPTOR_32 {

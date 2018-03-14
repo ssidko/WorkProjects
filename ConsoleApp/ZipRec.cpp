@@ -64,7 +64,7 @@ int PrepareAndExtract(FileEx &archive, const TCHAR *out_dir)
 
 	archive.Read(&h_buff[sizeof(LOCAL_FILE_HEADER_32)], header->name_len + header->extra_field_len - 1);
 
-	if ( (header->isHasDataDescriptor()) )
+	if ( (header->DataDescriptorPresent()) )
 	{
 		DWORD descr_sign = DATA_DESCRIPTOR_SIGN;
 		if ( (descr_offs = archive.Find((BYTE *)&descr_sign, sizeof(descr_sign))) != -1 )
@@ -143,20 +143,28 @@ int PrepareAndExtract(FileEx &archive, const std::string &out_dir)
 bool IsValidLocalFileHeader(LOCAL_FILE_HEADER_32 &header)
 {
 	if (header.signature != LOCAL_FILE_HEADER_SIGN)
-		return FALSE;
+		return false;
 
 	if (!((header.compr_method >= 0) && (header.compr_method <= 19)) && 
 		!(header.compr_method == 97) &&
 		!(header.compr_method == 98) )
-		return FALSE;
+		return false;
 
-	if (header.isHasDataDescriptor())
-	{
-		if ((header.crc32 != 0) || (header.compr_size != 0) || (header.uncompr_size != 0))
-			return FALSE;
+	if (header.name_len == 0) {
+		return false;
 	}
 
-	return TRUE;	
+	if (header.extra_field_len && (header.extra_field_len < 5)) {
+		return false;
+	}
+
+	if (header.DataDescriptorPresent())
+	{
+		if ((header.crc32 != 0) || (header.compr_size != 0) || (header.uncompr_size != 0))
+			return false;
+	}
+
+	return true;	
 }
 
 LONGLONG FindNextLocalFile(FileEx *archive)
@@ -168,7 +176,7 @@ LONGLONG FindNextLocalFile(FileEx *archive)
 	{
 		LOCAL_FILE_HEADER_32 header;
 		archive->Read(&header, sizeof(LOCAL_FILE_HEADER_32));
-		if (IsValidLocalFileHeader(&header))
+		if (IsValidLocalFileHeader(header))
 		{
 			archive->SetPointer(offset);
 			return offset;
@@ -224,10 +232,14 @@ bool ReadAndSaveLocalFile(FileEx &archive, uint64_t offset, FileEx &out_file)
 		return false;
 	}
 
+	//if (file_header->extra_field_len) {
+	//// Vrify extra_field 
+	//
+	//}
+
 
 
 	return true;
-
 }
 
 int ExtractArchive(FileEx *archive, const TCHAR *out_dir)
@@ -273,10 +285,11 @@ int TestZipRec(void)
 {
 	std::string file_name = "E:\\43881\\PASSPORT.zip";
 	std::string out_dir = "F:\\43881\\v2";
+	uint64_t offset = 46992060398LL;
 
 	FileEx archive(file_name.c_str());
 	if (archive.Open()) {
-		archive.SetPointer(46992060398LL);
+		archive.SetPointer(offset);
 		return ExtractArchive(&archive, out_dir.c_str());	
 	}		
 
