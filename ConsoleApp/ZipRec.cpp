@@ -2,6 +2,14 @@
 #include <vector>
 #include <iostream>
 
+
+struct ZipRecParameters {
+	uint64_t offset;
+	bool force_utf8;
+};
+
+ZipRecParameters param;
+
 BOOL LocalFile::Initialize()
 {
 	LOCAL_FILE_HEADER_32 header;
@@ -37,8 +45,10 @@ int ZipRec_Main(int argc, _TCHAR* argv[])
 	if (argc >= 3)
 	{
 		FileEx archive(argv[1]);
-		if(archive.Open())
+		if (archive.Open()) {
+			param.force_utf8 = true;
 			return ExtractArchive(&archive, argv[2]);
+		}			
 	}
 	else
 		_tprintf(_T("Usage: <archive> <out directory>\n"));
@@ -66,22 +76,28 @@ int PrepareAndExtract(FileEx &archive, const TCHAR *out_dir)
 
 	if ( (header->DataDescriptorPresent()) )
 	{
+		bool data_descriptor_found = false;
 		DWORD descr_sign = DATA_DESCRIPTOR_SIGN;
-		if ( (descr_offs = archive.Find((BYTE *)&descr_sign, sizeof(descr_sign))) != -1 )
+		while ( (descr_offs = archive.Find((BYTE *)&descr_sign, sizeof(descr_sign))) != -1 )
 		{
 			DATA_DESCRIPTOR_32 data_descr = {0};
-			// memset(&data_descr, 0x00, sizeof(DATA_DESCRIPTOR_32));
 			archive.Read(&data_descr, sizeof(DATA_DESCRIPTOR_32));
 				
-			if ( descr_offs == ( sizeof(LOCAL_FILE_HEADER_32) + header->name_len + header->extra_field_len - 1 + data_descr.compr_size ) )
-			{
+			if ( descr_offs == (LOCAL_FILE_HEADER_SIZE + header->name_len + header->extra_field_len + data_descr.compr_size ) ) {
+				data_descriptor_found = true;
 				header->crc32 = data_descr.crc32;
 				header->compr_size = data_descr.compr_size;
 				header->uncompr_size = data_descr.uncompr_size;
+				header->flag &= ~(uint16_t)(1 << 3);
+				break;
+			} else {
+				archive.SetPointer(descr_offs + 1);
 			}
 		}
-		else
-			return 0;	
+
+		if (!data_descriptor_found) {
+			return 0;
+		}
 	}
 
 	BYTE *ch_buff = new BYTE[2048];
@@ -89,8 +105,8 @@ int PrepareAndExtract(FileEx &archive, const TCHAR *out_dir)
 	CENTRAL_FILE_HEADER_32 *central_header = (CENTRAL_FILE_HEADER_32 *)ch_buff;
 
 	central_header->signature = CENTRAL_FILE_HEADER_SIGN;
-	central_header->ver_needed = 0x14;
-	central_header->ver_made = 0x0A;
+	central_header->ver_made = 0x1F;
+	central_header->ver_needed = header->ver_needed;
 	central_header->flag = header->flag;
 	central_header->compr_method = header->compr_method;
 	central_header->time = header->time;
@@ -110,21 +126,30 @@ int PrepareAndExtract(FileEx &archive, const TCHAR *out_dir)
 	end_record->cdir_entries_count = 1;
 	end_record->cdir_entries_total_count = 1;
 	end_record->cdir_size = ch_sz;
-	end_record->cdir_offset = sizeof(LOCAL_FILE_HEADER_32) - 1 + header->name_len + header->extra_field_len + header->compr_size;
+	end_record->cdir_offset = LOCAL_FILE_HEADER_SIZE + header->name_len + header->extra_field_len + header->compr_size;
 	end_record->comment_len = 0;
+
+	if (param.force_utf8) {
+		header->flag |= (uint16_t)(1 << 11);
+	}
 
 	archive.SetPointer(0x00);
 	archive.Write(header, sizeof(LOCAL_FILE_HEADER_32));
 
 	archive.SetPointer(end_record->cdir_offset);
 	archive.Write(central_header, ch_sz);
-	archive.Write(end_record, sizeof(END_OF_CDIRECTORY_RECORD_32));
+	archive.Write(end_record, sizeof(END_OF_CDIRECTORY_RECORD_32) - 1);
 	archive.Close();
 
 	TCHAR cmd_str[1024] = {0};
 	//_stprintf_s(cmd_str, 1024, _T("\"C:\\Program Files\\7-Zip\\7z.exe\" x -y -o%s %s"), out_dir, archive->GetName());
 
-	_stprintf_s(cmd_str, 1024, _T(".\\7z.exe x -y -o%s %s"), out_dir, archive.GetName());
+	if (header->UTF8Encoding()) {
+		_stprintf_s(cmd_str, 1024, _T(".\\7z.exe x -mcu -y -o%s %s"), out_dir, archive.GetName());
+	} else {
+		_stprintf_s(cmd_str, 1024, _T(".\\7z.exe x -y -o%s %s"), out_dir, archive.GetName());
+	}
+	
 	::system(cmd_str);
 
 	delete h_buff;
@@ -200,11 +225,13 @@ bool SaveFileFragmentToNewFile(FileEx &src_file, uint64_t offset, uint64_t size,
 	while (remain) {		
 		to_read = static_cast<uint32_t>(remain > buffer.size() ? buffer.size() : remain);
 		readed = src_file.Read(buffer.data(), to_read);
+		remain -= readed;
+		new_file.Write(buffer.data(), readed);
+
 		if (readed == 0) {
 			break;
 		}
-		new_file.Write(buffer.data(), readed);
-		remain -= readed;		
+				
 	}
 	
 	return remain == 0;
@@ -264,16 +291,16 @@ int ExtractArchive(FileEx *archive, const TCHAR *out_dir)
 			local_file_offset = prev_offs;
 			FileEx tmp_file(tmp_file_name.c_str());
 			if (tmp_file.Create()) {
-				std::cout << std::endl << "Find FILE_HEADER at: " << local_file_offset << std::endl;
+				std::cout << std::endl << "FILE_HEADER at: " << local_file_offset << std::endl;
 
-				if (!SaveFileFragmentToNewFile(*archive, local_file_offset, local_file_size, tmp_file)) {
+				if (SaveFileFragmentToNewFile(*archive, local_file_offset, local_file_size, tmp_file)) {
 					PrepareAndExtract(tmp_file, out_dir);					
 				} else {
-					std::cout << "Couldn't save zip_local_file to temp_file" << std::endl;
+					std::cout << "ERROR: in SaveFileFragmentToNewFile()" << std::endl;
 				}			
 
 				prev_offs = curr_offs;
-				archive->SetPointer(local_file_offset + 1);			
+				archive->SetPointer(curr_offs + 1);
 			}
 
 		}
@@ -281,12 +308,26 @@ int ExtractArchive(FileEx *archive, const TCHAR *out_dir)
 	return 0;
 }
 
+//
+// Comand line arguments:
+//
+// --file=
+// --out_dir=
+// --offset=
+// --force_utf8
+//
+
+
 int TestZipRec(void)
 {
+	SetConsoleOutputCP(65001);
 	std::string file_name = "E:\\43881\\PASSPORT.zip";
 	std::string out_dir = "F:\\43881\\v2";
 	uint64_t offset = 46992060398LL;
-
+	//uint64_t offset = 59404123431LL;
+	// 56676994633
+	offset = 56676994633;
+	param.force_utf8 = true;
 	FileEx archive(file_name.c_str());
 	if (archive.Open()) {
 		archive.SetPointer(offset);

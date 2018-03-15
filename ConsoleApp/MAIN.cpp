@@ -230,9 +230,8 @@ int _tmain(int argc, _TCHAR* argv[])
 	
 	//RarRecoveryMain(argc, argv);
 
-	//ZipRec_Main(argc, argv);
-
-	TestZipRec();
+	//TestZipRec();
+	ZipRec_Main(argc, argv);
 
 	//ExamineFile("D:\\Soft\\#RecoverySoft#\\X-Ways\\xw_forensics170.rar");
 
