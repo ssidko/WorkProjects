@@ -1,14 +1,17 @@
 #include "ZipRec.h"
+#include <list>
 #include <vector>
+#include <map>
 #include <iostream>
+#include "WinConsole.h"
 
 
 struct ZipRecParameters {
+	std::string file_path;
+	std::string out_dir;
 	uint64_t offset;
 	bool force_utf8;
 };
-
-ZipRecParameters param;
 
 BOOL LocalFile::Initialize()
 {
@@ -40,18 +43,87 @@ BOOL LocalFile::Initialize()
 	return FALSE;
 }
 
+using CmdLlineArguments = std::map<std::string, std::string>;
+
+void ParseCmdLlineArguments(int argc, _TCHAR* argv[], CmdLlineArguments &arguments)
+{
+	std::list<std::string> arg_list;
+	for (int i = 1; i < argc; i++) {
+		arg_list.emplace_back(argv[i]);
+	}
+
+	std::string prefix = "--";
+	std::string separator = "=";
+	for (auto &arg : arg_list) {
+		
+		if (arg.find(prefix) == 0) {			
+
+			std::string arg_name = "";
+			std::string arg_value = "";
+
+			size_t separator_pos = arg.find(separator);
+			if (separator_pos != std::string::npos) {
+				arg_name = std::string(arg, prefix.length(), separator_pos - prefix.length());
+				arg_value = std::string(arg, separator_pos + 1, arg.length() - (separator_pos + 1));
+			} else {				
+				arg_name = std::string(arg, prefix.length(), arg.length() - prefix.length());
+			}
+
+			arguments.emplace(std::make_pair(arg_name, arg_value));
+			
+		} else {
+			std::cout << "Skip wrong argument: {" << arg << "}" << std::endl;			
+		}
+	
+	}
+	int x = 0;
+}
+
+bool InitZipRecParameters(ZipRecParameters &rec_params, CmdLlineArguments &arguments)
+{
+
+
+	return false;
+}
+
 int ZipRec_Main(int argc, _TCHAR* argv[])
 {
-	if (argc >= 3)
-	{
+	WinConsole con;
+
+	con.Print("**********************************\n");
+	con.Print("*** ---=== ");
+	con.Print("Zip Recovery", ConsoleColour::kGreen|ConsoleColour::kIntensity);
+	con.Print(" ===--- ***\n");
+	con.Print("**********************************\n");
+
+	CmdLlineArguments args;
+	ParseCmdLlineArguments(argc, argv, args);
+
+	ZipRecParameters param;
+	if (InitZipRecParameters(param, args)) {
 		FileEx archive(argv[1]);
 		if (archive.Open()) {
 			param.force_utf8 = true;
 			return ExtractArchive(&archive, argv[2]);
-		}			
-	}
-	else
+		}	
+	} else {
+		//PrintUsage();
 		_tprintf(_T("Usage: <archive> <out directory>\n"));
+	}
+
+
+	//if (argc >= 3)
+	//{
+	//	FileEx archive(argv[1]);
+	//	if (archive.Open()) {
+	//		param.force_utf8 = true;
+	//		return ExtractArchive(&archive, argv[2]);
+	//	}			
+	//}
+	//else
+	//	_tprintf(_T("Usage: <archive> <out directory>\n"));
+
+	::system("pause");
 
 	return 0;
 }
@@ -276,33 +348,34 @@ int ExtractArchive(FileEx *archive, const TCHAR *out_dir)
 	uint64_t curr_offs = 0;
 	DWORD file_sign = LOCAL_FILE_HEADER_SIGN;
 
-
 	uint64_t local_file_size = 0;
 	uint64_t local_file_offset = 0;
 	std::string tmp_file_name = ".\\tmp.zip";
 
-	if ( (prev_offs = FindNextLocalFile(archive)) != -1 ) 
-	{
-		archive->SetPointer(prev_offs + 1);
-		while ( (curr_offs = FindNextLocalFile(archive)) != -1 )
-		{
+	WinConsole con;
 
+	if ( (prev_offs = FindNextLocalFile(archive)) != -1 ) {
+		archive->SetPointer(prev_offs + 1);
+		while ( (curr_offs = FindNextLocalFile(archive)) != -1 ) {
 			local_file_size = curr_offs - prev_offs;
 			local_file_offset = prev_offs;
 			FileEx tmp_file(tmp_file_name.c_str());
 			if (tmp_file.Create()) {
-				std::cout << std::endl << "FILE_HEADER at: " << local_file_offset << std::endl;
+				std::cout << endl;
+				con.Print("FILE_HEADER at: ", ConsoleColour::kWhite|ConsoleColour::kIntensity);
+				con.Print(std::to_string(local_file_offset).c_str(), ConsoleColour::kWhite | ConsoleColour::kIntensity);
+				std::cout << endl;
 
 				if (SaveFileFragmentToNewFile(*archive, local_file_offset, local_file_size, tmp_file)) {
 					PrepareAndExtract(tmp_file, out_dir);					
 				} else {
-					std::cout << "ERROR: in SaveFileFragmentToNewFile()" << std::endl;
+					con.Print("ERROR: ", ConsoleColour::kRed);
+					con.Print("in SaveFileFragmentToNewFile()\n");
 				}			
 
 				prev_offs = curr_offs;
 				archive->SetPointer(curr_offs + 1);
 			}
-
 		}
 	}
 	return 0;
