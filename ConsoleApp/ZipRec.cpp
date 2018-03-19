@@ -1,51 +1,12 @@
 #include "ZipRec.h"
 #include <list>
 #include <vector>
-#include <map>
 #include <iostream>
 #include "WinConsole.h"
 
-
-struct ZipRecParameters {
-	std::string file_path;
-	std::string out_dir;
-	uint64_t offset;
-	bool force_utf8;
-};
-
-BOOL LocalFile::Initialize()
-{
-	LOCAL_FILE_HEADER_32 header;
-	memset(&header, 0x00, sizeof(LOCAL_FILE_HEADER_32));
-
-	if (archive->IsOpen())
-	{
-		LONGLONG save_offset;
-		if (archive->GetPointer(&save_offset))
-		{
-			DWORD rw = 0;
-			if (rw == archive->Read(&header, sizeof(LOCAL_FILE_HEADER_32)))
-			{
-				if ((header.flag & (1<<3)))
-				{
-					// должен быть DATA_DESCRIPTOR
-				}
-				archive->SetPointer(save_offset);
-				return TRUE;
-			}
-			else
-			{
-				archive->SetPointer(save_offset);			
-				return FALSE;
-			}
-		}
-	}
-	return FALSE;
-}
-
 using CmdLlineArguments = std::map<std::string, std::string>;
 
-void ParseCmdLlineArguments(int argc, _TCHAR* argv[], CmdLlineArguments &arguments)
+void ParseCmdLlineArguments(int argc, char* argv[], CmdLlineArguments &arguments)
 {
 	std::list<std::string> arg_list;
 	for (int i = 1; i < argc; i++) {
@@ -76,14 +37,66 @@ void ParseCmdLlineArguments(int argc, _TCHAR* argv[], CmdLlineArguments &argumen
 		}
 	
 	}
-	int x = 0;
 }
 
-bool InitZipRecParameters(ZipRecParameters &rec_params, CmdLlineArguments &arguments)
+//
+// Command line arguments:
+//
+// --file=
+// --out_dir=
+// --offset=
+// --force_utf8
+// --pwd=
+//
+
+bool InitializeParameters(ZipRecParameters &params, CmdLlineArguments &arguments)
+{
+	bool unk_arguments = false;
+	params.force_utf8 = false;
+	for (auto &arg : arguments) {
+		if (arg.first == "file") {
+			params.file_path = arg.second;		
+		} else if (arg.first == "out_dir") {
+			params.out_dir = arg.second;
+		} else if (arg.first == "offset") {
+			try {
+				params.offset = std::stoull(arg.second);
+			} catch (std::exception &ex) {				
+				std::cout << "Invalid argument value: " << arg.second;
+				return false;
+			}
+		} else if (arg.first == "force_utf8") {
+			params.force_utf8 = true;
+		} else if (arg.first == "pwd") {
+			params.password == arg.second;
+		} else {
+			std::cout << "Skip unknown argument: {" << arg.first << "}" << std::endl;
+			unk_arguments = true;
+		}	
+	}
+	if (unk_arguments) {
+		std::cout << "For resume press any key";
+		::getchar();
+	}
+
+	return true;
+}
+
+bool IsValidParameters(ZipRecParameters &params)
 {
 
 
-	return false;
+}
+
+void PrintParameters(ZipRecParameters &params)
+{
+	WinConsole con;
+	for (auto &param : params) {
+		con.Print("ERROR: ", ConsoleColour::kRed);
+		con.Print("Invalid input parameters\n");
+	
+	}
+
 }
 
 int ZipRec_Main(int argc, _TCHAR* argv[])
@@ -100,43 +113,33 @@ int ZipRec_Main(int argc, _TCHAR* argv[])
 	ParseCmdLlineArguments(argc, argv, args);
 
 	ZipRecParameters param;
-	if (InitZipRecParameters(param, args)) {
+	if (InitializeParameters(param, args) && IsValidParameters(param)) {
+
+	}
+
+	if (IsValidParameters(param)) {
 		FileEx archive(argv[1]);
 		if (archive.Open()) {
 			param.force_utf8 = true;
-			return ExtractArchive(&archive, argv[2]);
+			ExtractArchive(&archive, param);
 		}	
 	} else {
-		//PrintUsage();
-		_tprintf(_T("Usage: <archive> <out directory>\n"));
+		con.Print("ERROR: ", ConsoleColour::kRed);
+		con.Print("Invalid input parameters\n");
 	}
-
-
-	//if (argc >= 3)
-	//{
-	//	FileEx archive(argv[1]);
-	//	if (archive.Open()) {
-	//		param.force_utf8 = true;
-	//		return ExtractArchive(&archive, argv[2]);
-	//	}			
-	//}
-	//else
-	//	_tprintf(_T("Usage: <archive> <out directory>\n"));
 
 	::system("pause");
 
 	return 0;
 }
 
-int PrepareAndExtract(FileEx &archive, const TCHAR *out_dir)
+int PrepareAndExtract(FileEx &archive, ZipRecParameters &param)
 {
 	archive.SetPointer(0x00);
 
 	DWORD rw = 0;
 	LONGLONG descr_offs = 0;
 
-	int x = sizeof(LOCAL_FILE_HEADER_32);
-	
 	BYTE *h_buff = new BYTE[2048];
 	LOCAL_FILE_HEADER_32 *header = (LOCAL_FILE_HEADER_32 *)h_buff;
 	memset(h_buff, 0x00, 2048);
@@ -217,9 +220,9 @@ int PrepareAndExtract(FileEx &archive, const TCHAR *out_dir)
 	//_stprintf_s(cmd_str, 1024, _T("\"C:\\Program Files\\7-Zip\\7z.exe\" x -y -o%s %s"), out_dir, archive->GetName());
 
 	if (header->UTF8Encoding()) {
-		_stprintf_s(cmd_str, 1024, _T(".\\7z.exe x -mcu -y -o%s %s"), out_dir, archive.GetName());
+		_stprintf_s(cmd_str, 1024, _T(".\\7z.exe x -mcu -y -o%s %s"), param.out_dir.c_str(), archive.GetName());
 	} else {
-		_stprintf_s(cmd_str, 1024, _T(".\\7z.exe x -y -o%s %s"), out_dir, archive.GetName());
+		_stprintf_s(cmd_str, 1024, _T(".\\7z.exe x -y -o%s %s"), param.out_dir.c_str(), archive.GetName());
 	}
 	
 	::system(cmd_str);
@@ -341,7 +344,7 @@ bool ReadAndSaveLocalFile(FileEx &archive, uint64_t offset, FileEx &out_file)
 	return true;
 }
 
-int ExtractArchive(FileEx *archive, const TCHAR *out_dir)
+int ExtractArchive(FileEx *archive, ZipRecParameters &param)
 {
 	DWORD rw = 0;
 	uint64_t prev_offs = 0;
@@ -367,7 +370,7 @@ int ExtractArchive(FileEx *archive, const TCHAR *out_dir)
 				std::cout << endl;
 
 				if (SaveFileFragmentToNewFile(*archive, local_file_offset, local_file_size, tmp_file)) {
-					PrepareAndExtract(tmp_file, out_dir);					
+					PrepareAndExtract(tmp_file, param);
 				} else {
 					con.Print("ERROR: ", ConsoleColour::kRed);
 					con.Print("in SaveFileFragmentToNewFile()\n");
@@ -381,32 +384,23 @@ int ExtractArchive(FileEx *archive, const TCHAR *out_dir)
 	return 0;
 }
 
-//
-// Comand line arguments:
-//
-// --file=
-// --out_dir=
-// --offset=
-// --force_utf8
-//
-
-
 int TestZipRec(void)
 {
 	SetConsoleOutputCP(65001);
-	std::string file_name = "E:\\43881\\PASSPORT.zip";
-	std::string out_dir = "F:\\43881\\v2";
-	uint64_t offset = 46992060398LL;
-	//uint64_t offset = 59404123431LL;
-	// 56676994633
-	offset = 56676994633;
+
+	ZipRecParameters param = { 0 };
+	param.file_path = "E:\\43881\\PASSPORT.zip";
+	param.out_dir = "F:\\43881\\v2";
+	param.offset = 46992060398UL;
 	param.force_utf8 = true;
-	FileEx archive(file_name.c_str());
+
+	param.offset = 56676994633UL;
+
+	FileEx archive(param.file_path.c_str());
 	if (archive.Open()) {
-		archive.SetPointer(offset);
-		return ExtractArchive(&archive, out_dir.c_str());	
+		archive.SetPointer(param.offset);
+		return ExtractArchive(&archive, param);
 	}		
 
 	return 0;
-
 }

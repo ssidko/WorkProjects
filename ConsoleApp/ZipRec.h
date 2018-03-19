@@ -1,11 +1,13 @@
 #pragma once
 #include "stdafx.h"
+#include <map>
 
 #define LOCAL_FILE_HEADER_SIGN				(DWORD)0x04034b50
 #define DATA_DESCRIPTOR_SIGN				(DWORD)0x08074b50
 #define CENTRAL_FILE_HEADER_SIGN			(DWORD)0x02014b50
 #define DIGITAL_SIGNATURE_SIGN				(DWORD)0x05054b50 
 #define END_CDIRECTORY_RECORD_SIGN			(DWORD)0x06054b50
+#define ZIP64_END_CDIRECTORY_RECORD_SIGN	(DWORD)0x06064b50
 
 #define LOCAL_FILE_HEADER_SIZE				(uint32_t)30 
 
@@ -87,23 +89,23 @@ typedef struct _END_OF_CDIRECTORY_RECORD_32 {
 } END_OF_CDIRECTORY_RECORD_32;
 #pragma pack()
 
-class LocalFile {
-private:
-	FileEx *archive;
-	LONGLONG offset;
+struct ZipRecParameters {
+	std::string file_path;
+	std::string out_dir;
+	uint64_t offset;
+	std::string password;
+	bool force_utf8;
+	std::map<std::string, std::string> supported_args;
 	
-	LONGLONG compr_size;
-	LONGLONG uncompr_size;
-
-
-public:
-	LocalFile(FileEx *arc_file, LONGLONG offs) : archive(arc_file), offset(offs), compr_size(0), uncompr_size(0) {}
-	~LocalFile() {};
-
-	BOOL Initialize();
-	void Clean();
+	ZipRecParameters() {
+		supported_args.emplace(std::make_pair("file", "Input file path"));
+		supported_args.emplace(std::make_pair("out_dir", "Output directory for result"));
+		supported_args.emplace(std::make_pair("offset", "Input file offset"));
+		supported_args.emplace(std::make_pair("force_utf8", ""));
+		supported_args.emplace(std::make_pair("pwd", "Password"));
+	}
 };
 
-int ExtractArchive(FileEx *archive, const TCHAR *out_dir);
+int ExtractArchive(FileEx *archive, ZipRecParameters &param);
 int ZipRec_Main(int argc, _TCHAR* argv[]);
 int TestZipRec(void);
