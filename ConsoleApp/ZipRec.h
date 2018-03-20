@@ -95,17 +95,25 @@ struct ZipRecParameters {
 	uint64_t offset;
 	std::string password;
 	bool force_utf8;
-	std::map<std::string, std::string> supported_args;
 	
-	ZipRecParameters() {
-		supported_args.emplace(std::make_pair("file", "Input file path"));
-		supported_args.emplace(std::make_pair("out_dir", "Output directory for result"));
-		supported_args.emplace(std::make_pair("offset", "Input file offset"));
-		supported_args.emplace(std::make_pair("force_utf8", ""));
-		supported_args.emplace(std::make_pair("pwd", "Password"));
+	void Clear(void) {
+		file_path = "";
+		out_dir = "";
+		offset = 0;
+		password = "";
+		force_utf8 = false;
 	}
 };
 
-int ExtractArchive(FileEx *archive, ZipRecParameters &param);
+//													 
+//ZipRecParameters() {								 
+//	supported_args.emplace(std::make_pair("file", "Input file path"));
+//	supported_args.emplace(std::make_pair("out_dir", "Output directory for result"));
+//	supported_args.emplace(std::make_pair("offset", "Input file offset"));
+//	supported_args.emplace(std::make_pair("force_utf8", ""));
+//	supported_args.emplace(std::make_pair("pwd", "Password"));
+//}
+
+int StartRecovery(ZipRecParameters &param);
 int ZipRec_Main(int argc, _TCHAR* argv[]);
 int TestZipRec(void);

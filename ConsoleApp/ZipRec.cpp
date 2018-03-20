@@ -4,24 +4,31 @@
 #include <iostream>
 #include "WinConsole.h"
 
+WinConsole con;
+
+std::map<std::string, std::string> supported_args = {
+	{ "file", "Input file path" },
+	{ "out_dir", "Output directory for result" },
+	{ "offset", "Input file offset" },
+	{ "force_utf8", "File name encoding UTF-8" },
+	{ "pwd", "Password" },
+};
+
 using CmdLlineArguments = std::map<std::string, std::string>;
 
 void ParseCmdLlineArguments(int argc, char* argv[], CmdLlineArguments &arguments)
 {
 	std::list<std::string> arg_list;
-	for (int i = 1; i < argc; i++) {
+	for (int i = 0; i < argc; i++) {
 		arg_list.emplace_back(argv[i]);
 	}
 
 	std::string prefix = "--";
 	std::string separator = "=";
-	for (auto &arg : arg_list) {
-		
-		if (arg.find(prefix) == 0) {			
-
+	for (auto &arg : arg_list) {		
+		if (arg.find(prefix) == 0) {
 			std::string arg_name = "";
 			std::string arg_value = "";
-
 			size_t separator_pos = arg.find(separator);
 			if (separator_pos != std::string::npos) {
 				arg_name = std::string(arg, prefix.length(), separator_pos - prefix.length());
@@ -29,30 +36,15 @@ void ParseCmdLlineArguments(int argc, char* argv[], CmdLlineArguments &arguments
 			} else {				
 				arg_name = std::string(arg, prefix.length(), arg.length() - prefix.length());
 			}
-
-			arguments.emplace(std::make_pair(arg_name, arg_value));
-			
-		} else {
-			std::cout << "Skip wrong argument: {" << arg << "}" << std::endl;			
+			arguments.emplace(std::make_pair(arg_name, arg_value));			
 		}
-	
 	}
 }
-
-//
-// Command line arguments:
-//
-// --file=
-// --out_dir=
-// --offset=
-// --force_utf8
-// --pwd=
-//
 
 bool InitializeParameters(ZipRecParameters &params, CmdLlineArguments &arguments)
 {
 	bool unk_arguments = false;
-	params.force_utf8 = false;
+	params.Clear();
 	for (auto &arg : arguments) {
 		if (arg.first == "file") {
 			params.file_path = arg.second;		
@@ -61,7 +53,7 @@ bool InitializeParameters(ZipRecParameters &params, CmdLlineArguments &arguments
 		} else if (arg.first == "offset") {
 			try {
 				params.offset = std::stoull(arg.second);
-			} catch (std::exception &ex) {				
+			} catch (...) {				
 				std::cout << "Invalid argument value: " << arg.second;
 				return false;
 			}
@@ -82,27 +74,32 @@ bool InitializeParameters(ZipRecParameters &params, CmdLlineArguments &arguments
 	return true;
 }
 
+#include <filesystem>
+
 bool IsValidParameters(ZipRecParameters &params)
 {
-
-
+	return params.file_path.size() && params.out_dir.size();
 }
 
-void PrintParameters(ZipRecParameters &params)
+void PrintSupportedArguments(std::map<std::string, std::string> &args)
 {
-	WinConsole con;
-	for (auto &param : params) {
-		con.Print("ERROR: ", ConsoleColour::kRed);
-		con.Print("Invalid input parameters\n");
-	
+	for (auto &arg : args) {
+		std::cout << "  " << arg.first << " - " << arg.second << std::endl;
 	}
+}
 
+void PrintRecoveryParameters(const ZipRecParameters &param)
+{
+	con.Print("\nRecovery parameters:\n", ConsoleColour::kYelow | ConsoleColour::kIntensity);
+	con.Print(" file       = ", ConsoleColour::kWhite | ConsoleColour::kIntensity); con.Print(param.file_path.c_str()); con.Print("\n");
+	con.Print(" out_dir    = ", ConsoleColour::kWhite | ConsoleColour::kIntensity); con.Print(param.out_dir.c_str()); con.Print("\n");
+	con.Print(" offset     = ", ConsoleColour::kWhite | ConsoleColour::kIntensity); con.Print(std::to_string(param.offset).c_str()); con.Print("\n");
+	con.Print(" force_utf8 = ", ConsoleColour::kWhite | ConsoleColour::kIntensity); con.Print(param.force_utf8 ? "true" : "false"); con.Print("\n");
+	//con.Print("pwd="); con.Print(param.password.c_str(), ConsoleColour::kWhite | ConsoleColour::kIntensity);
 }
 
 int ZipRec_Main(int argc, _TCHAR* argv[])
 {
-	WinConsole con;
-
 	con.Print("**********************************\n");
 	con.Print("*** ---=== ");
 	con.Print("Zip Recovery", ConsoleColour::kGreen|ConsoleColour::kIntensity);
@@ -114,18 +111,11 @@ int ZipRec_Main(int argc, _TCHAR* argv[])
 
 	ZipRecParameters param;
 	if (InitializeParameters(param, args) && IsValidParameters(param)) {
-
-	}
-
-	if (IsValidParameters(param)) {
+		PrintRecoveryParameters(param);
 		FileEx archive(argv[1]);
-		if (archive.Open()) {
-			param.force_utf8 = true;
-			ExtractArchive(&archive, param);
-		}	
+		StartRecovery(param);
 	} else {
-		con.Print("ERROR: ", ConsoleColour::kRed);
-		con.Print("Invalid input parameters\n");
+		PrintSupportedArguments(supported_args);
 	}
 
 	::system("pause");
@@ -344,7 +334,7 @@ bool ReadAndSaveLocalFile(FileEx &archive, uint64_t offset, FileEx &out_file)
 	return true;
 }
 
-int ExtractArchive(FileEx *archive, ZipRecParameters &param)
+int StartRecovery(ZipRecParameters &param)
 {
 	DWORD rw = 0;
 	uint64_t prev_offs = 0;
@@ -354,8 +344,6 @@ int ExtractArchive(FileEx *archive, ZipRecParameters &param)
 	uint64_t local_file_size = 0;
 	uint64_t local_file_offset = 0;
 	std::string tmp_file_name = ".\\tmp.zip";
-
-	WinConsole con;
 
 	if ( (prev_offs = FindNextLocalFile(archive)) != -1 ) {
 		archive->SetPointer(prev_offs + 1);
@@ -399,7 +387,7 @@ int TestZipRec(void)
 	FileEx archive(param.file_path.c_str());
 	if (archive.Open()) {
 		archive.SetPointer(param.offset);
-		return ExtractArchive(&archive, param);
+		return StartRecovery(&archive, param);
 	}		
 
 	return 0;

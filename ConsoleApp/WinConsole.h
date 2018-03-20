@@ -11,6 +11,7 @@ enum ConsoleColour {
 	kBlue		= 0x0001,
 	kGreen		= 0x0002,
 	kRed		= 0x0004,
+	kYelow		= kGreen | kRed,
 	kWhite		= 0x0007, 
 	kIntensity	= 0x0008,
 };
