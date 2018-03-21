@@ -1,4 +1,5 @@
 #include "ZipRec.h"
+#include <assert.h>
 #include <list>
 #include <vector>
 #include <iostream>
@@ -74,8 +75,6 @@ bool InitializeParameters(ZipRecParameters &params, CmdLlineArguments &arguments
 	return true;
 }
 
-#include <filesystem>
-
 bool IsValidParameters(ZipRecParameters &params)
 {
 	return params.file_path.size() && params.out_dir.size();
@@ -131,13 +130,13 @@ int PrepareAndExtract(FileEx &archive, ZipRecParameters &param)
 	LONGLONG descr_offs = 0;
 
 	BYTE *h_buff = new BYTE[2048];
-	LOCAL_FILE_HEADER_32 *header = (LOCAL_FILE_HEADER_32 *)h_buff;
+	LOCAL_FILE_HEADER *header = (LOCAL_FILE_HEADER *)h_buff;
 	memset(h_buff, 0x00, 2048);
 
-	if(sizeof(LOCAL_FILE_HEADER_32) != archive.Read(h_buff, sizeof(LOCAL_FILE_HEADER_32)))
+	if(sizeof(LOCAL_FILE_HEADER) != archive.Read(h_buff, sizeof(LOCAL_FILE_HEADER)))
 		return 0;
 
-	archive.Read(&h_buff[sizeof(LOCAL_FILE_HEADER_32)], header->name_len + header->extra_field_len - 1);
+	archive.Read(&h_buff[sizeof(LOCAL_FILE_HEADER)], header->name_len + header->extra_field_len - 1);
 
 	if ( (header->DataDescriptorPresent()) )
 	{
@@ -199,7 +198,7 @@ int PrepareAndExtract(FileEx &archive, ZipRecParameters &param)
 	}
 
 	archive.SetPointer(0x00);
-	archive.Write(header, sizeof(LOCAL_FILE_HEADER_32));
+	archive.Write(header, sizeof(LOCAL_FILE_HEADER));
 
 	archive.SetPointer(end_record->cdir_offset);
 	archive.Write(central_header, ch_sz);
@@ -230,9 +229,9 @@ int PrepareAndExtract(FileEx &archive, const std::string &out_dir)
 	return 0;
 }
 
-bool IsValidLocalFileHeader(LOCAL_FILE_HEADER_32 &header)
+bool IsValidLocalFileHeader(LOCAL_FILE_HEADER &header)
 {
-	if (header.signature != LOCAL_FILE_HEADER_SIGN)
+	if (header.signature != LOCAL_FILE_HEADER_SIGNATURE)
 		return false;
 
 	if (!((header.compr_method >= 0) && (header.compr_method <= 19)) && 
@@ -248,8 +247,7 @@ bool IsValidLocalFileHeader(LOCAL_FILE_HEADER_32 &header)
 		return false;
 	}
 
-	if (header.DataDescriptorPresent())
-	{
+	if (header.DataDescriptorPresent()) {
 		if ((header.crc32 != 0) || (header.compr_size != 0) || (header.uncompr_size != 0))
 			return false;
 	}
@@ -257,22 +255,50 @@ bool IsValidLocalFileHeader(LOCAL_FILE_HEADER_32 &header)
 	return true;	
 }
 
-LONGLONG FindNextLocalFile(FileEx *archive)
+bool IsValidExtraField(uint8_t *buff, size_t size)
+{
+	assert(buff);
+	assert(size);
+
+#pragma pack(push,1)
+	struct ExtraFieldHeader {
+		uint16_t header_id;
+		uint16_t data_size;
+	};
+#pragma pack(pop)
+
+	ExtraFieldHeader *hdr = (ExtraFieldHeader *)buff;
+	size_t calculated_size = 0;
+
+	while ((calculated_size + sizeof(ExtraFieldHeader)) < size) {
+		hdr = (ExtraFieldHeader *)buff[calculated_size];
+		if (hdr->header_id && hdr->data_size) {
+			if ((calculated_size + sizeof(ExtraFieldHeader) + hdr->data_size) <= size) {
+				calculated_size += sizeof(ExtraFieldHeader) + hdr->data_size;
+				continue;
+			}
+		}
+		return false;
+	}
+	return calculated_size == size;
+}
+
+LONGLONG FindNextLocalFile(FileEx &archive)
 {
 	LONGLONG offset = 0;
-	DWORD file_sign = LOCAL_FILE_HEADER_SIGN;
+	DWORD file_sign = LOCAL_FILE_HEADER_SIGNATURE;
 
-	while ((offset = archive->Find((BYTE *)&file_sign, sizeof(file_sign))) != -1)
+	while ((offset = archive.Find((BYTE *)&file_sign, sizeof(file_sign))) != -1)
 	{
-		LOCAL_FILE_HEADER_32 header;
-		archive->Read(&header, sizeof(LOCAL_FILE_HEADER_32));
+		LOCAL_FILE_HEADER header;
+		archive.Read(&header, sizeof(LOCAL_FILE_HEADER));
 		if (IsValidLocalFileHeader(header))
 		{
-			archive->SetPointer(offset);
+			archive.SetPointer(offset);
 			return offset;
 		}
 		else
-			archive->SetPointer(offset+1);
+			archive.SetPointer(offset+1);
 		
 	}
 	return -1;
@@ -292,20 +318,17 @@ bool SaveFileFragmentToNewFile(FileEx &src_file, uint64_t offset, uint64_t size,
 		readed = src_file.Read(buffer.data(), to_read);
 		remain -= readed;
 		new_file.Write(buffer.data(), readed);
-
 		if (readed == 0) {
 			break;
-		}
-				
-	}
-	
+		}				
+	}	
 	return remain == 0;
 }
 
-bool ReadAndSaveLocalFile(FileEx &archive, uint64_t offset, FileEx &out_file)
+bool SaveLocalFile(FileEx &archive, uint64_t offset, FileEx &out_file)
 {
 	std::vector<uint8_t> buffer(LOCAL_FILE_HEADER_SIZE, 0x00);
-	LOCAL_FILE_HEADER_32 *file_header = (LOCAL_FILE_HEADER_32 *)buffer.data();
+	LOCAL_FILE_HEADER *file_header = (LOCAL_FILE_HEADER *)buffer.data();
 
 	archive.SetPointer(offset);
 	if (LOCAL_FILE_HEADER_SIZE != archive.Read(buffer.data(), LOCAL_FILE_HEADER_SIZE)) {
@@ -318,7 +341,7 @@ bool ReadAndSaveLocalFile(FileEx &archive, uint64_t offset, FileEx &out_file)
 
 	size_t var_len = file_header->name_len + file_header->extra_field_len;
 	buffer.resize(LOCAL_FILE_HEADER_SIZE + var_len);
-	file_header = (LOCAL_FILE_HEADER_32 *)buffer.data();
+	file_header = (LOCAL_FILE_HEADER *)buffer.data();
 
 	if (var_len != archive.Read(&buffer[LOCAL_FILE_HEADER_SIZE], var_len)) {
 		return false;
@@ -339,25 +362,34 @@ int StartRecovery(ZipRecParameters &param)
 	DWORD rw = 0;
 	uint64_t prev_offs = 0;
 	uint64_t curr_offs = 0;
-	DWORD file_sign = LOCAL_FILE_HEADER_SIGN;
+	DWORD file_sign = LOCAL_FILE_HEADER_SIGNATURE;
 
 	uint64_t local_file_size = 0;
 	uint64_t local_file_offset = 0;
 	std::string tmp_file_name = ".\\tmp.zip";
 
+	FileEx archive(param.file_path.c_str());
+	if (!archive.Open()) {
+		con.Print("ERROR: ", ConsoleColour::kRed);
+		con.Print("Couldn't open file \""); con.Print(param.file_path.c_str()); con.Print("\"");
+		return -1;
+	}
+
+	archive.SetPointer(param.offset);
+
 	if ( (prev_offs = FindNextLocalFile(archive)) != -1 ) {
-		archive->SetPointer(prev_offs + 1);
+		archive.SetPointer(prev_offs + 1);
 		while ( (curr_offs = FindNextLocalFile(archive)) != -1 ) {
 			local_file_size = curr_offs - prev_offs;
 			local_file_offset = prev_offs;
 			FileEx tmp_file(tmp_file_name.c_str());
 			if (tmp_file.Create()) {
 				std::cout << endl;
-				con.Print("FILE_HEADER at: ", ConsoleColour::kWhite|ConsoleColour::kIntensity);
+				con.Print("FILE_HEADER at: ", ConsoleColour::kWhite | ConsoleColour::kIntensity);
 				con.Print(std::to_string(local_file_offset).c_str(), ConsoleColour::kWhite | ConsoleColour::kIntensity);
 				std::cout << endl;
 
-				if (SaveFileFragmentToNewFile(*archive, local_file_offset, local_file_size, tmp_file)) {
+				if (SaveFileFragmentToNewFile(archive, local_file_offset, local_file_size, tmp_file)) {
 					PrepareAndExtract(tmp_file, param);
 				} else {
 					con.Print("ERROR: ", ConsoleColour::kRed);
@@ -365,7 +397,7 @@ int StartRecovery(ZipRecParameters &param)
 				}			
 
 				prev_offs = curr_offs;
-				archive->SetPointer(curr_offs + 1);
+				archive.SetPointer(curr_offs + 1);
 			}
 		}
 	}
@@ -382,13 +414,5 @@ int TestZipRec(void)
 	param.offset = 46992060398UL;
 	param.force_utf8 = true;
 
-	param.offset = 56676994633UL;
-
-	FileEx archive(param.file_path.c_str());
-	if (archive.Open()) {
-		archive.SetPointer(param.offset);
-		return StartRecovery(&archive, param);
-	}		
-
-	return 0;
+	return StartRecovery(param);
 }

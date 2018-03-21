@@ -110,6 +110,12 @@ void ToHexString(uint8_t *buff, size_t count, std::string &str)
 #include "MyPrintf.h"
 #include "zfs_test.h"
 
+
+#include <QWidget>
+#include <QMediaPlayer>
+#include <QVBoxLayout>
+#include <QVideoWidget>
+
 int main(int argc, char *argv[])
 {
 	QApplication a(argc, argv);
@@ -118,6 +124,22 @@ int main(int argc, char *argv[])
 	//dcH264::main();
 	//zfs_test();
 	//zfs_dnode_recovery();
+
+
+	QWidget *widget = new QWidget;
+	widget->resize(400, 300);
+	QVBoxLayout *layout = new QVBoxLayout;
+	QMediaPlayer *player = new QMediaPlayer;
+	QVideoWidget *vw = new QVideoWidget;
+	layout->addWidget(vw);
+	widget->setLayout(layout);
+	player->setVideoOutput(vw);
+	player->setMedia(QUrl::fromLocalFile( "testVideo.mp4"));
+	player->setVolume(50);
+	player->play();
+	widget->show();
+	qDebug() << "mediaStatus: " << player->mediaStatus() << "error: " << player->error();
+
 	
 	w.show();
 	return a.exec();

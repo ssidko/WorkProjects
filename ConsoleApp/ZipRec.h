@@ -2,7 +2,7 @@
 #include "stdafx.h"
 #include <map>
 
-#define LOCAL_FILE_HEADER_SIGN				(DWORD)0x04034b50
+#define LOCAL_FILE_HEADER_SIGNATURE			(DWORD)0x04034b50
 #define DATA_DESCRIPTOR_SIGN				(DWORD)0x08074b50
 #define CENTRAL_FILE_HEADER_SIGN			(DWORD)0x02014b50
 #define DIGITAL_SIGNATURE_SIGN				(DWORD)0x05054b50 
@@ -11,10 +11,10 @@
 
 #define LOCAL_FILE_HEADER_SIZE				(uint32_t)30 
 
-#pragma pack(1)
+#pragma pack(push,1)
 
-typedef struct _LOCAL_FILE_HEADER_32 {
-	DWORD signature;						// local file header signature LOCAL_FILE_HEADER_SIGN (0x04034b50)
+typedef struct _LOCAL_FILE_HEADER {
+	DWORD signature;						// local file header signature LOCAL_FILE_HEADER_SIGNATURE (0x04034b50)
 	WORD ver_needed;						// version needed to extract 
 	WORD flag;								// general purpose bit flag 
 	WORD compr_method;						// compression method 
@@ -27,13 +27,18 @@ typedef struct _LOCAL_FILE_HEADER_32 {
 	WORD extra_field_len;					// extra field length
 	BYTE file_name[1];						// file name (variable size)
 
+	//
+	// file_name[name_len]
+	// extra_field[extra_field_len]
+	//
+
 	size_t SizeOfFixedFields() { return LOCAL_FILE_HEADER_SIZE; }
 	size_t SizeOfVariableData() { return name_len + extra_field_len; }
 
 	bool DataDescriptorPresent() { return (flag & (1 << 3)) != 0; }
 	bool EncriptionEnabled() { return (flag & (1 << 0)) != 0; }
 	bool UTF8Encoding() { return (flag & (1 << 11)) != 0; }
-} LOCAL_FILE_HEADER_32;
+} LOCAL_FILE_HEADER;
 
 typedef struct _DATA_DESCRIPTOR_32 {
 	DWORD signature;						// DATA_DESCRYPTOR_SIGN (0x08074b50)
@@ -87,7 +92,7 @@ typedef struct _END_OF_CDIRECTORY_RECORD_32 {
 	WORD comment_len;						// .ZIP file comment length
 	BYTE comment[1];						// .ZIP file comment 
 } END_OF_CDIRECTORY_RECORD_32;
-#pragma pack()
+#pragma pack(pop)
 
 struct ZipRecParameters {
 	std::string file_path;
