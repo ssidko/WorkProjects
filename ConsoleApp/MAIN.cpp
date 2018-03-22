@@ -218,6 +218,99 @@ void recovery_38615()
 
 #include "RarRecovery.h"
 #include "ZipRec.h"
+#include <list>
+
+int mov_fix(void)
+{
+	W32Lib::FileEx idx_file("G:\\stco.bin");
+	W32Lib::FileEx mov_file("G:\\48_2.mov");
+	size_t cluster_size = 32768;
+
+	size_t seq_len = 0;
+	size_t bad_offset = 0;
+	size_t bad_idx = 0;
+	uint32_t correct = 0;
+	bool corrected = false;
+
+	std::list<uint32_t> result;
+
+	if (idx_file.Open() && mov_file.Open()) {
+
+		size_t count = 10904;
+		std::vector<uint32_t> table;
+		table.resize(count);
+		idx_file.SetPointer(16);
+		size_t readed = idx_file.Read((uint8_t *)table.data(), table.size() * 4);
+
+		//for (auto &offset_be : table) {
+
+		for (uint32_t idx = 0; idx < count; idx++) {
+
+			uint32_t offset = Be2Le((DWORD *)&table[idx]) + correct;
+			uint32_t sign_be = 0;
+
+			mov_file.SetPointer(offset);
+			readed = mov_file.Read(&sign_be, 4);
+
+			uint32_t sign = Be2Le((DWORD *)&sign_be);
+
+			if (sign > 0x000000ff) {
+				int x = 0;
+				seq_len++;
+				if (seq_len == 1) {
+					bad_offset = offset;
+					bad_idx = idx;
+				}
+			} else {
+				seq_len = 0;
+			}
+
+			if (seq_len > 5) {
+
+				for (int j = 0; j < 5; j++) {
+
+					bad_offset = Be2Le((DWORD *)&table[bad_idx + j]) + correct;
+					for (int i = 1; i < 32; i++) {
+
+						mov_file.SetPointer(bad_offset + i*cluster_size);
+						readed = mov_file.Read(&sign_be, 4);
+
+						sign = Be2Le((DWORD *)&sign_be);
+
+						if (sign < 0xff) {
+							std::cout << "BAD at: " << std::to_string(bad_offset) << std::string("  Cluster: ") + std::to_string(bad_offset / cluster_size) << std::endl;
+							std::cout << "skip: " << std::to_string(i * cluster_size) << std::endl;
+							idx = bad_idx;
+							correct += i*cluster_size;
+							corrected = true;
+							break;
+						}
+					}
+					if (corrected) {
+						break;
+					}
+				}
+
+				if (!corrected) {
+					std::cout << "Mission failed" << std::endl;
+					::system("pause");
+					return false;
+				}
+				else {
+					corrected = false;
+				}
+
+
+				int x = 0;
+			}
+		}
+	}
+
+
+	//ExamineFile("D:\\Soft\\#RecoverySoft#\\X-Ways\\xw_forensics170.rar");
+
+	::system("pause");
+}
 
 int _tmain(int argc, _TCHAR* argv[])
 {
@@ -235,7 +328,7 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	//ExamineFile("D:\\Soft\\#RecoverySoft#\\X-Ways\\xw_forensics170.rar");
 
-	//::system("pause");
+	::system("pause");
 
 	return true;
 }
