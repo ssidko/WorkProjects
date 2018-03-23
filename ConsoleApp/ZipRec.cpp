@@ -17,7 +17,7 @@ std::map<std::string, std::string> supported_args = {
 
 using CmdLlineArguments = std::map<std::string, std::string>;
 
-void ParseCmdLlineArguments(int argc, char* argv[], CmdLlineArguments &arguments)
+bool ParseCmdLlineArguments(int argc, char* argv[], CmdLlineArguments &arguments)
 {
 	std::list<std::string> arg_list;
 	for (int i = 0; i < argc; i++) {
@@ -38,8 +38,12 @@ void ParseCmdLlineArguments(int argc, char* argv[], CmdLlineArguments &arguments
 				arg_name = std::string(arg, prefix.length(), arg.length() - prefix.length());
 			}
 			arguments.emplace(std::make_pair(arg_name, arg_value));			
+		} else {
+			std::cout << "Invalid argument: " << arg << std::endl;
+			return false;
 		}
 	}
+	return true;
 }
 
 bool InitializeParameters(ZipRecParameters &params, CmdLlineArguments &arguments)
@@ -83,7 +87,7 @@ bool IsValidParameters(ZipRecParameters &params)
 void PrintSupportedArguments(std::map<std::string, std::string> &args)
 {
 	for (auto &arg : args) {
-		std::cout << "  " << arg.first << " - " << arg.second << std::endl;
+		std::cout << "  --" << arg.first << " - " << arg.second << std::endl;
 	}
 }
 
@@ -106,17 +110,17 @@ int ZipRec_Main(int argc, _TCHAR* argv[])
 	con.Print("**********************************\n");
 
 	CmdLlineArguments args;
-	ParseCmdLlineArguments(argc, argv, args);
-
-	ZipRecParameters param;
-	if (InitializeParameters(param, args) && IsValidParameters(param)) {
-		PrintRecoveryParameters(param);
-		FileEx archive(argv[1]);
-		StartRecovery(param);
-	} else {
-		PrintSupportedArguments(supported_args);
+	if (ParseCmdLlineArguments(argc, argv, args)) {
+		ZipRecParameters param;
+		if (InitializeParameters(param, args) && IsValidParameters(param)) {
+			PrintRecoveryParameters(param);
+			StartRecovery(param);
+			::system("pause");
+			return 0;
+		}
 	}
 
+	PrintSupportedArguments(supported_args);
 	::system("pause");
 
 	return 0;
