@@ -110,7 +110,7 @@ int ZipRec_Main(int argc, _TCHAR* argv[])
 	con.Print("**********************************\n");
 
 	CmdLlineArguments args;
-	if (ParseCmdLlineArguments(argc, argv, args)) {
+	if (ParseCmdLlineArguments(argc - 1, &argv[1], args)) {
 		ZipRecParameters param;
 		if (InitializeParameters(param, args) && IsValidParameters(param)) {
 			PrintRecoveryParameters(param);
