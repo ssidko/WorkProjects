@@ -98,11 +98,18 @@ void dvr::Frame::Clear(void)
 
 void dvr::FrameSequence::Clear(void)
 {
-	offset = 0;
+	first_frame_offset = 0;
+	last_frame_offset = 0;
 	camera = 0;
 	frames_count = 0;
 	start_time.Clear();
 	end_time.Clear();
 	buffer.clear();
+}
+
+bool dvr::VideoStorage::SaveFrameSequence(FrameSequence &seq)
+{
+
+	
 }
 

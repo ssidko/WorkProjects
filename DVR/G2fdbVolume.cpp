@@ -76,7 +76,7 @@ bool G2FDB::G2fdbVolume::SetPointer(const LONGLONG &offset)
 
 size_t G2FDB::G2fdbVolume::SignatureOffset(void)
 {
-	return 38;
+	return 12;
 }
 
 bool G2FDB::G2fdbVolume::IsValidFrameHeader(const FRAME_HEADER &header)
@@ -94,7 +94,17 @@ bool G2FDB::G2fdbVolume::IsValidFrameHeader(const FRAME_HEADER &header)
 		return false;
 	}
 
-	if (header.payload_size > 128 * 1024) {	
+	if (header.payload_size == 0) {
+		return false;
+	}
+
+	const size_t max_payload_size = 256 * 1024;
+
+	if (header.payload_size > max_payload_size) {
+		return false;
+	}
+
+	if ((header.width == 0) || (header.height == 0)) {
 		return false;
 	}
 
@@ -105,16 +115,16 @@ bool G2FDB::G2fdbVolume::FindAndReadFrame(Frame &frame)
 {
 	LONGLONG offset = 0;
 	FRAME_HEADER header = { 0 };
-	BYTE signature[] = { 0x43, 0x41, 0x4D }; // 'CAM'
+	uint32_t signature = FRAME_HEADER_SIGNATURE;
 
-	while (io.Find(signature, sizeof(signature), offset)) {
+	while (io.Find((uint8_t *)&signature, sizeof(signature), offset)) {
 		
 		io.SetPointer(offset - SignatureOffset());
 
 		if (ReadFrame(frame)) {
 			return true;
 		} else {
-			io.SetPointer(offset + SignatureOffset() + 1);
+			io.SetPointer(offset + 1);
 		}
 	}
 

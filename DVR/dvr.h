@@ -46,8 +46,8 @@ namespace dvr
 	};
 
 	struct Frame {
-		LONGLONG offset = 0;
-		DWORD camera = 0;
+		uint64_t offset = 0;
+		uint32_t camera = 0;
 		dvr::Timestamp time;
 		std::vector<uint8_t> buffer;
 
@@ -55,8 +55,9 @@ namespace dvr
 	};
 
 	struct FrameSequence {
-		LONGLONG offset = 0;
-		DWORD camera = 0;
+		uint64_t first_frame_offset = 0;
+		uint64_t last_frame_offset = 0;
+		uint32_t camera = 0;
 		size_t frames_count = 0;
 		dvr::Timestamp start_time;
 		dvr::Timestamp end_time;
@@ -64,6 +65,39 @@ namespace dvr
 		
 		void Clear(void);
 	};
+
+	class VideoFile 
+	{
+	private:
+		std::string io_path;
+
+		uint64_t first_frame_offset = 0;
+		uint64_t last_frame_offset = 0;
+		uint32_t camera = 0;
+		size_t frames_count = 0;
+		dvr::Timestamp start_time;
+		dvr::Timestamp end_time;
+	public:
+		VideoFile(std::string &file_path, FrameSequence &seq);
+	};
+
+	class VideoStorage
+	{
+	private:
+		std::string dir_path;
+	public:
+		VideoStorage(const std::string &path);
+		~VideoStorage(void);
+		bool Open(void);
+		void Close(void);
+		bool SaveFrameSequence(FrameSequence &seq);
+	private:
+		bool CreateNewFile(FrameSequence &seq);
+		bool CloseFile(FrameSequence &seq);
+		bool CloseAllFiles(FrameSequence &seq);
+	};
+
+
 }
 
 #endif
