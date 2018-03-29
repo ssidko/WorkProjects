@@ -109,7 +109,14 @@ void dvr::FrameSequence::Clear(void)
 
 bool dvr::VideoStorage::SaveFrameSequence(FrameSequence &seq)
 {
-
+	VideoFile * file = GetVideoFileFor(seq);
+	if (file && file->Size() > max_file_size) {
+		CloseFile(file);
+	}
+	if (file == nullptr) {
+		file = CreateNewFile(seq);
+	}
+	file->AppendFrameSequence(seq);
 	
 }
 

@@ -5,6 +5,7 @@
 
 #include <windows.h>
 #include <string>
+#include <map>
 #include <vector>
 
 namespace dvr
@@ -78,23 +79,31 @@ namespace dvr
 		dvr::Timestamp start_time;
 		dvr::Timestamp end_time;
 	public:
-		VideoFile(std::string &file_path, FrameSequence &seq);
+		VideoFile(const std::string &file_path);
+		bool AppendFrameSequence(FrameSequence &seq);
+		std::string Date(void) { return start_time.Date(); }
+		uint32_t Camera(void) { return camera; }
+		uint64_t Size(void);
 	};
 
 	class VideoStorage
 	{
 	private:
 		std::string dir_path;
+		size_t max_file_size = 512*1024*1024;
+
+		std::map<std::string, std::map<uint32_t, VideoFile *>> storage;
 	public:
 		VideoStorage(const std::string &path);
 		~VideoStorage(void);
 		bool Open(void);
-		void Close(void);
+		bool Close(void);
 		bool SaveFrameSequence(FrameSequence &seq);
 	private:
-		bool CreateNewFile(FrameSequence &seq);
-		bool CloseFile(FrameSequence &seq);
+		VideoFile * CreateNewFile(FrameSequence &seq);
+		bool CloseFile(VideoFile *file);
 		bool CloseAllFiles(FrameSequence &seq);
+		VideoFile * GetVideoFileFor(FrameSequence &seq);
 	};
 
 
