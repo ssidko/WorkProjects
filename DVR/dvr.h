@@ -80,10 +80,10 @@ namespace dvr
 		dvr::Timestamp end_time;
 	public:
 		VideoFile(const std::string &file_path);
-		bool AppendFrameSequence(FrameSequence &seq);
+		bool AppendFrameSequence(FrameSequence &seq) { return false; }
 		std::string Date(void) { return start_time.Date(); }
 		uint32_t Camera(void) { return camera; }
-		uint64_t Size(void);
+		uint64_t Size(void) { return 0; }
 	};
 
 	class VideoStorage
@@ -101,9 +101,9 @@ namespace dvr
 		bool SaveFrameSequence(FrameSequence &seq);
 	private:
 		VideoFile * CreateNewFile(FrameSequence &seq);
-		bool CloseFile(VideoFile *file);
-		bool CloseAllFiles(FrameSequence &seq);
-		VideoFile * GetVideoFileFor(FrameSequence &seq);
+		bool CloseFile(VideoFile *file) {return false;}
+		//bool CloseAllFiles(FrameSequence &seq);
+		VideoFile * GetVideoFile(const std::string &date, uint32_t camera);
 	};
 
 

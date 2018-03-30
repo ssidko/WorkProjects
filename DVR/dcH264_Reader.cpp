@@ -40,12 +40,12 @@ int dcH264::main(void)
 				}
 			
 				if (out_file == nullptr) {
-					std::string file_name = std::to_string(sequence.camera) + " -=- " + sequence.start_time.ToString() + " -=- " + std::to_string((long long)sequence.offset) + ".h264";
-					std::string file_path = out_dir + file_name;
-					out_file = new W32Lib::FileEx(file_path.c_str());
-					if (!out_file->Create()) {
-						throw std::exception();
-					}
+					//std::string file_name = std::to_string(sequence.camera) + " -=- " + sequence.start_time.ToString() + " -=- " + std::to_string((long long)sequence.offset) + ".h264";
+					//std::string file_path = out_dir + file_name;
+					//out_file = new W32Lib::FileEx(file_path.c_str());
+					//if (!out_file->Create()) {
+					//	throw std::exception();
+					//}
 				}
 
 				if (sequence.start_time) {
@@ -281,7 +281,8 @@ bool dcH264::Reader::ReadFrameSequence(dvr::FrameSequence &sequence, size_t max_
 void dcH264::AppendFirstFrame(dvr::FrameSequence & sequence, dvr::Frame & frame)
 {
 	sequence.Clear();
-	sequence.offset = frame.offset;
+	sequence.first_frame_offset = frame.offset;
+	sequence.last_frame_offset = frame.offset;
 	sequence.camera = frame.camera;
 	sequence.frames_count = 0;
 	AppendFrame(sequence, frame);

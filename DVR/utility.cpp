@@ -150,6 +150,16 @@ bool CurrentDirectory(std::string &current_directory)
 	return false;
 }
 
+void CreateDir(std::string &directory)
+{
+	if (!::CreateDirectoryA(directory.c_str(), NULL)) {
+		DWORD error = ::GetLastError();
+		if (error != ERROR_ALREADY_EXISTS) {
+			throw std::system_error(error, std::system_category());
+		}
+	}
+}
+
 LONGLONG GetPhysicalDriveSize(const std::string & name)
 {
 	bool result = false;

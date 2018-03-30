@@ -1,6 +1,8 @@
 #include "dvr.h"
+#include "utility.h"
 #include <stdio.h>
 #include <cctype>
+#include <assert.h>
 
 dvr::Timestamp::Timestamp(WORD year_, BYTE month_, BYTE day_, BYTE hours_, BYTE mins_, BYTE sec_) :
 	year(year_),
@@ -109,7 +111,7 @@ void dvr::FrameSequence::Clear(void)
 
 bool dvr::VideoStorage::SaveFrameSequence(FrameSequence &seq)
 {
-	VideoFile * file = GetVideoFileFor(seq);
+	VideoFile *file = GetVideoFile(seq.start_time.Date(), seq.camera);
 	if (file && file->Size() > max_file_size) {
 		CloseFile(file);
 	}
@@ -117,6 +119,31 @@ bool dvr::VideoStorage::SaveFrameSequence(FrameSequence &seq)
 		file = CreateNewFile(seq);
 	}
 	file->AppendFrameSequence(seq);
-	
+
+	return false;
+}
+
+dvr::VideoFile * dvr::VideoStorage::CreateNewFile(FrameSequence &seq)
+{
+	std::string file_name = std::to_string(seq.first_frame_offset) + ".dvr";
+	std::string file_path = dir_path;
+	file_path += std::string("\\") + seq.start_time.Date();
+	file_path += std::string("\\") + std::string("CAM-") + std::to_string(seq.camera);
+	file_path += std::string("\\") + file_name;
+
+	return nullptr;	
+}
+
+dvr::VideoFile * dvr::VideoStorage::GetVideoFile(const std::string &date, uint32_t camera)
+{
+	auto it = storage.find(date);
+	if (it != storage.end()) {
+		auto itt = it->second.find(camera);
+		if (itt != it->second.end()) {
+			assert(itt->second);
+			return itt->second;
+		}
+	} 
+	return nullptr;
 }
 
