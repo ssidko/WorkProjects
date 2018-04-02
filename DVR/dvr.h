@@ -82,6 +82,7 @@ namespace dvr
 		VideoFile(const std::string &file_path);
 		bool AppendFrameSequence(FrameSequence &seq) { return false; }
 		std::string Date(void) { return start_time.Date(); }
+		std::string Time(void) { return start_time.Time(); }
 		uint32_t Camera(void) { return camera; }
 		uint64_t Size(void) { return 0; }
 	};

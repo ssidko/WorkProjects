@@ -7,4 +7,10 @@ enum class AppVersion {
 	kMinor = 2
 };
 
+//
+// Ver 0.1.3:
+// - G2FDB support
+//
+
+
 #endif // _VERSION_H
