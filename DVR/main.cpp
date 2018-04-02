@@ -119,9 +119,8 @@ int main(int argc, char *argv[])
 	//zfs_test();
 	//zfs_dnode_recovery();
 
-	std::system_error sys_err(ERROR_ALREADY_EXISTS, std::system_category());
-	
-	std::string what = sys_err.what();
+	//std::system_error sys_err(ERROR_ALREADY_EXISTS, std::system_category());	
+	//std::string what = sys_err.what();
 
 	w.show();
 	return a.exec();
