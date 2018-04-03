@@ -79,7 +79,7 @@ namespace dvr
 		dvr::Timestamp start_time;
 		dvr::Timestamp end_time;
 	public:
-		VideoFile(const std::string &file_path);
+		VideoFile(const std::string &file_path) : io_path(file_path){}
 		bool AppendFrameSequence(FrameSequence &seq) { return false; }
 		std::string Date(void) { return start_time.Date(); }
 		std::string Time(void) { return start_time.Time(); }

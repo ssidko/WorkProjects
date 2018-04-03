@@ -125,11 +125,18 @@ bool dvr::VideoStorage::SaveFrameSequence(FrameSequence &seq)
 
 dvr::VideoFile * dvr::VideoStorage::CreateNewFile(FrameSequence &seq)
 {
-	std::string file_name = std::to_string(seq.first_frame_offset) + ".dvr";
-	std::string file_path = dir_path;
-	file_path += std::string("\\") + seq.start_time.Date();
-	file_path += std::string("\\") + std::string("CAM-") + std::to_string(seq.camera);
-	file_path += std::string("\\") + file_name;
+	std::string file_name = std::to_string(seq.first_frame_offset) + seq.start_time.ToString() +  ".dvr";
+	std::string date_dir = dir_path + std::string("\\") + seq.start_time.Date();
+	std::string cam_dir = date_dir + std::string("\\") + std::string("CAM-") + std::to_string(seq.camera);
+	std::string file_path = cam_dir + file_name;
+
+	CreateDir(date_dir);
+	CreateDir(cam_dir);
+
+	VideoFile * video_file = new VideoFile(file_path);
+
+	storage[seq.start_time.Date()][seq.camera] = video_file;
+
 
 	return nullptr;	
 }

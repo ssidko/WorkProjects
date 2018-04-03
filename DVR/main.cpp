@@ -115,6 +115,15 @@ int main(int argc, char *argv[])
 	QApplication a(argc, argv);
 	MainWindow w;
 
+
+	std::string file_path = "base_dir";
+	dvr::VideoFile * video_file = new dvr::VideoFile(file_path);
+
+	std::map<std::string, std::map<size_t, dvr::VideoFile *>> storage;
+
+	size_t camera = 2;
+	storage["2018-01-12"][camera] = video_file;
+	
 	//dcH264::main();
 	//zfs_test();
 	//zfs_dnode_recovery();

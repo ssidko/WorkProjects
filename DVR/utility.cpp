@@ -150,7 +150,7 @@ bool CurrentDirectory(std::string &current_directory)
 	return false;
 }
 
-void CreateDir(std::string &directory)
+void CreateDir(const std::string &directory)
 {
 	if (!::CreateDirectoryA(directory.c_str(), NULL)) {
 		DWORD error = ::GetLastError();
