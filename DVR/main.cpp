@@ -123,6 +123,15 @@ int main(int argc, char *argv[])
 
 	size_t camera = 2;
 	storage["2018-01-12"][camera] = video_file;
+
+	std::string str = "";
+	str.resize(32);
+	size_t size = std::snprintf(&str[0], str.capacity(), "%s, %d", "test", 100);
+
+	size_t len = str.size();
+	str.resize(size);
+	len = str.size();
+
 	
 	//dcH264::main();
 	//zfs_test();
