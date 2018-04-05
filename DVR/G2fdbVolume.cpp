@@ -7,6 +7,8 @@ void G2FDB::Frame::Clear(void)
 {
 	offset = 0;
 	camera = 0;
+	width = 0;
+	height = 0;
 	time.Clear();
 	data.clear();
 }
@@ -25,6 +27,8 @@ void G2FDB::FrameSequence::Clear(void)
 {
 	offset = 0;
 	camera = 0;
+	width = 0;
+	height = 0;
 	frames_count = 0;
 	start_time.Clear();
 	end_time.Clear();
@@ -42,6 +46,8 @@ void G2FDB::FrameSequence::AddFirstFrame(Frame & first_frame)
 {
 	offset = first_frame.offset;
 	camera = first_frame.camera;
+	width = first_frame.width;
+	height = first_frame.height;
 	frames_count = 1;
 	start_time = first_frame.time;
 	end_time = first_frame.time;
@@ -131,7 +137,28 @@ bool G2FDB::G2fdbVolume::FindAndReadFrame(Frame &frame)
 	return false;
 }
 
-bool G2FDB::G2fdbVolume::ReadFrame(Frame &frame)
+bool G2FDB::G2fdbVolume::FindAndReadFrame(dvr::Frame &frame)
+{
+	LONGLONG offset = 0;
+	FRAME_HEADER header = { 0 };
+	uint32_t signature = FRAME_HEADER_SIGNATURE;
+
+	while (io.Find((uint8_t *)&signature, sizeof(signature), offset)) {
+
+		io.SetPointer(offset - SignatureOffset());
+
+		if (ReadFrame(frame)) {
+			return true;
+		}
+		else {
+			io.SetPointer(offset + 1);
+		}
+	}
+
+	return false;
+}
+
+bool G2FDB::G2fdbVolume::ReadFrame(G2FDB::Frame &frame)
 {
 	FRAME_HEADER *header = nullptr;
 	size_t data_size = 0;
@@ -145,6 +172,8 @@ bool G2FDB::G2fdbVolume::ReadFrame(Frame &frame)
 
 			frame.offset = offset;
 			frame.camera = header->camera_id + 1;
+			frame.width = header->width;
+			frame.height = header->height;
 			header->time.Timestamp(frame.time);
 
 			data_size = header->payload_size;
@@ -161,7 +190,39 @@ bool G2FDB::G2fdbVolume::ReadFrame(Frame &frame)
 	return false;
 }
 
-bool G2FDB::G2fdbVolume::ReadFrameSequence(FrameSequence &sequence, size_t max_delta_time)
+bool G2FDB::G2fdbVolume::ReadFrame(dvr::Frame &frame)
+{
+	FRAME_HEADER *header = nullptr;
+	size_t data_size = 0;
+	LONGLONG offset = io.Pointer();
+
+	frame.buffer.resize(FRAME_HEADER_SIZE);
+
+	if (FRAME_HEADER_SIZE == io.Read(&frame.buffer[0], sizeof(FRAME_HEADER))) {
+		header = (FRAME_HEADER *)&frame.buffer[0];
+		if (IsValidFrameHeader(*header)) {
+
+			frame.offset = offset;
+			frame.camera = header->camera_id + 1;
+			frame.width = header->width;
+			frame.height = header->height;
+			header->time.Timestamp(frame.time);
+
+			data_size = header->payload_size;
+			frame.buffer.resize(FRAME_HEADER_SIZE + data_size);
+
+			if (data_size == io.Read(&frame.buffer[FRAME_HEADER_SIZE], data_size)) {
+				return true;
+			}
+		}
+	}
+
+	io.SetPointer(offset);
+	frame.Clear();
+	return false;
+}
+
+bool G2FDB::G2fdbVolume::ReadFrameSequence(G2FDB::FrameSequence &sequence, size_t max_delta_time)
 {
 	LONGLONG last_frame_offset = 0;
 	Frame frame;
@@ -190,5 +251,51 @@ bool G2FDB::G2fdbVolume::ReadFrameSequence(FrameSequence &sequence, size_t max_d
 	}
 
 	sequence.Clear();
+	return false;
+}
+
+bool G2FDB::G2fdbVolume::ReadFrameSequence(dvr::FrameSequence &sequence, size_t max_size, size_t max_delta_time)
+{
+	dvr::Frame frame;
+	uint64_t last_frame_offset = 0;
+	size_t last_frame_size = 0;
+	size_t prev_buffer_size = 0;
+
+	if (FindAndReadFrame(frame)) {
+	
+		sequence.AddFirstFrame(frame);
+		last_frame_offset = frame.offset;
+		last_frame_size = frame.buffer.size();
+
+		while (ReadFrame(frame)) {
+			last_frame_offset = frame.offset;
+			last_frame_size = frame.buffer.size();
+			if ((frame.camera == sequence.camera) &&
+				((sequence.width == frame.width) && (sequence.height == frame.height)) &&
+				((sequence.buffer.size() + frame.buffer.size()) <= max_size) &&
+				(frame.time.Seconds() >= sequence.end_time.Seconds()) &&
+				((frame.time.Seconds() - sequence.end_time.Seconds()) <= max_delta_time))
+			{
+				prev_buffer_size = sequence.buffer.size();
+				sequence.AddFrame(frame);
+			} else {
+				SetPointer(frame.offset);
+				return true;
+			}		
+		}
+
+		SetPointer(last_frame_offset + SignatureOffset() + 1);
+
+		if (FindAndReadFrame(frame)) {
+			SetPointer(frame.offset);
+			assert(frame.offset > last_frame_offset);
+			if ((frame.offset - last_frame_offset) < last_frame_size) {
+				sequence.buffer.resize(prev_buffer_size + (size_t)(frame.offset - last_frame_offset));
+			}		
+		}
+
+		return true;
+	}
+
 	return false;
 }

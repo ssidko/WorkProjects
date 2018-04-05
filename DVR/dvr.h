@@ -66,6 +66,8 @@ namespace dvr
 	struct Frame {
 		uint64_t offset = 0;
 		uint32_t camera = 0;
+		uint32_t width = 0;
+		uint32_t height = 0;
 		dvr::Timestamp time;
 		std::vector<uint8_t> buffer;
 
@@ -84,6 +86,8 @@ namespace dvr
 		std::vector<uint8_t> buffer;
 		
 		void Clear(void);
+		void AddFirstFrame(Frame &frame);
+		void AddFrame(Frame &frame);
 	};
 
 	class VideoFile 
@@ -103,7 +107,7 @@ namespace dvr
 		VideoFile(const std::string &file_path, FrameSequence &seq);
 		
 		void Close(void) {}
-		bool AppendFrameSequence(FrameSequence &seq);
+		void AppendFrameSequence(FrameSequence &seq);
 
 		const std::string & FilePath(void) { return io_path; }
 		uint64_t LastFrameOffset(void) { return last_frame_offset; }
@@ -112,6 +116,7 @@ namespace dvr
 		uint32_t Camera(void) { return camera; }
 		uint32_t Height(void) { return height; }
 		uint32_t Width(void) { return width; }
+		bool IsValidWidthHeight(void) { return width && height; }
 		uint64_t Size(void) { return file_size; }
 	};
 
@@ -120,6 +125,7 @@ namespace dvr
 	private:
 		std::string dir_path;
 		size_t max_file_size = 512*1024*1024;
+		uint64_t max_distance = 5 * 1024 * 1024;
 
 		std::map<std::string, std::map<uint32_t, VideoFile *>> storage;
 		std::list<VideoFile *> recent_files;
@@ -127,7 +133,7 @@ namespace dvr
 		VideoStorage(const std::string &path);
 		~VideoStorage(void);
 		bool Open(void);
-		bool Close(void);
+		void Close(void);
 		bool SaveFrameSequence(FrameSequence &seq);
 	private:
 		VideoFile * CreateNewFile(FrameSequence &seq);

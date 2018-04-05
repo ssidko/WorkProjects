@@ -13,8 +13,10 @@ namespace G2FDB
 	using namespace dvr;
 
 	struct Frame {
-		LONGLONG offset;
-		DWORD camera;
+		uint64_t offset = 0;
+		uint32_t camera = 0;
+		uint32_t width = 0;
+		uint32_t height = 0;
 		Timestamp time;
 		std::vector<BYTE> data;
 
@@ -23,12 +25,14 @@ namespace G2FDB
 		DWORD FullSize(void);
 	};
 
-#define MAX_FRAME_SEQUANCE_SIZE					((DWORD) 512*1024*1024)
+#define MAX_FRAME_SEQUANCE_SIZE					((DWORD) 128*1024*1024)
 
 	struct FrameSequence {
-		LONGLONG offset;
-		DWORD camera;
-		DWORD frames_count;
+		uint64_t offset;
+		uint32_t camera;
+		uint32_t width = 0;
+		uint32_t height = 0;
+		size_t frames_count;
 		Timestamp start_time;
 		Timestamp end_time;
 		vector<BYTE> data;
@@ -58,10 +62,13 @@ namespace G2FDB
 		// Файловый указатель устанавливается сразу же за фреймом.
 		//
 		// Если найти фрейм не удалось - файловый указатель не определен.
-		bool FindAndReadFrame(Frame &frame);
+		bool FindAndReadFrame(G2FDB::Frame &frame);
+		bool FindAndReadFrame(dvr::Frame &frame);
 		
-		bool ReadFrame(Frame &frame);
-		bool ReadFrameSequence(FrameSequence &sequence, size_t max_delta_time = 1);
+		bool ReadFrame(G2FDB::Frame &frame);
+		bool ReadFrame(dvr::Frame &frame);
+		bool ReadFrameSequence(G2FDB::FrameSequence &sequence, size_t max_delta_time = 1);
+		bool ReadFrameSequence(dvr::FrameSequence &sequence, size_t max_size, size_t max_delta_time = 1);
 	};
 }
 

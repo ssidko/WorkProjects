@@ -30,6 +30,42 @@ int G2FDB::StartRecovery(const std::string & dvr_volume, const std::string & out
 	return -1;
 }
 
+int G2FDB::StartRecovery(const dvr::RecoveryTask &task)
+{	
+	G2fdbVolume volume(task.io_name);
+	dvr::VideoStorage storage(task.output_dir);
+	dvr::FrameSequence sequence;
+
+	const size_t max_sequence_size = 100 * 1024 * 1024;
+	const size_t max_delta_time = 1;
+
+	if (volume.Open() && storage.Open()) {
+		
+		sequence.Clear();
+		sequence.buffer.reserve(max_sequence_size);
+		volume.SetPointer(task.io_offset);
+
+		while (volume.ReadFrameSequence(sequence, max_sequence_size, max_delta_time)) {
+
+			storage.SaveFrameSequence(sequence);
+			sequence.Clear();
+		}		
+		return 0;
+	}
+	return -1;
+}
+
+void G2FDB::TestRecovery(void)
+{
+	dvr::RecoveryTask task;
+	task.io_name = "\\\\.\\PhysicalDrive0";
+	task.io_offset = 2165338112ull;
+	task.io_size = 1953523119ull * 512;
+	task.output_dir = "F:\\43889\\test\\   ";
+
+	G2FDB::StartRecovery(task);
+}
+
 //
 //	class VideoStorage
 //
