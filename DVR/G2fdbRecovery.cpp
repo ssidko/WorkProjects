@@ -45,13 +45,21 @@ int G2FDB::StartRecovery(const dvr::RecoveryTask &task)
 		sequence.buffer.reserve(max_sequence_size);
 		volume.SetPointer(task.io_offset);
 
-		while (volume.ReadFrameSequence(sequence, max_sequence_size, max_delta_time)) {
+		try {
 
-			storage.SaveFrameSequence(sequence);
-			sequence.Clear();
-		}		
-		return 0;
-	}
+			while (volume.ReadFrameSequence(sequence, max_sequence_size, max_delta_time)) {
+
+				storage.SaveFrameSequence(sequence);
+				sequence.Clear();
+			}
+			return 0;
+
+		} catch (std::system_error &exc) {
+			std::string error_description = exc.what();
+			return -1;
+		}
+
+}
 	return -1;
 }
 
@@ -59,7 +67,8 @@ void G2FDB::TestRecovery(void)
 {
 	dvr::RecoveryTask task;
 	task.io_name = "\\\\.\\PhysicalDrive0";
-	task.io_offset = 2165338112ull;
+	//task.io_offset = 2165338112ull;
+	task.io_offset = 21495808ull * 512;
 	task.io_size = 1953523119ull * 512;
 	task.output_dir = "F:\\43889\\test\\   ";
 

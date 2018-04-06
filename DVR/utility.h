@@ -25,6 +25,7 @@ LONGLONG GetPhysicalDriveSize(const std::string &name);
 LONGLONG FileSize(const std::string &file_name);
 
 std::string string_format(const std::string fmt_str, ...);
+std::string format_string(const std::string fmt_str, ...);
 
 #endif // _UTILITY_H
 

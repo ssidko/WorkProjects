@@ -209,9 +209,9 @@ bool G2FDB::G2fdbVolume::ReadFrame(dvr::Frame &frame)
 			header->time.Timestamp(frame.time);
 
 			data_size = header->payload_size;
-			frame.buffer.resize(FRAME_HEADER_SIZE + data_size);
+			frame.buffer.resize(data_size);
 
-			if (data_size == io.Read(&frame.buffer[FRAME_HEADER_SIZE], data_size)) {
+			if (data_size == io.Read(frame.buffer.data(), data_size)) {
 				return true;
 			}
 		}

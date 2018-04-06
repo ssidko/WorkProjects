@@ -201,7 +201,7 @@ LONGLONG FileSize(const std::string & file_name)
 std::string string_format(const std::string fmt_str, ...)
 {
 	int final_n, n = ((int)fmt_str.size()) * 2; /* Reserve two times as much as the length of the fmt_str */
-	std::string str;
+	//std::string str;
 	std::unique_ptr<char[]> formatted;
 	va_list ap;
 	while (1) {
@@ -216,4 +216,21 @@ std::string string_format(const std::string fmt_str, ...)
 			break;
 	}
 	return std::string(formatted.get());
+}
+
+std::string format_string(const std::string fmt_str, ...) 
+{
+	std::string str = "";
+	va_list ap;
+
+	va_start(ap, fmt_str);
+
+	size_t len = std::vsnprintf(nullptr, 0, fmt_str.c_str(), ap);
+	str.resize(len + 1);
+	std::vsnprintf(&str[0], str.size(), fmt_str.c_str(), ap);
+	str.resize(len);
+
+	va_end(ap);
+
+	return str;
 }

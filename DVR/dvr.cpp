@@ -30,7 +30,7 @@ std::string dvr::Timestamp::ToString(void) const
 {
 	std::string str;
 	str.resize(32);
-	str.resize(std::snprintf(&str[0], str.size(), "%04u-%02u-%02u--%02u-%02u-%02u", year, month, day, hours, minutes, seconds));
+	str.resize(std::snprintf(&str[0], str.size(), "%04u-%02u-%02u - %02u-%02u-%02u", year, month, day, hours, minutes, seconds));
 	return str;
 }	
 
@@ -182,6 +182,7 @@ void dvr::VideoFile::AppendFrameSequence(FrameSequence & seq)
 
 	W32Lib::FileEx io(this->io_path.c_str());
 	if (io.Open()) {
+		io.SetPointer(0, FILE_END);
 		file_size += io.Write(seq.buffer.data(), seq.buffer.size());
 	}
 	else {
@@ -231,19 +232,16 @@ void dvr::VideoStorage::Close(void)
 bool dvr::VideoStorage::SaveFrameSequence(FrameSequence &seq)
 {
 	VideoFile *file = GetVideoFile(seq.start_time.Date(), seq.camera);
-	if (file && ((file->Size() + seq.buffer.size()) > max_file_size)) {
-		CloseFile(file);
-		file = nullptr;
-	}
-
 	bool appended = false;
 
 	if (file) {
-		if (file->EndTimestamp().Seconds() <= seq.start_time.Seconds()) {
-			if ((seq.start_time.Seconds() - file->EndTimestamp().Seconds()) <= 1 ) {
-				file->AppendFrameSequence(seq);
-				appended = true;
-			}			
+		if ((file->Size() + seq.buffer.size()) <= max_file_size) {
+			if (file->EndTimestamp().Seconds() <= seq.start_time.Seconds()) {
+				if ((seq.start_time.Seconds() - file->EndTimestamp().Seconds()) <= 1) {
+					file->AppendFrameSequence(seq);
+					appended = true;
+				}
+			}
 		}
 	}
 
@@ -277,20 +275,43 @@ bool dvr::VideoStorage::SaveFrameSequence(FrameSequence &seq)
 		}
 	}
 
+	//
+	// Remove empty pairs
+	auto it = storage.begin();
+	while (it != storage.end()) {
+		auto iit = (*it).second.begin();
+		while (iit != (*it).second.end()) {
+			if ((*iit).second == nullptr) {
+				iit = (*it).second.erase(iit);
+			} else {
+				++iit;
+			}
+		}
+		if ((*it).second.empty()) {
+			it = storage.erase(it);
+		} else {
+			++it;
+		}
+	}
+
 	return true;
 }
 
 dvr::VideoFile * dvr::VideoStorage::CreateNewFile(FrameSequence &seq)
 {
-	std::string file_name = std::to_string(seq.first_frame_offset) + seq.start_time.ToString() +  ".dvr";
+	std::string file_name = std::to_string(seq.first_frame_offset) + " - [" + seq.start_time.ToString() + "]" + ".dvr";
 	std::string date_dir = dir_path + std::string("\\") + seq.start_time.Date();
 	std::string cam_dir = date_dir + std::string("\\") + std::string("CAM-") + std::to_string(seq.camera);
-	std::string file_path = cam_dir + file_name;
+	std::string file_path = cam_dir + std::string("\\") + file_name;
 
 	CreateDir(date_dir);
 	CreateDir(cam_dir);
 
-	VideoFile * video_file = new VideoFile(file_path, seq);
+	VideoFile *video_file = GetVideoFile(seq.start_time.Date(), seq.camera);
+	if (video_file) {
+		CloseFile(video_file);
+	}
+	video_file = new VideoFile(file_path, seq);
 
 	storage[seq.start_time.Date()][seq.camera] = video_file;
 	recent_files.push_back(video_file);
@@ -302,17 +323,13 @@ void dvr::VideoStorage::CloseFile(dvr::VideoFile *file)
 {
 	assert(file != nullptr);
 	//
-	// [01]-[2018-01-23 14-25-10 -=- 2018-01-23 14-27-30]-[800x600].avi
+	// [01]-[2018-01-23 14-25-10 -=- 2018-01-23 14-27-30]-[800x600].h264
 	//
-	char file_name_format[] = "[%02d]-[%s -=- %s]-[%dx%d].avi";
-	std::string file_name = "";
-	file_name.resize(100);
 
-	file_name.resize(std::snprintf(&file_name[0], file_name.size(), file_name_format,
+	std::string file_name = format_string("[%02d]-[%s -=- %s]-[%dx%d]-%lld",
 		file->Camera(),
 		file->StartTimestamp().ToString().c_str(), file->EndTimestamp().ToString().c_str(),
-		file->Width(), file->Height()
-		));
+		file->Width(), file->Height(), file->LastFrameOffset());
 
 	file->Close();
 
@@ -325,8 +342,18 @@ void dvr::VideoStorage::CloseFile(dvr::VideoFile *file)
 		}
 	}
 
-	std::string avi_file_path = dir_path + file_name;
-	Convert2Avi(file->FilePath(), avi_file_path);
+	std::string native_file_name = file_name + ".h264";
+	std::string native_file_path = dir_path + native_file_name;
+
+	uint32_t error = 0;
+	if (!MoveFileA(file->FilePath().c_str(), native_file_path.c_str())) {
+		error = ::GetLastError();
+		throw std::system_error(error, std::system_category());
+	}
+
+	std::string avi_file_path = dir_path + file_name + ".avi";
+
+	Convert2Avi(native_file_path, avi_file_path);
 
 	//
 	// Remove from storage
@@ -364,7 +391,10 @@ dvr::VideoFile * dvr::VideoStorage::GetVideoFile(const std::string &date, uint32
 	if (it != storage.end()) {
 		auto itt = it->second.find(camera);
 		if (itt != it->second.end()) {
-			assert(itt->second->Camera() == camera);
+			if (itt->second) {
+				assert(itt->second->Camera() == camera);
+				assert(itt->second->StartTimestamp().Date() == date);
+			}
 			return itt->second;
 		}
 	} 
