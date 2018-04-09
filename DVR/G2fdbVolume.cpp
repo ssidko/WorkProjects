@@ -274,7 +274,8 @@ bool G2FDB::G2fdbVolume::ReadFrameSequence(dvr::FrameSequence &sequence, size_t 
 				((sequence.width == frame.width) && (sequence.height == frame.height)) &&
 				((sequence.buffer.size() + frame.buffer.size()) <= max_size) &&
 				(frame.time.Seconds() >= sequence.end_time.Seconds()) &&
-				((frame.time.Seconds() - sequence.end_time.Seconds()) <= max_delta_time))
+				((frame.time.Seconds() - sequence.end_time.Seconds()) <= max_delta_time) && 
+				(sequence.start_time.day == frame.time.day))
 			{
 				prev_buffer_size = sequence.buffer.size();
 				sequence.AddFrame(frame);
