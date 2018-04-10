@@ -71,6 +71,23 @@ namespace G2FDB
 		bool ReadFrameSequence(G2FDB::FrameSequence &sequence, size_t max_delta_time = 1);
 		bool ReadFrameSequence(dvr::FrameSequence &sequence, size_t max_size, size_t max_delta_time = 1);
 	};
+
+
+#pragma pack(push, 1)
+	struct frame_descriptor_t {
+		uint32_t flags;
+		TIMESTAMP time;
+		uint32_t unk_1;
+		uint32_t signature;
+		uint32_t payload_size;
+		uint32_t unk_2;
+		uint16_t camera_id;
+		uint16_t unk_3;
+		uint32_t frame_offset;
+	};
+#pragma pack(pop)
+
+
 }
 
 #endif // _G2FDB_VOLUME_H

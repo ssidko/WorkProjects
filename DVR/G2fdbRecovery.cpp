@@ -75,6 +75,73 @@ void G2FDB::TestRecovery(void)
 	G2FDB::StartRecovery(task);
 }
 
+
+void G2FDB::TestRecovery2(void)
+{
+	const size_t unit_size = 256 * 1024 * 1024;
+	const size_t descriptors_offset = 0x100000;
+	const size_t data_offset = 0x500000;
+	const size_t descriptors_count = (data_offset - descriptors_offset) / sizeof(frame_descriptor_t);
+
+	size_t unit_num = 0;
+
+	W32Lib::FileEx io("d:\\work\\g2fdb-dvr\\chunk-2");
+	if (io.Open()) {
+
+		std::vector<frame_descriptor_t> descriptors(descriptors_count);
+
+		io.SetPointer((uint64_t)unit_num * unit_size + descriptors_offset);
+
+		size_t readed = 0;
+		size_t prev_cam_id = 0;
+		size_t prev_offset = 0;
+		size_t frames_count = 0;
+		size_t used_space = 0;
+		readed = io.Read((uint8_t *)descriptors.data(), descriptors.size() * sizeof(frame_descriptor_t));
+
+		for (auto &descriptor : descriptors) {
+			
+			
+			
+			if (descriptor.signature == FRAME_HEADER_SIGNATURE) {
+
+				FRAME_HEADER header = { 0 };
+
+				io.SetPointer((uint64_t)unit_num * unit_size + data_offset + descriptor.frame_offset);
+				readed = io.Read((uint8_t *)&header, sizeof(FRAME_HEADER));
+				
+				if ((header.signature == FRAME_HEADER_SIGNATURE) &&
+					descriptor.frame_offset == header.frame_offset) {
+
+					frames_count++;
+					used_space += header.payload_size;
+
+					if (prev_cam_id != descriptor.camera_id) {
+						int x = 0;
+					}
+
+					prev_cam_id = descriptor.camera_id;
+					prev_offset = descriptor.frame_offset;
+				
+				} else {
+					int x = 0;
+				}
+
+
+			} else {
+				int x = 0;
+			}
+
+
+		}
+
+		int x = 0;
+
+
+	}
+}
+
+
 //
 //	class VideoStorage
 //
@@ -151,7 +218,3 @@ bool G2FDB::VideoStorage::SaveFrameSequence(FrameSequence & sequence)
 
 	return false;
 }
-
-//
-//	class VideoFile
-//

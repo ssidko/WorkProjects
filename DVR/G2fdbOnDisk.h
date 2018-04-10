@@ -60,15 +60,15 @@ namespace G2FDB
 		DWORD unk_1;
 		DWORD signature;					// FRAME_HEADER_SIGNATURE may be signature
 		DWORD payload_size;
-		DWORD unk_3;
+		DWORD unk_2;
 		WORD camera_id;
-		WORD unk_4;
+		WORD unk_3;
 		DWORD frame_offset;
 		WORD width;
 		WORD height;
 		WORD str_length;
 		char camera_name[91];
-		BYTE unk_5[32];
+		BYTE unk_4[32];
 	};
 
 #pragma pack(pop)
