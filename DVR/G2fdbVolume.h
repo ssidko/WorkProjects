@@ -47,6 +47,7 @@ namespace G2FDB
 	{
 	private:
 		BufferedFile io;
+		size_t h264_data_offset = 24;
 
 		bool IsValidFrameHeader(const FRAME_HEADER &header);
 		size_t SignatureOffset(void);

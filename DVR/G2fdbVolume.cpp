@@ -87,6 +87,14 @@ size_t G2FDB::G2fdbVolume::SignatureOffset(void)
 
 bool G2FDB::G2fdbVolume::IsValidFrameHeader(const FRAME_HEADER &header)
 {
+	if ((header.flags & 0xFFFFFF00) != 0x00) {
+		return false;
+	}
+
+	if (!header.time.Valid()) {
+		return false;
+	}
+
 	if (header.signature != FRAME_HEADER_SIGNATURE) {
 		return false;
 	}
@@ -100,11 +108,18 @@ bool G2FDB::G2fdbVolume::IsValidFrameHeader(const FRAME_HEADER &header)
 		return false;
 	}
 
-	if (header.payload_size == 0) {
-		return false;
+	for (int i = len; i < sizeof(header.camera_name); i++) {
+		if (header.camera_name[i] != 0) {
+			return false;
+		}
 	}
 
+	const size_t min_payload_size = h264_data_offset + 4;
 	const size_t max_payload_size = 256 * 1024;
+
+	if (header.payload_size < min_payload_size) {
+		return false;
+	}
 
 	if (header.payload_size > max_payload_size) {
 		return false;
@@ -208,10 +223,12 @@ bool G2FDB::G2fdbVolume::ReadFrame(dvr::Frame &frame)
 			frame.height = header->height;
 			header->time.Timestamp(frame.time);
 
-			data_size = header->payload_size;
+			data_size = header->payload_size - h264_data_offset;
 			frame.buffer.resize(data_size);
 
-			if (data_size == io.Read(frame.buffer.data(), data_size)) {
+			io.SetPointer(offset + FRAME_HEADER_SIZE + h264_data_offset);
+
+			if (data_size == io.Read(frame.buffer.data(), frame.buffer.size())) {
 				return true;
 			}
 		}
@@ -261,7 +278,9 @@ bool G2FDB::G2fdbVolume::ReadFrameSequence(dvr::FrameSequence &sequence, size_t 
 	size_t last_frame_size = 0;
 	size_t prev_buffer_size = 0;
 
-	if (FindAndReadFrame(frame)) {
+	sequence.Clear();
+
+	while (FindAndReadFrame(frame)) {
 	
 		sequence.AddFirstFrame(frame);
 		last_frame_offset = frame.offset;
@@ -287,11 +306,16 @@ bool G2FDB::G2fdbVolume::ReadFrameSequence(dvr::FrameSequence &sequence, size_t 
 
 		SetPointer(last_frame_offset + SignatureOffset() + 1);
 
+		if (sequence.frames_count <= 1) {
+			sequence.Clear();
+			continue;
+		} 
+
 		if (FindAndReadFrame(frame)) {
 			SetPointer(frame.offset);
 			assert(frame.offset > last_frame_offset);
 			if ((frame.offset - last_frame_offset) < last_frame_size) {
-				sequence.buffer.resize(prev_buffer_size + (size_t)(frame.offset - last_frame_offset));
+				sequence.buffer.resize(prev_buffer_size + (size_t)(frame.offset - last_frame_offset - FRAME_HEADER_SIZE));
 			}		
 		}
 

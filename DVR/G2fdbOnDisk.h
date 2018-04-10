@@ -25,7 +25,7 @@ namespace G2FDB
 		DWORD month : 4;
 		DWORD year : 6;
 
-		void Timestamp(dvr::Timestamp &t) {
+		void Timestamp(dvr::Timestamp &t) const {
 			t.year	= (year + 1970);
 			t.month	= month;
 			t.day	= day;
@@ -33,6 +33,22 @@ namespace G2FDB
 			t.minutes = minutes;
 			t.seconds = seconds;
 		}
+
+		bool Valid(void) const {
+			if ((month >= 1) && (month <= 12)) {
+				if ((day >= 1) && (day <= 31)) {
+					if (hours <= 24) {
+						if (minutes <= 59) {
+							if (seconds <= 59) {
+								return true;
+							}
+						}
+					}
+				}
+			}
+			return false;
+		}
+
 	};
 
 #define FRAME_HEADER_SIZE					((DWORD)0xA1)

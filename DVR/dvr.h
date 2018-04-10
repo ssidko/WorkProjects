@@ -23,6 +23,7 @@ namespace dvr
 
 		Timestamp(WORD year_ = 0, BYTE month_ = 0, BYTE day_ = 0, BYTE hours_ = 0, BYTE mins_ = 0, BYTE sec_ = 0);
 		void Clear(void);
+		bool Valid(void) const;
 		ULONGLONG Seconds(void) const;
 		std::string ToString(void) const;
 		void ToString(std::string &str) const;
@@ -95,7 +96,7 @@ namespace dvr
 	private:
 		std::string io_path;
 
-		//uint64_t first_frame_offset = 0;
+		uint64_t first_frame_offset = 0;
 		uint64_t last_frame_offset = 0;
 		uint32_t camera = 0;
 		uint32_t width = 0;
@@ -110,6 +111,7 @@ namespace dvr
 		void AppendFrameSequence(FrameSequence &seq);
 
 		const std::string & FilePath(void) { return io_path; }
+		uint64_t FirstFrameOffset(void) { return first_frame_offset; }
 		uint64_t LastFrameOffset(void) { return last_frame_offset; }
 		const Timestamp & StartTimestamp(void) { return start_time; }
 		const Timestamp & EndTimestamp(void) { return end_time; }

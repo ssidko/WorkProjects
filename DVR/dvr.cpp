@@ -21,6 +21,22 @@ void dvr::Timestamp::Clear( void )
 	year = month = day = hours = minutes = seconds = 0;
 }
 
+bool dvr::Timestamp::Valid(void) const
+{
+	if ((month >= 1) && (month <= 12)) {
+		if ((day >=1) && (day <= 31)) {
+			if (hours <= 24) {
+				if (minutes <= 59) {
+					if (seconds <= 59) {
+						return true;
+					}
+				}
+			}
+		}
+	}
+	return false;
+}
+
 ULONGLONG dvr::Timestamp::Seconds( void ) const
 {
 	return (ULONGLONG)((((year*12LL + month)*31LL + day)*24LL + hours)*60LL + minutes)*60LL + seconds;
@@ -151,6 +167,7 @@ void dvr::FrameSequence::AddFrame(Frame &frame)
 
 dvr::VideoFile::VideoFile(const std::string & file_path, FrameSequence & seq) : io_path(file_path)
 {
+	first_frame_offset = seq.first_frame_offset;
 	camera = seq.camera;
 	start_time = seq.start_time;
 	width = seq.width;
@@ -322,14 +339,11 @@ dvr::VideoFile * dvr::VideoStorage::CreateNewFile(FrameSequence &seq)
 void dvr::VideoStorage::CloseFile(dvr::VideoFile *file)
 {
 	assert(file != nullptr);
-	//
-	// [01]-[2018-01-23 14-25-10 -=- 2018-01-23 14-27-30]-[800x600].h264
-	//
 
-	std::string file_name = format_string("[%02d]-[%s -=- %s]-[%dx%d]-%lld",
+	std::string file_name = format_string("[%02d]-[%s -=- %s]-[%dx%d]-%lld-%lld",
 		file->Camera(),
 		file->StartTimestamp().ToString().c_str(), file->EndTimestamp().ToString().c_str(),
-		file->Width(), file->Height(), file->LastFrameOffset());
+		file->Width(), file->Height(), file->FirstFrameOffset(), file->LastFrameOffset());
 
 	file->Close();
 
