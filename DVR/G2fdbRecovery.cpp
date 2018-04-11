@@ -99,9 +99,7 @@ void G2FDB::TestRecovery2(void)
 		size_t used_space = 0;
 		readed = io.Read((uint8_t *)descriptors.data(), descriptors.size() * sizeof(frame_descriptor_t));
 
-		for (auto &descriptor : descriptors) {
-			
-			
+		for (auto &descriptor : descriptors) {			
 			
 			if (descriptor.signature == FRAME_HEADER_SIGNATURE) {
 
@@ -127,17 +125,14 @@ void G2FDB::TestRecovery2(void)
 					int x = 0;
 				}
 
-
 			} else {
 				int x = 0;
 			}
 
-
 		}
 
 		int x = 0;
-
-
+		
 	}
 }
 

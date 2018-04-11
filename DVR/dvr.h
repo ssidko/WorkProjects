@@ -127,7 +127,7 @@ namespace dvr
 	private:
 		std::string dir_path;
 		size_t max_file_size = 512*1024*1024;
-		uint64_t max_distance = 10 * 1024 * 1024 * 1024;
+		uint64_t max_distance = 10ull * 1024 * 1024 * 1024;
 
 		std::map<std::string, std::map<uint32_t, VideoFile *>> storage;
 		std::list<VideoFile *> recent_files;
