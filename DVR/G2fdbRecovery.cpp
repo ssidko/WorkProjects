@@ -42,7 +42,6 @@ int G2FDB::StartRecovery(const dvr::RecoveryTask &task)
 	if (volume.Open() && storage.Open()) {
 		
 		sequence.Clear();
-		sequence.buffer.reserve(max_sequence_size);
 		volume.SetPointer(task.io_offset);
 
 		try {
@@ -81,58 +80,97 @@ void G2FDB::TestRecovery2(void)
 	const size_t unit_size = 256 * 1024 * 1024;
 	const size_t descriptors_offset = 0x100000;
 	const size_t data_offset = 0x500000;
-	const size_t descriptors_count = (data_offset - descriptors_offset) / sizeof(frame_descriptor_t);
+	const size_t descriptors_size = data_offset - descriptors_offset;
+	const size_t descriptors_count = descriptors_size / sizeof(frame_descriptor_t);
 
-	size_t unit_num = 0;
+	const uint64_t volume_offset = 21495808ull * 512;
+	const uint64_t volume_size = 1932027311ull * 512;
+	const uint64_t units_count = volume_size / unit_size;
 
-	W32Lib::FileEx io("d:\\work\\g2fdb-dvr\\chunk-2");
-	if (io.Open()) {
+	const size_t signature_offset = 128;
+	const size_t signature_size = std::strlen("G2FrameDbIdxSeg");
+	
+	std::string unit_signature = "G2FrameDbIdxSeg";
+	std::vector<uint8_t> sign_buff(signature_size);
+	std::vector<frame_descriptor_t> descriptors(descriptors_count);
 
-		std::vector<frame_descriptor_t> descriptors(descriptors_count);
+	G2fdbVolume volume("\\\\.\\PhysicalDrive0");
+	BufferedFile io("\\\\.\\PhysicalDrive0");
+	dvr::VideoStorage storage("F:\\43889\\video-2");
+	dvr::Frame frame;
+	dvr::FrameSequence sequence;
 
-		io.SetPointer((uint64_t)unit_num * unit_size + descriptors_offset);
+	if (volume.Open() && io.Open() && storage.Open()) {
 
-		size_t readed = 0;
-		size_t prev_cam_id = 0;
-		size_t prev_offset = 0;
-		size_t frames_count = 0;
-		size_t used_space = 0;
-		readed = io.Read((uint8_t *)descriptors.data(), descriptors.size() * sizeof(frame_descriptor_t));
-
-		for (auto &descriptor : descriptors) {			
+		for (size_t unit = 0; unit <  units_count; unit ++) {
 			
-			if (descriptor.signature == FRAME_HEADER_SIGNATURE) {
+			uint64_t unit_offset = volume_offset + unit * unit_size;
+		
+			//
+			// Check signature "G2FrameDbIdxSeg"
+			//
+			io.SetPointer(unit_offset + signature_offset);
+			io.Read(sign_buff.data(), signature_size);
+			if (std::memcmp(&unit_signature[0], sign_buff.data(), signature_size) != 0) {
+				continue;
+			}
+		
+			//
+			// Read descriptors
+			//
+			io.SetPointer(unit_offset + descriptors_offset);
+			io.Read(descriptors.data(), descriptors_size);
 
-				FRAME_HEADER header = { 0 };
+			frame.Clear();
+			sequence.Clear();
 
-				io.SetPointer((uint64_t)unit_num * unit_size + data_offset + descriptor.frame_offset);
-				readed = io.Read((uint8_t *)&header, sizeof(FRAME_HEADER));
+			for (auto & descriptor : descriptors) {
+			
+				if (descriptor.signature == FRAME_HEADER_SIGNATURE) {
 				
-				if ((header.signature == FRAME_HEADER_SIGNATURE) &&
-					descriptor.frame_offset == header.frame_offset) {
+					frame_descriptor_t frame_header = {0};
+					uint64_t frame_offset = unit_offset + data_offset + descriptor.frame_offset;
 
-					frames_count++;
-					used_space += header.payload_size;
+					io.SetPointer(frame_offset);
+					io.Read(&(frame_header), sizeof(frame_descriptor_t));
 
-					if (prev_cam_id != descriptor.camera_id) {
-						int x = 0;
+					if (std::memcmp(&descriptor, &frame_header, sizeof(frame_descriptor_t)) != 0) {
+						continue;
 					}
 
-					prev_cam_id = descriptor.camera_id;
-					prev_offset = descriptor.frame_offset;
-				
-				} else {
-					int x = 0;
-				}
+					volume.SetPointer(frame_offset);
+					if (volume.ReadFrame(frame)) {
 
-			} else {
-				int x = 0;
+						if (sequence.frames_count) {
+
+							if ((frame.camera == sequence.camera) &&
+								(frame.time.Seconds() >= sequence.end_time.Seconds()) &&
+								((frame.time.Seconds() - sequence.end_time.Seconds()) <= 1))
+							{
+								sequence.AddFrame(frame);							
+							} else {							
+								storage.SaveFrameSequence(sequence);
+								sequence.Clear();
+								sequence.AddFirstFrame(frame);
+							}
+						
+						} else {						
+							sequence.AddFirstFrame(frame);						
+						}
+					
+					}
+				
+				}
+			
 			}
 
-		}
-
-		int x = 0;
+			if (sequence.frames_count) {
+				storage.SaveFrameSequence(sequence);
+				sequence.Clear();
+			}
 		
+		}
+	
 	}
 }
 
