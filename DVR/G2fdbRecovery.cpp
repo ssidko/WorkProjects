@@ -19,7 +19,6 @@ int G2FDB::StartRecovery(const std::string & dvr_volume, const std::string & out
 		//volume.SetPointer(500449675890LL);
 
 		while (volume.ReadFrameSequence(sequence, max_delta_time)) {
-
 			storage.SaveFrameSequence(sequence);
 			sequence.Clear();
 		}
@@ -47,7 +46,6 @@ int G2FDB::StartRecovery(const dvr::RecoveryTask &task)
 		try {
 
 			while (volume.ReadFrameSequence(sequence, max_sequence_size, max_delta_time)) {
-
 				storage.SaveFrameSequence(sequence);
 				sequence.Clear();
 			}
@@ -58,24 +56,11 @@ int G2FDB::StartRecovery(const dvr::RecoveryTask &task)
 			return -1;
 		}
 
-}
+	}
 	return -1;
 }
 
-void G2FDB::TestRecovery(void)
-{
-	dvr::RecoveryTask task;
-	task.io_name = "\\\\.\\PhysicalDrive0";
-	//task.io_offset = 2165338112ull;
-	task.io_offset = 21495808ull * 512;
-	task.io_size = 1953523119ull * 512;
-	task.output_dir = "F:\\43889\\test\\   ";
-
-	G2FDB::StartRecovery(task);
-}
-
-
-void G2FDB::TestRecovery2(void)
+void G2FDB::StartRcoveryByMetadata(const dvr::RecoveryTask &task)
 {
 	const size_t unit_size = 256 * 1024 * 1024;
 	const size_t descriptors_offset = 0x100000;
@@ -83,8 +68,8 @@ void G2FDB::TestRecovery2(void)
 	const size_t descriptors_size = data_offset - descriptors_offset;
 	const size_t descriptors_count = descriptors_size / sizeof(frame_descriptor_t);
 
-	const uint64_t volume_offset = 21495808ull * 512;
-	const uint64_t volume_size = 1932027311ull * 512;
+	const uint64_t volume_offset = task.io_offset;
+	const uint64_t volume_size = task.io_size;
 	const uint64_t units_count = volume_size / unit_size;
 
 	const size_t signature_offset = 128;
@@ -94,9 +79,9 @@ void G2FDB::TestRecovery2(void)
 	std::vector<uint8_t> sign_buff(signature_size);
 	std::vector<frame_descriptor_t> descriptors(descriptors_count);
 
-	G2fdbVolume volume("\\\\.\\PhysicalDrive0");
-	BufferedFile io("\\\\.\\PhysicalDrive0");
-	dvr::VideoStorage storage("F:\\43889\\video-2");
+	G2fdbVolume volume(task.io_name);
+	BufferedFile io(task.io_name);
+	dvr::VideoStorage storage(task.output_dir);
 	dvr::Frame frame;
 	dvr::FrameSequence sequence;
 
@@ -172,6 +157,18 @@ void G2FDB::TestRecovery2(void)
 		}
 	
 	}
+}
+
+void G2FDB::TestRecovery(void)
+{
+	dvr::RecoveryTask task;
+	task.io_name = "\\\\.\\PhysicalDrive0";
+	task.io_offset = 21495808ull * 512;
+	task.io_size = 1932027311ull * 512;
+	task.output_dir = "F:\\43889\\video-2";
+
+	G2FDB::StartRecovery(task);
+	G2FDB::StartRcoveryByMetadata(task);
 }
 
 

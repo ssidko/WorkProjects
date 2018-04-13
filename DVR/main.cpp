@@ -110,6 +110,10 @@ void ToHexString(uint8_t *buff, size_t count, std::string &str)
 #include "MyPrintf.h"
 #include "zfs_test.h"
 
+#include <experimental\filesystem>
+
+namespace fs = std::experimental::filesystem;
+
 int main(int argc, char *argv[])
 {
 	QApplication a(argc, argv);
@@ -119,8 +123,8 @@ int main(int argc, char *argv[])
 	//zfs_test();
 	//zfs_dnode_recovery();
 
-	//G2FDB::TestRecovery();
-	G2FDB::TestRecovery2();
+	G2FDB::TestRecovery();
+	//G2FDB::RcoveryByMetadata();
 
 	//std::system_error sys_err(ERROR_ALREADY_EXISTS, std::system_category());	
 	//std::string what = sys_err.what();

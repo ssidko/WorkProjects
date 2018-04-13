@@ -58,7 +58,7 @@ void Convert2Avi(const std::string &raw_file_name, const std::string &avi_file_n
 	// -an - without audio 
 	//cmd_line += " -an -vcodec copy ";
 	
-	cmd_line += " -vcodec copy ";
+	cmd_line += " -vcodec copy -y ";
 	cmd_line += "\"";
 	cmd_line += avi_file_name;
 	cmd_line += "\"";

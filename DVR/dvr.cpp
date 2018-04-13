@@ -4,6 +4,9 @@
 #include <cctype>
 #include <assert.h>
 #include "File.h"
+#include <experimental\filesystem>
+
+namespace fs = std::experimental::filesystem;
 
 
 dvr::Timestamp::Timestamp(WORD year_, BYTE month_, BYTE day_, BYTE hours_, BYTE mins_, BYTE sec_) :
@@ -347,27 +350,25 @@ void dvr::VideoStorage::CloseFile(dvr::VideoFile *file)
 
 	file->Close();
 
-	std::string dir_path(file->FilePath());
-	while(!dir_path.empty()) {
-		if (dir_path.back() != '\\') {
-			dir_path.pop_back();
-		} else {
-			break;
+	fs::path current_file_path = file->FilePath();
+	fs::path dir_path = current_file_path.parent_path();
+
+	fs::path native_file_path = dir_path / file_name.append(".h264");
+	fs::path avi_file_path = dir_path / file_name.append(".avi");
+
+	if (!fs::exists(native_file_path)) {
+
+		fs::rename(current_file_path, native_file_path);
+		Convert2Avi(native_file_path.string(), avi_file_path.string());
+		fs::remove(native_file_path);
+		if (fs::exists(avi_file_path) && (fs::file_size(avi_file_path) == 0)) {
+			fs::remove(avi_file_path);
 		}
+
+	} else {		
+		fs::remove(current_file_path);
 	}
 
-	std::string native_file_name = file_name + ".h264";
-	std::string native_file_path = dir_path + native_file_name;
-
-	uint32_t error = 0;
-	if (!MoveFileA(file->FilePath().c_str(), native_file_path.c_str())) {
-		error = ::GetLastError();
-		throw std::system_error(error, std::system_category());
-	}
-
-	std::string avi_file_path = dir_path + file_name + ".avi";
-
-	Convert2Avi(native_file_path, avi_file_path);
 
 	//
 	// Remove from storage
