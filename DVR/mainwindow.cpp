@@ -127,6 +127,62 @@ void MainWindow::SetDvrType(const QString &dvr_type)
 	}
 }
 
+bool MainWindow::InitRecoveryTask(dvr::RecoveryTask & task)
+{
+	bool block_device = false;
+
+	task.io_name = "";
+	if (ui.InputFile_lineEdit->isEnabled()) {
+		block_device = false;
+		task.io_name = ui.InputFile_lineEdit->text().toStdString();
+		if (task.io_name.empty()) {
+			task.io_name = OnSelectInputFile().toStdString();
+		}
+		QFileInfo check_file(task.io_name.c_str());
+		if (!check_file.exists() || !check_file.isFile()) {
+			throw std::runtime_error("Wrong input file");
+		}
+	} else if (ui.Drives_comboBox->isEnabled()) {
+		block_device = true;
+		if (ui.Drives_comboBox->count()) {
+			task.io_name = ui.Drives_comboBox->currentText().split(QChar(';')).at(0).toStdString();		
+		}
+		if (task.io_name.find("") == std::string::npos) {
+			throw std::runtime_error("Wrong physical drive");
+		}
+	}
+
+	task.io_offset = static_cast<uint64_t>(ui.Offset_lineEdit->text().toULongLong());
+	if ((task.io_offset & (512-1)) != 0) {
+		throw std::runtime_error("Offset must be multiple of sector size");
+	}
+
+
+	task.io_size;
+
+	if (auto size = GetPhysicalDriveSize2(task.io_name)) {
+		task.io_size = size.value() - task.io_offset;
+	}
+
+
+
+	task.output_dir = "";
+	task.output_dir = ui.OutFolder_lineEdit->text().toStdString();
+	if (task.output_dir.empty()) {
+		task.output_dir = OnSelectOutDirectory().toStdString();
+	}
+	QFileInfo check_dir(task.output_dir.c_str());
+	if (!check_dir.exists() || !check_dir.isDir()) {
+		throw std::runtime_error("Wrong output directory");
+	}
+
+
+	task.start_time;
+	task.end_time;
+
+	return false;
+}
+
 void MainWindow::OnStart(void)
 {
 	QString dvr_type;

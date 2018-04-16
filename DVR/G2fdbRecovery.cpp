@@ -43,7 +43,7 @@ int G2FDB::StartRecovery(const dvr::RecoveryTask &task)
 		sequence.Clear();
 		volume.SetPointer(task.io_offset);
 
-		try {
+		//try {
 
 			while (volume.ReadFrameSequence(sequence, max_sequence_size, max_delta_time)) {
 				storage.SaveFrameSequence(sequence);
@@ -51,14 +51,16 @@ int G2FDB::StartRecovery(const dvr::RecoveryTask &task)
 			}
 			return 0;
 
-		} catch (std::system_error &exc) {
-			std::string error_description = exc.what();
-			return -1;
-		}
+		//} catch (std::system_error &exc) {
+		//	std::string error_description = exc.what();
+		//	return -1;
+		//}
 
 	}
 	return -1;
 }
+
+#define G2FDB_UNIT_SIGNATURE	"G2FrameDbIdxSeg"
 
 void G2FDB::StartRcoveryByMetadata(const dvr::RecoveryTask &task)
 {
@@ -73,10 +75,9 @@ void G2FDB::StartRcoveryByMetadata(const dvr::RecoveryTask &task)
 	const uint64_t units_count = volume_size / unit_size;
 
 	const size_t signature_offset = 128;
-	const size_t signature_size = std::strlen("G2FrameDbIdxSeg");
+	constexpr const size_t signature_size = sizeof(G2FDB_UNIT_SIGNATURE) - 1 ;
 	
-	std::string unit_signature = "G2FrameDbIdxSeg";
-	std::vector<uint8_t> sign_buff(signature_size);
+	char unit_signature[signature_size] = {0};
 	std::vector<frame_descriptor_t> descriptors(descriptors_count);
 
 	G2fdbVolume volume(task.io_name);
@@ -95,8 +96,8 @@ void G2FDB::StartRcoveryByMetadata(const dvr::RecoveryTask &task)
 			// Check signature "G2FrameDbIdxSeg"
 			//
 			io.SetPointer(unit_offset + signature_offset);
-			io.Read(sign_buff.data(), signature_size);
-			if (std::memcmp(&unit_signature[0], sign_buff.data(), signature_size) != 0) {
+			io.Read(unit_signature, signature_size);
+			if (std::memcmp(unit_signature, G2FDB_UNIT_SIGNATURE, signature_size) != 0) {
 				continue;
 			}
 		
@@ -125,9 +126,7 @@ void G2FDB::StartRcoveryByMetadata(const dvr::RecoveryTask &task)
 
 					volume.SetPointer(frame_offset);
 					if (volume.ReadFrame(frame)) {
-
 						if (sequence.frames_count) {
-
 							if ((frame.camera == sequence.camera) &&
 								(frame.time.Seconds() >= sequence.end_time.Seconds()) &&
 								((frame.time.Seconds() - sequence.end_time.Seconds()) <= 1))
@@ -137,38 +136,34 @@ void G2FDB::StartRcoveryByMetadata(const dvr::RecoveryTask &task)
 								storage.SaveFrameSequence(sequence);
 								sequence.Clear();
 								sequence.AddFirstFrame(frame);
-							}
-						
+							}						
 						} else {						
 							sequence.AddFirstFrame(frame);						
 						}
-					
 					}
-				
 				}
-			
 			}
 
 			if (sequence.frames_count) {
 				storage.SaveFrameSequence(sequence);
 				sequence.Clear();
 			}
-		
 		}
-	
 	}
 }
 
 void G2FDB::TestRecovery(void)
 {
 	dvr::RecoveryTask task;
-	task.io_name = "\\\\.\\PhysicalDrive0";
-	task.io_offset = 21495808ull * 512;
-	task.io_size = 1932027311ull * 512;
-	task.output_dir = "F:\\43889\\video-2";
+	task.output_dir = "F:\\43889\\video-500Gb";
+	task.io_name = "\\\\.\\PhysicalDrive5";
+	task.io_offset = 4196352ull * 512;
 
-	G2FDB::StartRecovery(task);
-	G2FDB::StartRcoveryByMetadata(task);
+	if (auto size = GetPhysicalDriveSize2(task.io_name)) {
+		task.io_size = size.value() - task.io_offset;
+		//G2FDB::StartRecovery(task);
+		G2FDB::StartRcoveryByMetadata(task);
+	}	
 }
 
 

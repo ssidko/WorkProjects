@@ -177,11 +177,61 @@ LONGLONG GetPhysicalDriveSize(const std::string & name)
 
 		if (result) {
 			return geometry.DiskSize.QuadPart;
-		}
+		} 
 	}
+
+	uint32_t error_code = ::GetLastError();
+	throw std::system_error(error_code, std::system_category());
 
 	return 0;
 }
+
+bool GetPhysicalDriveSize(const std::string & name, uint64_t &drive_size)
+{
+	bool result = false;
+	DWORD rw;
+	DISK_GEOMETRY_EX geometry = { 0 };
+
+	W32Lib::FileEx drive(name.data());
+	if (drive.Open()) {
+
+		result = DeviceIoControl(drive.Handle(),
+			IOCTL_DISK_GET_DRIVE_GEOMETRY_EX,
+			NULL, 0,
+			&geometry, sizeof(DISK_GEOMETRY_EX),
+			&rw, NULL);
+
+		if (result) {
+			drive_size = geometry.DiskSize.QuadPart;
+		}
+	}
+
+	return result;
+}
+
+std::optional<uint64_t> GetPhysicalDriveSize2(const std::string & name)
+{
+	bool result = false;
+	DWORD rw = 0;
+	DISK_GEOMETRY_EX geometry = { 0 };
+
+	W32Lib::FileEx drive(name.data());
+	if (drive.Open()) {
+
+		result = DeviceIoControl(drive.Handle(),
+			IOCTL_DISK_GET_DRIVE_GEOMETRY_EX,
+			NULL, 0,
+			&geometry, sizeof(DISK_GEOMETRY_EX),
+			&rw, NULL);
+
+		if (result) {
+			return std::optional<uint64_t>{geometry.DiskSize.QuadPart};
+		}
+	}
+
+	return {};
+}
+
 
 LONGLONG FileSize(const std::string & file_name)
 {

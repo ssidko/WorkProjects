@@ -201,7 +201,7 @@ void zfs_test(void)
 		return;
 	}
 
-	std::auto_ptr<uint8_t> vd_label_buff(new uint8_t[sizeof(vdev_label_t)]);
+	std::unique_ptr<uint8_t> vd_label_buff(new uint8_t[sizeof(vdev_label_t)]);
 	vdev_label_t *label = (vdev_label_t *)vd_label_buff.get();
 
 	NVList nvlist("vdev label");

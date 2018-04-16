@@ -3,6 +3,7 @@
 
 #include <QtWidgets/QMainWindow>
 #include "ui_mainwindow.h"
+#include "dvr.h"
 
 class MainWindow : public QMainWindow
 {
@@ -23,6 +24,7 @@ public:
 	void InitWindowTitle(void);
 	void InitializeDvrTypeComboBox(void);
 	void UpdateDrivesComboBox(void);
+	bool InitRecoveryTask(dvr::RecoveryTask &task);
 
 
 public slots:

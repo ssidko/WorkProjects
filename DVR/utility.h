@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include <functional>
+#include <optional>
 #include <windows.h>
 
 WORD BeToLe(WORD word);
@@ -18,10 +19,11 @@ bool FindByteStringBruteforce(const std::vector<BYTE>& buffer, size_t start_pos,
 void EnumeratePhysicalDrives(std::function<void(const std::string &)> call_back);
 
 bool CurrentDirectory(std::string &current_directory);
-
 void CreateDir(const std::string &dir_path);
 
 LONGLONG GetPhysicalDriveSize(const std::string &name);
+bool GetPhysicalDriveSize(const std::string & name, uint64_t &drive_size);
+std::optional<uint64_t> GetPhysicalDriveSize2(const std::string & name);
 LONGLONG FileSize(const std::string &file_name);
 
 std::string string_format(const std::string fmt_str, ...);
