@@ -353,8 +353,8 @@ void dvr::VideoStorage::CloseFile(dvr::VideoFile *file)
 	fs::path current_file_path = file->FilePath();
 	fs::path dir_path = current_file_path.parent_path();
 
-	fs::path native_file_path = dir_path / file_name.append(".h264");
-	fs::path avi_file_path = dir_path / file_name.append(".avi");
+	fs::path native_file_path = dir_path / (file_name + ".h264");
+	fs::path avi_file_path = dir_path / (file_name + ".avi");
 
 	if (!fs::exists(native_file_path)) {
 

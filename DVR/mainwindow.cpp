@@ -17,6 +17,7 @@
 #include <QDir>
 #include <QFileDialog>
 #include <QDateTimeEdit>
+#include <QMessageBox>
 
 #define HIKVISION_ID_STRING				"Hikvision"
 #define WFS_04_ID_STRING				"WFS 0.4"
@@ -115,6 +116,7 @@ void MainWindow::SetDvrType(const QString &dvr_type)
 
 			property_form = new G2FDbPropertyForm(this);
 			property_form->show();
+			property_form->adjustSize();
 
 			QSize size = this->size();
 			QSize prop_size = property_form->size();
@@ -130,57 +132,89 @@ void MainWindow::SetDvrType(const QString &dvr_type)
 bool MainWindow::InitRecoveryTask(dvr::RecoveryTask & task)
 {
 	bool block_device = false;
+	uint64_t io_size = 0;
 
 	task.io_name = "";
 	if (ui.InputFile_lineEdit->isEnabled()) {
 		block_device = false;
 		task.io_name = ui.InputFile_lineEdit->text().toStdString();
 		if (task.io_name.empty()) {
-			task.io_name = OnSelectInputFile().toStdString();
+			throw std::runtime_error("Input file is not specified");
 		}
 		QFileInfo check_file(task.io_name.c_str());
-		if (!check_file.exists() || !check_file.isFile()) {
-			throw std::runtime_error("Wrong input file");
+		if (!check_file.exists() ) {
+			throw std::runtime_error("Input file is not exist");
+		}
+		if (!check_file.isFile()) {
+			throw std::runtime_error("Input file is not a file");
+		}
+		io_size = check_file.size();
+		if (!io_size) {
+			throw std::runtime_error("Input file zero sized");
 		}
 	} else if (ui.Drives_comboBox->isEnabled()) {
 		block_device = true;
 		if (ui.Drives_comboBox->count()) {
 			task.io_name = ui.Drives_comboBox->currentText().split(QChar(';')).at(0).toStdString();		
+		} else {
+			throw std::runtime_error("No available physical drives");
 		}
-		if (task.io_name.find("") == std::string::npos) {
-			throw std::runtime_error("Wrong physical drive");
+		if (task.io_name.find("\\\\.\\PhysicalDrive") == std::string::npos) {
+			throw std::runtime_error("Wrong physical drive name");
+		}
+		if (auto size = GetPhysicalDriveSize2(task.io_name)) {
+			io_size = size.value();
+		} else {
+			throw std::runtime_error("Failed: GetPhysicalDriveSize()");
 		}
 	}
 
 	task.io_offset = static_cast<uint64_t>(ui.Offset_lineEdit->text().toULongLong());
-	if ((task.io_offset & (512-1)) != 0) {
-		throw std::runtime_error("Offset must be multiple of sector size");
+
+	if (block_device) {
+		if ((task.io_offset & (512 - 1)) != 0) {
+			throw std::runtime_error("Offset must be multiple of sector size");
+		}
+	}
+	if (task.io_offset >= io_size) {
+		throw std::runtime_error("Offset must be less then IO size");
 	}
 
-
-	task.io_size;
-
-	if (auto size = GetPhysicalDriveSize2(task.io_name)) {
-		task.io_size = size.value() - task.io_offset;
-	}
-
-
-
-	task.output_dir = "";
+	task.io_size = io_size - task.io_offset;
 	task.output_dir = ui.OutFolder_lineEdit->text().toStdString();
+
 	if (task.output_dir.empty()) {
-		task.output_dir = OnSelectOutDirectory().toStdString();
+		throw std::runtime_error("Destination directory is not specified");
 	}
 	QFileInfo check_dir(task.output_dir.c_str());
-	if (!check_dir.exists() || !check_dir.isDir()) {
-		throw std::runtime_error("Wrong output directory");
+	if (!check_dir.exists()) {
+		throw std::runtime_error("Destination directory is not exist");
+	}
+	if (!check_dir.isDir()) {
+		throw std::runtime_error("Destionation directory is not a directory");
 	}
 
+	QDateTime date_time;
+	if (ui.start_dateTimeEdit->isEnabled()) {
+		date_time = ui.start_dateTimeEdit->dateTime();
+		task.start_time.year = date_time.date().year();
+		task.start_time.month = date_time.date().month();
+		task.start_time.day = date_time.date().day();
+		task.start_time.hours = date_time.time().hour();
+		task.start_time.minutes = date_time.time().minute();
+		task.start_time.seconds = date_time.time().second();
+	}
+	if (ui.end_dateTimeEdit->isEnabled()) {
+		date_time = ui.end_dateTimeEdit->dateTime();
+		task.end_time.year = date_time.date().year();
+		task.end_time.month = date_time.date().month();
+		task.end_time.day = date_time.date().day();
+		task.end_time.hours = date_time.time().hour();
+		task.end_time.minutes = date_time.time().minute();
+		task.end_time.seconds = date_time.time().second();
+	}
 
-	task.start_time;
-	task.end_time;
-
-	return false;
+	return true;
 }
 
 void MainWindow::OnStart(void)
@@ -213,6 +247,16 @@ void MainWindow::OnStart(void)
 	out_directory = ui.OutFolder_lineEdit->text();
 	if (out_directory.isEmpty()) {
 		out_directory = OnSelectOutDirectory();	
+	}
+
+
+	dvr::RecoveryTask task;
+	try {
+		InitRecoveryTask(task);
+	} catch (std::exception &exc) {
+		QMessageBox msg_box;
+		msg_box.setText(exc.what());
+		msg_box.exec();
 	}
 
 	if (!dvr_type.isEmpty() && !io_name.isEmpty() && !out_directory.isEmpty()) {

@@ -350,7 +350,7 @@
            </size>
           </property>
           <property name="title">
-           <string>EndTime</string>
+           <string>End time</string>
           </property>
           <property name="checkable">
            <bool>true</bool>
