@@ -19,11 +19,12 @@
 #include <QDateTimeEdit>
 #include <QMessageBox>
 
-#define HIKVISION_ID_STRING				"Hikvision"
-#define WFS_04_ID_STRING				"WFS 0.4"
-#define DHFS_ID_STRING					"DHFS"
-#define G2FDB_ID_STRING					"G2FDb"
-#define DCH264_ID_STRING				"dcH264"
+#define HIKVISION_ID_STRING						"Hikvision"
+#define WFS_04_ID_STRING						"WFS 0.4"
+#define DHFS_ID_STRING							"DHFS"
+#define G2FDB_ID_STRING							"G2FDb"
+#define G2FDB_METADATA_ID_STRING				"G2FDb metadata"
+#define DCH264_ID_STRING						"dcH264"
 
 #define APP_NAME						"DVR"
 
@@ -84,6 +85,7 @@ void MainWindow::InitializeDvrTypeComboBox(void)
 	ui.DvrType_comboBox->addItem(WFS_04_ID_STRING);
 	ui.DvrType_comboBox->addItem(HIKVISION_ID_STRING);
 	ui.DvrType_comboBox->addItem(G2FDB_ID_STRING);
+	ui.DvrType_comboBox->addItem(G2FDB_METADATA_ID_STRING);
 	ui.DvrType_comboBox->addItem(DCH264_ID_STRING);
 }
 
@@ -270,14 +272,17 @@ void MainWindow::OnStart(void)
 			//DHFS::StartRecovering(io_name.toStdString(), out_directory.toStdString());
 			DHFS::StartRecovery(io_name.toStdString(), offset, out_directory.toStdString());
 		} else if (dvr_type == G2FDB_ID_STRING) {
-			G2FDB::StartRecovery(io_name.toStdString(), out_directory.toStdString());
-		} else if (dvr_type == HIKVISION_ID_STRING) {		
+			//G2FDB::StartRecovery(io_name.toStdString(), out_directory.toStdString());
+			G2FDB::StartRecovery(task);
+		} else if (dvr_type == G2FDB_METADATA_ID_STRING) {
+			G2FDB::StartRcoveryByMetadata(task);
+		} else if (dvr_type == HIKVISION_ID_STRING) {
 			HIKV::StartRecovery(io_name.toStdString(), out_directory.toStdString());
 		} else if (dvr_type == WFS_04_ID_STRING) {
 			WFS::StartRecovery(io_name.toStdString(), out_directory.toStdString());
 		} else if (dvr_type == DCH264_ID_STRING) {
 			Orbita::Main(io_name.toStdString(), out_directory.toStdString());
-		}
+		} 
 
 		title = APP_NAME;
 		title += " -- Finished";
