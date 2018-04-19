@@ -4,31 +4,6 @@
 
 using namespace G2FDB;
 
-int G2FDB::StartRecovery(const std::string & dvr_volume, const std::string & out_directory, const dvr::Timestamp & start_time, const dvr::Timestamp & end_time)
-{
-	G2fdbVolume volume(dvr_volume); 
-	VideoStorage storage;
-	FrameSequence sequence;
-	size_t max_delta_time = 60; // seconds
-
-	if (volume.Open() && storage.Open(out_directory)) {
-
-		sequence.Clear();
-		sequence.data.reserve(MAX_FRAME_SEQUANCE_SIZE);
-
-		//volume.SetPointer(500449675890LL);
-
-		while (volume.ReadFrameSequence(sequence, max_delta_time)) {
-			storage.SaveFrameSequence(sequence);
-			sequence.Clear();
-		}
-
-		return 0;
-	}
-
-	return -1;
-}
-
 int G2FDB::StartRecovery(const dvr::RecoveryTask &task)
 {	
 	G2fdbVolume volume(task.io_name);

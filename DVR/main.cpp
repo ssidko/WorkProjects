@@ -114,10 +114,14 @@ void ToHexString(uint8_t *buff, size_t count, std::string &str)
 
 namespace fs = std::experimental::filesystem;
 
+#include <thread>
+
 int main(int argc, char *argv[])
 {
 	QApplication a(argc, argv);
 	MainWindow w;
+
+	int cnt = std::thread::hardware_concurrency();
 
 	//dcH264::main();
 	//zfs_test();

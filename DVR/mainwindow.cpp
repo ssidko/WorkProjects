@@ -221,73 +221,46 @@ bool MainWindow::InitRecoveryTask(dvr::RecoveryTask & task)
 
 void MainWindow::OnStart(void)
 {
-	QString dvr_type;
-	QString io_name;
-	QString out_directory;
-
-	QDateTime start_date = ui.start_dateTimeEdit->dateTime();
-	QDateTime end_date = ui.end_dateTimeEdit->dateTime();
-
-	dvr::Timestamp start_tstmp(start_date.date().year(), start_date.date().month(),
-		start_date.date().day(), start_date.time().hour(), start_date.time().second());
-	dvr::Timestamp end_tstmp(end_date.date().year(), end_date.date().month(),
-		end_date.date().day(), end_date.time().hour(), end_date.time().second());
-
-	dvr_type = ui.DvrType_comboBox->currentText();
-
-	uint64_t offset = static_cast<uint64_t>(ui.Offset_lineEdit->text().toULongLong());
-
-	if (ui.InputFile_lineEdit->isEnabled()) {
-		io_name = ui.InputFile_lineEdit->text();
-		if (io_name.isEmpty()) {
-			io_name = OnSelectInputFile();
-		}
-	} else if (ui.Drives_comboBox->isEnabled()) {
-		io_name = ui.Drives_comboBox->currentText().split(QChar(';')).at(0);
-	}
-
-	out_directory = ui.OutFolder_lineEdit->text();
-	if (out_directory.isEmpty()) {
-		out_directory = OnSelectOutDirectory();	
-	}
-
-
-	dvr::RecoveryTask task;
 	try {
+
+		dvr::RecoveryTask task;
 		InitRecoveryTask(task);
+
+		QString dvr_type;
+		dvr_type = ui.DvrType_comboBox->currentText();
+
+		if (!dvr_type.isEmpty()) {
+
+			QString title = APP_NAME;
+			title += " -- In progress";
+
+			this->setWindowTitle(title);
+
+			if (dvr_type == DHFS_ID_STRING) {
+				//DHFS::StartRecovering(io_name.toStdString(), out_directory.toStdString());
+				DHFS::StartRecovery(task.io_name, task.io_offset, task.output_dir);
+			} else if (dvr_type == G2FDB_ID_STRING) {
+				G2FDB::StartRecovery(task);
+			} else if (dvr_type == G2FDB_METADATA_ID_STRING) {
+				G2FDB::StartRcoveryByMetadata(task);
+			} else if (dvr_type == HIKVISION_ID_STRING) {
+				HIKV::StartRecovery(task.io_name, task.output_dir);
+			} else if (dvr_type == WFS_04_ID_STRING) {
+				WFS::StartRecovery(task.io_name, task.output_dir);
+			} else if (dvr_type == DCH264_ID_STRING) {
+				Orbita::Main(task.io_name, task.output_dir);
+			} 
+
+			title = APP_NAME;
+			title += " -- Finished";
+
+			this->setWindowTitle(title);
+		}
+
 	} catch (std::exception &exc) {
 		QMessageBox msg_box;
 		msg_box.setText(exc.what());
 		msg_box.exec();
-	}
-
-	if (!dvr_type.isEmpty() && !io_name.isEmpty() && !out_directory.isEmpty()) {
-
-		QString title = APP_NAME;
-		title +=" -- In progress";
-
-		this->setWindowTitle(title);
-
-		if (dvr_type == DHFS_ID_STRING) {
-			//DHFS::StartRecovering(io_name.toStdString(), out_directory.toStdString());
-			DHFS::StartRecovery(io_name.toStdString(), offset, out_directory.toStdString());
-		} else if (dvr_type == G2FDB_ID_STRING) {
-			//G2FDB::StartRecovery(io_name.toStdString(), out_directory.toStdString());
-			G2FDB::StartRecovery(task);
-		} else if (dvr_type == G2FDB_METADATA_ID_STRING) {
-			G2FDB::StartRcoveryByMetadata(task);
-		} else if (dvr_type == HIKVISION_ID_STRING) {
-			HIKV::StartRecovery(io_name.toStdString(), out_directory.toStdString());
-		} else if (dvr_type == WFS_04_ID_STRING) {
-			WFS::StartRecovery(io_name.toStdString(), out_directory.toStdString());
-		} else if (dvr_type == DCH264_ID_STRING) {
-			Orbita::Main(io_name.toStdString(), out_directory.toStdString());
-		} 
-
-		title = APP_NAME;
-		title += " -- Finished";
-
-		this->setWindowTitle(title);
 	}
 
 	return;
