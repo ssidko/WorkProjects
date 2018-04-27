@@ -110,38 +110,11 @@ void ToHexString(uint8_t *buff, size_t count, std::string &str)
 #include "MyPrintf.h"
 #include "zfs_test.h"
 
-#include <experimental\filesystem>
-
-namespace fs = std::experimental::filesystem;
-
-#include <thread>
-
-
-void test_func(int i, int y)
-{
-	int x = 9;
-	x += i;
-}
-
-template <typename Func, typename ... Args>
-struct Test
-{
-	Func func;
-	Test(Func && fn, Args && ... args)
-	{
-		fn(args ...);
-	}
-};
-
 
 int main(int argc, char *argv[])
 {
 	QApplication a(argc, argv);
 	MainWindow w;
-
-	int cnt = std::thread::hardware_concurrency();
-
-	Test<void(int,int), int, int> t(test_func, 1,2);
 
 	//dcH264::main();
 	//zfs_test();

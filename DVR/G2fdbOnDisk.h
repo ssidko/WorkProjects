@@ -55,7 +55,7 @@ namespace G2FDB
 #define FRAME_HEADER_SIGNATURE				((DWORD)0x03419F7D)
 
 	struct FRAME_HEADER {
-		DWORD flags;
+		DWORD flags;						// Есть подозрение что это тип сьемки: по событию, по расписанию, непрерывная сьёмка ...
 		TIMESTAMP time;						 
 		DWORD unk_1;
 		DWORD signature;					// FRAME_HEADER_SIGNATURE may be signature

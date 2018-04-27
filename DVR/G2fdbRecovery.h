@@ -8,26 +8,6 @@
 
 namespace G2FDB
 {
-	class VideFile
-	{
-	private:
-	public:
-		VideFile() {}
-		~VideFile() {}
-	};
-
-	class VideoStorage
-	{
-	private:
-		std::string base_directory;
-		bool CreateDirectory(const std::string &directory);
-	public:
-		VideoStorage() {}
-		~VideoStorage() {}
-		bool Open(const std::string &storage_directory);
-		bool SaveFrameSequence(FrameSequence &sequence);
-	};
-
 	int StartRecovery(const dvr::RecoveryTask &task);
 	void StartRcoveryByMetadata(const dvr::RecoveryTask &task);
 	void TestRecovery(void);
