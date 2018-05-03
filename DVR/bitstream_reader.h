@@ -25,14 +25,6 @@ public:
 	{
 	}
 
-	//bitstream_reader(const bitstream_reader& other, const uint8_t* data)
-	//	: data_(data)
-	//	, size_(other.size_)
-	//	, current_data_(data + (other.current_data_ - other.data_))
-	//	, current_bit_(other.current_bit_)
-	//{
-	//}
-
 	size_t bits_available()
 	{
 		return (size_ - (size_t)(current_data_ - data_)) * 8 - current_bit_;
