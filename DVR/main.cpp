@@ -110,11 +110,114 @@ void ToHexString(uint8_t *buff, size_t count, std::string &str)
 #include "MyPrintf.h"
 #include "zfs_test.h"
 
+const uint32_t block_size = 4096;
+
+struct ObjectHeader {
+	char signature[8]; // "1CDBOBV8"
+	uint32_t object_size;
+	uint32_t version1;
+	uint32_t version2;
+	uint32_t version;
+	uint32_t blocks[1];
+};
+
+struct AllocationTable {
+	uint32_t numblocks;
+	uint32_t blocks[1023];
+};
+
+bool IsValidDbObject(W32Lib::FileEx &io, ObjectHeader &obj_header, uint32_t max_block_num)
+{
+	size_t total_blocks = 0;
+	size_t blk_idx = 0;
+	uint32_t first_block = 0;
+	std::vector<uint8_t> buff(block_size);
+	if (obj_header.object_size && obj_header.blocks[0]) {
+		while (obj_header.blocks[blk_idx]) {
+
+
+			io.SetPointer(block_size * obj_header.blocks[blk_idx]);
+			if (io.Read(buff.data(), block_size) != block_size) {
+				return false;
+			}
+
+			AllocationTable *table = (AllocationTable *)buff.data();
+
+			if ((table->numblocks < 1) || (table->numblocks > sizeof(AllocationTable::blocks))) {
+				return false;
+			}
+
+			int curr_blocks = 0;
+			for (int i = 0; i < sizeof(AllocationTable::blocks); i++) {
+				if ((table->blocks[i] == 0) || (table->blocks[i] > max_block_num)) {
+					break;
+				}
+				if (blk_idx == 0 && i == 0) {
+					first_block = table->blocks[i];
+				}
+				curr_blocks++;
+				total_blocks++;
+			}
+
+			if (curr_blocks != table->numblocks) {
+				return false;
+			}
+
+			blk_idx++;
+		}
+
+		if (((obj_header.object_size + (block_size - 1)) / block_size) != total_blocks) {
+			return false;
+		}
+
+		io.SetPointer(first_block * block_size);
+		if (io.Read(buff.data(), block_size) != block_size) {
+			return false;
+		}
+
+		uint32_t *obj_sign = (uint32_t *)buff.data();
+		if (*obj_sign == 0x0022007B) {
+			return true;
+		}	
+	}
+	return false;
+}
+
+void Test1C8()
+{
+	W32Lib::FileEx db("F:\\44322\\1Cv8-1.1CD");
+	//W32Lib::FileEx db("F:\\44322\\12\\1Cv8.1CD");
+	W32Lib::FileEx pages("F:\\44322\\pages.bin");
+	if (db.Open() && pages.Create()) {
+
+		uint32_t block = 0;
+		size_t valid_objects = 0;
+		std::vector<uint8_t> buffer(4096, 0);
+
+		block = 3;
+		db.SetPointer(block_size * block);
+		while (db.Read(buffer.data(), buffer.size()) == buffer.size()) {
+			if (std::memcmp(buffer.data(), "1CDBOBV8", 8) == 0) {
+
+				ObjectHeader *obj_header = (ObjectHeader *)buffer.data();
+				if (IsValidDbObject(db, *obj_header, 285893)) {
+					pages.Write(&block, sizeof(block));
+					valid_objects++;
+				}
+			}
+			block++;
+			db.SetPointer(block_size * block);
+		}
+	}
+}
+
 
 int main(int argc, char *argv[])
 {
 	QApplication a(argc, argv);
 	MainWindow w;
+
+	Test1C8();
 
 	//dcH264::main();
 	//zfs_test();
