@@ -112,6 +112,8 @@ void ToHexString(uint8_t *buff, size_t count, std::string &str)
 
 const uint32_t block_size = 4096;
 
+#pragma pack(push,1)
+
 struct ObjectHeader {
 	char signature[8]; // "1CDBOBV8"
 	uint32_t object_size;
@@ -125,6 +127,14 @@ struct AllocationTable {
 	uint32_t numblocks;
 	uint32_t blocks[1023];
 };
+
+struct BlobBlockHeader {
+	uint32_t next_block;
+	uint16_t data_size;
+	uint8_t data[250];
+};
+
+#pragma pack(pop)
 
 bool IsValidDbObject(W32Lib::FileEx &io, ObjectHeader &obj_header, uint32_t max_block_num)
 {
@@ -183,11 +193,48 @@ bool IsValidDbObject(W32Lib::FileEx &io, ObjectHeader &obj_header, uint32_t max_
 	return false;
 }
 
+void MakeBlob(void)
+{
+	W32Lib::FileEx in("F:\\44322\\12\\noname");
+	W32Lib::FileEx out("F:\\44322\\pages-2.bin");
+	if (in.Open() && out.Create()) {
+
+		uint32_t next_block = 2;
+		uint32_t remained = (uint32_t) in.GetSize();
+		uint32_t writen = 0;
+		std::vector<uint8_t> block(256);
+
+		while(remained) {
+		
+			std::memset(&block[0], 0x00, block.size());
+
+			BlobBlockHeader *hdr = (BlobBlockHeader *)block.data();
+			hdr->next_block = next_block;
+			hdr->data_size = (remained >= sizeof(BlobBlockHeader::data)) ? sizeof(BlobBlockHeader::data) : remained;
+
+			in.Read(&hdr->data[0], hdr->data_size);
+			out.Write(block.data(), block.size());
+
+			next_block++;
+			remained -= hdr->data_size;		
+		
+		}
+
+
+
+		uint32_t tst = 0;
+
+
+
+	}
+
+}
+
 void Test1C8()
 {
-	W32Lib::FileEx db("F:\\44322\\1Cv8-1.1CD");
+	W32Lib::FileEx db("F:\\44322\\1Cv8-2.1CD");
 	//W32Lib::FileEx db("F:\\44322\\12\\1Cv8.1CD");
-	W32Lib::FileEx pages("F:\\44322\\pages.bin");
+	W32Lib::FileEx pages("F:\\44322\\pages-2.bin");
 	if (db.Open() && pages.Create()) {
 
 		uint32_t block = 0;
@@ -217,7 +264,8 @@ int main(int argc, char *argv[])
 	QApplication a(argc, argv);
 	MainWindow w;
 
-	Test1C8();
+	//Test1C8();
+	MakeBlob();
 
 	//dcH264::main();
 	//zfs_test();
