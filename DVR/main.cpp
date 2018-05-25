@@ -144,8 +144,7 @@ bool IsValidDbObject(W32Lib::FileEx &io, ObjectHeader &obj_header, uint32_t max_
 	std::vector<uint8_t> buff(block_size);
 	if (obj_header.object_size && obj_header.blocks[0]) {
 		while (obj_header.blocks[blk_idx]) {
-
-
+			
 			io.SetPointer(block_size * obj_header.blocks[blk_idx]);
 			if (io.Read(buff.data(), block_size) != block_size) {
 				return false;
@@ -200,8 +199,7 @@ void MakeBlob(void)
 	if (in.Open() && out.Create()) {
 
 		uint32_t next_block = 2;
-		uint32_t remained = (uint32_t) in.GetSize();
-		uint32_t writen = 0;
+		uint32_t remained = (uint32_t)in.GetSize();
 		std::vector<uint8_t> block(256);
 
 		while(remained) {
@@ -209,8 +207,14 @@ void MakeBlob(void)
 			std::memset(&block[0], 0x00, block.size());
 
 			BlobBlockHeader *hdr = (BlobBlockHeader *)block.data();
-			hdr->next_block = next_block;
-			hdr->data_size = (remained >= sizeof(BlobBlockHeader::data)) ? sizeof(BlobBlockHeader::data) : remained;
+
+			if (remained >= sizeof(BlobBlockHeader::data)) {
+				hdr->next_block = next_block;
+				hdr->data_size = sizeof(BlobBlockHeader::data);
+			} else {
+				hdr->next_block = 0x00;
+				hdr->data_size = remained;
+			}
 
 			in.Read(&hdr->data[0], hdr->data_size);
 			out.Write(block.data(), block.size());
@@ -219,15 +223,7 @@ void MakeBlob(void)
 			remained -= hdr->data_size;		
 		
 		}
-
-
-
-		uint32_t tst = 0;
-
-
-
 	}
-
 }
 
 void Test1C8()
