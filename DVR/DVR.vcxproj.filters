@@ -84,6 +84,9 @@
       <Extensions>h</Extensions>
       <ParseFiles>true</ParseFiles>
     </Filter>
+    <Filter Include="1CV8">
+      <UniqueIdentifier>{0efd757f-6b47-4feb-b2d2-ae3b8c31f8d0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GeneratedFiles\qrc_mainwindow.cpp">
@@ -216,6 +219,9 @@
     </ClCompile>
     <ClCompile Include="GeneratedFiles\Release\moc_G2FDbPropertyForm.cpp">
       <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="1CDfile.cpp">
+      <Filter>1CV8</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -381,6 +387,9 @@
     </ClInclude>
     <ClInclude Include="Validators.h">
       <Filter>GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="1CDfile.h">
+      <Filter>1CV8</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
