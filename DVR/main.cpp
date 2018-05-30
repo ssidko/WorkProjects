@@ -117,12 +117,21 @@ int main(int argc, char *argv[])
 	QApplication a(argc, argv);
 	MainWindow w;
 
-	File1CD db("F:\\44322\\examples\\1Cv8.1CD", DbPageSize::size_4kb);
+	using namespace db1cd;
+
+	DbFile db("F:\\44322\\examples\\1Cv8.1CD", PageSize::size_4kb);
 	if (db.Open()) {
 	
-		DbObject obj = {0};
+		std::vector<uint8_t> buff;
 
-		db.GetObject(16, obj);
+		std::shared_ptr<Object> obj = db.GetObject(16);
+		if (obj) {		
+			auto obj_size = obj->Size();
+			obj->Read(buff);
+
+		}
+
+		std::shared_ptr<Object> obj2 = db.GetObject(17736);
 	
 	}
 
