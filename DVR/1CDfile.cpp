@@ -71,8 +71,7 @@ void db1cd::Object::ReadAllocationTable(void)
 	if (!allocation_table) {
 		uint32_t total_pages = (header.object_size + (db.PageSize() - 1)) / db.PageSize();
 		std::vector<uint32_t> table(total_pages);
-
-
+		
 		size_t pos = 0;
 		std::vector<uint8_t> alloc_page_buff(db.PageSize());
 		AllocationPage *alloc_page = (AllocationPage *)&alloc_page_buff[0];
