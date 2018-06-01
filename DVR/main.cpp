@@ -120,7 +120,7 @@ bool SaveAllBlocksWithExtents(const std::string &io_file_name, const std::string
 
 	const size_t block_size = 4096;
 	const size_t blocks_count = 2196904704;
-	const size_t extents_per_block = block_size/sizeof(EXTENT);
+	const size_t extents_per_block = (block_size - sizeof(EXTENT))/sizeof(EXTENT);
 
 	W32Lib::FileEx io(io_file_name.c_str());
 	if(!io.Open()) {
