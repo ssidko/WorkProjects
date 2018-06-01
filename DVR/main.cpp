@@ -112,10 +112,59 @@ void ToHexString(uint8_t *buff, size_t count, std::string &str)
 
 #include "1CDfile.h"
 
+#include "ExtentRecovery.h"
+
+bool SaveAllBlocksWithExtents(const std::string &io_file_name, const std::string &out_dir_path)
+{
+	using namespace ext4;
+
+	const size_t block_size = 4096;
+	const size_t blocks_count = 2196904704;
+	const size_t extents_per_block = block_size/sizeof(EXTENT);
+
+	W32Lib::FileEx io(io_file_name.c_str());
+	if(!io.Open()) {
+		return false;
+	}
+
+	size_t block = 0;
+	std::vector<uint8_t> buff(block_size);
+	char str_buff[255] = { 0 };
+
+	for (size_t block = 0; block < blocks_count; block++) {
+			
+		io.SetPointer(block * block_size);
+		io.Read(&buff[0], block_size);
+
+		EXTENT_BLOCK *extent_block = (EXTENT_BLOCK *)&buff[0];
+
+		if (extent_block->header.magic == EXTENT_HEADER_MAGIC) {
+			if (extent_block->header.max == extents_per_block) {
+				if (extent_block->header.entries) {
+				
+					std::sprintf(str_buff, "%010ll level=%d", block, extent_block->header.depth);
+					std::string file_name(str_buff);
+					std::string out_file_path = out_dir_path + file_name;
+
+					W32Lib::FileEx out_file(out_file_path.c_str());
+					if (!out_file.Create()) {
+						throw std::exception();
+					}
+
+					out_file.Write(buff.data(), (extent_block->header.entries + 1) * sizeof(EXTENT));
+				
+				}
+			}
+		}	
+	}
+}
+
 int main(int argc, char *argv[])
 {
 	QApplication a(argc, argv);
 	MainWindow w;
+
+	SaveAllBlocksWithExtents("F:\\44326\\raid5.img", "F:\\44326\\extents\\");
 
 	using namespace db1cd;
 
