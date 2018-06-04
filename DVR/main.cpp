@@ -142,7 +142,7 @@ bool SaveAllBlocksWithExtents(const std::string &io_file_name, const std::string
 			if (extent_block->header.max == extents_per_block) {
 				if (extent_block->header.entries) {
 				
-					std::sprintf(str_buff, "%010ll level=%d", block, extent_block->header.depth);
+					std::sprintf(str_buff, "%010lld level=%d", block, extent_block->header.depth);
 					std::string file_name(str_buff);
 					std::string out_file_path = out_dir_path + file_name;
 
