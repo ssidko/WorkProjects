@@ -109,10 +109,57 @@ void ToHexString(uint8_t *buff, size_t count, std::string &str)
 
 #include "MyPrintf.h"
 #include "zfs_test.h"
-
 #include "1CDfile.h"
-
 #include "ExtentRecovery.h"
+
+#include <filesystem>
+
+
+namespace fs = std::experimental::filesystem;
+
+void ttt()
+{
+	using namespace ext4;
+
+	std::map<uint32_t, std::string> files;
+	fs::path extent_dir("F:\\44326\\extents");
+	for (auto &it : fs::directory_iterator(extent_dir)) {
+		std::string file_name = it.path().filename().string();
+		uint32_t block = std::stoi(file_name);
+		files[block] = it.path().string();
+	}
+
+	uint32_t block = 1861255175;
+	fs::path out_dir("F:\\44326\\file");
+	fs::create_directories(out_dir);
+
+	auto it = files.find(block);
+	if (it != files.end()) {
+
+		W32Lib::FileEx io(it->second.c_str());
+		if (io.Open()) {
+			
+			std::vector<uint8_t> buff(io.GetSize());
+			EXTENT_BLOCK *extent_block = (EXTENT_BLOCK *)&buff[0];
+
+			io.Read(&buff[0], buff.size());
+			io.Close();
+
+			assert(extent_block->header.depth);
+
+			fs::rename(it->second, out_dir/fs::path(it->second).filename());
+
+			for (int i = 0; i < extent_block->header.entries; i++) {
+				auto itt = files.find((uint32_t)extent_block->extent_index[i].PysicalBlock());
+				if (itt != files.end()) {
+					fs::rename(itt->second, out_dir / fs::path(itt->second).filename());
+				}
+			}
+		
+		}	
+	}
+
+}
 
 bool SaveAllBlocksWithExtents(const std::string &io_file_name, const std::string &out_dir_path)
 {
@@ -157,6 +204,7 @@ bool SaveAllBlocksWithExtents(const std::string &io_file_name, const std::string
 			}
 		}	
 	}
+	return true;
 }
 
 int main(int argc, char *argv[])
@@ -164,7 +212,9 @@ int main(int argc, char *argv[])
 	QApplication a(argc, argv);
 	MainWindow w;
 
-	SaveAllBlocksWithExtents("F:\\44326\\raid5.img", "F:\\44326\\extents\\");
+	//SaveAllBlocksWithExtents("F:\\44326\\raid5.img", "F:\\44326\\extents\\");
+
+	ttt();
 
 	using namespace db1cd;
 
