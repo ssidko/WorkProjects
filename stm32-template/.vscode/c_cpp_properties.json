@@ -1,0 +1,32 @@
+{
+    "configurations": [
+        {
+            "name": "Win32",
+            "browse": {
+                "path": [
+                    "${workspaceFolder}",
+                    "C:\\vcpkg\\vcpkg\\installed\\x64-windows\\include",
+                    "C:\\vcpkg\\vcpkg\\installed\\x86-windows\\include"
+                ],
+                "limitSymbolsToIncludedHeaders": true
+            },
+            "includePath": [
+                "${workspaceFolder}",
+                "C:\\vcpkg\\vcpkg\\installed\\x64-windows\\include",
+                "C:\\vcpkg\\vcpkg\\installed\\x86-windows\\include",
+                "${workspaceFolder}/CMSIS/Include",
+                "${workspaceFolder}/CMSIS/core"
+            ],
+            "defines": [
+                "_DEBUG",
+                "UNICODE",
+                "_UNICODE",
+                "STM32F103xB"
+            ],
+            "cStandard": "c11",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "msvc-x64"
+        }
+    ],
+    "version": 4
+}

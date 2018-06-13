@@ -1,0 +1,50 @@
+{
+    // Используйте IntelliSense, чтобы узнать о возможных атрибутах.
+    // Наведите указатель мыши, чтобы просмотреть описания существующих атрибутов.
+    // Для получения дополнительной информации посетите: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "STM32 gdb Launch",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/main.elf",
+            "preLaunchTask": "make all",
+            "args": [],
+            "stopAtEntry": true,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": true,
+            "MIMode": "gdb",
+            "miDebuggerPath": "arm-none-eabi-gdb.exe",
+
+            "targetArchitecture": "arm",
+            "customLaunchSetupCommands": [
+                {
+                    "description": "Set remote target",
+                    "text": "file  C:/Users/ssidko.EPOS_MAIN/Documents/PlatformIO/Projects/test/main.elf"
+                },
+                {
+                    "description": "Connect ot BMP",
+                    "text": "target extended-remote COM8"
+                },
+                {
+                    "description": "Scan swd",
+                    "text": "monitor swdp_scan"
+                },                
+                { 
+                    "description": "Attach to target",
+                    "text": "attach 1",
+                    "ignoreFailures": false
+                },
+                {
+                    "description": "Load code",
+                    "text": "load"
+                },
+            ],
+
+            "launchCompleteCommand": "None",
+        },
+
+    ]
+}
