@@ -1,6 +1,12 @@
 {
     "files.associations": {
-        "stm32f1xx.h": "c"
+        "stm32f1xx.h": "c",
+        "stm32f103xb.h": "c",
+        "iosfwd": "c",
+        "xstring": "c",
+        "xutility": "c",
+        "core_cm3.h": "c"
     },
-    "C_Cpp.errorSquiggles": "Disabled"
+    "C_Cpp.errorSquiggles": "Disabled",
+    "C_Cpp.dimInactiveRegions": false
 }

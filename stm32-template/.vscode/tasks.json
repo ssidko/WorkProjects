@@ -4,20 +4,14 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "compile",
+            "label": "make all",
             "type": "shell",
-            "command": "arm-none-eabi-g++.exe -g -std=c++14 -O0 -mfloat-abi=soft -mcpu=cortex-m3 -mthumb main.cpp startup_stm32f103xb.s -o main.elf -TSTM32F103XB_FLASH.ld --specs=nosys.specs",
+            "command": "make",
+            "problemMatcher": ["$gcc"],
             "group": {
                 "kind": "build",
                 "isDefault": true
             },
-            "problemMatcher": ["$gcc"]
-        },
-        {
-            "label": "make all",
-            "type": "shell",
-            "command": "make",
-            "problemMatcher": ["$gcc"]
         },
         {
             "label": "clean",

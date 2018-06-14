@@ -19,7 +19,7 @@ DEFINES      = -DSTM32F103xB
 #  -Wall...:     warning level
 #  -Wa,...:      tell GCC to pass this to the assembler.
 #  -adhlns...:   create assembler listing
-CXXFLAGS = -g -std=c++14 -marm -mlittle-endian -mthumb -mcpu=cortex-m3 -msoft-float -O0 -fno-rtti -fno-exceptions -fdata-sections -ffunction-sections -mno-thumb-interwork
+CXXFLAGS = -ggdb -std=c++14 -marm -mlittle-endian -mthumb -mcpu=cortex-m3 -msoft-float -O0 -fno-rtti -fno-exceptions -fdata-sections -ffunction-sections -mno-thumb-interwork
 CXXFLAGS += $(INCLUDEDIR) $(DEFINES)
 
 # Linker flags.
@@ -35,7 +35,7 @@ CXX_SRC = $(wildcard *.cpp)
 SRCS = $(C_SRC) $(CXX_SRC)
 OBJS = $(C_SRC:.c=.o) $(CXX_SRC:.cpp=.o) startup.o
 
-all: elf
+all: elf bin
 
 elf: $(OBJS)
 	@echo ---------------------------------
@@ -64,7 +64,7 @@ $(OBJS): $(SRCS) .\CMSIS\startup_stm32f103xb.s
 
 clean:
 	rm -f *.o
-	rm -f $(TARGET).elf
-	rm -f $(TARGET).bin
-	rm -f $(TARGET).hex
+	rm -f *.elf
+	rm -f *.bin
+	rm -f *.hex
 

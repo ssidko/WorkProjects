@@ -264,7 +264,9 @@ void SystemInit (void)
   */
 void SystemCoreClockUpdate (void)
 {
-  uint32_t tmp = 0U, pllmull = 0U, pllsource = 0U;
+  uint32_t tmp = 0U;
+  uint32_t pllmull = 0U;
+  uint32_t pllsource = 0U;
 
 #if defined(STM32F105xC) || defined(STM32F107xC)
   uint32_t prediv1source = 0U, prediv1factor = 0U, prediv2factor = 0U, pll2mull = 0U;

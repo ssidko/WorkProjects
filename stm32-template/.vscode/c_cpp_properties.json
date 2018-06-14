@@ -6,7 +6,9 @@
                 "path": [
                     "${workspaceFolder}",
                     "C:\\vcpkg\\vcpkg\\installed\\x64-windows\\include",
-                    "C:\\vcpkg\\vcpkg\\installed\\x86-windows\\include"
+                    "C:\\vcpkg\\vcpkg\\installed\\x86-windows\\include",
+                    "${workspaceFolder}/CMSIS/Include",
+                    "${workspaceFolder}/CMSIS/core"
                 ],
                 "limitSymbolsToIncludedHeaders": true
             },
@@ -14,8 +16,8 @@
                 "${workspaceFolder}",
                 "C:\\vcpkg\\vcpkg\\installed\\x64-windows\\include",
                 "C:\\vcpkg\\vcpkg\\installed\\x86-windows\\include",
-                "${workspaceFolder}/CMSIS/Include",
-                "${workspaceFolder}/CMSIS/core"
+                "${workspaceFolder}\\CMSIS\\Include",
+                "${workspaceFolder}\\CMSIS\\core"
             ],
             "defines": [
                 "_DEBUG",

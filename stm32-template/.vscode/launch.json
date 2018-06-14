@@ -45,6 +45,17 @@
 
             "launchCompleteCommand": "None",
         },
+        {
+            "type": "cortex-debug",
+            "request": "launch",
+            "servertype": "bmp",
+            "cwd": "${workspaceRoot}",
+            "executable": "./main.elf",
+            "name": "Debug (Black Magic Probe)",
+            "device": "STM32F103C8",
+            "BMPGDBSerialPort": "COM8",
+            "targetId": 1
+        }
 
     ]
 }
