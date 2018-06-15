@@ -100,19 +100,24 @@ enum Pin {
     Pin9, Pin10, Pin11, Pin12, Pin13, Pin14, Pin15
 };
 
-inline void rcc_gpioa_enable()
+void rcc_gpioa_enable()
 {
     RCC->APB2ENR |= RCC_APB2ENR_IOPAEN; 
 }
 
-inline void rcc_gpioc_enable()
+void rcc_gpioc_enable()
 {
     RCC->APB2ENR |= RCC_APB2ENR_IOPCEN; 
 }
 
-inline void rcc_usart1_enable()
+void rcc_usart1_enable()
 {
     RCC->APB2ENR |= RCC_APB2ENR_USART1EN;   
+}
+
+void rcc_spi1_enable()
+{
+       RCC->APB2ENR |= RCC_APB2ENR_SPI1EN;  
 }
 
 void gpio_pin_configure(GPIO_TypeDef *port, Pin pin, PinConfig conf)
@@ -184,11 +189,75 @@ void usart_sent(USART_TypeDef *usart, const char *str)
     while ((usart->SR & USART_SR_TC) == 0);
 }
 
+void spi_enable(SPI_TypeDef *spi)
+{
+   SPI1->CR1 |= SPI_CR1_SPE; 
+}
+
+void spi_disable(SPI_TypeDef *spi)
+{
+   SPI1->CR1 &= ~SPI_CR1_SPE; 
+}
+
+void spi1_setup()
+{
+    rcc_gpioa_enable();
+    rcc_spi1_enable();
+
+    // PA7 - SPI1_MOSI
+    gpio_pin_configure(GPIOA, Pin::Pin7, PinConfig::Output_50MHz_PushPull);
+    // PA6 - SPI1_MISO
+    gpio_pin_configure(GPIOA, Pin::Pin6, PinConfig::Input_Floating);
+    // PA5 - SPI1_CLK
+    gpio_pin_configure(GPIOA, Pin::Pin5, PinConfig::OutputAF_50MHz_PushPull);
+    // PA4 - SPI1_NSS
+    gpio_pin_configure(GPIOA, Pin::Pin4, PinConfig::OutputAF_50MHz_PushPull);
+    // Configure for SDC
+    // CPOL = 0, CPHA = 0
+
+    SPI1->CR1 = 0;
+    SPI1->CR2 = 0;
+    // Master mode select;
+    SPI1->CR1 = SPI_CR1_MSTR | SPI_CR1_CRCEN;
+    SPI1->CR2 |= SPI_CR2_SSOE;
+
+    spi_enable(SPI1);
+    spi_disable(SPI1);
+
+
+}
+
+void spi_send(SPI_TypeDef *spi, uint8_t b)
+{
+    while ((spi->SR & SPI_SR_TXE) == 0);
+}
+
+uint8_t spi_receive(SPI_TypeDef *spi)
+{
+    return 0;
+}
+
+
+enum PinFlag {
+    PinF0 = 1 << 0,
+    PinF1 = 1 << 1,
+    PinF2 = 1 << 2,
+    PinF3 = 1 << 3,
+};
+
+void test_pins_config(uint16_t pin_mask)
+{
+    auto val = pin_mask;
+}
+
 extern "C" int main()
 {
     system_clock_setup();
     led_setup();
     usart1_setup();
+    spi1_setup();
+
+    test_pins_config(PinFlag::PinF0|PinFlag::PinF1|PinFlag::PinF2);
 
     SysTick_Config(SystemCoreClock/1000);
 
