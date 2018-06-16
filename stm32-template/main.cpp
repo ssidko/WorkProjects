@@ -180,7 +180,7 @@ void usart1_setup()
     USART1->CR2 |=  0b00 << USART_CR2_STOP_Pos;
 }
 
-void usart_sent(USART_TypeDef *usart, const char *str)
+void usart_send(USART_TypeDef *usart, const char *str)
 {
     while (*str) {
         while((usart->SR & USART_SR_TXE) == 0);
@@ -191,12 +191,13 @@ void usart_sent(USART_TypeDef *usart, const char *str)
 
 void spi_enable(SPI_TypeDef *spi)
 {
-   SPI1->CR1 |= SPI_CR1_SPE; 
+    SPI1->CR1 |= SPI_CR1_SPE; 
 }
 
 void spi_disable(SPI_TypeDef *spi)
 {
-   SPI1->CR1 &= ~SPI_CR1_SPE; 
+    while((spi->SR & SPI_SR_BSY) == 0);
+    SPI1->CR1 &= ~SPI_CR1_SPE; 
 }
 
 void spi1_setup()
@@ -205,7 +206,7 @@ void spi1_setup()
     rcc_spi1_enable();
 
     // PA7 - SPI1_MOSI
-    gpio_pin_configure(GPIOA, Pin::Pin7, PinConfig::Output_50MHz_PushPull);
+    gpio_pin_configure(GPIOA, Pin::Pin7, PinConfig::OutputAF_50MHz_PushPull);
     // PA6 - SPI1_MISO
     gpio_pin_configure(GPIOA, Pin::Pin6, PinConfig::Input_Floating);
     // PA5 - SPI1_CLK
@@ -222,52 +223,76 @@ void spi1_setup()
     SPI1->CR2 |= SPI_CR2_SSOE;
 
     spi_enable(SPI1);
-    spi_disable(SPI1);
-
-
 }
 
 void spi_send(SPI_TypeDef *spi, uint8_t b)
 {
     while ((spi->SR & SPI_SR_TXE) == 0);
+    spi->DR = b;
 }
 
 uint8_t spi_receive(SPI_TypeDef *spi)
 {
-    return 0;
+    while ((spi->SR & SPI_SR_RXNE) == 0);
+    return (uint8_t)spi->DR;
 }
 
-
-enum PinFlag {
-    PinF0 = 1 << 0,
-    PinF1 = 1 << 1,
-    PinF2 = 1 << 2,
-    PinF3 = 1 << 3,
-};
-
-void test_pins_config(uint16_t pin_mask)
+void spi_wait_for_transfer_complete(SPI_TypeDef *spi)
 {
-    auto val = pin_mask;
+    while((spi->SR & SPI_SR_BSY) == 0);
+}
+
+void sdc_init()
+{
+    rcc_gpioa_enable();
+    // PA7 - SPI1_MOSI
+    gpio_pin_configure(GPIOA, Pin::Pin7, PinConfig::Output_50MHz_PushPull);
+    // PA4 - SPI1_NSS
+    gpio_pin_configure(GPIOA, Pin::Pin4, PinConfig::Output_50MHz_PushPull);
+
+
+    GPIOA->BSRR = GPIO_BSRR_BS4;
+
+    for (int i = 0; i < 80; i++) {
+        GPIOA->BSRR = GPIO_BSRR_BS7;
+        delay(5);
+        GPIOA->BSRR = GPIO_BSRR_BR7;
+        delay(5);
+    }
+
 }
 
 extern "C" int main()
 {
     system_clock_setup();
+    SysTick_Config(SystemCoreClock/1000);
     led_setup();
     usart1_setup();
+
+    sdc_init();
     spi1_setup();
 
-    test_pins_config(PinFlag::PinF0|PinFlag::PinF1|PinFlag::PinF2);
+    uint8_t data = 0;
 
-    SysTick_Config(SystemCoreClock/1000);
+    spi_send(SPI1, 0xFF);
+    data = spi_receive(SPI1);
+    spi_send(SPI1, 0xFF);
+    data = spi_receive(SPI1);
+    spi_send(SPI1, 0x83);
+    data = spi_receive(SPI1);
+    spi_send(SPI1, 0x00);
+    data = spi_receive(SPI1);
+    spi_send(SPI1, 0x00);
+    data = spi_receive(SPI1);
+
 
     int x = 0;
     while (true) {
         led_on();
-        usart_sent(USART1, "Len on\n");
+        usart_send(USART1, "Len on\n");
         delay(1000);
         led_off();
-        usart_sent(USART1, "Len off\n");
+        usart_send(USART1, "Len off\n");
         delay(1000);
         x++;
     }
