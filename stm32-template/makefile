@@ -47,14 +47,13 @@ all_sources = $(cpp_files) $(c_files) $(asm_files)
 all_objects = $(foreach file, $(all_sources), $(OBJ_DIR)/$(basename $(file)).o)
 
 
-all: info elf hex bin
+all: info elf
 
 
 elf: $(all_objects)
 	@echo ---------------------------------
 	@echo "*** Linking ***"
 	@echo ---------------------------------
-	$(foreach src, $(all_sources), $(shell mkdir -p $(OBJ_DIR)/$(dir $(src))))
 	@$(CXX) $(LDFLAGS) $(all_objects) -o $(TARGET).elf
 	@$(SIZE) $(TARGET).elf
 
