@@ -1,10 +1,8 @@
 
-#TOOLCHAIN = C:\GNU_Tools_ARM_Embedded\7_2017-q4-major\bin
-
 TARGET = main
 
 CC	 = arm-none-eabi-gcc.exe
-CPP	 = arm-none-eabi-g++.exe
+CXX	 = arm-none-eabi-g++.exe
 SIZE = arm-none-eabi-size.exe
 OBJCOPY = arm-none-eabi-objcopy.exe
 
@@ -19,7 +17,7 @@ DEFINES      = -DSTM32F103xB
 #  -Wall...:     warning level
 #  -Wa,...:      tell GCC to pass this to the assembler.
 #  -adhlns...:   create assembler listing
-CXXFLAGS = -ggdb -std=c++14 -marm -mlittle-endian -mthumb -mcpu=cortex-m3 -msoft-float -O0 -fno-rtti -fno-exceptions -fdata-sections -ffunction-sections -mno-thumb-interwork
+CXXFLAGS = -ggdb -O0 -std=c++14 -marm -mlittle-endian -mthumb -mcpu=cortex-m3 -msoft-float -fno-rtti -fno-exceptions -fdata-sections -ffunction-sections -mno-thumb-interwork
 CXXFLAGS += $(INCLUDEDIR) $(DEFINES)
 
 # Linker flags.
@@ -30,41 +28,76 @@ CXXFLAGS += $(INCLUDEDIR) $(DEFINES)
 # -nostartfiles
 LDFLAGS = $(CXXFLAGS) -T$(LINKERSCRIPT) --specs=nosys.specs -Wl,--gc-sections
 
-C_SRC = $(wildcard *.c)
-CXX_SRC = $(wildcard *.cpp)
-SRCS = $(C_SRC) $(CXX_SRC)
-OBJS = $(C_SRC:.c=.o) $(CXX_SRC:.cpp=.o) startup.o
+#VPATH = ./CMSIS ./app
+#C_SRC = $(wildcard *.c)
+#CXX_SRC = $(wildcard *.cpp)
+#ASM_SRC = $(wildcard ./*.s) $(wildcard ./CMSIS/*.s)
+#SRCS = $(C_SRC) $(CXX_SRC) $(ASM_SRC)
+#OBJS = $(C_SRC:.c=.o) $(CXX_SRC:.cpp=.o) $(ASM_SRC:.s=.o)
 
-all: elf bin
+OBJ_DIR     = ./.obj
+src_dirs    = . ./CMSIS ./app ./drivers
+INCLUDEDIR  += $(patsubst %,-I%, $(src_dirs))
 
-elf: $(OBJS)
+cpp_files   = $(foreach dir, $(src_dirs), $(wildcard $(dir)/*.cpp))
+c_files     = $(foreach dir, $(src_dirs), $(wildcard $(dir)/*.c))
+asm_files   = $(foreach dir, $(src_dirs), $(wildcard $(dir)/*.s))
+
+all_sources = $(cpp_files) $(c_files) $(asm_files)
+all_objects = $(foreach file, $(all_sources), $(OBJ_DIR)/$(basename $(file)).o)
+
+
+all: info elf hex bin
+
+
+elf: $(all_objects)
 	@echo ---------------------------------
-	@echo Linking
+	@echo "*** Linking ***"
 	@echo ---------------------------------
-	@echo Objects: $(OBJS)
-	@$(CPP) $(LDFLAGS) $(OBJS) -o $(TARGET).elf
+	$(foreach src, $(all_sources), $(shell mkdir -p $(OBJ_DIR)/$(dir $(src))))
+	@$(CXX) $(LDFLAGS) $(all_objects) -o $(TARGET).elf
 	@$(SIZE) $(TARGET).elf
 
+info:
+	@echo
+	@echo include: $(INCLUDEDIR)
+	@echo
+	@echo cpp_files: $(cpp_files)
+	@echo c_files: $(c_files)
+	@echo asm_files: $(asm_files)
+	@echo
+	@echo all_sources: $(all_sources)
+	@echo all_objects: $(all_objects)
+	@echo
+
 bin: elf
-	@echo Generate bin file	$(TARGET).bin
+	@echo Generate binary file:	$(TARGET).bin
 	@$(OBJCOPY) -O binary $(TARGET).elf $(TARGET).bin
 
 hex: elf
-	@echo Generate hex file	$(TARGET).hex
+	@echo Generate hex file: $(TARGET).hex
 	@$(OBJCOPY) -O ihex $(TARGET).elf $(TARGET).hex
 
-$(OBJS): $(SRCS) .\CMSIS\startup_stm32f103xb.s
-	@echo ---------------------------------
-	@echo Compiling
-	@echo ---------------------------------
-	@echo Compile startup
-	@$(CPP) -c $(CXXFLAGS) .\CMSIS\startup_stm32f103xb.s -o startup.o
-	@echo Compile sources: $(SRCS) 
-	@$(CPP) -c $(CXXFLAGS) $(INCLUDEDIR) $(SRCS)
+$(OBJ_DIR)/%.o: %.cpp
+	@mkdir -p $(@D)
+	@echo Compile: $< 
+	@$(CXX) -c $(CXXFLAGS) $< -o $@
+
+$(OBJ_DIR)/%.o: %.c
+	@mkdir -p $(@D)
+	@echo Compile: $<
+	@$(CXX) -c $(CXXFLAGS) $< -o $@
+
+$(OBJ_DIR)/%.o: %.s
+	@mkdir -p $(@D)
+	@echo Compile: $<
+	@$(CXX) -c $(CXXFLAGS) $< -o $@
 
 clean:
-	rm -f *.o
-	rm -f *.elf
-	rm -f *.bin
-	rm -f *.hex
-
+	@echo 
+	@echo Cleaninig 
+	@rm -fr $(OBJ_DIR)
+	@rm -f *.o
+	@rm -f *.elf
+	@rm -f *.bin
+	@rm -f *.hex

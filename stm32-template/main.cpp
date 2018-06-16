@@ -196,7 +196,7 @@ void spi_enable(SPI_TypeDef *spi)
 
 void spi_disable(SPI_TypeDef *spi)
 {
-    while((spi->SR & SPI_SR_BSY) == 0);
+    while((spi->SR & SPI_SR_BSY) != 0);
     SPI1->CR1 &= ~SPI_CR1_SPE; 
 }
 
@@ -208,7 +208,8 @@ void spi1_setup()
     // PA7 - SPI1_MOSI
     gpio_pin_configure(GPIOA, Pin::Pin7, PinConfig::OutputAF_50MHz_PushPull);
     // PA6 - SPI1_MISO
-    gpio_pin_configure(GPIOA, Pin::Pin6, PinConfig::Input_Floating);
+    gpio_pin_configure(GPIOA, Pin::Pin6, PinConfig::Input_PuPd);
+    GPIOA->BSRR = GPIO_BSRR_BS6; // pull-up
     // PA5 - SPI1_CLK
     gpio_pin_configure(GPIOA, Pin::Pin5, PinConfig::OutputAF_50MHz_PushPull);
     // PA4 - SPI1_NSS
@@ -219,7 +220,7 @@ void spi1_setup()
     SPI1->CR1 = 0;
     SPI1->CR2 = 0;
     // Master mode select;
-    SPI1->CR1 = SPI_CR1_MSTR | SPI_CR1_CRCEN;
+    SPI1->CR1 = SPI_CR1_MSTR | SPI_CR1_CRCEN | (0b001 << SPI_CR1_BR_Pos);
     SPI1->CR2 |= SPI_CR2_SSOE;
 
     spi_enable(SPI1);
@@ -239,7 +240,7 @@ uint8_t spi_receive(SPI_TypeDef *spi)
 
 void spi_wait_for_transfer_complete(SPI_TypeDef *spi)
 {
-    while((spi->SR & SPI_SR_BSY) == 0);
+    while((spi->SR & SPI_SR_BSY) != 0);
 }
 
 void sdc_init()
@@ -250,14 +251,13 @@ void sdc_init()
     // PA4 - SPI1_NSS
     gpio_pin_configure(GPIOA, Pin::Pin4, PinConfig::Output_50MHz_PushPull);
 
-
-    GPIOA->BSRR = GPIO_BSRR_BS4;
+    GPIOA->BSRR |= GPIO_BSRR_BS4;
 
     for (int i = 0; i < 80; i++) {
         GPIOA->BSRR = GPIO_BSRR_BS7;
-        delay(5);
+        delay(1);
         GPIOA->BSRR = GPIO_BSRR_BR7;
-        delay(5);
+        delay(1);
     }
 
 }
@@ -274,17 +274,20 @@ extern "C" int main()
 
     uint8_t data = 0;
 
-    spi_send(SPI1, 0xFF);
-    data = spi_receive(SPI1);
-    spi_send(SPI1, 0xFF);
-    data = spi_receive(SPI1);
-    spi_send(SPI1, 0x83);
-    data = spi_receive(SPI1);
-    spi_send(SPI1, 0x00);
-    data = spi_receive(SPI1);
-    spi_send(SPI1, 0x00);
-    data = spi_receive(SPI1);
+    spi_enable(SPI1);  
 
+    spi_send(SPI1, 0x55);
+    data = spi_receive(SPI1);
+    spi_send(SPI1, 0x55);
+    data = spi_receive(SPI1);
+    spi_send(SPI1, 0x55);
+    data = spi_receive(SPI1);
+    spi_send(SPI1, 0x55);
+    data = spi_receive(SPI1);
+    spi_send(SPI1, 0x55);
+    data = spi_receive(SPI1); 
+ 
+    spi_disable(SPI1);
 
     int x = 0;
     while (true) {
