@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <type_traits>
+#include <functional>
 #include "stm32f1xx.h"
 
 
@@ -246,16 +247,16 @@ void spi1_setup()
     SPI1->CR1 = 0;
     SPI1->CR2 = 0;
     // Master mode select;
-    SPI1->CR1 = SPI_CR1_MSTR | SPI_CR1_CRCEN | (0b001 << SPI_CR1_BR_Pos);
+    SPI1->CR1 = SPI_CR1_MSTR | SPI_CR1_CRCEN | (0b111 << SPI_CR1_BR_Pos);
     SPI1->CR2 |= SPI_CR2_SSOE;
 
     spi_enable(SPI1);
 }
 
-void spi_send(SPI_TypeDef *spi, uint8_t b)
+void spi_send(SPI_TypeDef *spi, uint8_t data)
 {
     while ((spi->SR & SPI_SR_TXE) == 0);
-    spi->DR = b;
+    spi->DR = data;
 }
 
 uint8_t spi_receive(SPI_TypeDef *spi)
@@ -264,28 +265,54 @@ uint8_t spi_receive(SPI_TypeDef *spi)
     return (uint8_t)spi->DR;
 }
 
+uint8_t spi_send_receive(SPI_TypeDef *spi, uint8_t data)
+{
+    while ((spi->SR & SPI_SR_TXE) == 0);
+    spi->DR = data;
+    return spi_receive(spi);
+}
+
+void spi_send_buff(SPI_TypeDef *spi, uint8_t *data, size_t size)
+{
+    spi_send(spi, data[0]);
+    for(size_t i = 1; i < size; i++) {
+        spi_send(spi, data[i]);
+    }
+}
+
+void spi_send_buff(SPI_TypeDef *spi, uint8_t *data, size_t size, void(*rx_callbak)(uint32_t) )
+{
+    spi_send(spi, data[0]);
+    for(size_t i = 1; i < size; i++) {
+        rx_callbak(spi_send_receive(spi, data[i]));
+    }
+}
+
 void spi_wait_for_transfer_complete(SPI_TypeDef *spi)
 {
     while((spi->SR & SPI_SR_BSY) != 0);
 }
 
-void sdc_init()
+void sdc_switch_to_spi_mode()
 {
     rcc_gpioa_enable();
     // PA7 - SPI1_MOSI
     gpio_pin_configure(GPIOA, Pin::Pin7, PinConfig::Output_50MHz_PushPull);
     // PA4 - SPI1_NSS
     gpio_pin_configure(GPIOA, Pin::Pin4, PinConfig::Output_50MHz_PushPull);
+    // PA5 - SPI1_CLK
+    gpio_pin_configure(GPIOA, Pin::Pin5, PinConfig::Output_50MHz_PushPull);
 
+    // MOSI and NSS set to high
+    GPIOA->BSRR |= GPIO_BSRR_BS7;
     GPIOA->BSRR |= GPIO_BSRR_BS4;
 
     for (int i = 0; i < 80; i++) {
-        GPIOA->BSRR = GPIO_BSRR_BS7;
+        GPIOA->BSRR = GPIO_BSRR_BS5;
         delay(1);
-        GPIOA->BSRR = GPIO_BSRR_BR7;
+        GPIOA->BSRR = GPIO_BSRR_BR5;
         delay(1);
     }
-
 }
 
 struct sdc_command {
@@ -304,6 +331,7 @@ struct sdc_response {
     uint8_t erase_sequence_error:1;
     uint8_t adress_error:1;
     uint8_t param_error :1;
+    uint8_t zero        :1;
 } __attribute__((packed));
 
 extern "C" int main()
@@ -313,7 +341,7 @@ extern "C" int main()
     led_setup();
     usart1_setup();
 
-    sdc_init();
+    sdc_switch_to_spi_mode();
     spi1_setup();
 
     uint8_t data = 0;
@@ -338,8 +366,9 @@ extern "C" int main()
     spi_send(SPI1, 0x55);
     data = spi_receive(SPI1);
     spi_send(SPI1, 0x55);
-    data = spi_receive(SPI1); 
- 
+    data = spi_receive(SPI1);
+
+
     spi_disable(SPI1);
 
     int x = 0;

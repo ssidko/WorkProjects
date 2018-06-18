@@ -6,7 +6,9 @@
         "xstring": "c",
         "xutility": "c",
         "core_cm3.h": "c",
-        "stm32f103x6.h": "c"
+        "stm32f103x6.h": "c",
+        "initializer_list": "cpp",
+        "type_traits": "cpp"
     },
     "C_Cpp.errorSquiggles": "Disabled",
     "C_Cpp.dimInactiveRegions": false
