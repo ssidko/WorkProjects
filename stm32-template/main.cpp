@@ -1,4 +1,6 @@
+#include <stdlib.h>
 #include <stdint.h>
+#include <type_traits>
 #include "stm32f1xx.h"
 
 
@@ -11,6 +13,7 @@ extern "C" int SysTick_Handler()
 void delay(uint32_t ms)
 {
     uint32_t start = systick_counter;
+    uint32_t status = SysTick->CTRL;
     while ((systick_counter - start) < ms);
 }
 
@@ -99,6 +102,29 @@ enum Pin {
     Pin1, Pin2, Pin3, Pin4, Pin5, Pin6, Pin7, Pin8,
     Pin9, Pin10, Pin11, Pin12, Pin13, Pin14, Pin15
 };
+
+enum class PinFlag {
+    Pin_0 = 1,
+    Pin_1 = 1 << 1,
+    Pin_2 = 1 << 2,
+    Pin_3 = 1 << 3,
+    Pin_4 = 1 << 4,
+};
+
+PinFlag operator|(PinFlag lhs, PinFlag rhs)
+{
+    return static_cast<PinFlag> (
+        static_cast<std::underlying_type<PinFlag>::type>(lhs) | 
+        static_cast<std::underlying_type<PinFlag>::type>(rhs)
+    );
+}
+
+void gpio_pins_configure(GPIO_TypeDef *port, PinFlag pin_mask, PinConfig conf)
+{
+    uint32_t mask = static_cast<uint32_t>(pin_mask);
+    mask++;
+    mask++;
+}
 
 void rcc_gpioa_enable()
 {
@@ -262,6 +288,24 @@ void sdc_init()
 
 }
 
+struct sdc_command {
+    uint32_t start_bits :2;
+    uint32_t command    :6;
+    uint32_t argument   :32;
+    uint32_t crc        :7;
+    uint32_t stop_bit   :1;
+} __attribute__((packed));
+
+struct sdc_response {
+    uint8_t idle_state  :1;
+    uint8_t erase_reset :1;
+    uint8_t illegal_command:1;
+    uint8_t crc_error   :1;
+    uint8_t erase_sequence_error:1;
+    uint8_t adress_error:1;
+    uint8_t param_error :1;
+} __attribute__((packed));
+
 extern "C" int main()
 {
     system_clock_setup();
@@ -274,7 +318,16 @@ extern "C" int main()
 
     uint8_t data = 0;
 
-    spi_enable(SPI1);  
+    size_t sz_cmd = sizeof(sdc_command);
+
+    sdc_command cmd;
+    cmd.start_bits = 0b01;
+    cmd.command = 1;
+    cmd.argument = 0;
+    cmd.crc = 0;
+    cmd.stop_bit = 1;
+
+    spi_enable(SPI1);
 
     spi_send(SPI1, 0x55);
     data = spi_receive(SPI1);

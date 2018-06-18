@@ -5,7 +5,8 @@
         "iosfwd": "c",
         "xstring": "c",
         "xutility": "c",
-        "core_cm3.h": "c"
+        "core_cm3.h": "c",
+        "stm32f103x6.h": "c"
     },
     "C_Cpp.errorSquiggles": "Disabled",
     "C_Cpp.dimInactiveRegions": false
