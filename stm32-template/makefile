@@ -17,6 +17,7 @@ DEFINES      = -DSTM32F103xB
 #  -Wall...:     warning level
 #  -Wa,...:      tell GCC to pass this to the assembler.
 #  -adhlns...:   create assembler listing
+#CXXFLAGS = -Os -std=c++14 -marm -mlittle-endian -mthumb -mcpu=cortex-m3 -msoft-float -fno-rtti -fno-exceptions -fdata-sections -ffunction-sections -mno-thumb-interwork
 CXXFLAGS = -ggdb -O0 -std=c++14 -marm -mlittle-endian -mthumb -mcpu=cortex-m3 -msoft-float -fno-rtti -fno-exceptions -fdata-sections -ffunction-sections -mno-thumb-interwork
 CXXFLAGS += $(INCLUDEDIR) $(DEFINES)
 
@@ -47,7 +48,7 @@ all_sources = $(cpp_files) $(c_files) $(asm_files)
 all_objects = $(foreach file, $(all_sources), $(OBJ_DIR)/$(basename $(file)).o)
 
 
-all: info elf
+all: info elf bin
 
 
 elf: $(all_objects)
@@ -70,10 +71,12 @@ info:
 	@echo
 
 bin: elf
+	@echo 
 	@echo Generate binary file:	$(TARGET).bin
 	@$(OBJCOPY) -O binary $(TARGET).elf $(TARGET).bin
 
 hex: elf
+	@echo
 	@echo Generate hex file: $(TARGET).hex
 	@$(OBJCOPY) -O ihex $(TARGET).elf $(TARGET).hex
 

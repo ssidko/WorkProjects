@@ -8,7 +8,9 @@
                     "C:\\vcpkg\\vcpkg\\installed\\x64-windows\\include",
                     "C:\\vcpkg\\vcpkg\\installed\\x86-windows\\include",
                     "${workspaceFolder}/CMSIS/Include",
-                    "${workspaceFolder}/CMSIS/core"
+                    "${workspaceFolder}/CMSIS/core",
+                    "${workspaceFolder}/drivers",
+                    "${workspaceFolder}/app"
                 ],
                 "limitSymbolsToIncludedHeaders": true
             },
@@ -17,7 +19,9 @@
                 "C:\\vcpkg\\vcpkg\\installed\\x64-windows\\include",
                 "C:\\vcpkg\\vcpkg\\installed\\x86-windows\\include",
                 "${workspaceFolder}\\CMSIS\\Include",
-                "${workspaceFolder}\\CMSIS\\core"
+                "${workspaceFolder}\\CMSIS\\core",
+                "${workspaceFolder}\\drivers",
+                "${workspaceFolder}\\app"
             ],
             "defines": [
                 "_DEBUG",
