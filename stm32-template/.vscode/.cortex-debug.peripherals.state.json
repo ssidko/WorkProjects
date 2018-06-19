@@ -1,1 +1,1 @@
-[{"node":"GPIOA","expanded":true,"format":0},{"node":"GPIOA.ODR","expanded":true,"format":0}]
+[{"node":"SPI1.RXCRCR","expanded":true,"format":0},{"node":"SPI1.TXCRCR","expanded":true,"format":0}]

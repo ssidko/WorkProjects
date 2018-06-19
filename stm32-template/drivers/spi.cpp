@@ -40,15 +40,17 @@ uint8_t spi_send_receive(SPI_TypeDef *spi, uint8_t data)
 {
     while ((spi->SR & SPI_SR_TXE) == 0);
     spi->DR = data;
-    return spi_receive(spi);
+    while ((spi->SR & SPI_SR_RXNE) == 0);
+    return (uint8_t)spi->DR;
 }
 
 void spi_send_buff(SPI_TypeDef *spi, uint8_t *data, size_t size)
 {
     spi_send(spi, data[0]);
     for(size_t i = 1; i < size; i++) {
-        spi_send(spi, data[i]);
+        spi_send_receive(spi, data[i]);
     }
+    spi_receive(spi);
 }
 
 void spi_wait_for_transfer_complete(SPI_TypeDef *spi)

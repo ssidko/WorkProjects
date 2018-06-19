@@ -23,6 +23,13 @@ struct sdc_response {
     uint8_t zero :1;
 } __attribute__((packed));
 
+struct sdc_response_2 {
+    uint32_t check_pattern :8;
+    uint32_t voltage :4;
+    uint32_t reserved :16;
+    uint32_t version :4;
+} __attribute__((packed));
+
 void sdc_send_command(SPI_TypeDef *spi, sdc_command &cmd);
 
 
