@@ -53,7 +53,7 @@
             "executable": "./main.elf",
             "name": "Debug (Black Magic Probe)",
             "device": "STM32F103C8",
-            "BMPGDBSerialPort": "COM5",
+            "BMPGDBSerialPort": "COM8",
             "targetId": 1
         }
 

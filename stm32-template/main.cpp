@@ -153,7 +153,7 @@ extern "C" int main()
     led_setup();
     usart1_setup();
 
-    sdc_switch_to_spi_mode();
+    //sdc_switch_to_spi_mode();
     spi1_setup();
 
     uint8_t data = 0;
@@ -163,24 +163,27 @@ extern "C" int main()
     cmd.command = 0;
     cmd.argument = 0;
     cmd.crc = 0b1001010;
-    cmd.crc = 0x00;
     cmd.stop_bit = 1;
 
     spi_enable(SPI1);
 
     sdc_send_command(SPI1, cmd);
 
-    cmd.start_bits = 0b01;
     cmd.command = 8;
     cmd.argument = 0x1AA;
     cmd.crc = 0b0000111;
 
     sdc_send_command(SPI1, cmd);
 
-    cmd.start_bits = 0b01;
     cmd.command = 58;
     cmd.argument = 0x00;
     cmd.crc = 0b0111010;
+
+    sdc_send_command(SPI1, cmd);
+
+    cmd.command = 17;
+    cmd.argument = 0;
+    cmd.crc = 0;
 
     sdc_send_command(SPI1, cmd);
 
