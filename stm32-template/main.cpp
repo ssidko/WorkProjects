@@ -120,6 +120,7 @@ void spi1_setup()
     // Master mode select;
     SPI1->CR1 = SPI_CR1_MSTR | SPI_CR1_CRCEN | (0b111 << SPI_CR1_BR_Pos);
     SPI1->CR2 |= SPI_CR2_SSOE;
+    SPI1->CRCPR = 137;
 
     spi_enable(SPI1);
 }

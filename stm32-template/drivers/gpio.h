@@ -51,8 +51,7 @@ enum class PinFlag {
     Pin_15 = 1 << 15,
 };
 
-PinFlag operator|(PinFlag lhs, PinFlag rhs);
-
+PinFlag operator | (PinFlag lhs, PinFlag rhs);
 
 void gpio_pin_configure(GPIO_TypeDef *port, Pin pin, PinConfig conf);
 void gpio_pin_pullup(GPIO_TypeDef *port, PinFlag pin);

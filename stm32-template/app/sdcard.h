@@ -2,6 +2,7 @@
 #define __SDCARD_H
 
 #include "stdint.h"
+#include "gpio.h"
 #include "spi.h"
 
 struct sdc_command {
@@ -32,6 +33,15 @@ struct sdc_response_2 {
 
 void sdc_send_command(SPI_TypeDef *spi, sdc_command &cmd);
 
+class SDCard
+{
+public:
+    SDCard(SPI_TypeDef *_spi, GPIO_TypeDef *_sd_cs_port, Pin _sd_cs_pin);
+private:
+    SPI_TypeDef *spi;
+    GPIO_TypeDef *sd_cs_port;
+    Pin sd_cs_pin;
+};
 
 
 #endif // __SDCARD_H
