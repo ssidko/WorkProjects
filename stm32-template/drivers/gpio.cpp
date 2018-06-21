@@ -26,5 +26,27 @@ void gpio_pin_pullup(GPIO_TypeDef *port, PinFlag pin)
 
 void gpio_pin_pulldown(GPIO_TypeDef *port, PinFlag pin)
 {
-    GPIOA->BSRR = (static_cast<uint32_t>(pin)) << 16; // pull-up
+    GPIOA->BRR = (static_cast<uint32_t>(pin)); // pull-up
+}
+
+GpioPin::GpioPin(GPIO_TypeDef *pin_port, Pin pin_num, PinConfig conf)
+    : port(pin_port), pin(pin_num)
+{
+    gpio_pin_configure(port, pin, conf);
+    mask = 1 << pin;
+}
+
+void GpioPin::Low(void)
+{
+    port->BRR = mask;
+}
+
+void GpioPin::High(void)
+{
+    port->BSRR = mask;
+}
+
+void GpioPin::Togle(void)
+{
+    port->ODR ^= mask;
 }

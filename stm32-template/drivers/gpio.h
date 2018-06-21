@@ -57,4 +57,20 @@ void gpio_pin_configure(GPIO_TypeDef *port, Pin pin, PinConfig conf);
 void gpio_pin_pullup(GPIO_TypeDef *port, PinFlag pin);
 void gpio_pin_pulldown(GPIO_TypeDef *port, PinFlag pin);
 
+class GpioPin
+{
+public:
+    GpioPin(GPIO_TypeDef *pin_port, Pin pin_num, PinConfig conf);
+    void Configure(PinConfig conf);
+    void Low(void);
+    void High(void);
+    void Togle(void);
+    // uint8_t Read(void);
+    // void Write(uint8_t value);
+private:
+    GPIO_TypeDef *port;
+    Pin pin;
+    uint32_t mask;
+};
+
 #endif // __GPIO_H

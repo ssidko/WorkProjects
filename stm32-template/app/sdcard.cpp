@@ -2,9 +2,34 @@
 
 uint8_t io_buff[512] = {0};
 
+uint8_t crc7_table[256];
+ 
+void crc7_generate_table()
+{
+    uint8_t crc_poly = 0x89;  // CRC-7 polynom
+    for (int i = 0; i < 256; ++i) {
+        crc7_table[i] = (i & 0x80) ? i ^ crc_poly : i;
+        for (int j = 1; j < 8; ++j) {
+            crc7_table[i] <<= 1;
+            if (crc7_table[i] & 0x80) {
+                crc7_table[i] ^= crc_poly;
+            }
+        }
+    }
+}
+
+uint8_t crc7(uint8_t *data, size_t size)
+{
+    uint8_t crc7 = 0;
+    for (int i = 0; i < size; ++i) {
+        crc7 = crc7_table[(crc7 << 1) ^ data[i]];
+    }
+    return crc7;
+}
+
 void sdc_send_command(SPI_TypeDef *spi, sdc_command &cmd)
 {
-    spi_crc_clear(spi);
+    cmd.crc = crc7((uint8_t *)&cmd, 5);
     spi_send_buff(spi, (uint8_t *)&cmd, 6);
 
     uint32_t wait = 10;
@@ -41,6 +66,5 @@ void sdc_send_command(SPI_TypeDef *spi, sdc_command &cmd)
 
     int x = 0;
     x++;
-
-
 }
+

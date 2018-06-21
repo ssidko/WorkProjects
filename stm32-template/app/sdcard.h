@@ -31,16 +31,24 @@ struct sdc_response_2 {
     uint32_t version :4;
 } __attribute__((packed));
 
+void crc7_generate_table();
 void sdc_send_command(SPI_TypeDef *spi, sdc_command &cmd);
 
 class SDCard
 {
 public:
-    SDCard(SPI_TypeDef *_spi, GPIO_TypeDef *_sd_cs_port, Pin _sd_cs_pin);
+    SDCard(SPI_TypeDef *sdc_spi, GPIO_TypeDef *sdc_cs_port, Pin sdc_cs_pin);
+    bool Initialize();
+    bool SendCommand(uint8_t command, uint32_t argument);
+    bool ReadBlock(uint32_t block, uint8_t *buff, size_t size);
+    bool WriteBlcok(uint32_t block, uint8_t *buff, size_t size);
+private:
+    void Select(void);
+    void Deselect(void);
 private:
     SPI_TypeDef *spi;
-    GPIO_TypeDef *sd_cs_port;
-    Pin sd_cs_pin;
+    GPIO_TypeDef *cs_port;
+    Pin cs_pin;
 };
 
 

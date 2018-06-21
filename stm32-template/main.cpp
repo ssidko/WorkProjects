@@ -57,22 +57,6 @@ void system_clock_setup(void)
     apb2clk = SystemCoreClock;
 }
 
-void led_setup()
-{
-    rcc_gpioc_enable();
-    gpio_pin_configure(GPIOC, Pin::Pin13, PinConfig::Output_2MHz_PushPull);
-}
-
-void led_on()
-{
-    GPIOC->BSRR = GPIO_BSRR_BR13;
-}
-
-void led_off()
-{
-    GPIOC->BSRR = GPIO_BSRR_BS13;
-}
-
 void usart1_setup()
 {
     rcc_gpioa_enable();
@@ -110,7 +94,7 @@ void spi1_setup()
     gpio_pin_configure(SDC_PORT, SDC_MISO, PinConfig::Input_PuPd);
     gpio_pin_pullup(SDC_PORT, PinFlag::Pin_6);
     gpio_pin_configure(SDC_PORT, SDC_CLK, PinConfig::OutputAF_50MHz_PushPull);
-    gpio_pin_configure(SDC_PORT, SDC_SS, PinConfig::OutputAF_50MHz_PushPull);
+    gpio_pin_configure(SDC_PORT, SDC_CS, PinConfig::OutputAF_50MHz_PushPull);
 
 
     // Configure for SDC
@@ -151,11 +135,11 @@ extern "C" int main()
 {
     system_clock_setup();
     SysTick_Config(SystemCoreClock/1000);
-    led_setup();
     usart1_setup();
 
     //sdc_switch_to_spi_mode();
     spi1_setup();
+    crc7_generate_table();
 
     uint8_t data = 0;
 
@@ -190,14 +174,19 @@ extern "C" int main()
 
     spi_disable(SPI1);
 
+    rcc_gpioc_enable();
+    GpioPin led_pin(GPIOC, Pin::Pin13, PinConfig::Output_2MHz_PushPull);
+
     int x = 0;
     while (true) {
-        led_on();
+
+        led_pin.Low();
         usart_send(USART1, "Len on\n");
         delay(1000);
-        led_off();
+        led_pin.High();
         usart_send(USART1, "Len off\n");
         delay(1000);
+
         x++;
     }
 

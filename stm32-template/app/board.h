@@ -7,7 +7,7 @@
 #define SDC_MOSI        Pin::Pin7
 #define SDC_MISO        Pin::Pin6
 #define SDC_CLK         Pin::Pin5
-#define SDC_SS          Pin::Pin4
+#define SDC_CS          Pin::Pin4
 
 
 # endif // __BOARD_H
