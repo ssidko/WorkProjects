@@ -145,11 +145,12 @@ extern "C" int main()
     uint8_t data = 0;
 
     sdc_command cmd;
-    cmd.start_bits = 0b01;
-    cmd.command = 0;
+    cmd.start_bit = 0;
+    cmd.transmission_bit = 1;
+    cmd.command_index = 0;
     cmd.argument = 0;
     cmd.crc = 0;
-    cmd.stop_bit = 1;
+    cmd.end_bit = 1;
 
     spi_enable(SPI1);
 
@@ -161,11 +162,11 @@ extern "C" int main()
         }        
     }
     if (idle) {
-        cmd.command = 8;
+        cmd.command_index = 8;
         cmd.argument = 0x1AA;
         sdc_send_command(SPI1, cmd);
 
-        cmd.command = 58;
+        cmd.command_index = 58;
         cmd.argument = 0x00;
         sdc_send_command(SPI1, cmd);
     }

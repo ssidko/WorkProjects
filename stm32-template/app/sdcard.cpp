@@ -38,7 +38,23 @@ bool sdc_send_command(SPI_TypeDef *spi, sdc_command &cmd)
     sdc_response *response = (sdc_response*)resp;
     sdc_response_2 *r2 = (sdc_response_2 *)&resp[1];
 
-    if (cmd.command == 58) {
+    switch (cmd.command_index) {
+        // R2
+        case 13:
+            resp_length = 2;
+            break;
+        // R7
+        case 8:
+        case 58:
+            resp_length = 5;
+            break;
+        // R1
+        default:
+            resp_length = 1;
+            break;
+    }
+
+    if (cmd.command_index == 58) {
         resp_length = 5;
     }
 
@@ -52,7 +68,7 @@ bool sdc_send_command(SPI_TypeDef *spi, sdc_command &cmd)
                 resp[resp_length - i] = spi_send_receive(spi, 0xFF);
             }
 
-            if (cmd.command == 17) {
+            if (cmd.command_index == 17) {
                 for (int i = 0; i < 512; i++) {
                     io_buff[i] = spi_send_receive(spi, 0xFF);
                 }

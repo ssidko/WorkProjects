@@ -6,10 +6,11 @@
 #include "spi.h"
 
 struct sdc_command {
-    uint32_t command :6;
-    uint32_t start_bits :2;
+    uint32_t command_index :6;
+    uint32_t start_bit :1;
+    uint32_t transmission_bit :1;
     uint32_t argument :32;
-    uint32_t stop_bit :1;
+    uint32_t end_bit :1;
     uint32_t crc :7;
 } __attribute__((packed));
 
