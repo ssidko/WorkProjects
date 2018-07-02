@@ -96,7 +96,6 @@ void spi1_setup()
     gpio_pin_configure(SDC_PORT, SDC_CLK, PinConfig::OutputAF_50MHz_PushPull);
     gpio_pin_configure(SDC_PORT, SDC_CS, PinConfig::OutputAF_50MHz_PushPull);
 
-
     // Configure for SDC
     // CPOL = 0, CPHA = 0
     SPI1->CR1 = 0;
@@ -137,9 +136,11 @@ extern "C" int main()
     SysTick_Config(SystemCoreClock/1000);
     usart1_setup();
 
-    //sdc_switch_to_spi_mode();
-    spi1_setup();
     crc7_generate_table();
+    
+    sdc_switch_to_spi_mode();   
+
+    spi1_setup();
 
     uint8_t data = 0;
 
@@ -147,31 +148,27 @@ extern "C" int main()
     cmd.start_bits = 0b01;
     cmd.command = 0;
     cmd.argument = 0;
-    cmd.crc = 0b1001010;
+    cmd.crc = 0;
     cmd.stop_bit = 1;
 
     spi_enable(SPI1);
 
-    sdc_send_command(SPI1, cmd);
+    bool idle = false;
+    for (int i = 0; i < 10; i++) {
+        delay(100);
+        if (idle = sdc_send_command(SPI1, cmd)) {
+            break;
+        }        
+    }
+    if (idle) {
+        cmd.command = 8;
+        cmd.argument = 0x1AA;
+        sdc_send_command(SPI1, cmd);
 
-    cmd.command = 8;
-    cmd.argument = 0x1AA;
-    cmd.crc = 0b0000111;
-
-    sdc_send_command(SPI1, cmd);
-
-    cmd.command = 58;
-    cmd.argument = 0x00;
-    cmd.crc = 0b0111010;
-
-    sdc_send_command(SPI1, cmd);
-
-    cmd.command = 17;
-    cmd.argument = 0;
-    cmd.crc = 0;
-
-    sdc_send_command(SPI1, cmd);
-
+        cmd.command = 58;
+        cmd.argument = 0x00;
+        sdc_send_command(SPI1, cmd);
+    }
     spi_disable(SPI1);
 
     rcc_gpioc_enable();

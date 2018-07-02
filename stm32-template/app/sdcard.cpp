@@ -27,7 +27,7 @@ uint8_t crc7(uint8_t *data, size_t size)
     return crc7;
 }
 
-void sdc_send_command(SPI_TypeDef *spi, sdc_command &cmd)
+bool sdc_send_command(SPI_TypeDef *spi, sdc_command &cmd)
 {
     cmd.crc = crc7((uint8_t *)&cmd, 5);
     spi_send_buff(spi, (uint8_t *)&cmd, 6);
@@ -42,9 +42,12 @@ void sdc_send_command(SPI_TypeDef *spi, sdc_command &cmd)
         resp_length = 5;
     }
 
+    bool result = false;
+
     do {
         resp[0] = spi_send_receive(spi, 0xFF);
         if (response->zero == 0) {
+            result = true;
             for (int i = 1; i < resp_length; i++) {
                 resp[resp_length - i] = spi_send_receive(spi, 0xFF);
             }
@@ -63,8 +66,6 @@ void sdc_send_command(SPI_TypeDef *spi, sdc_command &cmd)
         }
     } while(wait--);
 
-
-    int x = 0;
-    x++;
+    return result;
 }
 

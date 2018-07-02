@@ -32,7 +32,7 @@ struct sdc_response_2 {
 } __attribute__((packed));
 
 void crc7_generate_table();
-void sdc_send_command(SPI_TypeDef *spi, sdc_command &cmd);
+bool sdc_send_command(SPI_TypeDef *spi, sdc_command &cmd);
 
 class SDCard
 {
