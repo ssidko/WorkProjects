@@ -94,40 +94,17 @@ void spi1_setup()
     gpio_pin_configure(SDC_PORT, SDC_MISO, PinConfig::Input_PuPd);
     gpio_pin_pullup(SDC_PORT, PinFlag::Pin_6);
     gpio_pin_configure(SDC_PORT, SDC_CLK, PinConfig::OutputAF_50MHz_PushPull);
-    gpio_pin_configure(SDC_PORT, SDC_CS, PinConfig::OutputAF_50MHz_PushPull);
+   //gpio_pin_configure(SDC_PORT, SDC_CS, PinConfig::OutputAF_50MHz_PushPull);
 
     // Configure for SDC
     // CPOL = 0, CPHA = 0
     SPI1->CR1 = 0;
     SPI1->CR2 = 0;
     // Master mode select;
-    SPI1->CR1 = SPI_CR1_MSTR | SPI_CR1_CRCEN | (0b111 << SPI_CR1_BR_Pos);
+    SPI1->CR1 = SPI_CR1_MSTR | SPI_CR1_SSM | (0b111 << SPI_CR1_BR_Pos);
     SPI1->CR2 |= SPI_CR2_SSOE;
-    SPI1->CRCPR = 137;
 
     spi_enable(SPI1);
-}
-
-void sdc_switch_to_spi_mode()
-{
-    rcc_gpioa_enable();
-    // PA7 - SPI1_MOSI
-    gpio_pin_configure(GPIOA, Pin::Pin7, PinConfig::Output_50MHz_PushPull);
-    // PA4 - SPI1_NSS
-    gpio_pin_configure(GPIOA, Pin::Pin4, PinConfig::Output_50MHz_PushPull);
-    // PA5 - SPI1_CLK
-    gpio_pin_configure(GPIOA, Pin::Pin5, PinConfig::Output_50MHz_PushPull);
-
-    // MOSI and NSS set to high
-    GPIOA->BSRR |= GPIO_BSRR_BS7;
-    GPIOA->BSRR |= GPIO_BSRR_BS4;
-
-    for (int i = 0; i < 80; i++) {
-        GPIOA->BSRR = GPIO_BSRR_BS5;
-        delay(1);
-        GPIOA->BSRR = GPIO_BSRR_BR5;
-        delay(1);
-    }
 }
 
 extern "C" int main()
@@ -137,43 +114,13 @@ extern "C" int main()
     usart1_setup();
 
     crc7_generate_table();
-    
-    sdc_switch_to_spi_mode();   
-
     spi1_setup();
-
-    uint8_t data = 0;
-
-    sdc_command cmd;
-    cmd.start_bit = 0;
-    cmd.transmission_bit = 1;
-    cmd.command_index = 0;
-    cmd.argument = 0;
-    cmd.crc = 0;
-    cmd.end_bit = 1;
-
-    spi_enable(SPI1);
-
-    bool idle = false;
-    for (int i = 0; i < 10; i++) {
-        delay(100);
-        if (idle = sdc_send_command(SPI1, cmd)) {
-            break;
-        }        
-    }
-    if (idle) {
-        cmd.command_index = 8;
-        cmd.argument = 0x1AA;
-        sdc_send_command(SPI1, cmd);
-
-        cmd.command_index = 58;
-        cmd.argument = 0x00;
-        sdc_send_command(SPI1, cmd);
-    }
-    spi_disable(SPI1);
 
     rcc_gpioc_enable();
     GpioPin led_pin(GPIOC, Pin::Pin13, PinConfig::Output_2MHz_PushPull);
+
+    SDCard sd_card(SPI1, SDC_PORT, SDC_CS);
+    sd_card.Initialize();
 
     int x = 0;
     while (true) {

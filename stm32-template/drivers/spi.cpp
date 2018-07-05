@@ -20,6 +20,7 @@ void spi_enable(SPI_TypeDef *spi)
 
 void spi_disable(SPI_TypeDef *spi)
 {
+    while((spi->SR & SPI_SR_TXE) != 1);
     while((spi->SR & SPI_SR_BSY) != 0);
     SPI1->CR1 &= ~SPI_CR1_SPE; 
 }
