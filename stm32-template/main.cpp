@@ -119,6 +119,7 @@ extern "C" int main()
     rcc_gpioc_enable();
     GpioPin led_pin(GPIOC, Pin::Pin13, PinConfig::Output_2MHz_PushPull);
 
+    delay(1);
     SDCard sd_card(SPI1, SDC_PORT, SDC_CS);
     sd_card.Initialize();
 

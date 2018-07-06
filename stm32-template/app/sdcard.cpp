@@ -93,6 +93,14 @@ SDCard::SDCard(SPI_TypeDef *sdc_spi, GPIO_TypeDef *sdc_cs_port, Pin sdc_cs_pin) 
 
 bool SDCard::Initialize(void)
 {
+    //
+    // Suppply ramp up time
+    //
+    chip_select.High();
+    for (uint32_t i = 0; i < 10; i++) {
+        spi_send_receive(spi, 0xff);
+    }    
+
     chip_select.Low();
 
     SendCMD(0, 0);
@@ -120,6 +128,18 @@ bool SDCard::SendCMD(uint8_t command, uint32_t argument)
     cmd.end_bit = 1;
 
     spi_send_buff(spi, (uint8_t *)&cmd, 6);
+
+    SdcardType sdc_type = SdcardType::Unknown;
+    size_t response_len = 1;
+    switch (command) {
+        case 13:
+            response_len = 2;
+            break;
+        case 8:
+        case 58:
+            response_len = 5;
+            break;
+    }
 
 
 

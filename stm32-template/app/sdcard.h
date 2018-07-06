@@ -35,6 +35,13 @@ struct sdc_response_2 {
 void crc7_generate_table();
 bool sdc_send_command(SPI_TypeDef *spi, sdc_command &cmd);
 
+enum class SdcardType {
+    Unknown = 0,
+    SDSC,
+    SDHC,
+    SDXC,
+};
+
 class SDCard
 {
 public:
