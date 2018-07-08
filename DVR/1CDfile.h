@@ -35,7 +35,7 @@ namespace db1cd
 
 #pragma pack(pop)
 
-	enum class PageSize {
+	enum PageSize {
 		size_4kb = 4096,
 		size_8kb = 8192,
 	};
@@ -54,9 +54,10 @@ namespace db1cd
 	public:
 		Object(uint32_t obj_page, ObjectHeader &obj_header, DbFile &data_base) : page(obj_page), header(obj_header), db(data_base) {}
 		void ReadAllocationTable(void);
-		void Read(std::vector<uint8_t> &data_buff);
+		void Read(std::vector<uint8_t> &buffer);
 		//void Write();
 		uint32_t Size(void) { return header.object_size; }
+		void SaveToFile(const std::string &file_path);
 	};
 
 	class Table
@@ -73,18 +74,19 @@ namespace db1cd
 		bool Open(void);
 		uint32_t PageSize(void) { return page_size; }
 		std::shared_ptr<Object> GetObject(uint32_t page_num);
+		void ReadPage(uint32_t page_num, std::vector<uint8_t> &buffer);
 
 	private:
 		W32Lib::FileEx io;
 		const uint32_t page_size;
 		uint32_t max_page_num;
-
 		uint32_t max_pages_per_alloc_page;
 		uint32_t max_allocation_page_count;
 		size_t max_object_size;
-
-		void ReadPage(uint32_t page_num, std::vector<uint8_t> &page);
 	};
+
+	void RestoreRootObject();
+
 }
 
 

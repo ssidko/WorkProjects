@@ -2,15 +2,15 @@
 
 using namespace db1cd;
 
-void DbFile::ReadPage(uint32_t page_num, std::vector<uint8_t> &page)
+void DbFile::ReadPage(uint32_t page_num, std::vector<uint8_t> &buffer)
 {
-	if (page.size() != page_size) {
-		page.resize(page_size);
+	if (buffer.size() != page_size) {
+		buffer.resize(page_size);
 	}
 	if (!io.SetPointer(page_num * page_size)) {
 		std::system_error sys_err(::GetLastError(), std::system_category());
 	}
-	if (io.Read(&page[0], page.size()) < page.size()) {
+	if (io.Read(&buffer[0], buffer.size()) < buffer.size()) {
 		std::system_error sys_err(::GetLastError(), std::system_category());
 	}
 }
@@ -94,16 +94,16 @@ void db1cd::Object::ReadAllocationTable(void)
 	}
 }
 
-void db1cd::Object::Read(std::vector<uint8_t>& data_buff)
+void db1cd::Object::Read(std::vector<uint8_t> &buffer)
 {
 	uint32_t to_read = header.object_size;
 	uint32_t readed = 0;
 
-	if (data_buff.size() != header.object_size) {
-		data_buff.resize(header.object_size);
+	if (buffer.size() != header.object_size) {
+		buffer.resize(header.object_size);
 	}
 
-	uint8_t *pos = &data_buff[0];
+	uint8_t *pos = &buffer[0];
 	std::vector<uint8_t> buff(db.PageSize());
 	AllocationPage *alloc_page = (AllocationPage *)&buff[0];
 
@@ -123,53 +123,83 @@ void db1cd::Object::Read(std::vector<uint8_t>& data_buff)
 
 }
 
+void db1cd::Object::SaveToFile(const std::string &file_path)
+{
+	W32Lib::FileEx file(file_path.c_str());
+	if (file.Create()) {
+	
+		size_t size = header.object_size;
+		size_t page_size = db.PageSize();
+		std::vector<uint8_t> alloc_page_buff(db.PageSize());
+		std::vector<uint8_t> data_page_buff(db.PageSize());
+		AllocationPage *alloc_page = (AllocationPage *)alloc_page_buff.data();
 
-/*
-bool IsValidDbObject(W32Lib::FileEx &io, ObjectHeader &obj_header, uint32_t max_block_num)
+		uint32_t *alloc_page_num = header.alloc_pages;
+
+		while (*alloc_page_num && size) {
+		
+			db.ReadPage(*alloc_page_num, alloc_page_buff);
+			for (size_t i = 0; i < alloc_page->pages_count; i++) {
+			
+				db.ReadPage(alloc_page->pages[i], data_page_buff);
+
+				uint32_t to_write = size >= page_size ? page_size : size;
+				if (to_write) {
+					file.Write(data_page_buff.data(), to_write);
+					size -= to_write;
+				}
+			}	
+		
+		}	
+	}
+}
+
+
+bool IsValidDbObject(W32Lib::FileEx &io, ObjectHeader &obj_header, uint32_t page_size, uint32_t max_block_num)
 {
 	size_t total_blocks = 0;
 	size_t blk_idx = 0;
-	uint32_t first_block = 0;
-	std::vector<uint8_t> buff(block_size);
-	if (obj_header.object_size && obj_header.blocks[0]) {
-		while (obj_header.blocks[blk_idx]) {
+	uint32_t first_page = 0;
+	std::vector<uint8_t> buff(page_size);
+	if (obj_header.object_size && obj_header.alloc_pages[0]) {
+		while (obj_header.alloc_pages[blk_idx]) {
 
-			io.SetPointer(block_size * obj_header.blocks[blk_idx]);
-			if (io.Read(buff.data(), block_size) != block_size) {
+			io.SetPointer(page_size * obj_header.alloc_pages[blk_idx]);
+			if (io.Read(buff.data(), page_size) != page_size) {
 				return false;
 			}
 
-			AllocationTable *table = (AllocationTable *)buff.data();
+			AllocationPage *table = (AllocationPage *)buff.data();
 
-			if ((table->numblocks < 1) || (table->numblocks > sizeof(AllocationTable::blocks))) {
+			if ((table->pages_count < 1) || (table->pages_count > sizeof(AllocationPage::pages))) {
 				return false;
 			}
 
 			int curr_blocks = 0;
-			for (int i = 0; i < sizeof(AllocationTable::blocks); i++) {
-				if ((table->blocks[i] == 0) || (table->blocks[i] > max_block_num)) {
+			for (int i = 0; i < sizeof(AllocationPage::pages); i++) {
+				if ((table->pages[i] == 0) || (table->pages[i] > max_block_num)) {
 					break;
 				}
 				if (blk_idx == 0 && i == 0) {
-					first_block = table->blocks[i];
+					first_page = table->pages[i];
 				}
 				curr_blocks++;
 				total_blocks++;
 			}
 
-			if (curr_blocks != table->numblocks) {
+			if (curr_blocks != table->pages_count) {
 				return false;
 			}
 
 			blk_idx++;
 		}
 
-		if (((obj_header.object_size + (block_size - 1)) / block_size) != total_blocks) {
+		if (((obj_header.object_size + (page_size - 1)) / page_size) != total_blocks) {
 			return false;
 		}
 
-		io.SetPointer(first_block * block_size);
-		if (io.Read(buff.data(), block_size) != block_size) {
+		io.SetPointer(first_page * page_size);
+		if (io.Read(buff.data(), page_size) != page_size) {
 			return false;
 		}
 
@@ -181,66 +211,68 @@ bool IsValidDbObject(W32Lib::FileEx &io, ObjectHeader &obj_header, uint32_t max_
 	return false;
 }
 
-void MakeBlob(void)
+//void MakeBlob(void)
+//{
+//	W32Lib::FileEx in("F:\\44322\\12\\noname");
+//	W32Lib::FileEx out("F:\\44322\\pages-2.bin");
+//	if (in.Open() && out.Create()) {
+//
+//		uint32_t next_block = 2;
+//		uint32_t remained = (uint32_t)in.GetSize();
+//		std::vector<uint8_t> block(256);
+//
+//		while (remained) {
+//
+//			std::memset(&block[0], 0x00, block.size());
+//
+//			BlobBlockHeader *hdr = (BlobBlockHeader *)block.data();
+//
+//			if (remained >= sizeof(BlobBlockHeader::data)) {
+//				hdr->next_block = next_block;
+//				hdr->data_size = sizeof(BlobBlockHeader::data);
+//			}
+//			else {
+//				hdr->next_block = 0x00;
+//				hdr->data_size = remained;
+//			}
+//
+//			in.Read(&hdr->data[0], hdr->data_size);
+//			out.Write(block.data(), block.size());
+//
+//			next_block++;
+//			remained -= hdr->data_size;
+//
+//		}
+//	}
+//}
+
+void db1cd::RestoreRootObject()
 {
-	W32Lib::FileEx in("F:\\44322\\12\\noname");
-	W32Lib::FileEx out("F:\\44322\\pages-2.bin");
-	if (in.Open() && out.Create()) {
+	W32Lib::FileEx db("d:\\Work\\Инфаура\\1Cv8.1CD");
+	W32Lib::FileEx root_object("d:\\Work\\Инфаура\\root.bin");
+	if (db.Open() && root_object.Create()) {
 
-		uint32_t next_block = 2;
-		uint32_t remained = (uint32_t)in.GetSize();
-		std::vector<uint8_t> block(256);
+		const size_t page_size = PageSize::size_4kb;
+		const uint32_t max_page = db.GetSize() / page_size;
 
-		while (remained) {
-
-			std::memset(&block[0], 0x00, block.size());
-
-			BlobBlockHeader *hdr = (BlobBlockHeader *)block.data();
-
-			if (remained >= sizeof(BlobBlockHeader::data)) {
-				hdr->next_block = next_block;
-				hdr->data_size = sizeof(BlobBlockHeader::data);
-			}
-			else {
-				hdr->next_block = 0x00;
-				hdr->data_size = remained;
-			}
-
-			in.Read(&hdr->data[0], hdr->data_size);
-			out.Write(block.data(), block.size());
-
-			next_block++;
-			remained -= hdr->data_size;
-
-		}
-	}
-}
-
-void Test1C8()
-{
-	W32Lib::FileEx db("F:\\44322\\1Cv8-2.1CD");
-	//W32Lib::FileEx db("F:\\44322\\12\\1Cv8.1CD");
-	W32Lib::FileEx pages("F:\\44322\\pages-2.bin");
-	if (db.Open() && pages.Create()) {
-
-		uint32_t block = 0;
+		uint32_t page = 0;
 		size_t valid_objects = 0;
 		std::vector<uint8_t> buffer(4096, 0);
 
-		block = 3;
-		db.SetPointer(block_size * block);
+		page = 3;
+		db.SetPointer(page_size * page);
 		while (db.Read(buffer.data(), buffer.size()) == buffer.size()) {
 			if (std::memcmp(buffer.data(), "1CDBOBV8", 8) == 0) {
 
 				ObjectHeader *obj_header = (ObjectHeader *)buffer.data();
-				if (IsValidDbObject(db, *obj_header, 285893)) {
-					pages.Write(&block, sizeof(block));
+				if (IsValidDbObject(db, *obj_header, page_size, max_page)) {
+					root_object.Write(&page, sizeof(page));
 					valid_objects++;
 				}
 			}
-			block++;
-			db.SetPointer(block_size * block);
+			page++;
+			db.SetPointer(page_size * page);
 		}
 	}
 }
-*/
+

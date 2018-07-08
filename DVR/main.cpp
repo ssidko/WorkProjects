@@ -119,21 +119,28 @@ int main(int argc, char *argv[])
 
 	using namespace db1cd;
 
-	DbFile db("F:\\44322\\examples\\1Cv8.1CD", PageSize::size_4kb);
+	RestoreRootObject();
+
+	DbFile db("d:\\Work\\чистая база\\1Cv8.1CD", PageSize::size_4kb);
 	if (db.Open()) {
 	
 		std::vector<uint8_t> buff;
 
-		std::shared_ptr<Object> obj = db.GetObject(16);
-		if (obj) {		
-			auto obj_size = obj->Size();
-			obj->Read(buff);
+		std::shared_ptr<Object> obj = db.GetObject(5);
+		obj->SaveToFile("d:\\Work\\чистая база\\object_5.bin");
 
-		}
+		//obj = db.GetObject(12);
+		//obj->SaveToFile("d:\\Work\\чистая база\\object_12.bin");
 
-		std::shared_ptr<Object> obj2 = db.GetObject(17736);
+		//obj = db.GetObject(13);
+		//obj->SaveToFile("d:\\Work\\чистая база\\object_13.bin");
+
+		//obj = db.GetObject(16);
+		//obj->SaveToFile("d:\\Work\\чистая база\\object_16.bin");
 	
 	}
+
+	uint32_t err = ::GetLastError();
 
 	//Test1C8();
 	//MakeBlob();
