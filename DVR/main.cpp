@@ -119,6 +119,8 @@ int main(int argc, char *argv[])
 
 	using namespace db1cd;
 
+	size_t sz = 30*1023*4096 + 53*4096 + 3584;
+
 	RestoreRootObject();
 
 	DbFile db("d:\\Work\\чистая база\\1Cv8.1CD", PageSize::size_4kb);

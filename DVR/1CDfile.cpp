@@ -248,8 +248,8 @@ bool IsValidDbObject(W32Lib::FileEx &io, ObjectHeader &obj_header, uint32_t page
 
 void db1cd::RestoreRootObject()
 {
-	W32Lib::FileEx db("d:\\Work\\Инфаура\\1Cv8.1CD");
-	W32Lib::FileEx root_object("d:\\Work\\Инфаура\\root.bin");
+	W32Lib::FileEx db("F:\\44552\\Repaired\\Редере\\1Cv8.1CD");
+	W32Lib::FileEx root_object("F:\\44552\\Repaired\\Редере\\root_object.bin");
 	if (db.Open() && root_object.Create()) {
 
 		const size_t page_size = PageSize::size_4kb;
