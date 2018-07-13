@@ -117,32 +117,32 @@ int main(int argc, char *argv[])
 	QApplication a(argc, argv);
 	MainWindow w;
 
-	using namespace db1cd;
+	//using namespace db1cd;
 
-	size_t sz = 30*1023*4096 + 53*4096 + 3584;
+	//size_t sz = 30*1023*4096 + 53*4096 + 3584;
 
-	RestoreRootObject();
+	//RestoreRootObject();
 
-	DbFile db("d:\\Work\\чистая база\\1Cv8.1CD", PageSize::size_4kb);
-	if (db.Open()) {
-	
-		std::vector<uint8_t> buff;
+	//DbFile db("d:\\Work\\чистая база\\1Cv8.1CD", PageSize::size_4kb);
+	//if (db.Open()) {
+	//
+	//	std::vector<uint8_t> buff;
 
-		std::shared_ptr<Object> obj = db.GetObject(5);
-		obj->SaveToFile("d:\\Work\\чистая база\\object_5.bin");
+	//	std::shared_ptr<Object> obj = db.GetObject(5);
+	//	obj->SaveToFile("d:\\Work\\чистая база\\object_5.bin");
 
-		//obj = db.GetObject(12);
-		//obj->SaveToFile("d:\\Work\\чистая база\\object_12.bin");
+	//	//obj = db.GetObject(12);
+	//	//obj->SaveToFile("d:\\Work\\чистая база\\object_12.bin");
 
-		//obj = db.GetObject(13);
-		//obj->SaveToFile("d:\\Work\\чистая база\\object_13.bin");
+	//	//obj = db.GetObject(13);
+	//	//obj->SaveToFile("d:\\Work\\чистая база\\object_13.bin");
 
-		//obj = db.GetObject(16);
-		//obj->SaveToFile("d:\\Work\\чистая база\\object_16.bin");
-	
-	}
+	//	//obj = db.GetObject(16);
+	//	//obj->SaveToFile("d:\\Work\\чистая база\\object_16.bin");
+	//
+	//}
 
-	uint32_t err = ::GetLastError();
+	//uint32_t err = ::GetLastError();
 
 	//Test1C8();
 	//MakeBlob();
