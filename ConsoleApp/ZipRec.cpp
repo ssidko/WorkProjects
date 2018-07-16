@@ -3,6 +3,7 @@
 #include <list>
 #include <vector>
 #include <iostream>
+#include <sstream>
 #include "WinConsole.h"
 
 WinConsole con;
@@ -209,16 +210,31 @@ int PrepareAndExtract(FileEx &archive, ZipRecParameters &param)
 	archive.Write(end_record, sizeof(END_OF_CDIRECTORY_RECORD_32) - 1);
 	archive.Close();
 
-	TCHAR cmd_str[1024] = {0};
+	//TCHAR cmd_str[1024] = {0};
 	//_stprintf_s(cmd_str, 1024, _T("\"C:\\Program Files\\7-Zip\\7z.exe\" x -y -o%s %s"), out_dir, archive->GetName());
 
+	//if (header->UTF8Encoding()) {
+	//	_stprintf_s(cmd_str, 1024, _T(".\\7z.exe x -mcu -y -o%s %s"), param.out_dir.c_str(), archive.GetName());
+	//} else {
+	//	_stprintf_s(cmd_str, 1024, _T(".\\7z.exe x -y -o%s %s"), param.out_dir.c_str(), archive.GetName());
+	//}
+
+	std::stringstream ss;
+	ss << ".\\7z.exe x -y";
+	//ss << "\"C:\\Program Files\\7-Zip\\7z.exe\" x -y";
+
 	if (header->UTF8Encoding()) {
-		_stprintf_s(cmd_str, 1024, _T(".\\7z.exe x -mcu -y -o%s %s"), param.out_dir.c_str(), archive.GetName());
-	} else {
-		_stprintf_s(cmd_str, 1024, _T(".\\7z.exe x -y -o%s %s"), param.out_dir.c_str(), archive.GetName());
+		ss << " -mcu";
 	}
+
+	if (!param.password.empty()) {
+		ss << " -p" << param.password;
+	}
+
+	ss << " -o" << param.out_dir << " " << archive.GetName();
 	
-	::system(cmd_str);
+	//::system(cmd_str);
+	::system(ss.str().c_str());
 
 	delete h_buff;
 	delete ch_buff;
@@ -239,8 +255,7 @@ bool IsValidLocalFileHeader(LOCAL_FILE_HEADER &header)
 		return false;
 
 	if (!((header.compr_method >= 0) && (header.compr_method <= 19)) && 
-		!(header.compr_method == 97) &&
-		!(header.compr_method == 98) )
+		!(header.compr_method == 97) && !(header.compr_method == 98) && !(header.compr_method == 99) )
 		return false;
 
 	if (header.name_len == 0) {
@@ -410,13 +425,15 @@ int StartRecovery(ZipRecParameters &param)
 
 int TestZipRec(void)
 {
-	SetConsoleOutputCP(65001);
+	//SetConsoleOutputCP(65001);
 
-	ZipRecParameters param = { 0 };
-	param.file_path = "E:\\43881\\PASSPORT.zip";
-	param.out_dir = "F:\\43881\\v2";
-	param.offset = 46992060398UL;
+	ZipRecParameters param;
+	param.Clear();
+	param.file_path = "\\\\servergiga\\Заказы\\44583\\2.zip";
+	param.out_dir = "F:\\44583";
+	param.offset = 0UL;
 	param.force_utf8 = true;
+	param.password = "llk@2015";
 
 	return StartRecovery(param);
 }
