@@ -99,7 +99,7 @@ void PrintRecoveryParameters(const ZipRecParameters &param)
 	con.Print(" out_dir    = ", ConsoleColour::kWhite | ConsoleColour::kIntensity); con.Print(param.out_dir.c_str()); con.Print("\n");
 	con.Print(" offset     = ", ConsoleColour::kWhite | ConsoleColour::kIntensity); con.Print(std::to_string(param.offset).c_str()); con.Print("\n");
 	con.Print(" force_utf8 = ", ConsoleColour::kWhite | ConsoleColour::kIntensity); con.Print(param.force_utf8 ? "true" : "false"); con.Print("\n");
-	//con.Print("pwd="); con.Print(param.password.c_str(), ConsoleColour::kWhite | ConsoleColour::kIntensity);
+	con.Print(" password   = ", ConsoleColour::kWhite | ConsoleColour::kIntensity); con.Print(param.password.c_str());
 }
 
 int ZipRec_Main(int argc, _TCHAR* argv[])
@@ -149,8 +149,8 @@ int PrepareAndExtract(FileEx &archive, ZipRecParameters &param)
 		DWORD descr_sign = DATA_DESCRIPTOR_SIGN;
 		while ( (descr_offs = archive.Find((BYTE *)&descr_sign, sizeof(descr_sign))) != -1 )
 		{
-			DATA_DESCRIPTOR_32 data_descr = {0};
-			archive.Read(&data_descr, sizeof(DATA_DESCRIPTOR_32));
+			DATA_DESCRIPTOR data_descr = {0};
+			archive.Read(&data_descr, sizeof(DATA_DESCRIPTOR));
 				
 			if ( descr_offs == (LOCAL_FILE_HEADER_SIZE + header->name_len + header->extra_field_len + data_descr.compr_size ) ) {
 				data_descriptor_found = true;
@@ -171,7 +171,7 @@ int PrepareAndExtract(FileEx &archive, ZipRecParameters &param)
 
 	BYTE *ch_buff = new BYTE[2048];
 	memset(ch_buff, 0x00, 2048);
-	CENTRAL_FILE_HEADER_32 *central_header = (CENTRAL_FILE_HEADER_32 *)ch_buff;
+	CDIR_HEADER *central_header = (CDIR_HEADER *)ch_buff;
 
 	central_header->signature = CENTRAL_FILE_HEADER_SIGN;
 	central_header->ver_made = 0x1F;
@@ -185,11 +185,11 @@ int PrepareAndExtract(FileEx &archive, ZipRecParameters &param)
 	central_header->uncompr_size = header->uncompr_size;
 	central_header->name_len = header->name_len;
 	memcpy(central_header->file_name, header->file_name, header->name_len);
-	DWORD ch_sz = sizeof(CENTRAL_FILE_HEADER_32) - 1 + central_header->comment_len + central_header->extra_field_len + central_header->name_len;
+	DWORD ch_sz = sizeof(CDIR_HEADER) - 1 + central_header->comment_len + central_header->extra_field_len + central_header->name_len;
 
 	BYTE *er_buff = new BYTE[2048];
 	memset(er_buff, 0x00, 2048);
-	END_OF_CDIRECTORY_RECORD_32 *end_record = (END_OF_CDIRECTORY_RECORD_32 *)er_buff;
+	END_OF_CDIR_RECORD *end_record = (END_OF_CDIR_RECORD *)er_buff;
 
 	end_record->signature = END_CDIRECTORY_RECORD_SIGN;
 	end_record->cdir_entries_count = 1;
@@ -207,7 +207,7 @@ int PrepareAndExtract(FileEx &archive, ZipRecParameters &param)
 
 	archive.SetPointer(end_record->cdir_offset);
 	archive.Write(central_header, ch_sz);
-	archive.Write(end_record, sizeof(END_OF_CDIRECTORY_RECORD_32) - 1);
+	archive.Write(end_record, sizeof(END_OF_CDIR_RECORD) - 1);
 	archive.Close();
 
 	//TCHAR cmd_str[1024] = {0};
@@ -242,20 +242,17 @@ int PrepareAndExtract(FileEx &archive, ZipRecParameters &param)
 	return 0;
 }
 
-int PrepareAndExtract(FileEx &archive, const std::string &out_dir)
-{
-
-
-	return 0;
-}
-
 bool IsValidLocalFileHeader(LOCAL_FILE_HEADER &header)
 {
 	if (header.signature != LOCAL_FILE_HEADER_SIGNATURE)
 		return false;
 
+	if (header.ver_needed > 127) {
+		return false;
+	}
+
 	if (!((header.compr_method >= 0) && (header.compr_method <= 19)) && 
-		!(header.compr_method == 97) && !(header.compr_method == 98) && !(header.compr_method == 99) )
+		!((header.compr_method >= 95) && (header.compr_method <= 99)))
 		return false;
 
 	if (header.name_len == 0) {
@@ -266,9 +263,29 @@ bool IsValidLocalFileHeader(LOCAL_FILE_HEADER &header)
 		return false;
 	}
 
-	if (header.DataDescriptorPresent()) {
-		if ((header.crc32 != 0) || (header.compr_size != 0) || (header.uncompr_size != 0))
+	// Note: the size of the entire.ZIP file
+	//	header, including the file name, comment, and extra
+	//	field should not exceed 64K in size.	
+	if (header.TotalHeaderSize() > 64*1024) {
+		return false;
+	}
+	
+	if (!header.DataDescriptorPresent()) {	
+		if (header.crc32 == 0) {
 			return false;
+		}
+		if ((header.compr_size != 0xFFFFFFFF) && (header.uncompr_size != 0xFFFFFFFF)) {
+			if ((header.compr_size == 0) || (header.uncompr_size == 0)) {
+				return false;
+			}
+			//if (header.compr_size > header.uncompr_size) {
+			//	double compressed = header.compr_size;
+			//	double uncompressed = header.uncompr_size;
+			//	if ( (((100/uncompressed)*compressed)) - 100 > 20 ) {
+			//		return false;
+			//	}			
+			//}
+		}	
 	}
 
 	return true;	
@@ -423,17 +440,89 @@ int StartRecovery(ZipRecParameters &param)
 	return 0;
 }
 
+std::optional<uint64_t> FindLocalFileHeader(W32Lib::FileEx &io, uint64_t start_offset)
+{
+	uint64_t offset = 0;
+	DWORD file_sign = LOCAL_FILE_HEADER_SIGNATURE;
+
+	io.SetPointer(start_offset);
+	if ((offset = io.Find((BYTE *)&file_sign, sizeof(file_sign))) != -1) {
+		io.SetPointer(offset);
+		return offset;
+	}
+	return std::nullopt;
+}
+
+bool ReadLocalFileHeader(W32Lib::FileEx &io, uint32_t offset, std::vector<uint8_t> &buffer)
+{
+	buffer.clear();
+	buffer.resize(LOCAL_FILE_HEADER_SIZE);
+
+	io.SetPointer(offset);
+
+	if (LOCAL_FILE_HEADER_SIZE != io.Read(buffer.data(), LOCAL_FILE_HEADER_SIZE)) {
+		throw std::system_error(::GetLastError(), std::system_category());;
+	}
+
+	LOCAL_FILE_HEADER *file_header = (LOCAL_FILE_HEADER *)buffer.data();
+	if (!IsValidLocalFileHeader(*file_header)) {
+		return false;
+	}
+
+	size_t extra_size = file_header->SizeOfVariableData();
+	buffer.resize(buffer.size() + extra_size);
+
+	if (extra_size != io.Read(&buffer[LOCAL_FILE_HEADER_SIZE], extra_size)) {
+		throw std::system_error(::GetLastError(), std::system_category());;
+	}
+
+	return true;
+}
+
+int Run(ZipRecParameters &param)
+{	
+	W32Lib::FileEx io(param.file_path.c_str());
+	if (!io.Open()) {
+		return -1;
+	}
+
+	uint64_t offset = param.offset;
+	std::vector<uint8_t> header_buff;
+
+	while (auto result = FindLocalFileHeader(io, offset)) {
+		
+		offset = result.value();
+		
+		if (!ReadLocalFileHeader(io, offset, header_buff)) {
+			offset++;
+			continue;
+		}
+
+		LOCAL_FILE_HEADER *header = (LOCAL_FILE_HEADER *)header_buff.data();
+
+		int x = 0;
+
+		offset++;
+
+	}
+
+	return 0;
+}
+
+
 int TestZipRec(void)
 {
 	//SetConsoleOutputCP(65001);
 
 	ZipRecParameters param;
 	param.Clear();
-	param.file_path = "\\\\servergiga\\Заказы\\44583\\2.zip";
+	param.file_path = "G:\\backup\\BackUP_Full_2018-03-09.kbz";
 	param.out_dir = "F:\\44583";
 	param.offset = 0UL;
 	param.force_utf8 = true;
 	param.password = "llk@2015";
+
+	Run(param);
 
 	return StartRecovery(param);
 }
