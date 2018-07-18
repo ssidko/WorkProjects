@@ -272,11 +272,18 @@ bool IsValidLocalFileHeader(LOCAL_FILE_HEADER &header)
 	
 	if (!header.DataDescriptorPresent()) {	
 		if (header.crc32 == 0) {
-			return false;
+			if (header.compr_method != 99) {
+				return false;
+			}
 		}
 		if ((header.compr_size != 0xFFFFFFFF) && (header.uncompr_size != 0xFFFFFFFF)) {
-			if ((header.compr_size == 0) || (header.uncompr_size == 0)) {
+			if (header.compr_size == 0) {
 				return false;
+			}
+			if (header.uncompr_size == 0) {
+				if (!header.FileSizeMasked()) {
+					return false;
+				}
 			}
 			//if (header.compr_size > header.uncompr_size) {
 			//	double compressed = header.compr_size;
@@ -295,13 +302,6 @@ bool IsValidExtraField(uint8_t *buff, size_t size)
 {
 	assert(buff);
 	assert(size);
-
-#pragma pack(push,1)
-	struct ExtraFieldHeader {
-		uint16_t header_id;
-		uint16_t data_size;
-	};
-#pragma pack(pop)
 
 	ExtraFieldHeader *hdr = (ExtraFieldHeader *)buff;
 	size_t calculated_size = 0;
@@ -453,7 +453,7 @@ std::optional<uint64_t> FindLocalFileHeader(W32Lib::FileEx &io, uint64_t start_o
 	return std::nullopt;
 }
 
-bool ReadLocalFileHeader(W32Lib::FileEx &io, uint32_t offset, std::vector<uint8_t> &buffer)
+bool ReadLocalFileHeader(W32Lib::FileEx &io, uint64_t offset, std::vector<uint8_t> &buffer)
 {
 	buffer.clear();
 	buffer.resize(LOCAL_FILE_HEADER_SIZE);
@@ -469,14 +469,65 @@ bool ReadLocalFileHeader(W32Lib::FileEx &io, uint32_t offset, std::vector<uint8_
 		return false;
 	}
 
-	size_t extra_size = file_header->SizeOfVariableData();
-	buffer.resize(buffer.size() + extra_size);
+	size_t extra_field_size = file_header->SizeOfVariableData();
+	buffer.resize(buffer.size() + extra_field_size);
+	file_header = (LOCAL_FILE_HEADER *)buffer.data();
 
-	if (extra_size != io.Read(&buffer[LOCAL_FILE_HEADER_SIZE], extra_size)) {
+	if (extra_field_size != io.Read(&buffer[LOCAL_FILE_HEADER_SIZE], extra_field_size)) {
 		throw std::system_error(::GetLastError(), std::system_category());;
 	}
+	
+	//
+	// Validate extra field
+	//
+	if (file_header->extra_field_len) {	
 
+		size_t calculated_size = 0;
+		uint8_t *extra_field = &buffer[LOCAL_FILE_HEADER_SIZE + file_header->name_len];
+		ExtraFieldHeader *hdr = (ExtraFieldHeader *)extra_field;
+
+		while ((calculated_size + sizeof(ExtraFieldHeader)) < file_header->extra_field_len) {
+			hdr = (ExtraFieldHeader *)&extra_field[calculated_size];
+			if (hdr->header_id && hdr->data_size) {
+
+				if (hdr->header_id == 0x0001) {
+					//
+					// Minimum size of Zip64 extended information extra field = 16 bytes.
+					//
+					if (hdr->data_size < 16) {
+						return false;
+					}
+				}
+
+				if ((calculated_size + sizeof(ExtraFieldHeader) + hdr->data_size) <= file_header->extra_field_len) {
+					calculated_size += sizeof(ExtraFieldHeader) + hdr->data_size;
+					continue;
+				} 
+			}
+			return false;
+		}
+		if (calculated_size != file_header->extra_field_len) {
+			return false;
+		}
+	}
 	return true;
+}
+
+uint64_t CompressedDataSize(LOCAL_FILE_HEADER &header)
+{
+	if (header.extra_field_len) {
+		size_t calculated_size = 0;
+		uint8_t *extra_field = &((uint8_t *)&header)[LOCAL_FILE_HEADER_SIZE + header.name_len];
+		ExtraFieldHeader *hdr = (ExtraFieldHeader *)extra_field;
+		while (calculated_size < header.extra_field_len) {
+			hdr = (ExtraFieldHeader *)&extra_field[calculated_size];
+			if (hdr->header_id == 0x0001) {
+				return ((Zip64ExtendedInfo *)hdr)->compressed_size;
+			}
+			calculated_size += sizeof(ExtraFieldHeader) + hdr->data_size;
+		}
+	}
+	return header.compr_size;
 }
 
 int Run(ZipRecParameters &param)
@@ -486,21 +537,38 @@ int Run(ZipRecParameters &param)
 		return -1;
 	}
 
+	LOCAL_FILE_HEADER *header = nullptr;
+	uint64_t compressed_size = 0;
 	uint64_t offset = param.offset;
 	std::vector<uint8_t> header_buff;
 
 	while (auto result = FindLocalFileHeader(io, offset)) {
 		
-		offset = result.value();
-		
-		if (!ReadLocalFileHeader(io, offset, header_buff)) {
+		offset = result.value();		
+		if (ReadLocalFileHeader(io, offset, header_buff)) {
+
+			header = (LOCAL_FILE_HEADER *)header_buff.data();
+			compressed_size = CompressedDataSize(*header);
+
+			if (!header->DataDescriptorPresent() && (compressed_size == 0)) {
+				offset++;
+				continue;
+			}
+
+
+			io.SetPointer(offset + header->TotalHeaderSize() + compressed_size);
+			
+
+			uint16_t sign = 0;
+			io.Read(&sign, 2);
+
+
+
 			offset++;
 			continue;
 		}
 
-		LOCAL_FILE_HEADER *header = (LOCAL_FILE_HEADER *)header_buff.data();
 
-		int x = 0;
 
 		offset++;
 

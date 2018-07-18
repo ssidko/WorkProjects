@@ -41,6 +41,7 @@ typedef struct _LOCAL_FILE_HEADER {
 	bool DataDescriptorPresent() { return (flag & (1 << 3)) != 0; }
 	bool EncriptionEnabled() { return (flag & (1 << 0)) != 0; }
 	bool UTF8Encoding() { return (flag & (1 << 11)) != 0; }
+	bool FileSizeMasked() { return (flag & (1 << 13)) != 0; }
 } LOCAL_FILE_HEADER;
 
 typedef struct _DATA_DESCRIPTOR {
@@ -113,6 +114,17 @@ typedef struct _ZIP64_END_OF_CDIR_RECORD {
 	//
 
 } ZIP64_END_OF_CDIR;
+
+struct ExtraFieldHeader {
+	uint16_t header_id;
+	uint16_t data_size;
+};
+
+struct Zip64ExtendedInfo {
+	ExtraFieldHeader hdr;
+	uint64_t uncompressed_size;
+	uint64_t compressed_size;
+};
 
 #pragma pack(pop)
 
