@@ -549,29 +549,25 @@ int Run(ZipRecParameters &param)
 
 			header = (LOCAL_FILE_HEADER *)header_buff.data();
 			compressed_size = CompressedDataSize(*header);
-
-			if (!header->DataDescriptorPresent() && (compressed_size == 0)) {
-				offset++;
-				continue;
-			}
-
-
-			io.SetPointer(offset + header->TotalHeaderSize() + compressed_size);
 			
+			if (compressed_size) {
 
-			uint16_t sign = 0;
-			io.Read(&sign, 2);
+				uint16_t sign = 0;
+				io.SetPointer(offset + header->TotalHeaderSize() + compressed_size);
+				io.Read(&sign, 2);
 
+			} else if (header->DataDescriptorPresent()) {
+			
+			
+			
+			}
 
 
 			offset++;
 			continue;
 		}
 
-
-
 		offset++;
-
 	}
 
 	return 0;
