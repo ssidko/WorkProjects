@@ -244,8 +244,9 @@ int PrepareAndExtract(FileEx &archive, ZipRecParameters &param)
 
 bool IsValidLocalFileHeader(LOCAL_FILE_HEADER &header)
 {
-	if (header.signature != LOCAL_FILE_HEADER_SIGNATURE)
+	if (header.signature != LOCAL_FILE_HEADER_SIGNATURE) {
 		return false;
+	}
 
 	if (header.ver_needed > 127) {
 		return false;
