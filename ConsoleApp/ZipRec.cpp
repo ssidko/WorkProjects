@@ -260,7 +260,7 @@ bool IsValidLocalFileHeader(LOCAL_FILE_HEADER &header)
 		return false;
 	}
 
-	if (header.extra_field_len && (header.extra_field_len < 5)) {
+	if (header.extra_field_len && (header.extra_field_len < 4)) {
 		return false;
 	}
 
@@ -541,6 +541,7 @@ int Run(ZipRecParameters &param)
 	LOCAL_FILE_HEADER *header = nullptr;
 	uint64_t compressed_size = 0;
 	uint64_t offset = param.offset;
+	uint64_t next_offset = 0;
 	std::vector<uint8_t> header_buff;
 
 	while (auto result = FindLocalFileHeader(io, offset)) {
@@ -550,17 +551,34 @@ int Run(ZipRecParameters &param)
 
 			header = (LOCAL_FILE_HEADER *)header_buff.data();
 			compressed_size = CompressedDataSize(*header);
-			
+
+			std::cout << endl;
+			con.Print("FILE_HEADER at: ", ConsoleColour::kWhite | ConsoleColour::kIntensity);
+			con.Print(std::to_string(offset).c_str(), ConsoleColour::kWhite | ConsoleColour::kIntensity);
+			std::cout << endl;
+
 			if (compressed_size) {
+
+				if (header->DataDescriptorPresent()) {
+
+					io.SetPointer(offset + header->TotalHeaderSize() + compressed_size);
+
+					uint8_t buff[sizeof(uint32_t) + sizeof(ZIP64_DATA_DESCRIPTOR)] = { 0 };
+
+					uint32_t *signature = nullptr;
+					DATA_DESCRIPTOR *descr = nullptr;
+					ZIP64_DATA_DESCRIPTOR *zip64_descr = nullptr;
+
+				}
 
 				uint16_t sign = 0;
 				io.SetPointer(offset + header->TotalHeaderSize() + compressed_size);
 				io.Read(&sign, 2);
 
-			} else if (header->DataDescriptorPresent()) {
-			
-			
-			
+			} else {
+				std::cout << "compressed_size = 0. Skiped." <<endl;
+				offset++;
+				continue;			
 			}
 
 

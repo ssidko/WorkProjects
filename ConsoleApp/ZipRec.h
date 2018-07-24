@@ -45,14 +45,12 @@ typedef struct _LOCAL_FILE_HEADER {
 } LOCAL_FILE_HEADER;
 
 typedef struct _DATA_DESCRIPTOR {
-	uint32_t signature;						// DATA_DESCRYPTOR_SIGN (0x08074b50)
 	uint32_t crc32;							// crc-32
 	uint32_t compr_size;					// compressed size 
 	uint32_t uncompr_size;					// uncompressed size
 } DATA_DESCRIPTOR;
 
 typedef struct _ZIP64_DATA_DESCRIPTOR {
-	uint32_t signature;						// DATA_DESCRYPTOR_SIGN (0x08074b50)
 	uint32_t crc32;							// crc-32
 	uint64_t compr_size;					// compressed size 
 	uint64_t uncompr_size;					// uncompressed size
