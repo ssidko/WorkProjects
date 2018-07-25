@@ -531,6 +531,149 @@ uint64_t CompressedDataSize(LOCAL_FILE_HEADER &header)
 	return header.compr_size;
 }
 
+void SaveFragmentToFile(W32Lib::FileEx &src, uint64_t src_offset, uint64_t size, W32Lib::FileEx dst, uint64_t dst_offset)
+{
+	size_t remained = size;
+	const size_t buffer_size = 128*1024;
+	std::vector<uint8_t> buffer(buffer_size);
+	size_t to_read = 0;
+
+	src.SetPointer(src_offset);
+	dst.SetPointer(dst_offset);
+
+	while (remained) {
+		to_read = remained > buffer_size ? buffer_size : remained;
+		if (to_read != src.Read(buffer.data(), to_read)) {
+			throw std::exception();
+		}
+		dst.Write(buffer.data(), to_read);
+		remained -= to_read;
+	}
+}
+
+bool SaveZipFile(LocalFileHeader &file_header, W32Lib::FileEx &io, W32Lib::FileEx &out_file)
+{
+	assert(file_header.compressed_size < 0xFFFFFFFF);
+	assert(file_header.uncompressed_size < 0xFFFFFFFF);
+
+	LOCAL_FILE_HEADER *header = file_header.Header();
+	size_t cdir_size = 0;
+
+	//
+	// Write Local File Header
+	//
+	io.SetPointer(file_header.offset);
+	out_file.SetPointer(0);
+	out_file.Write(file_header.buffer.data(), file_header.buffer.size());
+
+	//
+	// Copy File Data
+	//
+	SaveFragmentToFile(io, file_header.offset + file_header.Size(), file_header.compressed_size, out_file, file_header.Size());
+
+	//
+	// Write Central Directory Header
+	//
+	CDIR_HEADER cdir_entry = {0};
+	cdir_entry.signature = CENTRAL_FILE_HEADER_SIGN;
+	cdir_entry.ver_made = header->ver_needed;
+	cdir_entry.ver_needed = header->ver_needed;
+	cdir_entry.flag = header->flag;
+	cdir_entry.compr_method = header->compr_method;
+	cdir_entry.time = header->time;
+	cdir_entry.date = header->date;
+	cdir_entry.crc32 = header->crc32;
+	cdir_entry.compr_size = file_header.compressed_size;
+	cdir_entry.uncompr_size = file_header.uncompressed_size;
+	cdir_entry.name_len = header->name_len;
+	cdir_entry.extra_field_len = header->extra_field_len;
+	cdir_entry.comment_len = 0;
+	cdir_entry.disk_mun = 1;
+	cdir_entry.int_file_attr = 0;
+	cdir_entry.ext_file_attr = 0;
+	cdir_entry.offset_local_header = 0;
+
+	out_file.Write((uint8_t *)&cdir_entry, sizeof(CDIR_HEADER));
+	out_file.Write(file_header.ExtraFieldBuffer(), file_header.ExtraFieldLength());
+
+	cdir_size = sizeof(CDIR_HEADER) + file_header.ExtraFieldLength();
+
+	//
+	// Write EOF Central Directory
+	//
+	END_OF_CDIR_RECORD eof_cdir = {0};
+	eof_cdir.signature = END_CDIRECTORY_RECORD_SIGN;
+	eof_cdir.disk_num = 1;
+	eof_cdir.cdir_disk_num = 1;
+	eof_cdir.cdir_entries_count = 1;
+	eof_cdir.cdir_entries_total_count = 1;
+	eof_cdir.cdir_size = cdir_size;
+	eof_cdir.cdir_offset = file_header.Size() + file_header.compressed_size;
+	eof_cdir.comment_len = 0;
+
+	out_file.Write(&eof_cdir, sizeof(END_OF_CDIR_RECORD));
+
+	return true;
+}
+
+bool SaveZip64File(LocalFileHeader &file_header, W32Lib::FileEx &io, W32Lib::FileEx &out_file)
+{
+	LOCAL_FILE_HEADER *header = file_header.Header();
+	size_t cdir_size = 0;
+
+	//
+	// Write Local File Header
+	//
+	io.SetPointer(file_header.offset);
+	out_file.SetPointer(0);
+	out_file.Write(file_header.buffer.data(), file_header.buffer.size());
+
+	//
+	// Copy File Data
+	//
+	SaveFragmentToFile(io, file_header.offset + file_header.Size(), file_header.compressed_size, out_file, file_header.Size());
+	
+	//
+	// Write Central Directory Header
+	//
+	CDIR_HEADER cdir_entry = {0};
+	cdir_entry.signature = CENTRAL_FILE_HEADER_SIGN;
+	cdir_entry.ver_made = header->ver_needed;
+	cdir_entry.ver_needed = header->ver_needed;
+	cdir_entry.flag = header->flag;
+	cdir_entry.compr_method = header->compr_method;
+	cdir_entry.time = header->time;
+	cdir_entry.date = header->date;
+	cdir_entry.crc32 = header->crc32;
+	cdir_entry.compr_size = file_header.compressed_size;
+	cdir_entry.uncompr_size = file_header.uncompressed_size;
+	cdir_entry.name_len = header->name_len;
+	cdir_entry.extra_field_len = header->extra_field_len;
+	cdir_entry.comment_len = 0;
+	cdir_entry.disk_mun = 1;
+	cdir_entry.int_file_attr = 0;
+	cdir_entry.ext_file_attr = 0;
+	cdir_entry.offset_local_header = 0;
+
+	out_file.Write((uint8_t *)&cdir_entry, sizeof(CDIR_HEADER));
+	out_file.Write(file_header.ExtraFieldBuffer(), file_header.ExtraFieldLength());
+
+	cdir_size = sizeof(CDIR_HEADER) + file_header.ExtraFieldLength();
+
+
+	ZIP64_END_OF_CDIR zip64_end_cdir = {0};
+
+
+	ZIP64_END_OF_CDIR_LOCATOR locator = {0};
+
+
+	END_OF_CDIR_RECORD end_cdir = {0};
+
+
+
+	return false;
+}
+
 int Run(ZipRecParameters &param)
 {	
 	W32Lib::FileEx io(param.file_path.c_str());

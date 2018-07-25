@@ -1,6 +1,7 @@
 #pragma once
 #include "stdafx.h"
 #include <map>
+#include <vector>
 #include <optional>
 
 #define ZIP_CONSTANT_MARKER					(uint16_t)0x4b50 // "PK"
@@ -10,6 +11,7 @@
 #define DIGITAL_SIGNATURE_SIGN				(uint32_t)0x05054b50 
 #define END_CDIRECTORY_RECORD_SIGN			(uint32_t)0x06054b50
 #define ZIP64_END_CDIRECTORY_RECORD_SIGN	(uint32_t)0x06064b50
+#define ZIP64_END_CDIRECTORY_LOCATOR_SIGN	(uint32_t)0x07064b50
 
 #define LOCAL_FILE_HEADER_SIZE				(uint32_t)30 
 
@@ -74,7 +76,7 @@ typedef struct _CDIR_HEADER {
 	uint16_t int_file_attr;					// internal file attributes
 	uint32_t ext_file_attr;					// external file attributes
 	uint32_t offset_local_header;			// relative offset of local header
-	uint8_t file_name[1];					// file name (variable size)
+	//uint8_t file_name[1];					// file name (variable size)
 } CDIR_HEADER;
 
 typedef struct _DIGITAL_SIGNATURE {
@@ -92,7 +94,7 @@ typedef struct _END_OF_CDIR_RECORD {
 	uint32_t cdir_size;						// size of the central directory
 	uint32_t cdir_offset;					// offset of start of central directory with respect to the starting disk number
 	uint16_t comment_len;					// .ZIP file comment length
-	uint8_t comment[1];						// .ZIP file comment 
+	//uint8_t comment[1];						// .ZIP file comment 
 } END_OF_CDIR_RECORD;
 
 typedef struct _ZIP64_END_OF_CDIR_RECORD {
@@ -113,6 +115,13 @@ typedef struct _ZIP64_END_OF_CDIR_RECORD {
 
 } ZIP64_END_OF_CDIR;
 
+typedef struct _ZIP64_END_OF_CDIR_LOCATOR {
+	uint32_t signature;						// (0x07064b50)
+	uint32_t num_disk_end_cdir;
+	uint64_t offset_end_cdir_record;
+	uint32_t total_disks;
+} ZIP64_END_OF_CDIR_LOCATOR;
+
 struct ExtraFieldHeader {
 	uint16_t header_id;
 	uint16_t data_size;
@@ -125,6 +134,18 @@ struct Zip64ExtendedInfo {
 };
 
 #pragma pack(pop)
+
+struct LocalFileHeader {
+	uint64_t offset;
+	uint64_t compressed_size;
+	uint64_t uncompressed_size;
+	std::vector<uint8_t> buffer;
+
+	uint8_t *ExtraFieldBuffer(void) { return &buffer[LOCAL_FILE_HEADER_SIZE]; }
+	size_t ExtraFieldLength(void) { return ((LOCAL_FILE_HEADER *)buffer.data())->extra_field_len; }
+	size_t Size(void) { return buffer.size(); }
+	LOCAL_FILE_HEADER *Header(void) { return (LOCAL_FILE_HEADER *)buffer.data(); }
+};
 
 struct ZipRecParameters {
 	std::string file_path;
