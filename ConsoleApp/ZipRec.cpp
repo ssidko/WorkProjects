@@ -184,7 +184,7 @@ int PrepareAndExtract(FileEx &archive, ZipRecParameters &param)
 	central_header->compr_size = header->compr_size;
 	central_header->uncompr_size = header->uncompr_size;
 	central_header->name_len = header->name_len;
-	memcpy(central_header->file_name, header->file_name, header->name_len);
+	//memcpy(central_header->file_name, header->file_name, header->name_len);
 	DWORD ch_sz = sizeof(CDIR_HEADER) - 1 + central_header->comment_len + central_header->extra_field_len + central_header->name_len;
 
 	BYTE *er_buff = new BYTE[2048];
