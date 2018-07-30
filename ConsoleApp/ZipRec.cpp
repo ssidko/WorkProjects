@@ -533,7 +533,7 @@ uint64_t CompressedDataSize(LOCAL_FILE_HEADER &header)
 
 void SaveFragmentToFile(W32Lib::FileEx &src, uint64_t src_offset, uint64_t size, W32Lib::FileEx dst, uint64_t dst_offset)
 {
-	size_t remained = size;
+	uint64_t remained = size;
 	const size_t buffer_size = 128*1024;
 	std::vector<uint8_t> buffer(buffer_size);
 	size_t to_read = 0;
@@ -583,8 +583,8 @@ bool SaveZipFile(LocalFileHeader &file_header, W32Lib::FileEx &io, W32Lib::FileE
 	cdir_entry.time = header->time;
 	cdir_entry.date = header->date;
 	cdir_entry.crc32 = header->crc32;
-	cdir_entry.compr_size = file_header.compressed_size;
-	cdir_entry.uncompr_size = file_header.uncompressed_size;
+	cdir_entry.compr_size = static_cast<uint32_t>(file_header.compressed_size);
+	cdir_entry.uncompr_size = static_cast<uint32_t>(file_header.uncompressed_size);
 	cdir_entry.name_len = header->name_len;
 	cdir_entry.extra_field_len = header->extra_field_len;
 	cdir_entry.comment_len = 0;
@@ -608,7 +608,7 @@ bool SaveZipFile(LocalFileHeader &file_header, W32Lib::FileEx &io, W32Lib::FileE
 	eof_cdir.cdir_entries_count = 1;
 	eof_cdir.cdir_entries_total_count = 1;
 	eof_cdir.cdir_size = cdir_size;
-	eof_cdir.cdir_offset = file_header.Size() + file_header.compressed_size;
+	eof_cdir.cdir_offset = static_cast<uint32_t>(file_header.Size() + file_header.compressed_size);
 	eof_cdir.comment_len = 0;
 
 	out_file.Write(&eof_cdir, sizeof(END_OF_CDIR_RECORD));
@@ -645,8 +645,8 @@ bool SaveZip64File(LocalFileHeader &file_header, W32Lib::FileEx &io, W32Lib::Fil
 	cdir_entry.time = header->time;
 	cdir_entry.date = header->date;
 	cdir_entry.crc32 = header->crc32;
-	cdir_entry.compr_size = file_header.compressed_size;
-	cdir_entry.uncompr_size = file_header.uncompressed_size;
+	cdir_entry.compr_size = 0xffffffff;
+	cdir_entry.uncompr_size = 0xffffffff;
 	cdir_entry.name_len = header->name_len;
 	cdir_entry.extra_field_len = header->extra_field_len;
 	cdir_entry.comment_len = 0;
@@ -686,6 +686,7 @@ int Run(ZipRecParameters &param)
 	uint64_t offset = param.offset;
 	uint64_t next_offset = 0;
 	std::vector<uint8_t> header_buff;
+	char *temp_file_name = "temp_file.zip";
 
 	while (auto result = FindLocalFileHeader(io, offset)) {
 		
@@ -703,15 +704,18 @@ int Run(ZipRecParameters &param)
 			if (compressed_size) {
 
 				if (header->DataDescriptorPresent()) {
+					con.Print("Data descriptor present. Not supported. Skiped.", ConsoleColour::kRed | ConsoleColour::kIntensity);
+					std::cout << endl;
+					offset++;
+					continue;
 
-					io.SetPointer(offset + header->TotalHeaderSize() + compressed_size);
+					//io.SetPointer(offset + header->TotalHeaderSize() + compressed_size);
 
-					uint8_t buff[sizeof(uint32_t) + sizeof(ZIP64_DATA_DESCRIPTOR)] = { 0 };
+					//uint8_t buff[sizeof(uint32_t) + sizeof(ZIP64_DATA_DESCRIPTOR)] = { 0 };
 
-					uint32_t *signature = nullptr;
-					DATA_DESCRIPTOR *descr = nullptr;
-					ZIP64_DATA_DESCRIPTOR *zip64_descr = nullptr;
-
+					//uint32_t *signature = nullptr;
+					//DATA_DESCRIPTOR *descr = nullptr;
+					//ZIP64_DATA_DESCRIPTOR *zip64_descr = nullptr;
 				}
 
 				uint16_t sign = 0;
@@ -719,7 +723,7 @@ int Run(ZipRecParameters &param)
 				io.Read(&sign, 2);
 
 			} else {
-				std::cout << "compressed_size = 0. Skiped." <<endl;
+				std::cout << "compressed_size = 0. Skiped." << std::endl;
 				offset++;
 				continue;			
 			}
@@ -745,10 +749,9 @@ int TestZipRec(void)
 	param.file_path = "G:\\backup\\BackUP_Full_2018-03-09.kbz";
 	param.out_dir = "F:\\44583";
 	param.offset = 0UL;
-	param.force_utf8 = true;
+	param.force_utf8 = false;
 	param.password = "llk@2015";
 
-	Run(param);
-
+	return Run(param);
 	return StartRecovery(param);
 }

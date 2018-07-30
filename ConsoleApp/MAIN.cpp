@@ -261,7 +261,6 @@ int mov_fix(void)
 	return 0;
 }
 
-
 int _tmain(int argc, _TCHAR* argv[])
 {
 	//std::cout << std::endl << "---=== Physical Drives ===---" << std::endl;
@@ -276,12 +275,11 @@ int _tmain(int argc, _TCHAR* argv[])
 	//TestZipRec();
 	//ZipRec_Main(argc, argv);
 
+	"test"s.length();
 
 	TestZipRec();
 
 	//ExamineFile("D:\\Soft\\#RecoverySoft#\\X-Ways\\xw_forensics170.rar");
-
-	throw std::exception();
 
 	::system("pause");
 
