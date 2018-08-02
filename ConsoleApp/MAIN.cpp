@@ -261,6 +261,44 @@ int mov_fix(void)
 	return 0;
 }
 
+#pragma pack(push,1)
+struct ploop_pvd_header
+{
+	uint8_t  signature[16];
+	uint32_t version;		// 2
+	uint32_t heads;	
+	uint32_t cylinders;	
+	uint32_t cluster_size;
+	uint32_t bat_entries;	
+	union {
+		struct {
+			uint32_t SizeInSectors_v1;
+			uint32_t Unused;
+		};
+		uint64_t SizeInSectors_v2;
+	};
+	uint32_t disk_in_use;
+	uint32_t data_offset;
+	uint32_t flags;
+	uint8_t  reserved[8];
+};
+#pragma pack(pop)
+
+#include <thread>
+#include <chrono>
+
+
+void func(int value)
+{
+	std::cout << "Hello from thread." << std::endl;
+	std::cout << "value: " << value << std::endl;
+
+	for (int i = 0; i < 100; ++i) {
+		std::cout << "Sleep for 1 second. " << "Try: " << i <<std::endl;
+		std::this_thread::sleep_for(std::chrono::seconds(1));	
+	}
+}
+
 int _tmain(int argc, _TCHAR* argv[])
 {
 	//std::cout << std::endl << "---=== Physical Drives ===---" << std::endl;
@@ -275,7 +313,14 @@ int _tmain(int argc, _TCHAR* argv[])
 	//TestZipRec();
 	//ZipRec_Main(argc, argv);
 
-	"test"s.length();
+	ploop_pvd_header *hdr = nullptr;
+	size_t sz = sizeof(ploop_pvd_header);
+
+	68157440;
+
+
+	std::thread thr(func, 13);
+	thr.join();
 
 	TestZipRec();
 
