@@ -286,6 +286,7 @@ struct ploop_pvd_header
 
 #include <thread>
 #include <chrono>
+#include <type_traits>
 
 
 void func(int value)
@@ -298,6 +299,7 @@ void func(int value)
 		std::this_thread::sleep_for(std::chrono::seconds(1));	
 	}
 }
+
 
 int _tmain(int argc, _TCHAR* argv[])
 {
@@ -315,9 +317,6 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	ploop_pvd_header *hdr = nullptr;
 	size_t sz = sizeof(ploop_pvd_header);
-
-	68157440;
-
 
 	std::thread thr(func, 13);
 	thr.join();
