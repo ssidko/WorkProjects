@@ -289,7 +289,7 @@ struct ploop_pvd_header
 #include <type_traits>
 
 
-void func(int value)
+int func(int value)
 {
 	std::cout << "Hello from thread." << std::endl;
 	std::cout << "value: " << value << std::endl;
@@ -298,8 +298,8 @@ void func(int value)
 		std::cout << "Sleep for 1 second. " << "Try: " << i <<std::endl;
 		std::this_thread::sleep_for(std::chrono::seconds(1));	
 	}
+	return 0;
 }
-
 
 int _tmain(int argc, _TCHAR* argv[])
 {
