@@ -285,8 +285,75 @@ struct ploop_pvd_header
 #pragma pack(pop)
 
 #include <thread>
+#include <mutex>
+#include <queue>
 #include <chrono>
 #include <type_traits>
+
+using Task = std::function<int(int)>;
+
+template<typename TaskType>
+class TaskQueue
+{
+public:
+	void AddTask(const TaskType &task)
+	{
+		std::lock_guard<std::mutex> guard(mtx);
+		queue.push(task);
+	}
+	TaskType GetTask(void)
+	{
+		std::lock_guard<std::mutex> guard(mtx);
+		Task task;
+		if (!queue.empty()) {
+			task = queue.front();
+			queue.pop();
+		}
+		return task;
+	}
+	size_t Count(void)
+	{
+		std::lock_guard<std::mutex> guard(mtx);
+		return queue.size();
+	}
+private:
+	std::mutex mtx;
+	std::queue<TaskType> queue;
+};
+
+std::mutex console_mtx;
+void console_log(const std::string str)
+{
+	std::lock_guard<std::mutex> guard(console_mtx);
+	std::cout << str << std::endl;
+}
+
+
+TaskQueue<Task> tasks;
+
+
+void worker_func(void)
+{
+	console_log("-= Worker =-");
+
+	size_t counter = 0;
+	while (true) {
+		if (tasks.Count()) {
+			auto task = tasks.GetTask();
+			if (task) {
+				console_log("[worker] => Fetch and execute task");
+				task(counter++);
+				console_log("");
+				continue;
+			}	
+		}
+		else {
+			//console_log("[worker] Queue empty.");
+			std::this_thread::sleep_for(std::chrono::milliseconds(100));
+		}	
+	}
+}
+
 
 
 int func(int value)
@@ -318,7 +385,32 @@ int _tmain(int argc, _TCHAR* argv[])
 	ploop_pvd_header *hdr = nullptr;
 	size_t sz = sizeof(ploop_pvd_header);
 
-	std::thread thr(func, 13);
+	std::thread thr(worker_func);
+
+	Task task = [](int task_num)->int {
+		std::string id_str = "Task ("s + std::to_string(task_num) + ")"s;
+		console_log(id_str + " start");
+	
+		int tries = 0;
+		while (tries++ < 3) {
+			console_log(".");
+		}
+		
+		console_log(id_str + " finished");
+		return 0;
+	};
+
+	std::srand(static_cast<unsigned int>(std::chrono::system_clock().now().time_since_epoch().count()));
+
+	while (true) {
+		if (tasks.Count() < 10) {
+			console_log("[main] => Add new task");
+			tasks.AddTask(task);
+			std::this_thread::sleep_for(std::chrono::milliseconds(1500));
+		}		
+	}
+
+
 	thr.join();
 
 	TestZipRec();
