@@ -354,8 +354,6 @@ void worker_func(void)
 	}
 }
 
-
-
 int func(int value)
 {
 	std::cout << "Hello from thread." << std::endl;
