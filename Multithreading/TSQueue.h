@@ -20,7 +20,7 @@ public:
 		cv.notify_one();
 	}
 
-	bool Pop(T &element)
+	bool TryPop(T &element)
 	{
 		if (!queue.empty()) {
 			std::lock_guard<std::mutex> lock(mtx);

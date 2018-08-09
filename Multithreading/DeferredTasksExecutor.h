@@ -12,20 +12,19 @@
 
 using Task = std::function<void()>;
 
-class DeferredTask
-{
-public:
-	DeferredTask(std::function<void()> fn);
-	void operator ()(void) {
-	
-	}
-private:
-	std::function<void()> func;
-};
+//class DeferredTask
+//{
+//public:
+//	DeferredTask(std::function<void()> fn);
+//	void operator ()(void) {
+//	
+//	}
+//private:
+//	std::function<void()> func;
+//};
 
 class DeferredTasksExecutor
-{
-	friend void WorkerFunc(DeferredTasksExecutor &tsk_executor, size_t id);
+{	
 public:
 	DeferredTasksExecutor();
 	~DeferredTasksExecutor();
@@ -36,14 +35,17 @@ public:
 		std::lock_guard<std::mutex> lock(mtx);
 		++added;
 	}
+
 private:
-	std::vector<std::thread> pool;
+	std::atomic_bool terminate;
 	TSQueue<Task> tasks;
-	/*volatile*/ bool terminate;
+	std::vector<std::thread> pool;
 
 	std::mutex mtx;
 	size_t added;
 	size_t executed;
+
+	void Worker(size_t id);
 };
 
 #endif // _DEFERRED_TASKS_EXECUTOR_H

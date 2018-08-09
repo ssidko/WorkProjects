@@ -3,28 +3,6 @@
 #include "DeferredTasksExecutor.h"
 
 
-void WorkerFunc(DeferredTasksExecutor &executor, size_t id)
-{
-	std::string worker_id = std::to_string(id);
-	trace("Worker started");
-
-	while (!executor.terminate) {
-		Task task;
-		if (executor.tasks.Pop(task)) {
-			trace(worker_id + " => Execute task");
-			task();
-			{
-				std::lock_guard<std::mutex> lock(executor.mtx);
-				++executor.executed;
-			}
-		} else {			
-			std::this_thread::sleep_for(std::chrono::milliseconds(100));
-		}
-	}
-
-	trace("Worker stoped");
-}
-
 DeferredTasksExecutor::DeferredTasksExecutor() : added(0), executed(0), terminate(false)
 {
 	size_t threads_count = std::thread::hardware_concurrency();
@@ -34,11 +12,14 @@ DeferredTasksExecutor::DeferredTasksExecutor() : added(0), executed(0), terminat
 
 	pool.resize(threads_count);
 	size_t worker_id = 0;
-	for (auto &thr : pool) {
-		thr = std::thread(&WorkerFunc, std::ref(*this), worker_id++);
+	try {
+		for (auto &thr : pool) {
+			thr = std::thread(&DeferredTasksExecutor::Worker, this, worker_id++);
+		}
+	} catch (...) {
+		terminate = true;
+		throw;
 	}
-	
-	int x = 0;
 }
 
 DeferredTasksExecutor::~DeferredTasksExecutor()
@@ -49,4 +30,27 @@ DeferredTasksExecutor::~DeferredTasksExecutor()
 			thr.join();
 		}
 	}
+}
+
+void DeferredTasksExecutor::Worker(size_t worker_id)
+{
+	std::string id_str = std::to_string(worker_id);
+	trace("Worker started");
+
+	while (!terminate) {
+		Task task;
+		if (tasks.TryPop(task)) {
+			trace(id_str + " => Execute task");
+			task();
+			{
+				std::lock_guard<std::mutex> lock(mtx);
+				++executed;
+			}
+		}
+		else {
+			std::this_thread::sleep_for(std::chrono::milliseconds(100));
+		}
+	}
+
+	trace("Worker stoped");
 }
