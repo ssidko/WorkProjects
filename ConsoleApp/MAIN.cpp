@@ -366,6 +366,16 @@ int func(int value)
 	return 0;
 }
 
+class A
+{
+	int x = 0;
+};
+
+class B : public A
+{
+	int y = 0;
+};
+
 int _tmain(int argc, _TCHAR* argv[])
 {
 	//std::cout << std::endl << "---=== Physical Drives ===---" << std::endl;
@@ -384,6 +394,9 @@ int _tmain(int argc, _TCHAR* argv[])
 	size_t sz = sizeof(ploop_pvd_header);
 
 	std::thread thr(worker_func);
+
+	B b;
+	A a = b;
 
 	Task task = [](int task_num)->int {
 		std::string id_str = "Task ("s + std::to_string(task_num) + ")"s;

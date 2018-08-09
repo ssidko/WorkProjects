@@ -20,6 +20,19 @@ public:
 		cv.notify_one();
 	}
 
+	bool Pop(T &element)
+	{
+		if (!queue.empty()) {
+			std::lock_guard<std::mutex> lock(mtx);
+			if (!queue.empty()) {
+				element = queue.front();
+				queue.pop();
+				return true;
+			}		
+		}
+		return false;
+	}
+
 	void WaitAndPop(T &element)
 	{
 		std::unique_lock<std::mutex> lock(mtx);
