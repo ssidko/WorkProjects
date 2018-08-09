@@ -66,6 +66,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "1CV7Recovery", "1CV7Recover
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DVR", "DVR\DVR.vcxproj", "{C1934A1C-48F7-4C97-A1B6-2C5A430AFE17}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Multithreading", "Multithreading\Multithreading.vcxproj", "{FE7C58D4-704E-4DFE-B677-3B7E7FD78EEA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -261,12 +263,20 @@ Global
 		{C1934A1C-48F7-4C97-A1B6-2C5A430AFE17}.Release|Win32.Build.0 = Release|Win32
 		{C1934A1C-48F7-4C97-A1B6-2C5A430AFE17}.Release|x64.ActiveCfg = Release|x64
 		{C1934A1C-48F7-4C97-A1B6-2C5A430AFE17}.Release|x64.Build.0 = Release|x64
+		{FE7C58D4-704E-4DFE-B677-3B7E7FD78EEA}.Debug|Win32.ActiveCfg = Debug|Win32
+		{FE7C58D4-704E-4DFE-B677-3B7E7FD78EEA}.Debug|Win32.Build.0 = Debug|Win32
+		{FE7C58D4-704E-4DFE-B677-3B7E7FD78EEA}.Debug|x64.ActiveCfg = Debug|x64
+		{FE7C58D4-704E-4DFE-B677-3B7E7FD78EEA}.Debug|x64.Build.0 = Debug|x64
+		{FE7C58D4-704E-4DFE-B677-3B7E7FD78EEA}.Release|Win32.ActiveCfg = Release|Win32
+		{FE7C58D4-704E-4DFE-B677-3B7E7FD78EEA}.Release|Win32.Build.0 = Release|Win32
+		{FE7C58D4-704E-4DFE-B677-3B7E7FD78EEA}.Release|x64.ActiveCfg = Release|x64
+		{FE7C58D4-704E-4DFE-B677-3B7E7FD78EEA}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {DE897479-D666-4193-A109-9FE6B8B798F7}
 		Qt5Version = 5.5.1
+		SolutionGuid = {DE897479-D666-4193-A109-9FE6B8B798F7}
 	EndGlobalSection
 EndGlobal
