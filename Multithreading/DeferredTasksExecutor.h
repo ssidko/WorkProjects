@@ -79,9 +79,11 @@ public:
 
 private:
 	std::atomic<bool> terminate;
+	std::atomic<int> tasks_in_progress;
+
 	TSQueue<TaskFunction> tasks;
 	std::vector<std::thread> pool;
-	std::atomic<int> tasks_in_progress;	
+
 
 	void worker_func(size_t id);
 	bool next_task(TaskFunction &task);
