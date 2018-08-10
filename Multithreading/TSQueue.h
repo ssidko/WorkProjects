@@ -17,7 +17,6 @@ public:
 	{
 		std::lock_guard<std::mutex> lock(mtx);
 		queue.push(element);
-		cv.notify_one();
 	}
 
 	bool try_pop(T &element)
@@ -33,14 +32,6 @@ public:
 		return false;
 	}
 
-	void wait_and_pop(T &element)
-	{
-		std::unique_lock<std::mutex> lock(mtx);
-		cv.wait(lock, [this]() {return !queue.empty(); });
-		element = queue.front();
-		queue.pop();		
-	}
-
 	bool empty(void)
 	{
 		std::lock_guard<std::mutex> lock(mtx);
@@ -49,7 +40,6 @@ public:
 	
 private:
 	std::mutex mtx;
-	std::condition_variable cv;
 	std::queue<T> queue;
 };
 

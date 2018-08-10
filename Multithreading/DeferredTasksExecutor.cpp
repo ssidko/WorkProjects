@@ -17,8 +17,8 @@ DeferredTasksExecutor::DeferredTasksExecutor() : terminate(false)
 	pool.resize(threads_count);
 	size_t worker_id = 0;
 	try {
-		for (auto &thr : pool) {
-			thr = std::thread(&DeferredTasksExecutor::worker_func, this, worker_id++);
+		for (auto &worker : pool) {
+			worker = std::thread(&DeferredTasksExecutor::worker_func, this, worker_id++);
 		}
 	} catch (...) {
 		terminate_and_join_all_threads();
@@ -45,20 +45,22 @@ void DeferredTasksExecutor::wait_for_complete_all_tasks(void)
 
 void DeferredTasksExecutor::worker_func(size_t worker_id)
 {
-	std::string id_str = std::to_string(worker_id);
-	trace("Worker started");
+	std::string worker_name = ("Worker ");
+	worker_name += std::to_string(worker_id);
+
+	trace(worker_name + " started");
 
 	while (!terminate) {
 		Task task;
 		if (tasks.try_pop(task)) {
-			trace(id_str + " => Execute task");
+			trace(worker_name + " => Execute task");
 			task();
 		} else {
 			std::this_thread::sleep_for(std::chrono::microseconds(100));
 		}
 	}
 
-	trace("Worker stoped");
+	trace(worker_name + " stoped");
 }
 
 void DeferredTasksExecutor::terminate_and_join_all_threads(void)
