@@ -1,16 +1,19 @@
 #ifndef _DEFERRED_TASKS_EXECUTOR_H
 #define _DEFERRED_TASKS_EXECUTOR_H
 
+#include <vector>
+#include <thread>
+
 #include "DeferredTasksExecutor.h"
-
-#include<vector>
-#include<thread>
-#include<future>
-
-#include "trace.h"
 #include "TSQueue.h"
 
 using Task = std::function<void()>;
+
+enum class TaskStatus {
+	in_queue,
+	processing,
+	done
+};
 
 //class DeferredTask
 //{
@@ -29,23 +32,16 @@ public:
 	DeferredTasksExecutor();
 	~DeferredTasksExecutor();
 
-	void AddTask(Task task)
-	{
-		tasks.Push(task);
-		std::lock_guard<std::mutex> lock(mtx);
-		++added;
-	}
+	void add_task(Task task);
+	void wait_for_complete_all_tasks(void);
 
 private:
-	std::atomic_bool terminate;
+	std::atomic<bool> terminate;
 	TSQueue<Task> tasks;
 	std::vector<std::thread> pool;
 
-	std::mutex mtx;
-	size_t added;
-	size_t executed;
-
-	void Worker(size_t id);
+	void worker_func(size_t id);
+	void terminate_and_join_all_threads(void);
 };
 
 #endif // _DEFERRED_TASKS_EXECUTOR_H

@@ -13,14 +13,14 @@ public:
 	explicit TSQueue(TSQueue &&queue) = default;
 	TSQueue& operator =(const TSQueue & queue) = delete;
 	
-	void Push(const T &element)
+	void push(const T &element)
 	{
 		std::lock_guard<std::mutex> lock(mtx);
 		queue.push(element);
 		cv.notify_one();
 	}
 
-	bool TryPop(T &element)
+	bool try_pop(T &element)
 	{
 		if (!queue.empty()) {
 			std::lock_guard<std::mutex> lock(mtx);
@@ -33,12 +33,18 @@ public:
 		return false;
 	}
 
-	void WaitAndPop(T &element)
+	void wait_and_pop(T &element)
 	{
 		std::unique_lock<std::mutex> lock(mtx);
 		cv.wait(lock, [this]() {return !queue.empty(); });
 		element = queue.front();
 		queue.pop();		
+	}
+
+	bool empty(void)
+	{
+		std::lock_guard<std::mutex> lock(mtx);
+		return queue.empty();
 	}
 	
 private:
