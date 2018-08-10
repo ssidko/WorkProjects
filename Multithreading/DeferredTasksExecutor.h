@@ -13,7 +13,7 @@ void trace(const std::string str);
 using TaskFunction = std::function<void()>;
 
 enum {
-	sleep_for_next_try_usec = 100
+	sleep_for_next_try_usec = 100,
 };
 
 enum class TaskStatus {
@@ -69,7 +69,7 @@ private:
 class DeferredTasksExecutor
 {	
 public:
-	DeferredTasksExecutor();
+	DeferredTasksExecutor(size_t threads_count = 0);
 	~DeferredTasksExecutor();
 
 	void add_task(TaskFunction task);

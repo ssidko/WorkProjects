@@ -14,14 +14,16 @@ void trace(const std::string str)
 	std::cout << str << std::endl;
 }
 
-DeferredTasksExecutor::DeferredTasksExecutor() : terminate(false)
+DeferredTasksExecutor::DeferredTasksExecutor(size_t threads_count) : terminate(false)
 {
-	size_t hw_threads_count = std::thread::hardware_concurrency();
-	if (hw_threads_count == 0) {
-		hw_threads_count = 2;
+	if (threads_count == 0) {
+		threads_count = std::thread::hardware_concurrency();
+		if (threads_count == 0) {
+			threads_count = 2;
+		}
 	}
 
-	pool.resize(hw_threads_count);
+	pool.resize(threads_count);
 	size_t worker_id = 0;
 	try {
 		for (auto &worker : pool) {
