@@ -290,7 +290,7 @@ struct ploop_pvd_header
 #include <chrono>
 #include <type_traits>
 
-using Task = std::function<int(int)>;
+using TaskFunction = std::function<int(int)>;
 
 template<typename TaskType>
 class TaskQueue
@@ -304,7 +304,7 @@ public:
 	TaskType GetTask(void)
 	{
 		std::lock_guard<std::mutex> guard(mtx);
-		Task task;
+		TaskFunction task;
 		if (!queue.empty()) {
 			task = queue.front();
 			queue.pop();
@@ -329,7 +329,7 @@ void console_log(const std::string str)
 }
 
 
-TaskQueue<Task> tasks;
+TaskQueue<TaskFunction> tasks;
 
 
 void worker_func(void)
@@ -398,7 +398,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	B b;
 	A a = b;
 
-	Task task = [](int task_num)->int {
+	TaskFunction task = [](int task_num)->int {
 		std::string id_str = "Task ("s + std::to_string(task_num) + ")"s;
 		console_log(id_str + " start");
 	

@@ -21,14 +21,12 @@ public:
 
 	bool try_pop(T &element)
 	{
+		std::lock_guard<std::mutex> lock(mtx);
 		if (!queue.empty()) {
-			std::lock_guard<std::mutex> lock(mtx);
-			if (!queue.empty()) {
-				element = queue.front();
-				queue.pop();
-				return true;
-			}		
-		}
+			element = queue.front();
+			queue.pop();
+			return true;
+		}		
 		return false;
 	}
 

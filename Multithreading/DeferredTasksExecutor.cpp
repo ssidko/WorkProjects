@@ -16,12 +16,12 @@ void trace(const std::string str)
 
 DeferredTasksExecutor::DeferredTasksExecutor() : terminate(false)
 {
-	size_t threads_count = std::thread::hardware_concurrency();
-	if (threads_count == 0) {
-		threads_count = 2;
+	size_t hw_threads_count = std::thread::hardware_concurrency();
+	if (hw_threads_count == 0) {
+		hw_threads_count = 2;
 	}
 
-	pool.resize(threads_count);
+	pool.resize(hw_threads_count);
 	size_t worker_id = 0;
 	try {
 		for (auto &worker : pool) {
@@ -38,7 +38,7 @@ DeferredTasksExecutor::~DeferredTasksExecutor()
 	terminate_and_join_all_threads();
 }
 
-void DeferredTasksExecutor::add_task(Task task)
+void DeferredTasksExecutor::add_task(TaskFunction task)
 {
 	tasks.push(task);
 }
@@ -46,18 +46,20 @@ void DeferredTasksExecutor::add_task(Task task)
 void DeferredTasksExecutor::wait_for_complete_all_tasks(void)
 {
 	while (!tasks.empty()) {
-		std::this_thread::sleep_for(std::chrono::microseconds(100));
+		std::this_thread::sleep_for(std::chrono::microseconds(sleep_for_next_try_usec));
 	}
-	while (this->in_progress) {
-		std::this_thread::sleep_for(std::chrono::microseconds(100));
+	while (tasks_in_progress) {
+		std::this_thread::sleep_for(std::chrono::microseconds(sleep_for_next_try_usec));
 	}
 }
 
-bool DeferredTasksExecutor::next_task(Task &task)
+bool DeferredTasksExecutor::next_task(TaskFunction &task)
 {
 	if (tasks.try_pop(task)){
-		this->in_progress++;
-		assert(in_progress <= static_cast<int>(pool.size()));
+		tasks_in_progress++;
+
+		assert(tasks_in_progress <= static_cast<int>(pool.size()));
+
 		return true;
 	}
 	return false;
@@ -65,23 +67,23 @@ bool DeferredTasksExecutor::next_task(Task &task)
 
 void DeferredTasksExecutor::worker_func(size_t worker_id)
 {
-	std::string worker_name = ("Worker ");
+	std::string worker_name("Worker ");
 	worker_name += std::to_string(worker_id);
 
 	trace(worker_name + " started");
 
 	while (!terminate) {
-		Task task;
+		TaskFunction task;
 		if (next_task(task)) {
 			trace(worker_name + " => Execute task");
 
 			task();
+			tasks_in_progress--;
 
-			in_progress--;
-			assert(in_progress >= 0);
+			assert(tasks_in_progress >= 0);
 
 		} else {
-			std::this_thread::sleep_for(std::chrono::microseconds(100));
+			std::this_thread::sleep_for(std::chrono::microseconds(sleep_for_next_try_usec));
 		}
 	}
 
