@@ -1,11 +1,18 @@
 #include "stdafx.h"
 
+#include <iostream>
 #include <string>
 #include <atomic>
+#include <assert.h>
 
 #include "DeferredTasksExecutor.h"
-#include "trace.h"
 
+void trace(const std::string str)
+{
+	static std::mutex trace_mtx;
+	std::lock_guard<std::mutex> lock(trace_mtx);
+	std::cout << str << std::endl;
+}
 
 DeferredTasksExecutor::DeferredTasksExecutor() : terminate(false)
 {
@@ -41,6 +48,19 @@ void DeferredTasksExecutor::wait_for_complete_all_tasks(void)
 	while (!tasks.empty()) {
 		std::this_thread::sleep_for(std::chrono::microseconds(100));
 	}
+	while (this->in_progress) {
+		std::this_thread::sleep_for(std::chrono::microseconds(100));
+	}
+}
+
+bool DeferredTasksExecutor::next_task(Task &task)
+{
+	if (tasks.try_pop(task)){
+		this->in_progress++;
+		assert(in_progress <= static_cast<int>(pool.size()));
+		return true;
+	}
+	return false;
 }
 
 void DeferredTasksExecutor::worker_func(size_t worker_id)
@@ -52,9 +72,14 @@ void DeferredTasksExecutor::worker_func(size_t worker_id)
 
 	while (!terminate) {
 		Task task;
-		if (tasks.try_pop(task)) {
+		if (next_task(task)) {
 			trace(worker_name + " => Execute task");
+
 			task();
+
+			in_progress--;
+			assert(in_progress >= 0);
+
 		} else {
 			std::this_thread::sleep_for(std::chrono::microseconds(100));
 		}
