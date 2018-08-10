@@ -7,6 +7,7 @@
 
 #include "DeferredTasksExecutor.h"
 
+
 void trace(const std::string str)
 {
 	static std::mutex trace_mtx;

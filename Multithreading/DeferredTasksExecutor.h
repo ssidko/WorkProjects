@@ -2,6 +2,7 @@
 #define _DEFERRED_TASKS_EXECUTOR_H
 
 #include <vector>
+#include <memory>
 #include <thread>
 #include <atomic>
 
@@ -26,8 +27,7 @@ enum class TaskStatus {
 class DeferredTask
 {
 public:
-	DeferredTask(TaskFunction function_, std::function<bool()> precondition_ = []() {return true; }) 
-		: function(function_), task_status(TaskStatus::in_queue), precondition(precondition_)
+	DeferredTask(TaskFunction task_function) : function(task_function), task_status(TaskStatus::in_queue)
 	{
 	}
 
@@ -56,7 +56,6 @@ public:
 	}
 private:
 	TaskFunction function;
-	std::function<bool()> precondition;
 	std::mutex mtx;
 	TaskStatus task_status;
 
@@ -80,11 +79,9 @@ public:
 private:
 	std::atomic<bool> terminate;
 	std::atomic<int> tasks_in_progress;
-
 	TSQueue<TaskFunction> tasks;
 	std::vector<std::thread> pool;
-
-
+	
 	void worker_func(size_t id);
 	bool next_task(TaskFunction &task);
 	void terminate_and_join_all_threads(void);
