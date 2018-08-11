@@ -7,6 +7,11 @@
 
 #include "DeferredTasksExecutor.h"
 
+enum {
+	sleep_for_next_try_usec = 100,
+};
+
+
 
 void trace(const std::string str)
 {
@@ -27,41 +32,37 @@ const char *task_status_to_string(TaskStatus status)
 	}
 }
 
-DeferredTask::DeferredTask(TaskFunction task_function)
-	: function(task_function),
-	task_status(TaskStatus::not_in_queue)
+Task::Task(task_function_t task_function)
+	: function(task_function)
 {
+	set_status(TaskStatus::not_in_queue);
 }
 
-TaskStatus DeferredTask::status(void)
+TaskStatus Task::status(void)
 {
-	std::lock_guard<std::mutex> lock(mtx);
-	return task_status;
+	return static_cast<TaskStatus>(static_cast<int>(task_status));
 }
 
-void DeferredTask::wait_for_done()
+void Task::wait_for_done()
 {
 	while (status() != TaskStatus::done) {
 		std::this_thread::sleep_for(std::chrono::microseconds(sleep_for_next_try_usec));
 	}
 }
 
-bool DeferredTask::is_done(void)
+bool Task::is_done(void)
 {
 	return status() == TaskStatus::done;
 }
 
-void DeferredTask::operator ()(void)
+void Task::operator ()(void)
 {
-	set_status(TaskStatus::processing);
 	function();
-	set_status(TaskStatus::done);
 }
 
-void DeferredTask::set_status(TaskStatus new_status)
+void Task::set_status(TaskStatus new_status)
 {
-	std::lock_guard<std::mutex> lock(mtx);
-	task_status = new_status;
+	task_status = static_cast<int>(new_status);
 }
 
 DeferredTasksExecutor & DeferredTasksExecutor::get_instance(void)
@@ -100,9 +101,9 @@ size_t DeferredTasksExecutor::pool_size(void)
 	return pool.size();
 }
 
-std::shared_ptr<DeferredTask> DeferredTasksExecutor::add_task(TaskFunction task_function)
+std::shared_ptr<Task> DeferredTasksExecutor::add_task(task_function_t task_function)
 {
-	auto task = std::make_shared<DeferredTask>(task_function);
+	auto task = std::make_shared<Task>(task_function);
 	tasks.push(task);
 	task.get()->set_status(TaskStatus::in_queue);
 	return task;
@@ -118,7 +119,7 @@ void DeferredTasksExecutor::wait_for_all_done(void)
 	}
 }
 
-bool DeferredTasksExecutor::next_task(std::shared_ptr<DeferredTask> &task)
+bool DeferredTasksExecutor::next_task(std::shared_ptr<Task> &task)
 {
 	if (tasks.try_pop(task)){
 		tasks_in_progress++;
@@ -133,7 +134,7 @@ bool DeferredTasksExecutor::next_task(std::shared_ptr<DeferredTask> &task)
 void DeferredTasksExecutor::worker_thread(size_t worker_id)
 {
 	while (!terminate) {
-		std::shared_ptr<DeferredTask> task;
+		std::shared_ptr<Task> task;
 		if (next_task(task)) {
 
 			(*task).set_status(TaskStatus::processing);
@@ -146,6 +147,16 @@ void DeferredTasksExecutor::worker_thread(size_t worker_id)
 		} else {
 			std::this_thread::sleep_for(std::chrono::microseconds(sleep_for_next_try_usec));
 		}
+	}
+}
+
+void DeferredTasksExecutor::precondition_checker_thread(void)
+{
+	while (!terminate) {
+		
+	
+	
+	
 	}
 }
 
