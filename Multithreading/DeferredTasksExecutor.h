@@ -3,15 +3,17 @@
 
 #include <vector>
 #include <list>
+#include <deque>
 #include <memory>
 #include <thread>
+#include <mutex>
 #include <atomic>
 
 #include "DeferredTasksExecutor.h"
-#include "TSQueue.h"
 
 using task_function_t = std::function<void()>;
 using precondition_t = std::function<bool()>;
+using priority_t = unsigned int;
 
 enum class TaskStatus {
 	not_in_queue,
@@ -30,20 +32,22 @@ class Task
 {
 	friend DeferredTasksExecutor;
 public:
-	Task(task_function_t task_function, precondition_t precond = []() {return true;});
+	Task(task_function_t task_function, priority_t priority = 0, precondition_t precond = []() {return true;});
 
 	Task(const Task &) = delete;
 	Task(const Task &&) = delete;
 	Task & operator =(const Task &) = delete;
 	Task & operator =(const Task &&) = delete;
 
-	TaskStatus status(void);	
+	TaskStatus status(void);
+	priority_t priority(void);
 	bool is_done(void);
 	void wait_for_done();
 	void operator ()(void);
 
 private:
 	task_function_t function;
+	const priority_t task_priority;
 	precondition_t precondition;
 	std::atomic<int> task_status;
 
@@ -51,21 +55,27 @@ private:
 	bool ready_for_processing();
 };
 
+bool task_comp(const std::shared_ptr<Task> &lhs, const std::shared_ptr<Task> &rhs);
+
 class DeferredTasksExecutor
 {	
 public:
 	static DeferredTasksExecutor & get_instance(void);
 	size_t pool_size(void);
-	std::shared_ptr<Task> add_task(task_function_t task_function);
-	std::shared_ptr<Task> add_task(task_function_t task_function, precondition_t precondition);
+	std::shared_ptr<Task> add_task(task_function_t task_function, priority_t priority = 0, precondition_t precondition = []() {return true;});
 	void add_task(std::shared_ptr<Task> &task);
+	
+	//void cancel_task(std::shared_ptr<Task> &task);
+	
 	void wait_for_all_done(void);
 
 private:
 	std::atomic<bool> terminate;
 	std::atomic<int> tasks_in_progress;
-	TSQueue<std::shared_ptr<Task>> tasks;
 	std::vector<std::thread> pool;
+
+	std::mutex tasks_queue_mtx;
+	std::deque<std::shared_ptr<Task>> tasks_queue;
 
 	std::mutex deferred_tasks_mtx;
 	std::list<std::shared_ptr<Task>> deferred_tasks;

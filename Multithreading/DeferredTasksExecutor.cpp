@@ -4,6 +4,7 @@
 #include <string>
 #include <atomic>
 #include <assert.h>
+#include <algorithm>
 
 #include "DeferredTasksExecutor.h"
 
@@ -16,7 +17,7 @@ void trace(const std::string str)
 {
 	static std::mutex trace_mtx;
 	std::lock_guard<std::mutex> lock(trace_mtx);
-	std::cout << str << std::endl;
+	std::cout << str ;
 }
 
 const char *task_status_to_string(TaskStatus status)
@@ -31,8 +32,8 @@ const char *task_status_to_string(TaskStatus status)
 	}
 }
 
-Task::Task(task_function_t task_function, precondition_t precond)
-	: function(task_function), precondition(precond)
+Task::Task(task_function_t task_function, priority_t priority, precondition_t precond)
+	: function(task_function), task_priority(priority), precondition(precond)
 {
 	set_status(TaskStatus::not_in_queue);
 }
@@ -40,6 +41,11 @@ Task::Task(task_function_t task_function, precondition_t precond)
 TaskStatus Task::status(void)
 {
 	return static_cast<TaskStatus>(static_cast<int>(task_status));
+}
+
+priority_t Task::priority(void)
+{
+	return task_priority;
 }
 
 void Task::wait_for_done()
@@ -67,6 +73,11 @@ void Task::operator ()(void)
 void Task::set_status(TaskStatus new_status)
 {
 	task_status = static_cast<int>(new_status);
+}
+
+bool task_comp(const std::shared_ptr<Task> &lhs, const std::shared_ptr<Task> &rhs)
+{
+	return lhs->priority() > rhs->priority();
 }
 
 DeferredTasksExecutor & DeferredTasksExecutor::get_instance(void)
@@ -106,16 +117,12 @@ size_t DeferredTasksExecutor::pool_size(void)
 	return pool.size();
 }
 
-std::shared_ptr<Task> DeferredTasksExecutor::add_task(task_function_t task_function)
+std::shared_ptr<Task> DeferredTasksExecutor::add_task(
+	task_function_t task_function,
+	priority_t priority,
+	precondition_t precondition)
 {
-	auto task = std::make_shared<Task>(task_function);
-	add_task(task);
-	return task;
-}
-
-std::shared_ptr<Task> DeferredTasksExecutor::add_task(task_function_t task_function, precondition_t precondition)
-{
-	auto task = std::make_shared<Task>(task_function, precondition);
+	auto task = std::make_shared<Task>(task_function, priority, precondition);
 	add_task(task);
 	return task;
 }
@@ -123,17 +130,37 @@ std::shared_ptr<Task> DeferredTasksExecutor::add_task(task_function_t task_funct
 void DeferredTasksExecutor::add_task(std::shared_ptr<Task> &task)
 {
 	if (task->ready_for_processing()) {
-		tasks.push(task);
-		task.get()->set_status(TaskStatus::in_queue);
+		std::lock_guard<std::mutex> lock(tasks_queue_mtx);
+		tasks_queue.push_back(task);
+		task->set_status(TaskStatus::in_queue);
+		std::sort(tasks_queue.begin(), tasks_queue.end(), task_comp);
 	} else {
 		add_task_to_deferred_tasks(task);
 		task->set_status(TaskStatus::wait_for_precondition);
 	}
 }
 
+//void DeferredTasksExecutor::cancel_task(std::shared_ptr<Task> &task)
+//{
+//
+//	if (task->status() == TaskStatus::wait_for_precondition) {
+//		std::lock_guard<std::mutex> lock(deferred_tasks_mtx);
+//		if (task->status() == TaskStatus::wait_for_precondition) {
+//
+//			auto it = std::remove_if(deferred_tasks.begin(), deferred_tasks.end(), [&task](std::shared_ptr<Task> &t) {
+//				return t.get() == task.get();
+//			});
+//		
+//		}
+//	} 
+//	if (task->status() == TaskStatus::in_queue) {
+//	
+//	}
+//}
+
 void DeferredTasksExecutor::wait_for_all_done(void)
 {
-	while (!tasks.empty()) {
+	while (!tasks_queue.empty()) {
 		std::this_thread::sleep_for(std::chrono::microseconds(Constants::sleep_for_next_try_usec));
 	}
 	while (tasks_in_progress) {
@@ -149,9 +176,13 @@ void DeferredTasksExecutor::add_task_to_deferred_tasks(std::shared_ptr<Task> tas
 
 bool DeferredTasksExecutor::next_task(std::shared_ptr<Task> &task)
 {
-	if (tasks.try_pop(task)){
-		tasks_in_progress++;
+	std::lock_guard<std::mutex> lock(tasks_queue_mtx);
+	if (!tasks_queue.empty()) {
 
+		task = tasks_queue.front();
+		tasks_queue.pop_front();
+
+		tasks_in_progress++;
 		assert(tasks_in_progress <= static_cast<int>(pool.size()));
 
 		return true;
@@ -190,10 +221,10 @@ void DeferredTasksExecutor::precondition_checker_thread(void)
 				auto task = (*it);
 				if (task->ready_for_processing()) {
 					it = deferred_tasks.erase(it);
-					tasks.push(task);
+					add_task(task);
 					task->set_status(TaskStatus::in_queue);
 				} else {
-					it++;
+					++it;
 				}			
 			}
 		}
