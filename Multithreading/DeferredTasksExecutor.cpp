@@ -7,11 +7,10 @@
 
 #include "DeferredTasksExecutor.h"
 
-enum {
+enum Constants {
 	sleep_for_next_try_usec = 100,
+	default_threads_count = 4,
 };
-
-
 
 void trace(const std::string str)
 {
@@ -32,8 +31,8 @@ const char *task_status_to_string(TaskStatus status)
 	}
 }
 
-Task::Task(task_function_t task_function)
-	: function(task_function)
+Task::Task(task_function_t task_function, precondition_t precond)
+	: function(task_function), precondition(precond)
 {
 	set_status(TaskStatus::not_in_queue);
 }
@@ -46,13 +45,18 @@ TaskStatus Task::status(void)
 void Task::wait_for_done()
 {
 	while (status() != TaskStatus::done) {
-		std::this_thread::sleep_for(std::chrono::microseconds(sleep_for_next_try_usec));
+		std::this_thread::sleep_for(std::chrono::microseconds(Constants::sleep_for_next_try_usec));
 	}
 }
 
 bool Task::is_done(void)
 {
 	return status() == TaskStatus::done;
+}
+
+bool Task::ready_for_processing(void)
+{
+	return precondition();
 }
 
 void Task::operator ()(void)
@@ -73,18 +77,19 @@ DeferredTasksExecutor & DeferredTasksExecutor::get_instance(void)
 
 DeferredTasksExecutor::DeferredTasksExecutor() : terminate(false)
 {
-	const size_t default_threads_count = 4;
 	size_t threads_count = std::thread::hardware_concurrency();
 	if (threads_count == 0) {
-		threads_count = default_threads_count;
+		threads_count = Constants::default_threads_count;
 	}
 
-	pool.resize(threads_count);
-	size_t worker_id = 0;
+	pool.resize(threads_count + 1);
 	try {
-		for (auto &worker : pool) {
-			worker = std::thread(&DeferredTasksExecutor::worker_thread, this, worker_id++);
+		auto b = pool.begin();
+		(*b++) = std::thread(&DeferredTasksExecutor::precondition_checker_thread, this);
+		for (auto e = pool.end(); b != e; b++) {
+			(*b) = std::thread(&DeferredTasksExecutor::worker_thread, this);
 		}
+
 	} catch (...) {
 		terminate_and_join_all_threads();
 		throw;
@@ -104,19 +109,42 @@ size_t DeferredTasksExecutor::pool_size(void)
 std::shared_ptr<Task> DeferredTasksExecutor::add_task(task_function_t task_function)
 {
 	auto task = std::make_shared<Task>(task_function);
-	tasks.push(task);
-	task.get()->set_status(TaskStatus::in_queue);
+	add_task(task);
 	return task;
+}
+
+std::shared_ptr<Task> DeferredTasksExecutor::add_task(task_function_t task_function, precondition_t precondition)
+{
+	auto task = std::make_shared<Task>(task_function, precondition);
+	add_task(task);
+	return task;
+}
+
+void DeferredTasksExecutor::add_task(std::shared_ptr<Task> &task)
+{
+	if (task->ready_for_processing()) {
+		tasks.push(task);
+		task.get()->set_status(TaskStatus::in_queue);
+	} else {
+		add_task_to_deferred_tasks(task);
+		task->set_status(TaskStatus::wait_for_precondition);
+	}
 }
 
 void DeferredTasksExecutor::wait_for_all_done(void)
 {
 	while (!tasks.empty()) {
-		std::this_thread::sleep_for(std::chrono::microseconds(sleep_for_next_try_usec));
+		std::this_thread::sleep_for(std::chrono::microseconds(Constants::sleep_for_next_try_usec));
 	}
 	while (tasks_in_progress) {
-		std::this_thread::sleep_for(std::chrono::microseconds(sleep_for_next_try_usec));
+		std::this_thread::sleep_for(std::chrono::microseconds(Constants::sleep_for_next_try_usec));
 	}
+}
+
+void DeferredTasksExecutor::add_task_to_deferred_tasks(std::shared_ptr<Task> task)
+{
+	std::lock_guard<std::mutex> lock(deferred_tasks_mtx);
+	deferred_tasks.push_back(task);
 }
 
 bool DeferredTasksExecutor::next_task(std::shared_ptr<Task> &task)
@@ -131,7 +159,7 @@ bool DeferredTasksExecutor::next_task(std::shared_ptr<Task> &task)
 	return false;
 }
 
-void DeferredTasksExecutor::worker_thread(size_t worker_id)
+void DeferredTasksExecutor::worker_thread(void)
 {
 	while (!terminate) {
 		std::shared_ptr<Task> task;
@@ -145,18 +173,31 @@ void DeferredTasksExecutor::worker_thread(size_t worker_id)
 			assert(tasks_in_progress >= 0);
 
 		} else {
-			std::this_thread::sleep_for(std::chrono::microseconds(sleep_for_next_try_usec));
+			std::this_thread::sleep_for(std::chrono::microseconds(Constants::sleep_for_next_try_usec));
 		}
 	}
 }
 
 void DeferredTasksExecutor::precondition_checker_thread(void)
 {
-	while (!terminate) {
-		
-	
-	
-	
+	while (!terminate) {		
+		if (!deferred_tasks.empty()) {
+			
+			std::lock_guard<std::mutex> lock(deferred_tasks_mtx);
+
+			auto it = deferred_tasks.begin();
+			while (it != deferred_tasks.end()) {
+				auto task = (*it);
+				if (task->ready_for_processing()) {
+					it = deferred_tasks.erase(it);
+					tasks.push(task);
+					task->set_status(TaskStatus::in_queue);
+				} else {
+					it++;
+				}			
+			}
+		}
+		std::this_thread::sleep_for(std::chrono::microseconds(Constants::sleep_for_next_try_usec));
 	}
 }
 

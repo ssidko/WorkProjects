@@ -10,8 +10,6 @@
 #include "DeferredTasksExecutor.h"
 #include "TSQueue.h"
 
-void trace(const std::string str);
-
 using task_function_t = std::function<void()>;
 using precondition_t = std::function<bool()>;
 
@@ -23,6 +21,7 @@ enum class TaskStatus {
 	done
 };
 
+void trace(const std::string str);
 const char *task_status_to_string(TaskStatus status);
 
 class DeferredTasksExecutor;
@@ -31,7 +30,7 @@ class Task
 {
 	friend DeferredTasksExecutor;
 public:
-	Task(task_function_t task_function);
+	Task(task_function_t task_function, precondition_t precond = []() {return true;});
 
 	Task(const Task &) = delete;
 	Task(const Task &&) = delete;
@@ -39,15 +38,17 @@ public:
 	Task & operator =(const Task &&) = delete;
 
 	TaskStatus status(void);	
-	void wait_for_done();
 	bool is_done(void);
+	void wait_for_done();
 	void operator ()(void);
 
 private:
 	task_function_t function;
+	precondition_t precondition;
 	std::atomic<int> task_status;
 
 	void set_status(TaskStatus new_status);
+	bool ready_for_processing();
 };
 
 class DeferredTasksExecutor
@@ -56,6 +57,8 @@ public:
 	static DeferredTasksExecutor & get_instance(void);
 	size_t pool_size(void);
 	std::shared_ptr<Task> add_task(task_function_t task_function);
+	std::shared_ptr<Task> add_task(task_function_t task_function, precondition_t precondition);
+	void add_task(std::shared_ptr<Task> &task);
 	void wait_for_all_done(void);
 
 private:
@@ -64,7 +67,8 @@ private:
 	TSQueue<std::shared_ptr<Task>> tasks;
 	std::vector<std::thread> pool;
 
-	std::list<std::shared_ptr<Task>> tasks_with_precondition;
+	std::mutex deferred_tasks_mtx;
+	std::list<std::shared_ptr<Task>> deferred_tasks;
 	
 	DeferredTasksExecutor();
 	~DeferredTasksExecutor();
@@ -73,8 +77,10 @@ private:
 	DeferredTasksExecutor & operator=(const DeferredTasksExecutor &) = delete;
 	DeferredTasksExecutor & operator=(const DeferredTasksExecutor &&) = delete;
 
-	void worker_thread(size_t id);
-	void precondition_checker_thread();
+	void worker_thread(void);
+	void precondition_checker_thread(void);
+
+	void add_task_to_deferred_tasks(std::shared_ptr<Task> task);
 	bool next_task(std::shared_ptr<Task> &task);
 	void terminate_and_join_all_threads(void);
 };
