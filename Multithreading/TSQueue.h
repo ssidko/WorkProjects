@@ -9,9 +9,9 @@ class TSQueue
 {
 public:
 	TSQueue() {}
-	explicit TSQueue(const TSQueue &queue) = default;
-	explicit TSQueue(TSQueue &&queue) = default;
-	TSQueue& operator =(const TSQueue & queue) = delete;
+	explicit TSQueue(const TSQueue &) = default;
+	explicit TSQueue(TSQueue &&) = default;
+	TSQueue& operator =(const TSQueue &) = delete;
 	
 	void push(const T &element)
 	{
@@ -34,6 +34,12 @@ public:
 	{
 		std::lock_guard<std::mutex> lock(mtx);
 		return queue.empty();
+	}
+
+	size_t size(void)
+	{
+		std::lock_guard<std::mutex> lock(mtx);
+		return queue.size();
 	}
 	
 private:

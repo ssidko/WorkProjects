@@ -18,72 +18,62 @@ enum {
 };
 
 enum class TaskStatus {
+	not_in_queue,
 	wait_for_precondition,
 	in_queue,
 	processing,
 	done
 };
 
+const char *task_status_to_string(TaskStatus status);
+
+class DeferredTasksExecutor;
+
 class DeferredTask
 {
+	friend DeferredTasksExecutor;
 public:
-	DeferredTask(TaskFunction task_function) : function(task_function), task_status(TaskStatus::in_queue)
-	{
-	}
+	DeferredTask(TaskFunction task_function);
 
-	TaskStatus status(void)
-	{
-		std::lock_guard<std::mutex> lock(mtx);
-		return task_status;
-	}
-	
-	void wait()
-	{
-		while(status() != TaskStatus::done) {
-			std::this_thread::sleep_for(std::chrono::microseconds(sleep_for_next_try_usec));
-		}
-	}
+	DeferredTask(const DeferredTask &task) = delete;
+	DeferredTask & operator =(const DeferredTask &task) = delete;
 
-	bool is_done(void)
-	{
-		return status() == TaskStatus::done;
-	}
+	TaskStatus status(void);	
+	void wait_for_done();
+	bool is_done(void);
+	void operator ()(void);
 
-	void operator ()(void) {
-		set_status(TaskStatus::processing);
-		function();
-		set_status(TaskStatus::done);
-	}
 private:
 	TaskFunction function;
 	std::mutex mtx;
 	TaskStatus task_status;
 
-	void set_status(TaskStatus new_status) {
-		std::lock_guard<std::mutex> lock(mtx);
-		task_status = new_status;
-	}
+	void set_status(TaskStatus new_status);
 };
 
 class DeferredTasksExecutor
 {	
 public:
-	DeferredTasksExecutor(size_t threads_count = 0);
-	~DeferredTasksExecutor();
-
-	void add_task(TaskFunction task);
-	void wait_for_complete_all_tasks(void);
-
-	// void cancel_task(void);
+	static DeferredTasksExecutor & get_instance(void);
+	size_t pool_size(void);
+	std::shared_ptr<DeferredTask> add_task(TaskFunction task_function);
+	void wait_for_all_done(void);
 
 private:
 	std::atomic<bool> terminate;
 	std::atomic<int> tasks_in_progress;
-	TSQueue<TaskFunction> tasks;
+	TSQueue<std::shared_ptr<DeferredTask>> tasks;
 	std::vector<std::thread> pool;
 	
-	void worker_func(size_t id);
-	bool next_task(TaskFunction &task);
+	DeferredTasksExecutor();
+	~DeferredTasksExecutor();
+	DeferredTasksExecutor(const DeferredTasksExecutor &) = delete;
+	DeferredTasksExecutor(const DeferredTasksExecutor &&) = delete;
+	DeferredTasksExecutor & operator=(const DeferredTasksExecutor &) = delete;
+	DeferredTasksExecutor & operator=(const DeferredTasksExecutor &&) = delete;
+
+	void worker_thread(size_t id);
+	bool next_task(std::shared_ptr<DeferredTask> &task);
 	void terminate_and_join_all_threads(void);
 };
 
