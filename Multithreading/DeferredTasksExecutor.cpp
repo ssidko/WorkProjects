@@ -33,6 +33,13 @@ void Task::wait_for_done()
 	cv.wait(lock, [this]() {return this->status() == TaskStatus::done;});
 }
 
+void Task::wait_for_status_changed()
+{
+	std::unique_lock<std::mutex> lock(cv_mtx);
+	TaskStatus prev_status = this->status();
+	cv.wait(lock, [this, prev_status]() {return prev_status != this->status();});
+}
+
 bool Task::is_done(void)
 {
 	return status() == TaskStatus::done;

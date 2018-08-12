@@ -38,6 +38,7 @@ public:
 	priority_t priority(void);
 	bool is_done(void);
 	void wait_for_done();
+	void wait_for_status_changed();
 	void operator ()(void);
 
 private:
@@ -51,8 +52,6 @@ private:
 	void set_status(TaskStatus new_status);
 	bool ready_for_processing();
 };
-
-bool task_comp(const std::shared_ptr<Task> &lhs, const std::shared_ptr<Task> &rhs);
 
 class DeferredTasksExecutor
 {	
