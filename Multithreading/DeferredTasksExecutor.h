@@ -21,8 +21,6 @@ enum class TaskStatus {
 	done
 };
 
-const char *task_status_to_string(TaskStatus status);
-
 class DeferredTasksExecutor;
 
 class Task

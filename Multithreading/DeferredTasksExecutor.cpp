@@ -115,6 +115,7 @@ void DeferredTasksExecutor::add_task(std::shared_ptr<Task> &task)
 
 void DeferredTasksExecutor::cancel_task(std::shared_ptr<Task> &task)
 {
+	std::lock_guard<std::mutex> lock(tasks_queue_mtx);
 	task->set_status(TaskStatus::cancel);
 }
 
@@ -151,6 +152,7 @@ void DeferredTasksExecutor::worker_thread(void)
 		if (next_task(task)) {
 
 			if (task->status() == TaskStatus::cancel) {
+				task->set_status(TaskStatus::not_in_queue);
 				continue;
 			}
 
@@ -162,8 +164,8 @@ void DeferredTasksExecutor::worker_thread(void)
 			task->set_status(TaskStatus::processing);
 			(*task)();
 			task->set_status(TaskStatus::done);
+			
 			tasks_in_progress--;
-
 			assert(tasks_in_progress >= 0);
 
 		} else {
