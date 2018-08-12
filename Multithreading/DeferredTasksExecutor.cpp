@@ -72,7 +72,7 @@ DeferredTasksExecutor & DeferredTasksExecutor::get_instance(void)
 	return instance;
 }
 
-DeferredTasksExecutor::DeferredTasksExecutor() : terminate(false)
+DeferredTasksExecutor::DeferredTasksExecutor() : terminate(false), tasks_in_progress(0)
 {
 	size_t threads_count = std::thread::hardware_concurrency();
 	if (threads_count == 0) {
@@ -140,13 +140,8 @@ bool DeferredTasksExecutor::next_task(std::shared_ptr<Task> &task)
 {
 	std::lock_guard<std::mutex> lock(tasks_queue_mtx);
 	if (!tasks_queue.empty()) {
-
 		task = tasks_queue.front();
 		tasks_queue.pop_front();
-
-		tasks_in_progress++;
-		assert(tasks_in_progress <= static_cast<int>(pool.size()));
-
 		return true;
 	}
 	return false;
@@ -168,17 +163,21 @@ void DeferredTasksExecutor::worker_thread(void)
 				continue;
 			}
 
+			++tasks_in_progress;
+			assert(tasks_in_progress <= static_cast<int>(pool.size()));
+
 			task->set_status(TaskStatus::processing);
 			(*task)();
 			task->set_status(TaskStatus::done);
-			
-			tasks_in_progress--;
-			assert(tasks_in_progress >= 0);
 
+			--tasks_in_progress;
+			assert(tasks_in_progress >= 0);
+			
 		} else {
 			std::this_thread::sleep_for(std::chrono::microseconds(sleep_for_next_try_usec));
 		}
 	}
+
 }
 
 void DeferredTasksExecutor::terminate_and_join_all_threads(void)
