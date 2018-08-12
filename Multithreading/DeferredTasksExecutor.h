@@ -18,6 +18,7 @@ enum class TaskStatus {
 	in_queue,
 	processing,
 	cancel,
+	canceled,
 	done
 };
 

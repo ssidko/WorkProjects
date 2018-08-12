@@ -154,7 +154,7 @@ void DeferredTasksExecutor::worker_thread(void)
 		if (next_task(task)) {
 
 			if (task->status() == TaskStatus::cancel) {
-				task->set_status(TaskStatus::not_in_queue);
+				task->set_status(TaskStatus::canceled);
 				continue;
 			}
 
