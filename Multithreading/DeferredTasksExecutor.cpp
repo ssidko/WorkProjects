@@ -75,6 +75,28 @@ DeferredTasksExecutor & DeferredTasksExecutor::get_instance(void)
 	return instance;
 }
 
+void DeferredTasksExecutor::start_worker_pool(void)
+{
+	std::lock_guard<std::mutex> lock(pool_mtx);
+	if (!pool_started) {
+		size_t threads_count = std::thread::hardware_concurrency();
+		if (threads_count == 0) {
+			threads_count = default_threads_count;
+		}
+		pool.reserve(threads_count);
+		try {
+			for (size_t i = 0; i < threads_count; ++i) {
+				pool.emplace_back(std::thread(&DeferredTasksExecutor::worker_thread, this));
+			}
+		}
+		catch (...) {
+			terminate_and_join_all_threads();
+			throw;
+		}
+		pool_started = true;
+	}
+}
+
 DeferredTasksExecutor::DeferredTasksExecutor() : terminate(false), pool_started(false), tasks_in_progress(0)
 {
 }
@@ -146,51 +168,47 @@ void DeferredTasksExecutor::worker_thread(void)
 		std::shared_ptr<Task> task;
 		if (next_task(task)) {
 
-			if (task->status() == TaskStatus::cancel) {
-				task->set_status(TaskStatus::canceled);
-				--tasks_in_progress;
-				assert(tasks_in_progress >= 0);
-				continue;
+			if (task->status() == TaskStatus::in_queue) {
+				if (task->ready_for_processing()) {
+					task->set_status(TaskStatus::processing);
+					(*task)();
+					task->set_status(TaskStatus::done);
+				} else {
+					add_task(task);
+				}				
+			} else {
+				assert(task->status() == TaskStatus::cancel);
+				task->set_status(TaskStatus::canceled);			
 			}
-
-			if (!task->ready_for_processing()) {
-				add_task(task);
-				--tasks_in_progress;
-				assert(tasks_in_progress >= 0);
-				continue;
-			}
-
-			task->set_status(TaskStatus::processing);
-			(*task)();
-			task->set_status(TaskStatus::done);
 
 			--tasks_in_progress;
 			assert(tasks_in_progress >= 0);
+
+
+			//if (task->status() == TaskStatus::cancel) {
+			//	task->set_status(TaskStatus::canceled);
+			//	--tasks_in_progress;
+			//	assert(tasks_in_progress >= 0);
+			//	continue;
+			//}
+
+			//if (!task->ready_for_processing()) {
+			//	add_task(task);
+			//	--tasks_in_progress;
+			//	assert(tasks_in_progress >= 0);
+			//	continue;
+			//}
+
+			//task->set_status(TaskStatus::processing);
+			//(*task)();
+			//task->set_status(TaskStatus::done);
+
+			//--tasks_in_progress;
+			//assert(tasks_in_progress >= 0);
 			
 		} else {
 			std::this_thread::sleep_for(std::chrono::microseconds(sleep_for_next_try_usec));
 		}
-	}
-}
-
-void DeferredTasksExecutor::start_worker_pool(void)
-{
-	if (!pool_started) {
-		size_t threads_count = std::thread::hardware_concurrency();
-		if (threads_count == 0) {
-			threads_count = default_threads_count;
-		}
-		pool.reserve(threads_count);
-		try {
-			for (size_t i = 0; i < threads_count; ++i) {
-				pool.emplace_back(std::thread(&DeferredTasksExecutor::worker_thread, this));
-			}
-		}
-		catch (...) {
-			terminate_and_join_all_threads();
-			throw;
-		}
-		pool_started = true;
 	}
 }
 

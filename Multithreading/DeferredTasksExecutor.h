@@ -68,8 +68,8 @@ private:
 	std::atomic<bool> terminate;
 	std::atomic<int> tasks_in_progress;
 	std::atomic<bool> pool_started;
+	std::mutex pool_mtx;
 	std::vector<std::thread> pool;
-
 	std::mutex tasks_queue_mtx;
 	std::deque<std::shared_ptr<Task>> tasks_queue;
 
