@@ -91,6 +91,7 @@ void DeferredTasksExecutor::start_worker_pool(void)
 		}
 		catch (...) {
 			terminate_and_join_all_threads();
+			pool.resize(0);
 			throw;
 		}
 		pool_started = true;
@@ -183,29 +184,7 @@ void DeferredTasksExecutor::worker_thread(void)
 
 			--tasks_in_progress;
 			assert(tasks_in_progress >= 0);
-
-
-			//if (task->status() == TaskStatus::cancel) {
-			//	task->set_status(TaskStatus::canceled);
-			//	--tasks_in_progress;
-			//	assert(tasks_in_progress >= 0);
-			//	continue;
-			//}
-
-			//if (!task->ready_for_processing()) {
-			//	add_task(task);
-			//	--tasks_in_progress;
-			//	assert(tasks_in_progress >= 0);
-			//	continue;
-			//}
-
-			//task->set_status(TaskStatus::processing);
-			//(*task)();
-			//task->set_status(TaskStatus::done);
-
-			//--tasks_in_progress;
-			//assert(tasks_in_progress >= 0);
-			
+		
 		} else {
 			std::this_thread::sleep_for(std::chrono::microseconds(sleep_for_next_try_usec));
 		}
@@ -220,5 +199,4 @@ void DeferredTasksExecutor::terminate_and_join_all_threads(void)
 			thr.join();
 		}
 	}
-	pool.resize(0);
 }
