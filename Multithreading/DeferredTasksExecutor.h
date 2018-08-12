@@ -15,13 +15,12 @@ using priority_t = unsigned int;
 
 enum class TaskStatus {
 	not_in_queue,
-	wait_for_precondition,
 	in_queue,
 	processing,
+	cancel,
 	done
 };
 
-void trace(const std::string str);
 const char *task_status_to_string(TaskStatus status);
 
 class DeferredTasksExecutor;
@@ -48,6 +47,8 @@ private:
 	const priority_t task_priority;
 	precondition_t precondition;
 	std::atomic<int> task_status;
+	std::mutex cv_mtx;
+	std::condition_variable cv;
 
 	void set_status(TaskStatus new_status);
 	bool ready_for_processing();
@@ -61,10 +62,8 @@ public:
 	static DeferredTasksExecutor & get_instance(void);
 	size_t pool_size(void);
 	std::shared_ptr<Task> add_task(task_function_t task_function, priority_t priority = 0, precondition_t precondition = []() {return true;});
-	void add_task(std::shared_ptr<Task> &task);
-	
-	//void cancel_task(std::shared_ptr<Task> &task);
-	
+	void add_task(std::shared_ptr<Task> &task);	
+	void cancel_task(std::shared_ptr<Task> &task);	
 	void wait_for_all_done(void);
 
 private:
@@ -75,9 +74,6 @@ private:
 	std::mutex tasks_queue_mtx;
 	std::deque<std::shared_ptr<Task>> tasks_queue;
 
-	std::mutex deferred_tasks_mtx;
-	std::list<std::shared_ptr<Task>> deferred_tasks;
-	
 	DeferredTasksExecutor();
 	~DeferredTasksExecutor();
 	DeferredTasksExecutor(const DeferredTasksExecutor &) = delete;
@@ -86,9 +82,6 @@ private:
 	DeferredTasksExecutor & operator=(const DeferredTasksExecutor &&) = delete;
 
 	void worker_thread(void);
-	void precondition_checker_thread(void);
-
-	void add_task_to_deferred_tasks(std::shared_ptr<Task> task);
 	bool next_task(std::shared_ptr<Task> &task);
 	void terminate_and_join_all_threads(void);
 };
