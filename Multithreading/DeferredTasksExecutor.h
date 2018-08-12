@@ -9,8 +9,6 @@
 #include <mutex>
 #include <atomic>
 
-#include "DeferredTasksExecutor.h"
-
 using task_function_t = std::function<void()>;
 using precondition_t = std::function<bool()>;
 using priority_t = unsigned int;
