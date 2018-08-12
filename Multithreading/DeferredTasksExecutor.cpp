@@ -69,25 +69,14 @@ bool task_comp(const std::shared_ptr<Task> &lhs, const std::shared_ptr<Task> &rh
 DeferredTasksExecutor & DeferredTasksExecutor::get_instance(void)
 {
 	static DeferredTasksExecutor instance;
+	if (!instance.pool_started) {
+		instance.start_worker_pool();
+	}
 	return instance;
 }
 
-DeferredTasksExecutor::DeferredTasksExecutor() : terminate(false), tasks_in_progress(0)
+DeferredTasksExecutor::DeferredTasksExecutor() : terminate(false), pool_started(false), tasks_in_progress(0)
 {
-	size_t threads_count = std::thread::hardware_concurrency();
-	if (threads_count == 0) {
-		threads_count = default_threads_count;
-	}
-
-	pool.reserve(threads_count);
-	try {
-		for (size_t i = 0; i < threads_count; ++i) {
-			pool.emplace_back(std::thread(&DeferredTasksExecutor::worker_thread, this));
-		}
-	} catch (...) {
-		terminate_and_join_all_threads();
-		throw;
-	}
 }
 
 DeferredTasksExecutor::~DeferredTasksExecutor()
@@ -141,6 +130,10 @@ bool DeferredTasksExecutor::next_task(std::shared_ptr<Task> &task)
 	std::lock_guard<std::mutex> lock(tasks_queue_mtx);
 	if (!tasks_queue.empty()) {
 		task = tasks_queue.front();
+
+		++tasks_in_progress;
+		assert(tasks_in_progress <= static_cast<int>(pool.size()));
+
 		tasks_queue.pop_front();
 		return true;
 	}
@@ -155,16 +148,17 @@ void DeferredTasksExecutor::worker_thread(void)
 
 			if (task->status() == TaskStatus::cancel) {
 				task->set_status(TaskStatus::canceled);
+				--tasks_in_progress;
+				assert(tasks_in_progress >= 0);
 				continue;
 			}
 
 			if (!task->ready_for_processing()) {
 				add_task(task);
+				--tasks_in_progress;
+				assert(tasks_in_progress >= 0);
 				continue;
 			}
-
-			++tasks_in_progress;
-			assert(tasks_in_progress <= static_cast<int>(pool.size()));
 
 			task->set_status(TaskStatus::processing);
 			(*task)();
@@ -179,6 +173,27 @@ void DeferredTasksExecutor::worker_thread(void)
 	}
 }
 
+void DeferredTasksExecutor::start_worker_pool(void)
+{
+	if (!pool_started) {
+		size_t threads_count = std::thread::hardware_concurrency();
+		if (threads_count == 0) {
+			threads_count = default_threads_count;
+		}
+		pool.reserve(threads_count);
+		try {
+			for (size_t i = 0; i < threads_count; ++i) {
+				pool.emplace_back(std::thread(&DeferredTasksExecutor::worker_thread, this));
+			}
+		}
+		catch (...) {
+			terminate_and_join_all_threads();
+			throw;
+		}
+		pool_started = true;
+	}
+}
+
 void DeferredTasksExecutor::terminate_and_join_all_threads(void)
 {
 	terminate = true;
@@ -187,4 +202,5 @@ void DeferredTasksExecutor::terminate_and_join_all_threads(void)
 			thr.join();
 		}
 	}
+	pool.resize(0);
 }

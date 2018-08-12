@@ -67,6 +67,7 @@ public:
 private:
 	std::atomic<bool> terminate;
 	std::atomic<int> tasks_in_progress;
+	std::atomic<bool> pool_started;
 	std::vector<std::thread> pool;
 
 	std::mutex tasks_queue_mtx;
@@ -81,6 +82,7 @@ private:
 
 	void worker_thread(void);
 	bool next_task(std::shared_ptr<Task> &task);
+	void start_worker_pool(void);
 	void terminate_and_join_all_threads(void);
 };
 
