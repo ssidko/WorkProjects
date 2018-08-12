@@ -1,6 +1,5 @@
 #include <iostream>
 #include <string>
-#include <atomic>
 #include <assert.h>
 #include <algorithm>
 
