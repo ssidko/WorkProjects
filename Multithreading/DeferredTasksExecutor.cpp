@@ -108,7 +108,7 @@ void DeferredTasksExecutor::add_task(std::shared_ptr<Task> &task)
 	std::lock_guard<std::mutex> lock(tasks_queue_mtx);
 	tasks_queue.push_back(task);
 	task->set_status(TaskStatus::in_queue);
-	if (task->priority) {
+	if (task->priority()) {
 		std::sort(tasks_queue.begin(), tasks_queue.end(), task_comp);
 	}
 }
