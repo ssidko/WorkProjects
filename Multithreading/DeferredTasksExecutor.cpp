@@ -177,7 +177,6 @@ void DeferredTasksExecutor::worker_thread(void)
 			std::this_thread::sleep_for(std::chrono::microseconds(sleep_for_next_try_usec));
 		}
 	}
-
 }
 
 void DeferredTasksExecutor::terminate_and_join_all_threads(void)
